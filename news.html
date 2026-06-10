@@ -247,16 +247,37 @@ target="_blank">
 </div>
 
 </a>
+<h3>📰 تازه خبرونه</h3>
 
-<a class="news-item"
-href="https://www.bbc.com/urdu"
-target="_blank">
-
-<div>
-<h4>🇵🇰 BBC اردو</h4>
-<p>د پاکستان او نړۍ خبرونه</p>
+<div id="news-box">
+⏳ خبرونه را لوډیږي...
 </div>
 
+<script>
+fetch("https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml")
+.then(response => response.json())
+.then(data => {
+
+let html = "";
+
+data.items.slice(0,10).forEach(item => {
+html += `
+<div style="padding:10px;border-bottom:1px solid #ddd">
+<a href="${item.link}" target="_blank">
+${item.title}
+</a>
+</div>
+`;
+});
+
+document.getElementById("news-box").innerHTML = html;
+
+})
+.catch(() => {
+document.getElementById("news-box").innerHTML =
+"خبرونه ترلاسه نشول";
+});
+</script>
 </a>
 
 </div>
