@@ -198,7 +198,88 @@ color:#666;
 <!-- 📰 NEWS CENTER -->
 
 <div class="card">
-<h3>📰 تازه خبرونه</h3>
+<div class="card">
+
+<h3>📰 تازه نړیوال خبرونه</h3>
+
+<div id="rss-news">
+⏳ خبرونه لوډیږي...
+</div>
+
+<p style="margin-top:15px">
+
+<a class="news-link"
+href="https://www.bbc.com/pashto"
+target="_blank">
+🌍 BBC پښتو </a>
+
+<a class="news-link"
+href="https://tolonews.com/ps"
+target="_blank">
+📺 طلوع نیوز </a>
+
+<a class="news-link"
+href="https://bakhtarnews.af"
+target="_blank">
+🇦🇫 باختر نیوز </a>
+
+</p>
+
+</div>
+
+<script>
+
+fetch(
+"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml"
+)
+
+.then(res => res.json())
+
+.then(data => {
+
+let html = "";
+
+data.items.slice(0,10).forEach(item => {
+
+html += `
+<div style="
+padding:10px;
+margin-bottom:10px;
+background:#f7f7f7;
+border-radius:10px;
+border-right:4px solid #004080;
+">
+
+<a href="${item.link}"
+target="_blank"
+style="
+text-decoration:none;
+font-weight:bold;
+color:#003366;
+">
+
+${item.title}
+
+</a>
+
+</div>
+`;
+
+});
+
+document.getElementById("rss-news").innerHTML = html;
+
+})
+
+.catch(() => {
+
+document.getElementById("rss-news").innerHTML =
+"❌ خبرونه ترلاسه نشول";
+
+});
+
+</script>
+
 
 <div class="news-box">
 
