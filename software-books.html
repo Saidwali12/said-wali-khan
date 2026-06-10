@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+<head>
+<div id="clockBox">
+  <canvas id="clock" width="180" height="180"></canvas>
+  <div id="afgTime"></div>
+</div>
+
+<style>
+#clockBox{
+text-align:center;
+padding:15px;
+background:white;
+margin:10px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+
+#afgTime{
+font-size:22px;
+font-weight:bold;
+color:#0d47a1;
+margin-top:10px;
+}
+</style>
+
+<script>
+const canvas=document.getElementById("clock");
+const ctx=canvas.getContext("2d");
+const radius=canvas.height/2;
+ctx.translate(radius,radius);
+
+function drawClock(){
+ctx.clearRect(-radius,-radius,canvas.width,canvas.height);
+
+ctx.beginPath();
+ctx.arc(0,0,radius-5,0,2*Math.PI);
+ctx.fillStyle="white";
+ctx.fill();
+ctx.strokeStyle="#0d47a1";
+ctx.lineWidth=4;
+ctx.stroke();
+
+const now=new Date();
+
+const afg=new Date(
+now.toLocaleString("en-US",{timeZone:"Asia/Kabul"})
+);
+
+let hour=afg.getHours();
+let minute=afg.getMinutes();
+let second=afg.getSeconds();
+
+document.getElementById("afgTime").innerHTML=
+"🇦🇫 د افغانستان وخت: "
++ hour.toString().padStart(2,"0")+":"
++ minute.toString().padStart(2,"0")+":"
++ second.toString().padStart(2,"0");
+
+for(let num=1;num<=12;num++){
+let ang=num*Math.PI/6;
+ctx.rotate(ang);
+ctx.translate(0,-radius*0.80);
+ctx.rotate(-ang);
+ctx.fillStyle="#000";
+ctx.font="16px Arial";
+ctx.textAlign="center";
+ctx.fillText(num.toString(),0,0);
+ctx.rotate(ang);
+ctx.translate(0,radius*0.80);
+ctx.rotate(-ang);
+}
+
+hour=hour%12;
+hour=(hour*Math.PI/6)+(minute*Math.PI/(6*60));
+drawHand(hour,radius*0.5,6);
+
+minute=(minute*Math.PI/30);
+drawHand(minute,radius*0.7,4);
+
+second=(second*Math.PI/30);
+drawHand(second,radius*0.8,2);
+}
+
+function drawHand(pos,length,width){
+ctx.beginPath();
+ctx.lineWidth=width;
+ctx.lineCap="round";
+ctx.moveTo(0,0);
+ctx.rotate(pos);
+ctx.lineTo(0,-length);
+ctx.stroke();
+ctx.rotate(-pos);
+}
+
+setInterval(drawClock,1000);
+drawClock();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>سافټویرونه او کتابونه</title>
+
+<style>
+body{
+font-family:Tahoma;
+margin:0;
+background:#f5f5f5;
+}
+
+header{
+background:#0d47a1;
+color:white;
+padding:15px;
+text-align:center;
+}
+
+marquee{
+background:#ff9800;
+color:white;
+padding:8px;
+font-weight:bold;
+}
+
+.nav{
+text-align:center;
+padding:10px;
+}
+
+.nav button{
+padding:8px 15px;
+margin:3px;
+border:none;
+background:#0d47a1;
+color:white;
+border-radius:5px;
+cursor:pointer;
+}
+
+.section{
+background:#0d47a1;
+color:white;
+padding:8px;
+margin:10px;
+border-radius:5px;
+text-align:center;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+gap:8px;
+padding:10px;
+}
+
+.item{
+background:white;
+padding:10px;
+border-radius:8px;
+text-align:center;
+box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+
+.item img{
+width:30px;
+height:30px;
+display:block;
+margin:auto;
+margin-bottom:5px;
+}
+
+.item a{
+text-decoration:none;
+color:#0d47a1;
+font-size:14px;
+font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h2>د سافټویرونو او کتابونو مرکز</h2>
+</header>
+
+<marquee>
+FileHippo | Softpedia | MajorGeeks | FossHub | GitHub | Quran | IslamHouse | Shamela| دغه صفحه کی تاسی دخپل روزمره دضرورت هرهغه سایتونه پید اکولای شی چی تاسی ورته ضرورت لری..کلیک وکړی اوداخل شی
+</marquee>
+
+<div class="nav">
+<button onclick="history.back()">⬅ شاتګ</button>
+<button onclick="history.forward()">➡ مخکې تګ</button>
+</div>
+
+<div class="section">💻 سافټویر سایټونه</div>
+
+<div class="grid">
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=filehippo.com&sz=64">
+<a href="https://filehippo.com" target="_blank">FileHippo</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=softpedia.com&sz=64">
+<a href="https://softpedia.com" target="_blank">Softpedia</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=majorgeeks.com&sz=64">
+<a href="https://majorgeeks.com" target="_blank">MajorGeeks</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=filehorse.com&sz=64">
+<a href="https://filehorse.com" target="_blank">FileHorse</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=sourceforge.net&sz=64">
+<a href="https://sourceforge.net" target="_blank">SourceForge</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=fosshub.com&sz=64">
+<a href="https://fosshub.com" target="_blank">FossHub</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=github.com&sz=64">
+<a href="https://github.com" target="_blank">GitHub</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=ninite.com&sz=64">
+<a href="https://ninite.com" target="_blank">Ninite</a>
+</div>
+
+</div>
+
+<div class="section">📚 اسلامي، پښتو، اردو او عربي کتابونه</div>
+
+<div class="grid">
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
+<a href="https://sunnah.com/bukhari" target="_blank">صحیح بخاري</a>
+</div>
+<!-- 📚 اسلامي کتابتونونه -->
+
+<div class="section">📚 اسلامي کتابتونونه</div>
+
+<div class="grid">
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
+<a href="https://sunnah.com" target="_blank">Sunnah.com</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=quran.com&sz=64">
+<a href="https://quran.com/ps" target="_blank">قرآن کریم پښتو</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=islamhouse.com&sz=64">
+<a href="https://islamhouse.com" target="_blank">IslamHouse</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=shamela.ws&sz=64">
+<a href="https://shamela.ws" target="_blank">المكتبة الشاملة</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=waqfeya.net&sz=64">
+<a href="https://waqfeya.net" target="_blank">المكتبة الوقفية</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=altafsir.com&sz=64">
+<a href="https://altafsir.com" target="_blank">Altafsir</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=dorar.net&sz=64">
+<a href="https://dorar.net" target="_blank">Dorar.net</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=library.islamweb.net&sz=64">
+<a href="https://library.islamweb.net" target="_blank">IslamWeb Library</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=noor-book.com&sz=64">
+<a href="https://www.noor-book.com" target="_blank">مكتبة نور</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=archive.org&sz=64">
+<a href="https://archive.org" target="_blank">Internet Archive</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=openlibrary.org&sz=64">
+<a href="https://openlibrary.org" target="_blank">Open Library</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=gutenberg.org&sz=64">
+<a href="https://www.gutenberg.org" target="_blank">Project Gutenberg</a>
+</div>
+
+</div>
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
+<a href="https://sunnah.com/muslim" target="_blank">صحیح مسلم</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
+<a href="https://sunnah.com/abudawud" target="_blank">سنن ابوداود</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
+<a href="https://sunnah.com/nasai" target="_blank">سنن نسائي</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
+<a href="https://sunnah.com/ibnmajah" target="_blank">سنن ابن ماجه</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=quran.com&sz=64">
+<a href="https://quran.com/ps" target="_blank">قرآن کریم پښتو ژباړه</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=tanzil.net&sz=64">
+<a href="https://tanzil.net" target="_blank">قرآن کریم عربي متن</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
+<a href="https://sunnah.com" target="_blank">د حدیثو جامع کتابتون</a>
+</div>
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=quran.com&sz=64">
+<a href="https://quran.com" target="_blank">Quran</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=islamhouse.com&sz=64">
+<a href="https://islamhouse.com" target="_blank">IslamHouse</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=shamela.ws&sz=64">
+<a href="https://shamela.ws" target="_blank">الشاملة</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=alwaraq.net&sz=64">
+<a href="https://alwaraq.net" target="_blank">الوراق</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=adl.af&sz=64">
+<a href="https://adl.af" target="_blank">پښتو کتابونه</a>
+</div>
+
+<div class="item">
+<img src="https://www.google.com/s2/favicons?domain=rekhta.org&sz=64">
+<a href="https://rekhta.org" target="_blank">اردو کتابونه</a>
+</div>
+
+</div>
+
+</body>
+</html>
