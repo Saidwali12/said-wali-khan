@@ -272,7 +272,49 @@ Facebook, WhatsApp, Google, YouTube او نور.
 
 <section class="section">
 
-<h2>وروستي خبرونه</h2>
+<h2 style="background:#b30000;color:#fff;padding:10px;border-radius:5px;">
+📰 BBC World News
+</h2>
+
+<div id="bbc-news">
+خبرونه لوډیږي...
+</div>
+
+<script>
+const feed =
+"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml";
+
+fetch(feed)
+.then(response => response.json())
+.then(data => {
+
+let newsHTML = "";
+
+data.items.slice(0, 15).forEach(item => {
+
+newsHTML += `
+<div style="background:#fff;margin:10px 0;padding:12px;border-radius:8px;border:1px solid #ddd;">
+<h3 style="margin:0;">
+<a href="${item.link}" target="_blank" style="text-decoration:none;color:#003366;">
+${item.title}
+</a>
+</h3>
+<p style="font-size:12px;color:#777;">
+${item.pubDate}
+</p>
+</div>
+`;
+
+});
+
+document.getElementById("bbc-news").innerHTML = newsHTML;
+
+})
+.catch(error => {
+document.getElementById("bbc-news").innerHTML =
+"خبرونه ترلاسه نشول";
+});
+</script>
 
 <div class="cards">
 
