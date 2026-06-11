@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تازه خبرونه</title>
+
+<style>
+.topbar{
+background:#0d47a1;
+color:white;
+padding:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.back-btn{
+background:#ff9800;
+color:white;
+text-decoration:none;
+padding:8px 15px;
+border-radius:6px;
+font-size:14px;
+font-weight:bold;
+}
+
+.back-btn:hover{
+opacity:.9;
+}
+
+.breaking-news{
+font-size:14px;
+font-weight:bold;
+overflow:hidden;
+white-space:nowrap;
+max-width:80%;
+}
+
+#breakingText{
+display:inline-block;
+animation:moveText 20s linear infinite;
+}
+
+@keyframes moveText{
+0%{transform:translateX(100%);}
+100%{transform:translateX(-100%);}
+}
+
+body{
+font-family:tahoma;
+background:#f5f5f5;
+margin:0;
+padding:0;
+}
+
+.header{
+background:#0d47a1;
+color:#fff;
+padding:15px;
+text-align:center;
+}
+
+.ticker{
+background:#ff9800;
+color:white;
+padding:10px;
+font-weight:bold;
+overflow:hidden;
+white-space:nowrap;
+}
+
+.news{
+max-width:1000px;
+margin:auto;
+padding:20px;
+}
+
+.item{
+background:white;
+padding:15px;
+margin-bottom:10px;
+border-radius:10px;
+box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+
+.item a{
+text-decoration:none;
+font-weight:bold;
+color:#0d47a1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h2>📰 تازه خبرونه</h2>
+</div>
+
+<div class="ticker" id="ticker">
+خبرونه پورته کېږي...
+</div>
+
+<div class="news" id="news">
+خبرونه پورته کېږي...
+</div>
+
+<script>
+
+const feeds = [
+
+"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/pashto/rss.xml",
+
+"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/urdu/rss.xml",
+
+"https://api.rss2json.com/v1/api.json?rss_url=https://www.voadeewanews.com/api/zrqiteeuqm"
+
+];
+
+async function loadNews(){
+
+let html="";
+let ticker=[];
+
+for(let feed of feeds){
+
+try{
+
+let r=await fetch(feed);
+let d=await r.json();
+
+if(d.items){
+
+d.items.slice(0,5).forEach(n=>{
+
+ticker.push(n.title);
+
+html += `
+<div class="item">
+<a href="${n.link}" target="_blank">
+${n.title}
+</a>
+</div>
+`;
+
+});
+
+}
+
+}catch(e){}
+
+}
+
+if(html!=""){
+document.getElementById("news").innerHTML=html;
+document.getElementById("ticker").innerHTML=
+ticker.join(" | ");
+}
+
+}
+
+loadNews();
+
+setInterval(loadNews,3600000);
+
+</script>
+
+</body>
+</html>
