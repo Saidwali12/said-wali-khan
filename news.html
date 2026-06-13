@@ -3,230 +3,229 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Akbar Job</title>
+<title>شخصي خبرونه - Advanced</title>
 
 <style>
 body{
 margin:0;
 font-family:tahoma;
-background:#eef3f9;
+background:#f5f5f5;
+color:#111;
 }
 
-/* BACK BUTTON */
-.back-fixed{
-position:fixed;
-top:10px;
-left:10px;
-background:#ff9800;
+/* HEADER (BBC STYLE) */
+header{
+background:#b30000;
 color:white;
-border:none;
-padding:10px 14px;
-border-radius:6px;
-cursor:pointer;
-z-index:9999;
-}
-
-/* TOP */
-.topbar{
-background:#0d47a1;
-color:white;
-text-align:center;
 padding:10px;
+text-align:center;
+font-weight:bold;
 }
 
-/* MARQUEE */
-.marquee{
-background:#ff5722;
-color:white;
-padding:8px;
-white-space:nowrap;
+/* BREAKING BAR */
+.breaking{
+background:black;
+color:yellow;
+padding:6px;
 overflow:hidden;
+white-space:nowrap;
 }
-.marquee span{
+.breaking span{
 display:inline-block;
 padding-left:100%;
-animation:move 12s linear infinite;
+animation:move 10s linear infinite;
 }
 @keyframes move{
 0%{transform:translateX(0)}
 100%{transform:translateX(-100%)}
 }
 
-/* CLOCK */
-.clock-box{
-text-align:center;
-margin:15px;
-background:white;
-padding:10px;
-border-radius:10px;
-}
-canvas{
-background:#fff;
-border-radius:50%;
-}
-
-/* DATE */
-.date-box{
-background:white;
-margin:15px;
-padding:10px;
-border-radius:10px;
-}
-
-/* JOBS */
+/* MAIN */
 .container{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:10px;
-padding:15px;
-}
-
-.card{
-background:white;
+max-width:900px;
+margin:auto;
 padding:10px;
-border-radius:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
-.btn{
-background:#0d47a1;
-color:white;
-border:none;
-padding:8px;
+/* FEATURED */
+.featured{
+background:white;
+border-radius:8px;
+overflow:hidden;
+margin-bottom:15px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.featured img{
 width:100%;
-border-radius:5px;
-cursor:pointer;
+height:250px;
+object-fit:cover;
 }
 
-/* LINKS */
-.links{
-background:white;
-margin:15px;
+.featured h2{
 padding:10px;
-border-radius:10px;
+color:#b30000;
 }
 
-.link-item{
+/* NEWS CARD */
+.news{
+background:white;
+margin-bottom:12px;
+border-radius:8px;
+overflow:hidden;
+box-shadow:0 1px 4px rgba(0,0,0,0.1);
+}
+
+.news img{
+width:100%;
+height:180px;
+object-fit:cover;
+}
+
+.news-body{
+padding:10px;
+}
+
+.title{
+font-size:18px;
+font-weight:bold;
+color:#b30000;
+}
+
+/* BUTTONS */
+.actions{
 display:flex;
-align-items:center;
-gap:10px;
-margin:8px 0;
+justify-content:space-between;
+margin-top:8px;
 }
 
-.link-item img{
-width:30px;
-height:30px;
+button{
+border:none;
+padding:6px 10px;
+cursor:pointer;
+border-radius:5px;
+}
+
+.like{
+background:#eee;
+}
+
+.comment-box{
+margin-top:8px;
+border-top:1px solid #ddd;
+padding-top:8px;
+}
+
+input{
+width:70%;
+padding:6px;
+}
+
+.add{
+background:#b30000;
+color:white;
+}
+
+.comment-list p{
+font-size:14px;
+}
+
+.delete{
+color:red;
+cursor:pointer;
+margin-right:5px;
 }
 </style>
 </head>
 
 <body>
 
-<button class="back-fixed" onclick="history.back()">⬅ شاتګ</button>
+<header>
+📺 شخصي خبرونه - BBC Style
+</header>
 
-<div class="topbar">
-<h3>Akbar Job - د وظیفو اعلانونه</h3>
+<div class="breaking">
+<span>🚨 Breaking News: دلته تاسو تازه خبرونه لیدلی شئ او کمینټ کولی شئ ✔</span>
 </div>
 
-<div class="marquee">
-<span>دلته تاسو نوې وظیفې پیدا کولای شئ او آنلاین Apply کولای شئ ✔</span>
-</div>
-
-<!-- CLOCK -->
-<div class="clock-box">
-<canvas id="clock" width="150" height="150"></canvas>
-</div>
-
-<!-- DATE CONVERTER -->
-<div class="date-box">
-<h3>📅 د تاریخ تبدیل</h3>
-<input type="date" id="dateInput">
-<button onclick="convertDate()">تبدیل</button>
-<p id="result"></p>
-</div>
-
-<!-- JOBS (9) -->
 <div class="container">
 
-<div class="card"><h4>ښوونکی</h4><p>کنړ</p><button class="btn">Apply</button></div>
-<div class="card"><h4>روغتیایي کارکوونکی</h4><p>نورستان</p><button class="btn">Apply</button></div>
-<div class="card"><h4>اداري مامور</h4><p>کنړ</p><button class="btn">Apply</button></div>
-<div class="card"><h4>انجنیر</h4><p>نورستان</p><button class="btn">Apply</button></div>
-<div class="card"><h4>محاسب</h4><p>کنړ</p><button class="btn">Apply</button></div>
-<div class="card"><h4>IT متخصص</h4><p>نورستان</p><button class="btn">Apply</button></div>
-<div class="card"><h4>ډاکټر</h4><p>کنړ</p><button class="btn">Apply</button></div>
-<div class="card"><h4>محافظ</h4><p>نورستان</p><button class="btn">Apply</button></div>
-<div class="card"><h4>دفتر کارمند</h4><p>کنړ</p><button class="btn">Apply</button></div>
-
+<!-- FEATURED -->
+<div class="featured">
+<img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c">
+<h2>مهم خبر: په افغانستان کې نوې پرمختګونه</h2>
 </div>
 
-<!-- LINKS -->
-<div class="links">
+<!-- NEWS 1 -->
+<div class="news">
+<img src="https://images.unsplash.com/photo-1495020689067-958852a7765e">
+<div class="news-body">
+<div class="title">اقتصادي خبر</div>
+<p>دلته د اقتصاد اړوند تازه معلومات.</p>
 
-<h3>🌐 مهم ویب سایټونه</h3>
-
-<div class="link-item">
-<img src="https://wazifagroup.com/favicon.ico">
-<a href="https://wazifagroup.com/" target="_blank">Wazifa Group</a>
+<div class="actions">
+<button class="like" onclick="like(this)">❤️ Like</button>
 </div>
 
-<div class="link-item">
-<img src="https://jobs.af/favicon.ico">
-<a href="https://jobs.af/" target="_blank">Jobs.af</a>
+<div class="comment-box">
+<input id="c1" placeholder="کمینټ ولیکه">
+<button class="add" onclick="addComment('l1','c1')">ثبت</button>
+<div id="l1" class="comment-list"></div>
 </div>
 
-<div class="link-item">
-<img src="https://www.acbar.org/favicon.ico">
-<a href="https://www.acbar.org/en/jobs" target="_blank">ACBAR Jobs</a>
+</div>
+</div>
+
+<!-- NEWS 2 -->
+<div class="news">
+<img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c">
+<div class="news-body">
+<div class="title">تعلیمي خبر</div>
+<p>د تعلیم په برخه کې مهم بدلونونه.</p>
+
+<div class="actions">
+<button class="like" onclick="like(this)">❤️ Like</button>
+</div>
+
+<div class="comment-box">
+<input id="c2" placeholder="کمینټ ولیکه">
+<button class="add" onclick="addComment('l2','c2')">ثبت</button>
+<div id="l2" class="comment-list"></div>
+</div>
+
+</div>
 </div>
 
 </div>
 
 <script>
 
-/* CLOCK */
-const canvas = document.getElementById("clock");
-const ctx = canvas.getContext("2d");
-
-function drawClock(){
-ctx.clearRect(0,0,150,150);
-
-let now = new Date();
-let s = now.getSeconds();
-let m = now.getMinutes();
-let h = now.getHours();
-
-ctx.beginPath();
-ctx.arc(75,75,70,0,2*Math.PI);
-ctx.stroke();
-
-drawHand(h%12*30 + m/2, 30, "black");
-drawHand(m*6, 50, "blue");
-drawHand(s*6, 60, "red");
+/* LIKE */
+function like(btn){
+if(btn.style.background=="red"){
+btn.style.background="#eee";
+btn.style.color="black";
+}else{
+btn.style.background="red";
+btn.style.color="white";
+}
 }
 
-function drawHand(angle,length,color){
-ctx.beginPath();
-ctx.strokeStyle=color;
-ctx.moveTo(75,75);
-ctx.lineTo(
-75 + length*Math.cos((angle-90)*Math.PI/180),
-75 + length*Math.sin((angle-90)*Math.PI/180)
-);
-ctx.stroke();
-}
+/* COMMENTS */
+function addComment(listId,inputId){
+let input=document.getElementById(inputId);
+let text=input.value;
 
-setInterval(drawClock,1000);
+if(text.trim()=="") return;
 
-/* DATE */
-function convertDate(){
-let d = document.getElementById("dateInput").value;
-let date = new Date(d);
+let div=document.getElementById(listId);
 
-document.getElementById("result").innerText =
-"میلادی: " + date.toDateString() +
-" | هجری: " + date.toLocaleDateString('en-TN-u-ca-islamic') +
-" | شمسی: " + date.toLocaleDateString('fa-IR-u-ca-persian');
+let p=document.createElement("p");
+p.innerHTML="👤 "+text+" <span class='delete' onclick='this.parentElement.remove()'>✖</span>";
+
+div.appendChild(p);
+
+input.value="";
 }
 
 </script>
