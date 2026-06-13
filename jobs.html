@@ -1,192 +1,235 @@
 <!DOCTYPE html>
 <html lang="ps" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>وظیفې</title>
+<title>Akbar Job</title>
 
 <style>
-
 body{
-font-family:Tahoma;
-background:#f4f7fb;
 margin:0;
+font-family:tahoma;
+background:#eef3f9;
 }
 
 /* BACK BUTTON */
-.back-btn{
+.back-fixed{
 position:fixed;
-top:15px;
-right:15px;
+top:10px;
+left:10px;
 background:#ff9800;
 color:white;
+border:none;
 padding:10px 14px;
-border-radius:8px;
-text-decoration:none;
-font-size:14px;
-box-shadow:0 0 10px rgba(0,0,0,0.25);
+border-radius:6px;
+cursor:pointer;
 z-index:9999;
 }
 
-.back-btn:hover{
-background:#e68900;
-}
-
-header{
+/* TOP */
+.topbar{
 background:#0d47a1;
 color:white;
-padding:20px;
 text-align:center;
+padding:10px;
 }
 
-.job{
-background:white;
-margin:20px;
-padding:20px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,.1);
+/* MARQUEE */
+.marquee{
+background:#ff5722;
+color:white;
+padding:8px;
+white-space:nowrap;
+overflow:hidden;
 }
-
-.job h3{
-color:#0d47a1;
-}
-
-.job p{
-margin:5px 0;
-}
-
-.apply{
+.marquee span{
 display:inline-block;
-margin-top:10px;
-background:#ff9800;
-color:white;
-padding:10px 15px;
-text-decoration:none;
-border-radius:5px;
+padding-left:100%;
+animation:move 12s linear infinite;
+}
+@keyframes move{
+0%{transform:translateX(0)}
+100%{transform:translateX(-100%)}
 }
 
-.apply:hover{
-background:#e68900;
+/* CLOCK */
+.clock-box{
+text-align:center;
+margin:15px;
+background:white;
+padding:10px;
+border-radius:10px;
+}
+canvas{
+background:#fff;
+border-radius:50%;
 }
 
-footer{
+/* DATE */
+.date-box{
+background:white;
+margin:15px;
+padding:10px;
+border-radius:10px;
+}
+
+/* JOBS */
+.container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:10px;
+padding:15px;
+}
+
+.card{
+background:white;
+padding:10px;
+border-radius:10px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn{
 background:#0d47a1;
 color:white;
-padding:20px;
-text-align:center;
-margin-top:30px;
+border:none;
+padding:8px;
+width:100%;
+border-radius:5px;
+cursor:pointer;
 }
 
-</style>
+/* LINKS */
+.links{
+background:white;
+margin:15px;
+padding:10px;
+border-radius:10px;
+}
 
+.link-item{
+display:flex;
+align-items:center;
+gap:10px;
+margin:8px 0;
+}
+
+.link-item img{
+width:30px;
+height:30px;
+}
+</style>
 </head>
 
 <body>
 
-<!-- BACK BUTTON (IMPORTANT) -->
-<a href="javascript:history.back()" class="back-btn">⬅ شاته</a>
+<button class="back-fixed" onclick="history.back()">⬅ شاتګ</button>
 
-<header>
-<h1>د وظیفو مرکز</h1>
-<p>د افغانستان او نړۍ وروستي کاري فرصتونه</p>
-</header>
-
-(زما نوی کوډ)
-
-<!-- JOB 1 -->
-<div class="job">
-...
+<div class="topbar">
+<h3>Akbar Job - د وظیفو اعلانونه</h3>
 </div>
 
-<!-- JOB 2 -->
-<div class="job">
-...
+<div class="marquee">
+<span>دلته تاسو نوې وظیفې پیدا کولای شئ او آنلاین Apply کولای شئ ✔</span>
 </div>
 
-<!-- JOB 3 -->
-<div class="job">
-...
+<!-- CLOCK -->
+<div class="clock-box">
+<canvas id="clock" width="150" height="150"></canvas>
 </div>
-html += `
-<div class="job">
 
-<h3>${job.title}</h3>
+<!-- DATE CONVERTER -->
+<div class="date-box">
+<h3>📅 د تاریخ تبدیل</h3>
+<input type="date" id="dateInput">
+<button onclick="convertDate()">تبدیل</button>
+<p id="result"></p>
+</div>
 
-<p><b>اداره:</b> ${job.organization}</p>
+<!-- JOBS (9) -->
+<div class="container">
 
-<p><b>ولایت:</b> ${job.province}</p>
+<div class="card"><h4>ښوونکی</h4><p>کنړ</p><button class="btn">Apply</button></div>
+<div class="card"><h4>روغتیایي کارکوونکی</h4><p>نورستان</p><button class="btn">Apply</button></div>
+<div class="card"><h4>اداري مامور</h4><p>کنړ</p><button class="btn">Apply</button></div>
+<div class="card"><h4>انجنیر</h4><p>نورستان</p><button class="btn">Apply</button></div>
+<div class="card"><h4>محاسب</h4><p>کنړ</p><button class="btn">Apply</button></div>
+<div class="card"><h4>IT متخصص</h4><p>نورستان</p><button class="btn">Apply</button></div>
+<div class="card"><h4>ډاکټر</h4><p>کنړ</p><button class="btn">Apply</button></div>
+<div class="card"><h4>محافظ</h4><p>نورستان</p><button class="btn">Apply</button></div>
+<div class="card"><h4>دفتر کارمند</h4><p>کنړ</p><button class="btn">Apply</button></div>
 
 </div>
-`;
 
-});
+<!-- LINKS -->
+<div class="links">
 
-document.getElementById("jobs-container").innerHTML = html;
+<h3>🌐 مهم ویب سایټونه</h3>
 
-});
+<div class="link-item">
+<img src="https://wazifagroup.com/favicon.ico">
+<a href="https://wazifagroup.com/" target="_blank">Wazifa Group</a>
+</div>
+
+<div class="link-item">
+<img src="https://jobs.af/favicon.ico">
+<a href="https://jobs.af/" target="_blank">Jobs.af</a>
+</div>
+
+<div class="link-item">
+<img src="https://www.acbar.org/favicon.ico">
+<a href="https://www.acbar.org/en/jobs" target="_blank">ACBAR Jobs</a>
+</div>
+
+</div>
+
+<script>
+
+/* CLOCK */
+const canvas = document.getElementById("clock");
+const ctx = canvas.getContext("2d");
+
+function drawClock(){
+ctx.clearRect(0,0,150,150);
+
+let now = new Date();
+let s = now.getSeconds();
+let m = now.getMinutes();
+let h = now.getHours();
+
+ctx.beginPath();
+ctx.arc(75,75,70,0,2*Math.PI);
+ctx.stroke();
+
+drawHand(h%12*30 + m/2, 30, "black");
+drawHand(m*6, 50, "blue");
+drawHand(s*6, 60, "red");
+}
+
+function drawHand(angle,length,color){
+ctx.beginPath();
+ctx.strokeStyle=color;
+ctx.moveTo(75,75);
+ctx.lineTo(
+75 + length*Math.cos((angle-90)*Math.PI/180),
+75 + length*Math.sin((angle-90)*Math.PI/180)
+);
+ctx.stroke();
+}
+
+setInterval(drawClock,1000);
+
+/* DATE */
+function convertDate(){
+let d = document.getElementById("dateInput").value;
+let date = new Date(d);
+
+document.getElementById("result").innerText =
+"میلادی: " + date.toDateString() +
+" | هجری: " + date.toLocaleDateString('en-TN-u-ca-islamic') +
+" | شمسی: " + date.toLocaleDateString('fa-IR-u-ca-persian');
+}
+
 </script>
-<h1>د وظیفو مرکز</h1>
-<p>د افغانستان او نړۍ وروستي کاري فرصتونه</p>
-</header>
-
-<!-- JOB 1 -->
-<div class="job">
-
-<h3>دتحلیل اوګزارش دهی بست</h3>
-
-<p><b>اداره:</b> معارف ریاست نورستان</p>
-<p><b>د بست شمېر:</b> 3 نفره</p>
-<p><b>شرایط:</b>  بائید لیسانس اوپه انګلیسی اودری ژبه پوها ولری د کمپیوټر ښه پوهه، تجربه لرل</p>
-<p><b>د اعلان تاریخ:</b> 01/06/2026</p>
-<p><b>د ختم تاریخ:</b> 30/06/2026</p>
-
-<a class="apply"
-href="mailto:jobs@example.com?subject=Application for Computer Teacher&body=سلام، زه د کمپیوټر استاد وظیفې لپاره ثبت نام کوم">
-📧 Apply Now
-</a>
-
-</div>
-
-<!-- JOB 2 -->
-<div class="job">
-
-<h3>د وظیفې نوم: دفتر مدیر</h3>
-
-<p><b>اداره:</b> تجارتي شرکت</p>
-<p><b>د بست شمېر:</b> 2 نفره</p>
-<p><b>شرایط:</b> د مدیریت تجربه، کمپیوټر مهارت</p>
-<p><b>د اعلان تاریخ:</b> 05/06/2026</p>
-<p><b>د ختم تاریخ:</b> 15/07/2026</p>
-
-<a class="apply"
-href="mailto:jobs@example.com?subject=Application for Office Manager&body=سلام، زه د دفتر مدیر وظیفې لپاره ثبت نام کوم">
-📧 Apply Now
-</a>
-
-</div>
-
-<!-- JOB 3 -->
-<div class="job">
-
-<h3>د وظیفې نوم: IT Officer</h3>
-
-<p><b>اداره:</b> نړیواله موسسه</p>
-<p><b>د بست شمېر:</b> 1 نفر</p>
-<p><b>شرایط:</b> Networking, IT Support تجربه</p>
-<p><b>د اعلان تاریخ:</b> 10/06/2026</p>
-<p><b>د ختم تاریخ:</b> 20/07/2026</p>
-
-<a class="apply"
-href="mailto:jobs@example.com?subject=Application for IT Officer&body=سلام، زه د IT Officer وظیفې لپاره ثبت نام کوم">
-📧 Apply Now
-</a>
-
-</div>
-
-<footer>
-© 2026 سیدولی خان کوهستانی ګروپ
-</footer>
 
 </body>
 </html>
