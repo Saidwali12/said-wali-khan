@@ -88,6 +88,35 @@ margin-top:30px;
 <a href="javascript:history.back()" class="back-btn">⬅ شاته</a>
 
 <header>
+<div id="jobs-container"></div>
+
+<script>
+fetch("https://afghanistan-jobs-api.walizaad2.workers.dev/")
+.then(response => response.json())
+.then(data => {
+
+let html = "";
+
+data.jobs.forEach(job => {
+
+html += `
+<div class="job">
+
+<h3>${job.title}</h3>
+
+<p><b>اداره:</b> ${job.organization}</p>
+
+<p><b>ولایت:</b> ${job.province}</p>
+
+</div>
+`;
+
+});
+
+document.getElementById("jobs-container").innerHTML = html;
+
+});
+</script>
 <h1>د وظیفو مرکز</h1>
 <p>د افغانستان او نړۍ وروستي کاري فرصتونه</p>
 </header>
