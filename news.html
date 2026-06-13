@@ -1,489 +1,235 @@
 <!DOCTYPE html>
-
 <html lang="ps" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>خبری رساني مرکز</title>
+<title>Akbar Job</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Tahoma,sans-serif;
-}
-
 body{
-background:#eef2f7;
+margin:0;
+font-family:tahoma;
+background:#eef3f9;
 }
 
-header{
-background:linear-gradient(45deg,#003366,#0055aa);
+/* BACK BUTTON */
+.back-fixed{
+position:fixed;
+top:10px;
+left:10px;
+background:#ff9800;
 color:white;
-padding:20px;
-text-align:center;
-font-size:28px;
-font-weight:bold;
-box-shadow:0 3px 10px rgba(0,0,0,.2);
+border:none;
+padding:10px 14px;
+border-radius:6px;
+cursor:pointer;
+z-index:9999;
 }
 
+/* TOP */
+.topbar{
+background:#0d47a1;
+color:white;
+text-align:center;
+padding:10px;
+}
+
+/* MARQUEE */
+.marquee{
+background:#ff5722;
+color:white;
+padding:8px;
+white-space:nowrap;
+overflow:hidden;
+}
+.marquee span{
+display:inline-block;
+padding-left:100%;
+animation:move 12s linear infinite;
+}
+@keyframes move{
+0%{transform:translateX(0)}
+100%{transform:translateX(-100%)}
+}
+
+/* CLOCK */
+.clock-box{
+text-align:center;
+margin:15px;
+background:white;
+padding:10px;
+border-radius:10px;
+}
+canvas{
+background:#fff;
+border-radius:50%;
+}
+
+/* DATE */
+.date-box{
+background:white;
+margin:15px;
+padding:10px;
+border-radius:10px;
+}
+
+/* JOBS */
 .container{
-padding:20px;
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:20px;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:10px;
+padding:15px;
 }
 
 .card{
 background:white;
-border-radius:15px;
-padding:15px;
-box-shadow:0 4px 12px rgba(0,0,0,.1);
-}
-
-.card h3{
-color:#004080;
-margin-bottom:15px;
-border-bottom:2px solid #eee;
-padding-bottom:8px;
-}
-
-input,textarea{
-width:100%;
 padding:10px;
-margin-top:8px;
-margin-bottom:10px;
-border:1px solid #ccc;
-border-radius:8px;
+border-radius:10px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
-button{
-background:#004080;
+.btn{
+background:#0d47a1;
 color:white;
 border:none;
-padding:10px;
-border-radius:8px;
+padding:8px;
+width:100%;
+border-radius:5px;
 cursor:pointer;
-width:100%;
-margin-top:5px;
 }
 
-button:hover{
-background:#0066cc;
-}
-
-/* Calculator */
-#screen{
-font-size:22px;
-text-align:left;
-}
-
-.calc{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:5px;
-}
-
-.calc button{
-font-size:18px;
-}
-
-.clear{
-background:red;
-grid-column:span 4;
-}
-
-/* News Area */
-.news-link{
-display:block;
+/* LINKS */
+.links{
+background:white;
+margin:15px;
 padding:10px;
-background:#f4f4f4;
-border-radius:8px;
-text-decoration:none;
-color:#003366;
-font-weight:bold;
-margin-top:10px;
-}
-
-.news-link:hover{
-background:#e6eefc;
-}
-
-.personal img{
-max-width:100%;
-margin-top:10px;
 border-radius:10px;
 }
 
-.personal video{
-width:100%;
-margin-top:10px;
-border-radius:10px;
+.link-item{
+display:flex;
+align-items:center;
+gap:10px;
+margin:8px 0;
 }
 
-footer{
-text-align:center;
-padding:20px;
-color:#666;
+.link-item img{
+width:30px;
+height:30px;
 }
 </style>
-
 </head>
 
 <body>
 
-<header>
-📰 خبری رساني مرکز
-</header>
+<button class="back-fixed" onclick="history.back()">⬅ شاتګ</button>
 
+<div class="topbar">
+<h3>Akbar Job - د وظیفو اعلانونه</h3>
+</div>
+
+<div class="marquee">
+<span>دلته تاسو نوې وظیفې پیدا کولای شئ او آنلاین Apply کولای شئ ✔</span>
+</div>
+
+<!-- CLOCK -->
+<div class="clock-box">
+<canvas id="clock" width="150" height="150"></canvas>
+</div>
+
+<!-- DATE CONVERTER -->
+<div class="date-box">
+<h3>📅 د تاریخ تبدیل</h3>
+<input type="date" id="dateInput">
+<button onclick="convertDate()">تبدیل</button>
+<p id="result"></p>
+</div>
+
+<!-- JOBS (9) -->
 <div class="container">
 
-<!-- Calculator -->
-
-<div class="card">
-<h3>🧮 کالکولیټر</h3>
-
-<input id="screen" readonly>
-
-<div class="calc">
-<button onclick="add('7')">7</button>
-<button onclick="add('8')">8</button>
-<button onclick="add('9')">9</button>
-<button onclick="add('/')">÷</button>
-
-<button onclick="add('4')">4</button> <button onclick="add('5')">5</button> <button onclick="add('6')">6</button> <button onclick="add('*')">×</button>
-
-<button onclick="add('1')">1</button> <button onclick="add('2')">2</button> <button onclick="add('3')">3</button> <button onclick="add('-')">−</button>
-
-<button onclick="add('0')">0</button> <button onclick="add('.')">.</button> <button onclick="calculate()">=</button> <button onclick="add('+')">+</button>
-
-<button class="clear" onclick="clearCalc()">پاک</button>
+<div class="card"><h4>ښوونکی</h4><p>کنړ</p><button class="btn">Apply</button></div>
+<div class="card"><h4>روغتیایي کارکوونکی</h4><p>نورستان</p><button class="btn">Apply</button></div>
+<div class="card"><h4>اداري مامور</h4><p>کنړ</p><button class="btn">Apply</button></div>
+<div class="card"><h4>انجنیر</h4><p>نورستان</p><button class="btn">Apply</button></div>
+<div class="card"><h4>محاسب</h4><p>کنړ</p><button class="btn">Apply</button></div>
+<div class="card"><h4>IT متخصص</h4><p>نورستان</p><button class="btn">Apply</button></div>
+<div class="card"><h4>ډاکټر</h4><p>کنړ</p><button class="btn">Apply</button></div>
+<div class="card"><h4>محافظ</h4><p>نورستان</p><button class="btn">Apply</button></div>
+<div class="card"><h4>دفتر کارمند</h4><p>کنړ</p><button class="btn">Apply</button></div>
 
 </div>
+
+<!-- LINKS -->
+<div class="links">
+
+<h3>🌐 مهم ویب سایټونه</h3>
+
+<div class="link-item">
+<img src="https://wazifagroup.com/favicon.ico">
+<a href="https://wazifagroup.com/" target="_blank">Wazifa Group</a>
 </div>
 
-<!-- Date Converter -->
-
-<div class="card">
-<h3>📅 تاریخ تبدیل</h3>
-
-<label>میلادي تاریخ</label> <input type="date" id="miladi">
-
-<button onclick="alert('د دقیق تبدیل لپاره ځانګړې کتابخانه ورزیاتېدای شي')">
-میلادي ➜ قمري
-</button>
-
-<button onclick="alert('د دقیق تبدیل لپاره ځانګړې کتابخانه ورزیاتېدای شي')">
-میلادي ➜ شمسي
-</button>
-
-<hr style="margin:15px 0">
-
-<label>قمري تاریخ</label> <input type="text" placeholder="1447-01-01">
-
-<button>
-قمري ➜ میلادي
-</button>
-
-<hr style="margin:15px 0">
-
-<label>شمسي تاریخ</label> <input type="text" placeholder="1405-03-19">
-
-<button>
-شمسي ➜ میلادي
-</button>
+<div class="link-item">
+<img src="https://jobs.af/favicon.ico">
+<a href="https://jobs.af/" target="_blank">Jobs.af</a>
 </div>
 
-<!-- 📰 NEWS CENTER -->
-
-<div class="card">
-<div class="card">
-
-<h3>📰 تازه نړیوال خبرونه</h3>
-
-<div id="rss-news">
-⏳ خبرونه لوډیږي...
+<div class="link-item">
+<img src="https://www.acbar.org/favicon.ico">
+<a href="https://www.acbar.org/en/jobs" target="_blank">ACBAR Jobs</a>
 </div>
-
-<p style="margin-top:15px">
-
-<a class="news-link"
-href="https://www.bbc.com/pashto"
-target="_blank">
-🌍 BBC پښتو </a>
-"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/pashto/rss.xml",
-
-"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/urdu/rss.xml",
-
-"https://api.rss2json.com/v1/api.json?rss_url=https://www.voadeewanews.com/api/zrqiteeuqm"
-<a class="news-link"
-href="https://tolonews.com/ps"
-target="_blank">
-📺 طلوع نیوز </a>
-
-<a class="news-link"
-href="https://bakhtarnews.af"
-target="_blank">
-🇦🇫 باختر نیوز </a>
-
-</p>
 
 </div>
 
 <script>
 
-fetch(
-"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml"
-)
+/* CLOCK */
+const canvas = document.getElementById("clock");
+const ctx = canvas.getContext("2d");
 
-.then(res => res.json())
+function drawClock(){
+ctx.clearRect(0,0,150,150);
 
-.then(data => {
+let now = new Date();
+let s = now.getSeconds();
+let m = now.getMinutes();
+let h = now.getHours();
 
-let html = "";
+ctx.beginPath();
+ctx.arc(75,75,70,0,2*Math.PI);
+ctx.stroke();
 
-data.items.slice(0,10).forEach(item => {
+drawHand(h%12*30 + m/2, 30, "black");
+drawHand(m*6, 50, "blue");
+drawHand(s*6, 60, "red");
+}
 
-html += `
-<div style="
-padding:10px;
-margin-bottom:10px;
-background:#f7f7f7;
-border-radius:10px;
-border-right:4px solid #004080;
-">
+function drawHand(angle,length,color){
+ctx.beginPath();
+ctx.strokeStyle=color;
+ctx.moveTo(75,75);
+ctx.lineTo(
+75 + length*Math.cos((angle-90)*Math.PI/180),
+75 + length*Math.sin((angle-90)*Math.PI/180)
+);
+ctx.stroke();
+}
 
-<a href="${item.link}"
-target="_blank"
-style="
-text-decoration:none;
-font-weight:bold;
-color:#003366;
-">
+setInterval(drawClock,1000);
 
-${item.title}
+/* DATE */
+function convertDate(){
+let d = document.getElementById("dateInput").value;
+let date = new Date(d);
 
-</a>
-
-</div>
-`;
-
-});
-
-document.getElementById("rss-news").innerHTML = html;
-
-})
-
-.catch(() => {
-
-document.getElementById("rss-news").innerHTML =
-"❌ خبرونه ترلاسه نشول";
-
-});
+document.getElementById("result").innerText =
+"میلادی: " + date.toDateString() +
+" | هجری: " + date.toLocaleDateString('en-TN-u-ca-islamic') +
+" | شمسی: " + date.toLocaleDateString('fa-IR-u-ca-persian');
+}
 
 </script>
-
-
-<div class="news-box">
-
-<a class="news-item"
-href="https://www.bbc.com/pashto"
-target="_blank">
-
-<img src="https://upload.wikimedia.org/wikipedia/commons/6/62/BBC_News_2022.svg">
-
-<div>
-<h2>وروستي خبرونه</h2>
-
-... زاړه خبرونه ...
-<div>
-<h4>🇦🇫 پژواک</h4>
-<p>د افغانستان تازه خبرونه</p>
-</div>
-
-</a>
-
-<a class="news-item"
-href="https://tolonews.com/ps"
-target="_blank">
-
-<div>
-<h4>📺 طلوع نیوز</h4>
-<p>سیاسي، اقتصادي او ټولنیز راپورونه</p>
-</div>
-
-</a>
-
-<a class="news-item"
-href="https://www.voadeewanews.com/pashto"
-target="_blank">
-
-<div>
-<h4>🎙 VOA پښتو</h4>
-<p>سیمه ییز او نړیوال خبرونه</p>
-</div>
-
-</a>
-<h3>📰 تازه خبرونه</h3>
-
-<div id="news-box">
-⏳ خبرونه را لوډیږي...
-</div>
-
-<script>
-fetch("https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml")
-.then(response => response.json())
-.then(data => {
-
-let html = "";
-
-data.items.slice(0,10).forEach(item => {
-html += `
-<div style="padding:10px;border-bottom:1px solid #ddd">
-<a href="${item.link}" target="_blank">
-${item.title}
-</a>
-</div>
-`;
-});
-
-document.getElementById("news-box").innerHTML = html;
-
-})
-.catch(() => {
-document.getElementById("news-box").innerHTML =
-"خبرونه ترلاسه نشول";
-});
-</script>
-</a>
-
-</div>
-</div>
-
-<style>
-
-.news-box{
-display:flex;
-flex-direction:column;
-gap:12px;
-}
-
-.news-item{
-display:flex;
-align-items:center;
-gap:12px;
-padding:12px;
-background:#f5f7fa;
-border-radius:12px;
-text-decoration:none;
-color:#003366;
-box-shadow:0 2px 6px rgba(0,0,0,.08);
-transition:.3s;
-}
-
-.news-item:hover{
-background:#e8f0ff;
-transform:translateY(-2px);
-}
-
-.news-item img{
-width:55px;
-height:55px;
-object-fit:contain;
-}
-
-.news-item h4{
-margin:0;
-font-size:18px;
-}
-
-.news-item p{
-margin-top:4px;
-font-size:13px;
-color:#666;
-}
-
-</style>
-
-</div>
-
-<img src="https://upload.wikimedia.org/wikipedia/commons/6/62/BBC_News_2022.svg"
-style="width:100%;border-radius:10px">
-
-<a class="news-link"
-href="https://www.bbc.com/pashto"
-target="_blank">
-د BBC پښتو تازه خبرونه </a>
-
-</div>
-
-<!-- Weather -->
-
-<div class="card">
-<h3>☁️ د افغانستان هوا</h3>
-
-<p>کابل: 28°C</p>
-<p>کندهار: 35°C</p>
-<p>هرات: 31°C</p>
-<p>مزار: 30°C</p>
-
-<a class="news-link"
-href="https://www.accuweather.com"
-target="_blank">
-بشپړه هوا وګورئ </a>
-
-</div>
-
-<!-- Personal News -->
-
-<div class="card personal">
-<h3>📝 زما خبرونه</h3>
-
-<input type="text" placeholder="د خبر عنوان">
-
-<textarea rows="6"
-placeholder="خپل خبر دلته ولیکئ"></textarea>
-
-<input type="text"
-placeholder="د عکس لینک">
-
-<input type="text"
-placeholder="د ویډیو لینک">
-
-<button>
-خبر نشر کړه
-</button>
-</div>
-
-</div>
-
-<footer>
-© زما خبری رساني ویب سایټ
-</footer>
-
-<script>
-function add(v){
-document.getElementById("screen").value+=v;
-}
-
-function calculate(){
-try{
-document.getElementById("screen").value=
-eval(document.getElementById("screen").value);
-}catch{
-alert("خطا");
-}
-}
-
-function clearCalc(){
-document.getElementById("screen").value="";
-}
-</script>
-
-</body>
-</html>
-
 
 </body>
 </html>
