@@ -88,17 +88,26 @@ margin-top:30px;
 <a href="javascript:history.back()" class="back-btn">⬅ شاته</a>
 
 <header>
-<div id="jobs-container"></div>
+<h1>د وظیفو مرکز</h1>
+<p>د افغانستان او نړۍ وروستي کاري فرصتونه</p>
+</header>
 
-<script>
-fetch("https://afghanistan-jobs-api.walizaad2.workers.dev/")
-.then(response => response.json())
-.then(data => {
+(زما نوی کوډ)
 
-let html = "";
+<!-- JOB 1 -->
+<div class="job">
+...
+</div>
 
-data.jobs.forEach(job => {
+<!-- JOB 2 -->
+<div class="job">
+...
+</div>
 
+<!-- JOB 3 -->
+<div class="job">
+...
+</div>
 html += `
 <div class="job">
 
