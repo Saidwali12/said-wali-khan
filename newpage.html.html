@@ -1,0 +1,3387 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>سیدولي خان کوهستاني | د معلوماتو مرکز</title>
+
+<style>
+
+/* =====================================================
+   عمومي
+===================================================== */
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Tahoma,Arial,sans-serif;
+background:linear-gradient(135deg,#eef7ff,#fff,#e7f4ff);
+color:#17324d;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+background:linear-gradient(135deg,#06345f,#0879c9,#0d47a1);
+color:white;
+text-align:center;
+padding:14px 15px 18px;
+position:relative;
+box-shadow:0 5px 20px rgba(0,0,0,.25);
+}
+
+.profile{
+width:145px;
+height:145px;
+border-radius:50%;
+object-fit:cover;
+border:5px solid white;
+box-shadow:0 5px 20px rgba(0,0,0,.4);
+}
+
+.header h1{
+margin:8px 0 4px;
+font-size:27px;
+}
+
+.header p{
+margin:4px;
+font-size:15px;
+}
+
+
+/* شاتګ */
+
+.back-btn{
+position:absolute;
+top:15px;
+right:18px;
+border:0;
+background:white;
+color:#075ca8;
+padding:9px 18px;
+border-radius:25px;
+font-weight:bold;
+cursor:pointer;
+text-decoration:none;
+}
+
+.back-btn:hover{
+background:#ffc107;
+color:#111;
+}
+
+
+/* Google Translate */
+
+.translate-btn{
+position:absolute;
+top:15px;
+left:18px;
+border:0;
+background:white;
+color:#075ca8;
+padding:9px 15px;
+border-radius:25px;
+font-weight:bold;
+cursor:pointer;
+text-decoration:none;
+}
+
+.translate-btn:hover{
+background:#ffc107;
+color:#111;
+}
+
+
+/* =====================================================
+   WEATHER
+===================================================== */
+
+.weather-area{
+width:95%;
+max-width:1450px;
+margin:10px auto;
+}
+
+.weather-title{
+background:linear-gradient(135deg,#075ca8,#1296df);
+color:white;
+text-align:center;
+padding:7px;
+border-radius:13px;
+font-size:15px;
+font-weight:bold;
+box-shadow:0 3px 10px rgba(0,0,0,.12);
+}
+
+.weather-cards{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:8px;
+}
+
+.weather-card{
+background:white;
+border-radius:14px;
+overflow:hidden;
+box-shadow:0 4px 13px rgba(0,0,0,.12);
+border:1px solid #d8ecfa;
+}
+
+.weather-location{
+background:#0876c9;
+color:white;
+text-align:center;
+padding:6px;
+font-size:12px;
+font-weight:bold;
+}
+
+.weather-main{
+height:92px;
+position:relative;
+overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+background:linear-gradient(#91d5f7,#e6f8ff);
+}
+
+.weather-status{
+font-size:31px;
+line-height:1;
+z-index:8;
+}
+
+.weather-text{
+font-size:11px;
+font-weight:bold;
+z-index:8;
+color:#17496b;
+margin-top:2px;
+}
+
+.weather-temp{
+font-size:16px;
+font-weight:bold;
+color:#075ca8;
+z-index:8;
+}
+
+
+/* =====================================================
+   SUN
+===================================================== */
+
+.sun-animation{
+position:absolute;
+width:42px;
+height:42px;
+border-radius:50%;
+background:#ffd43b;
+box-shadow:0 0 20px #ffd43b;
+top:15px;
+left:50%;
+transform:translateX(-50%);
+animation:sunPulse 2s infinite alternate;
+opacity:.85;
+}
+
+.sun-rays{
+position:absolute;
+width:68px;
+height:68px;
+border-radius:50%;
+border:2px dashed #ffd43b;
+top:2px;
+left:50%;
+transform:translateX(-50%);
+animation:rotateSun 8s linear infinite;
+opacity:.8;
+}
+
+@keyframes sunPulse{
+
+from{
+transform:translateX(-50%) scale(1);
+}
+
+to{
+transform:translateX(-50%) scale(1.12);
+}
+
+}
+
+@keyframes rotateSun{
+
+from{
+transform:translateX(-50%) rotate(0deg);
+}
+
+to{
+transform:translateX(-50%) rotate(360deg);
+}
+
+}
+
+
+/* =====================================================
+   CLOUD
+===================================================== */
+
+.cloud-animation{
+position:absolute;
+top:23px;
+left:-100px;
+font-size:46px;
+animation:cloudMove 10s linear infinite;
+z-index:2;
+}
+
+.cloud-animation.two{
+top:5px;
+font-size:32px;
+animation-duration:15s;
+opacity:.65;
+}
+
+@keyframes cloudMove{
+
+from{
+left:-120px;
+}
+
+to{
+left:110%;
+}
+
+}
+
+
+/* =====================================================
+   RAIN
+===================================================== */
+
+.rain-animation{
+position:absolute;
+inset:0;
+overflow:hidden;
+z-index:2;
+}
+
+.rain-drop{
+position:absolute;
+top:-20px;
+width:2px;
+height:12px;
+background:#168bd0;
+border-radius:5px;
+animation:rainFall 1s linear infinite;
+}
+
+@keyframes rainFall{
+
+from{
+transform:translateY(-20px);
+}
+
+to{
+transform:translateY(120px);
+}
+
+}
+
+
+/* =====================================================
+   STORM
+===================================================== */
+
+.storm-animation{
+position:absolute;
+inset:0;
+background:linear-gradient(#536d7d,#aebfc9);
+z-index:2;
+}
+
+.lightning{
+position:absolute;
+font-size:45px;
+color:#ffe600;
+top:15px;
+left:50%;
+transform:translateX(-50%);
+animation:flash 2.5s infinite;
+}
+
+@keyframes flash{
+
+0%,90%,100%{
+opacity:0;
+}
+
+92%{
+opacity:1;
+}
+
+94%{
+opacity:.2;
+}
+
+96%{
+opacity:1;
+}
+
+}
+
+
+/* =====================================================
+   FORECAST
+===================================================== */
+
+.forecast{
+padding:6px;
+}
+
+.forecast-title{
+text-align:center;
+font-size:11px;
+font-weight:bold;
+color:#075ca8;
+margin:2px 0 5px;
+}
+
+.forecast-table{
+width:100%;
+border-collapse:collapse;
+text-align:center;
+}
+
+.forecast-table th{
+background:#075ca8;
+color:white;
+padding:4px 2px;
+font-size:9px;
+}
+
+.forecast-table td{
+padding:4px 2px;
+border-bottom:1px solid #e4e4e4;
+font-size:9px;
+}
+
+.forecast-icon{
+font-size:18px!important;
+}
+
+.weather-update{
+text-align:center;
+background:#f3faff;
+color:#777;
+font-size:8px;
+padding:3px;
+}
+
+
+/* =====================================================
+   MARQUEE
+===================================================== */
+
+.marquee{
+overflow:hidden;
+white-space:nowrap;
+background:#ff9800;
+color:white;
+padding:9px 0;
+font-weight:bold;
+}
+
+.marquee span{
+display:inline-block;
+padding-right:100%;
+animation:slowMove 35s linear infinite;
+}
+
+@keyframes slowMove{
+
+from{
+transform:translateX(100%);
+}
+
+to{
+transform:translateX(-100%);
+}
+
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.container{
+width:95%;
+max-width:1450px;
+margin:20px auto;
+}
+
+.layout{
+display:grid;
+grid-template-columns:1fr 330px;
+gap:22px;
+}
+
+
+/* =====================================================
+   WORLD SLIDER
+===================================================== */
+
+.world-slider{
+position:relative;
+width:100%;
+height:470px;
+overflow:hidden;
+border-radius:22px;
+box-shadow:0 8px 25px rgba(0,0,0,.25);
+background:#111;
+margin-bottom:25px;
+}
+
+.slide{
+position:absolute;
+inset:0;
+opacity:0;
+transition:opacity 1.3s ease;
+}
+
+.slide.active{
+opacity:1;
+}
+
+.slide img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.slide:after{
+content:"";
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+height:45%;
+background:linear-gradient(transparent,rgba(0,0,0,.85));
+}
+
+.caption{
+position:absolute;
+z-index:2;
+bottom:25px;
+left:20px;
+right:20px;
+text-align:center;
+color:white;
+font-size:23px;
+font-weight:bold;
+text-shadow:0 2px 5px #000;
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.search{
+background:white;
+padding:28px;
+border-radius:20px;
+box-shadow:0 5px 20px rgba(0,0,0,.12);
+}
+
+.search h2{
+text-align:center;
+color:#075ca8;
+}
+
+.search p{
+text-align:center;
+line-height:2;
+color:#555;
+}
+
+.search-box{
+max-width:850px;
+margin:20px auto;
+display:flex;
+overflow:hidden;
+border:2px solid #0876c9;
+border-radius:40px;
+}
+
+.search-box input{
+flex:1;
+border:0;
+outline:0;
+padding:16px 20px;
+font-size:17px;
+}
+
+.search-box button{
+border:0;
+background:#0876c9;
+color:white;
+padding:0 28px;
+cursor:pointer;
+font-size:17px;
+}
+
+.search-links{
+text-align:center;
+}
+
+.search-links a{
+display:inline-block;
+color:white;
+text-decoration:none;
+padding:10px 20px;
+border-radius:25px;
+margin:5px;
+}
+
+.google{
+background:#4285f4;
+}
+
+.yahoo{
+background:#6001d2;
+}
+
+.result{
+background:#f6fbff;
+border-right:5px solid #0876c9;
+padding:15px;
+border-radius:10px;
+margin-top:10px;
+}
+
+.result a{
+color:#075ca8;
+font-weight:bold;
+text-decoration:none;
+}
+
+
+/* =====================================================
+   LINKS
+===================================================== */
+
+.title{
+text-align:center;
+color:#075ca8;
+margin:30px 0 20px;
+}
+
+.links{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(230px,1fr));
+gap:15px;
+}
+
+.card{
+background:white;
+padding:18px;
+border-radius:15px;
+border-right:5px solid #0876c9;
+box-shadow:0 4px 12px rgba(0,0,0,.1);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card a{
+color:#075ca8;
+text-decoration:none;
+font-weight:bold;
+}
+
+.card p{
+color:#666;
+font-size:13px;
+line-height:1.7;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.sidebar{
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+.box{
+background:white;
+border-radius:18px;
+overflow:hidden;
+box-shadow:0 5px 18px rgba(0,0,0,.13);
+}
+
+.box-title{
+background:#075ca8;
+color:white;
+text-align:center;
+padding:13px;
+font-weight:bold;
+}
+
+
+/* =====================================================
+   NEWS
+===================================================== */
+
+.news{
+height:650px;
+overflow:hidden;
+}
+
+.news-list{
+animation:newsMove 55s linear infinite;
+}
+
+.news-list:hover{
+animation-play-state:paused;
+}
+
+.news-item{
+padding:12px;
+border-bottom:1px solid #ddd;
+background:white;
+}
+
+.news-item img{
+width:100%;
+height:135px;
+object-fit:cover;
+border-radius:10px;
+margin-bottom:6px;
+}
+
+.news-item a{
+color:#075ca8;
+text-decoration:none;
+font-size:14px;
+line-height:1.6;
+font-weight:bold;
+display:block;
+}
+
+.news-summary{
+font-size:11px;
+line-height:1.8;
+color:#555;
+margin-top:5px;
+}
+
+.news-source{
+font-size:9px;
+color:#888;
+margin-top:4px;
+}
+
+@keyframes newsMove{
+
+from{
+transform:translateY(0);
+}
+
+to{
+transform:translateY(-50%);
+}
+
+}
+
+
+/* =====================================================
+   TECHNOLOGY NEWS
+===================================================== */
+
+.tech-news{
+height:520px;
+overflow:hidden;
+}
+
+.tech-news-list{
+animation:techMove 50s linear infinite;
+}
+
+.tech-news-list:hover{
+animation-play-state:paused;
+}
+
+.tech-news-item{
+padding:12px;
+border-bottom:1px solid #ddd;
+background:white;
+}
+
+.tech-news-item img{
+width:100%;
+height:135px;
+object-fit:cover;
+border-radius:10px;
+margin-bottom:7px;
+}
+
+.tech-news-item a{
+display:block;
+color:#075ca8;
+font-weight:bold;
+font-size:14px;
+line-height:1.7;
+text-decoration:none;
+}
+
+.tech-summary{
+font-size:11px;
+line-height:1.8;
+color:#555;
+margin-top:5px;
+}
+
+.tech-source{
+font-size:9px;
+color:#888;
+margin-top:5px;
+}
+
+@keyframes techMove{
+
+from{
+transform:translateY(0);
+}
+
+to{
+transform:translateY(-50%);
+}
+
+}
+
+
+/* =====================================================
+   PERSONAL
+   ۴۰٪ لویه شوې ساحه
+===================================================== */
+
+.personal{
+padding:15px;
+background:linear-gradient(135deg,#ffffff,#f3faff);
+}
+
+
+/*
+   پخوانی:
+   height:285px
+
+   نوی:
+   height:400px
+*/
+
+.personal-slide{
+display:none;
+height:400px;
+overflow:hidden;
+border-radius:18px;
+background:#eef7ff;
+box-shadow:0 5px 18px rgba(0,0,0,.18);
+}
+
+.personal-slide.active{
+display:block;
+}
+
+
+/* د ټولو عکسونو عمومي اندازه */
+
+.personal-slide img{
+width:100%;
+height:400px;
+object-fit:cover;
+border-radius:18px;
+display:block;
+}
+
+
+/* =====================================================
+   د هر عکس جلا Animation
+===================================================== */
+
+
+/* عکس ۱ ـ نرم Zoom */
+
+.personal-slide:nth-child(1).active img{
+animation:personalZoom 5s ease-in-out;
+}
+
+@keyframes personalZoom{
+
+0%{
+transform:scale(1);
+opacity:.2;
+}
+
+100%{
+transform:scale(1.08);
+opacity:1;
+}
+
+}
+
+
+/* عکس ۲ ـ له ښي لوري حرکت */
+
+.personal-slide:nth-child(2).active img{
+animation:personalRight 5s ease-out;
+}
+
+@keyframes personalRight{
+
+0%{
+transform:translateX(45px) scale(1.04);
+opacity:0;
+}
+
+100%{
+transform:translateX(0) scale(1);
+opacity:1;
+}
+
+}
+
+
+/* عکس ۳ ـ له چپ لوري حرکت */
+
+.personal-slide:nth-child(3).active img{
+animation:personalLeft 5s ease-out;
+}
+
+@keyframes personalLeft{
+
+0%{
+transform:translateX(-45px) scale(1.04);
+opacity:0;
+}
+
+100%{
+transform:translateX(0) scale(1);
+opacity:1;
+}
+
+}
+
+
+/* عکس ۴ ـ نرم Rotate + Zoom */
+
+.personal-slide:nth-child(4).active img{
+animation:personalRotate 5s ease-out;
+}
+
+@keyframes personalRotate{
+
+0%{
+transform:scale(.88) rotate(-2deg);
+opacity:0;
+}
+
+100%{
+transform:scale(1) rotate(0);
+opacity:1;
+}
+
+}
+
+
+/* عکس ۵ ـ له ښکته پورته کېدل */
+
+.personal-slide:nth-child(5).active img{
+animation:personalUp 5s ease-out;
+}
+
+@keyframes personalUp{
+
+0%{
+transform:translateY(45px) scale(.97);
+opacity:0;
+}
+
+100%{
+transform:translateY(0) scale(1);
+opacity:1;
+}
+
+}
+
+
+/* د شخصي عکسونو لاندې معلومات */
+
+.personal-note{
+text-align:center;
+color:#777;
+font-size:12px;
+padding-top:10px;
+line-height:1.8;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+background:#06345f;
+color:white;
+text-align:center;
+padding:25px 10px;
+line-height:2;
+margin-top:35px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:850px){
+
+.weather-cards{
+grid-template-columns:1fr;
+}
+
+.layout{
+grid-template-columns:1fr;
+}
+
+.world-slider{
+height:300px;
+}
+
+.profile{
+width:130px;
+height:130px;
+}
+
+.header h1{
+font-size:22px;
+}
+
+.back-btn,
+.translate-btn{
+position:static;
+display:inline-block;
+margin:4px;
+}
+
+}
+
+
+/* =====================================================
+   MOBILE SMALL
+===================================================== */
+
+@media(max-width:550px){
+
+.weather-main{
+height:92px;
+}
+
+.world-slider{
+height:250px;
+}
+
+.caption{
+font-size:16px;
+}
+
+.search-box input{
+min-width:0;
+font-size:14px;
+}
+
+.search-box button{
+padding:0 15px;
+}
+
+.forecast-table th,
+.forecast-table td{
+font-size:8px;
+}
+
+.news{
+height:600px;
+}
+
+.tech-news{
+height:500px;
+}
+
+
+/*
+   موبایل کې هم د شخصي عکس ساحه
+   له پخوا څخه ۴۰٪ لویه ساتل شوې
+*/
+
+.personal-slide{
+height:375px;
+}
+
+.personal-slide img{
+height:375px;
+}
+
+}
+
+
+/* =====================================================
+   TRANSLATE MENU
+===================================================== */
+
+.translate-menu{
+display:none;
+position:absolute;
+left:18px;
+top:58px;
+background:white;
+border-radius:12px;
+padding:8px;
+box-shadow:0 5px 20px rgba(0,0,0,.25);
+z-index:100;
+}
+
+.translate-menu a{
+display:block;
+padding:8px 15px;
+color:#075ca8;
+text-decoration:none;
+font-weight:bold;
+border-radius:8px;
+}
+
+.translate-menu a:hover{
+background:#eef7ff;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+HEADER
+===================================================== -->
+
+<header class="header">
+
+<button
+class="back-btn"
+onclick="history.back()">
+
+⬅ شاتګ
+
+</button>
+
+
+<button
+class="translate-btn"
+onclick="toggleTranslate()">
+
+🌐 ترجمه
+
+</button>
+
+
+<div
+class="translate-menu"
+id="translateMenu">
+
+<a
+href="https://translate.google.com/?sl=ps&tl=en"
+target="_blank">
+
+پښتو ➜ English
+
+</a>
+
+<a
+href="https://translate.google.com/?sl=en&tl=ps"
+target="_blank">
+
+English ➜ پښتو
+
+</a>
+
+<a
+href="https://translate.google.com/?sl=fa&tl=ps"
+target="_blank">
+
+دري ➜ پښتو
+
+</a>
+
+<a
+href="https://translate.google.com/?sl=ps&tl=fa"
+target="_blank">
+
+پښتو ➜ دري
+
+</a>
+
+<a
+href="https://translate.google.com/"
+target="_blank">
+
+🌐 ټولې ژبې
+
+</a>
+
+</div>
+
+
+<img
+src="profile.jpg"
+class="profile"
+alt="سیدولي خان کوهستاني">
+
+
+<h1>
+سیدولي خان کوهستاني
+</h1>
+
+<p>
+د معلوماتو، لټون او عامه خدماتو مرکز
+</p>
+
+</header>
+
+
+<!-- =====================================================
+WEATHER
+===================================================== -->
+
+<section class="weather-area">
+
+<div class="weather-title">
+
+🌦️ د سیمې تازه هوا — اتومات اپډیټ
+
+</div>
+
+
+<div class="weather-cards">
+
+
+<!-- کنړ -->
+
+<div class="weather-card">
+
+<div class="weather-location">
+
+📍 کنړ ـ ناړۍ ـ دوکلام / بریکوټ
+
+</div>
+
+
+<div
+class="weather-main"
+id="kunarWeather">
+
+<div
+class="weather-status"
+id="kunarIcon">
+
+☀️
+
+</div>
+
+<div
+class="weather-text"
+id="kunarText">
+
+د هوا معلومات راځي...
+
+</div>
+
+<div
+class="weather-temp"
+id="kunarTemp">
+
+--°C
+
+</div>
+
+</div>
+
+
+<div
+class="weather-update"
+id="kunarUpdate">
+
+د هوا معلومات تازه کېږي...
+
+</div>
+
+
+<div class="forecast">
+
+<div class="forecast-title">
+
+📅 راتلونکې ۳ ورځې
+
+</div>
+
+
+<table class="forecast-table">
+
+<thead>
+
+<tr>
+
+<th>ورځ</th>
+<th>هوا</th>
+<th>لوړه</th>
+<th>کمه</th>
+<th>باران</th>
+
+</tr>
+
+</thead>
+
+<tbody id="kunarForecast">
+
+<tr>
+
+<td colspan="5">
+انتظار...
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- پارون -->
+
+<div class="weather-card">
+
+<div class="weather-location">
+
+📍 نورستان ـ پارون ښار
+
+</div>
+
+
+<div
+class="weather-main"
+id="parunWeather">
+
+<div
+class="weather-status"
+id="parunIcon">
+
+☀️
+
+</div>
+
+<div
+class="weather-text"
+id="parunText">
+
+د هوا معلومات راځي...
+
+</div>
+
+<div
+class="weather-temp"
+id="parunTemp">
+
+--°C
+
+</div>
+
+</div>
+
+
+<div
+class="weather-update"
+id="parunUpdate">
+
+د هوا معلومات تازه کېږي...
+
+</div>
+
+
+<div class="forecast">
+
+<div class="forecast-title">
+
+📅 راتلونکې ۳ ورځې
+
+</div>
+
+
+<table class="forecast-table">
+
+<thead>
+
+<tr>
+
+<th>ورځ</th>
+<th>هوا</th>
+<th>لوړه</th>
+<th>کمه</th>
+<th>باران</th>
+
+</tr>
+
+</thead>
+
+<tbody id="parunForecast">
+
+<tr>
+
+<td colspan="5">
+انتظار...
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+MARQUEE
+===================================================== -->
+
+<div class="marquee">
+
+<span>
+
+🌦️ د کنړ ناړۍ دوکلام / بریکوټ او نورستان پارون تازه هوا
+
+&nbsp;&nbsp; ★ &nbsp;&nbsp;
+
+📰 د افغانستان تازه خبرونه
+
+&nbsp;&nbsp; ★ &nbsp;&nbsp;
+
+💻 د ټکنالوژۍ تازه ورځني خبرونه
+
+&nbsp;&nbsp; ★ &nbsp;&nbsp;
+
+🔎 کانکور، دندې، تعلیم او عامه معلومات
+
+&nbsp;&nbsp; ★ &nbsp;&nbsp;
+
+🌐 د نړۍ مهم معلومات
+
+&nbsp;&nbsp; ★ &nbsp;&nbsp;
+
+💻 سیدولي خان کوهستاني معلوماتي مرکز
+
+</span>
+
+</div>
+
+
+<div class="container">
+
+<div class="layout">
+
+
+<main>
+
+
+<!-- =====================================================
+WORLD SLIDER
+===================================================== -->
+
+<div class="world-slider">
+
+
+<div class="slide active">
+
+<img
+src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1500&q=85">
+
+<div class="caption">
+🌍 د نړۍ ښکلي طبیعي ځایونه
+</div>
+
+</div>
+
+
+<div class="slide">
+
+<img
+src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1500&q=85">
+
+<div class="caption">
+🏙️ د نړۍ ښکلي ښارونه
+</div>
+
+</div>
+
+
+<div class="slide">
+
+<img
+src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1500&q=85">
+
+<div class="caption">
+🏔️ غرونه او ښکلی طبیعت
+</div>
+
+</div>
+
+
+<div class="slide">
+
+<img
+src="https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=1500&q=85">
+
+<div class="caption">
+✈️ د نړۍ د سفر ښکلي ځایونه
+</div>
+
+</div>
+
+
+<div class="slide">
+
+<img
+src="https://images.unsplash.com/photo-1470214304380-aadaedcfff1b?auto=format&fit=crop&w=1500&q=85">
+
+<div class="caption">
+🌿 شنه طبیعت او ښکلي منظرې
+</div>
+
+</div>
+
+
+<div class="slide">
+
+<img
+src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1500&q=85">
+
+<div class="caption">
+🌆 د نړۍ مشهور ښارونه
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- =====================================================
+SEARCH
+===================================================== -->
+
+<section class="search">
+
+<h2>
+🔍 د معلوماتو لټون
+</h2>
+
+<p>
+
+خپل هدف ولیکئ. لومړی به زموږ په پاڼه کې معلومات ولټول شي؛
+که نتیجه پیدا نه شوه، Google یا Yahoo ته یې لېږلی شئ.
+
+</p>
+
+
+<div class="search-box">
+
+<input
+id="searchInput"
+type="text"
+placeholder="مثلاً: کانکور، نتایج، دندې، دفاع وزارت..."
+onkeydown="if(event.key==='Enter') searchSite()">
+
+
+<button onclick="searchSite()">
+
+🔍 لټون
+
+</button>
+
+</div>
+
+
+<div class="search-links">
+
+<a
+id="google"
+class="google"
+target="_blank">
+
+Google
+
+</a>
+
+
+<a
+id="yahoo"
+class="yahoo"
+target="_blank">
+
+Yahoo
+
+</a>
+
+</div>
+
+
+<div id="results"></div>
+
+</section>
+
+
+<!-- =====================================================
+45 IMPORTANT LINKS
+===================================================== -->
+
+<h2 class="title">
+
+📚 ۴۵ مهم رسمي خدمات او ویب‌پاڼې
+
+</h2>
+
+
+<div class="links">
+
+
+<div class="card">
+<a href="https://nexa.gov.af/fa/result/113/search" target="_blank">
+01 ـ د کانکور ازموینې نتایج
+</a>
+<p>د کانکور رسمي نتایج او لټون</p>
+</div>
+
+
+<div class="card">
+<a href="https://nexa.gov.af/" target="_blank">
+02 ـ د کانکور معلومات
+</a>
+<p>د ازموینو او نتایجو معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.iarc.gov.af/" target="_blank">
+03 ـ اداري اصلاحات
+</a>
+<p>د اداري اصلاحاتو او ملکي خدمتونو معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://mod.gov.af/" target="_blank">
+04 ـ دفاع وزارت
+</a>
+<p>رسمي دفاعي معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://moe.gov.af/" target="_blank">
+05 ـ پوهنې وزارت
+</a>
+<p>ښوونیز او تعلیمي معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://mohe.gov.af/" target="_blank">
+06 ـ لوړو زده کړو وزارت
+</a>
+<p>پوهنتونونه او لوړې زده کړې</p>
+</div>
+
+
+<div class="card">
+<a href="https://nexa.gov.af/" target="_blank">
+07 ـ د ازموینو اداره
+</a>
+<p>ازموینې او نتایج</p>
+</div>
+
+
+<div class="card">
+<a href="https://molsa.gov.af/" target="_blank">
+08 ـ کار او ټولنیزې چارې
+</a>
+<p>کار، استخدام او ټولنیزې چارې</p>
+</div>
+
+
+<div class="card">
+<a href="https://moph.gov.af/" target="_blank">
+09 ـ عامې روغتیا وزارت
+</a>
+<p>روغتیايي معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://mof.gov.af/" target="_blank">
+10 ـ مالیې وزارت
+</a>
+<p>مالي او بودجوي معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://moec.gov.af/" target="_blank">
+11 ـ اقتصاد وزارت
+</a>
+<p>اقتصادي معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://moj.gov.af/" target="_blank">
+12 ـ عدلیې وزارت
+</a>
+<p>حقوقي او قانوني معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://mfa.gov.af/" target="_blank">
+13 ـ بهرنیو چارو وزارت
+</a>
+<p>قونسلي او بهرني معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://moi.gov.af/" target="_blank">
+14 ـ کورنیو چارو وزارت
+</a>
+<p>رسمي معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://nsia.gov.af/" target="_blank">
+15 ـ احصایې او معلومات
+</a>
+<p>احصایوي معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://mcit.gov.af/" target="_blank">
+16 ـ مخابرات او ټکنالوژي
+</a>
+<p>مخابرات او ټکنالوژي</p>
+</div>
+
+
+<div class="card">
+<a href="https://dab.gov.af/" target="_blank">
+17 ـ افغانستان بانک
+</a>
+<p>بانکي او مالي معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://passport.moi.gov.af/" target="_blank">
+18 ـ پاسپورټ
+</a>
+<p>د پاسپورټ رسمي خدمت</p>
+</div>
+
+
+<div class="card">
+<a href="https://nid.nsia.gov.af/" target="_blank">
+19 ـ برېښنايي تذکره
+</a>
+<p>د تذکرې اړوند معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://moj.gov.af/" target="_blank">
+20 ـ رسمي قوانین او اسناد
+</a>
+<p>قوانین او حقوقي اسناد</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.jobs.af/" target="_blank">
+21 ـ د افغانستان دندې
+</a>
+<p>د کار فرصتونه</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.acbar.org/jobs" target="_blank">
+22 ـ ACBAR دندې
+</a>
+<p>د موسساتو او NGO دندې</p>
+</div>
+
+
+<div class="card">
+<a href="https://wazifaha.org/" target="_blank">
+23 ـ استخدام او بستونه
+</a>
+<p>د کار او استخدام فرصتونه</p>
+</div>
+
+
+<div class="card">
+<a href="https://mohe.gov.af/" target="_blank">
+24 ـ پوهنتونونه
+</a>
+<p>لوړې زده کړې او پوهنتونونه</p>
+</div>
+
+
+<div class="card">
+<a href="https://mohe.gov.af/" target="_blank">
+25 ـ تحصیلي بورسونه
+</a>
+<p>د بورسونو او تحصیلي فرصتونو معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://mohe.gov.af/" target="_blank">
+26 ـ بهرني بورسونه
+</a>
+<p>نړیوال تحصیلي فرصتونه</p>
+</div>
+
+
+<div class="card">
+<a href="https://moe.gov.af/" target="_blank">
+27 ـ ښوونځي
+</a>
+<p>ښوونیز معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://nexa.gov.af/" target="_blank">
+28 ـ ازموینې
+</a>
+<p>رسمي ازموینې او نتایج</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.bbc.com/pashto" target="_blank">
+29 ـ افغانستان تازه خبرونه
+</a>
+<p>د BBC پښتو تازه خبرونه</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.tolonews.com/" target="_blank">
+30 ـ اسلامي او ټولنیز معلومات
+</a>
+<p>خبرونه او ټولنیز معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://quran.com/" target="_blank">
+31 ـ قرآن کریم
+</a>
+<p>د قرآن کریم آنلاین سرچینه</p>
+</div>
+
+
+<div class="card">
+<a href="https://islamqa.info/" target="_blank">
+32 ـ اسلامي پوښتنې
+</a>
+<p>اسلامي پوښتنې او ځوابونه</p>
+</div>
+
+
+<div class="card">
+<a href="https://open-meteo.com/" target="_blank">
+33 ـ هوا
+</a>
+<p>د هوا نړیوال معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.dab.gov.af/" target="_blank">
+34 ـ اسعار
+</a>
+<p>د افغانستان بانک او اسعار</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.moi.gov.af/" target="_blank">
+35 ـ افغانستان ولایتونه
+</a>
+<p>د ولایتونو عمومي معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://kunar.gov.af/" target="_blank">
+36 ـ کنړ
+</a>
+<p>د کنړ ولایت معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://nuristan.gov.af/" target="_blank">
+37 ـ نورستان
+</a>
+<p>د نورستان ولایت معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://bakhtarnews.af/" target="_blank">
+38 ـ رسمي خبرونه
+</a>
+<p>باختر خبري اژانس</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.bbc.com/news" target="_blank">
+39 ـ نړیوال خبرونه
+</a>
+<p>د نړۍ تازه خبرونه</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.microsoft.com/" target="_blank">
+40 ـ ټکنالوژي
+</a>
+<p>د ټکنالوژۍ نړیوال معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.filehippo.com/" target="_blank">
+41 ـ سافټویر
+</a>
+<p>د سافټویر سرچینه</p>
+</div>
+
+
+<div class="card">
+<a href="https://openlibrary.org/" target="_blank">
+42 ـ کتابونه
+</a>
+<p>آنلاین کتابونه</p>
+</div>
+
+
+<div class="card">
+<a href="https://nexa.gov.af/" target="_blank">
+43 ـ پوهنتونونو پایلې
+</a>
+<p>د ازموینو او پایلو معلومات</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.acbar.org/jobs" target="_blank">
+44 ـ استخدامي ازموینې او دندې
+</a>
+<p>د استخدام فرصتونه</p>
+</div>
+
+
+<div class="card">
+<a href="https://www.google.com/" target="_blank">
+45 ـ نور مهم لینکونه
+</a>
+<p>د نړۍ مهمې سرچینې</p>
+</div>
+
+
+</div>
+
+
+</main>
+
+
+<!-- =====================================================
+SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+
+<!-- =====================================================
+   افغانستان تازه خبرونه
+===================================================== -->
+
+<div class="box">
+
+<div class="box-title">
+
+📰 د افغانستان تازه خبرونه
+
+</div>
+
+
+<div class="news">
+
+<div
+class="news-list"
+id="newsList">
+
+
+<div class="news-item">
+
+<img
+src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=600&q=80">
+
+<a
+href="https://www.bbc.com/pashto"
+target="_blank">
+
+د افغانستان تازه خبرونه
+
+</a>
+
+<div class="news-summary">
+
+د افغانستان، سیمې او نړۍ د مهمو تازه پېښو سرټکي دلته په اتومات ډول تازه کېږي.
+
+</div>
+
+<div class="news-source">
+
+BBC پښتو
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+   TECHNOLOGY NEWS
+===================================================== -->
+
+<div class="box">
+
+<div class="box-title">
+
+💻 د ټکنالوژۍ تازه ورځني خبرونه
+
+</div>
+
+
+<div class="tech-news">
+
+<div
+class="tech-news-list"
+id="techNewsList">
+
+
+<div class="tech-news-item">
+
+<img
+src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80">
+
+<a
+href="https://www.bbc.com/news/technology"
+target="_blank">
+
+د ټکنالوژۍ تازه خبرونه
+
+</a>
+
+<div class="tech-summary">
+
+د کمپیوټر، موبایل، مصنوعي ځیرکتیا، انټرنېټ او نوې ټکنالوژۍ تازه خبرونه.
+
+</div>
+
+<div class="tech-source">
+
+💻 BBC Technology
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+   شخصي عکسونه
+===================================================== -->
+
+<div class="box">
+
+<div class="box-title">
+
+🖼️ زما شخصي متحرک عکسونه
+
+</div>
+
+
+<div class="personal">
+
+
+<div class="personal-slide active">
+
+<img
+src="myphoto1.jpg"
+alt="شخصي عکس ۱">
+
+</div>
+
+
+<div class="personal-slide">
+
+<img
+src="myphoto2.jpg"
+alt="شخصي عکس ۲">
+
+</div>
+
+
+<div class="personal-slide">
+
+<img
+src="myphoto3.jpg"
+alt="شخصي عکس ۳">
+
+</div>
+
+
+<div class="personal-slide">
+
+<img
+src="myphoto4.jpg"
+alt="شخصي عکس ۴">
+
+</div>
+
+
+<div class="personal-slide">
+
+<img
+src="myphoto5.jpg"
+alt="شخصي عکس ۵">
+
+</div>
+
+
+<div class="personal-note">
+
+✨ پنځه شخصي عکسونه په اتومات ډول بدلېږي؛
+هر عکس خپل ځانګړی Animation لري.
+
+</div>
+
+</div>
+
+</div>
+
+
+</aside>
+
+
+</div>
+
+</div>
+
+
+<footer>
+
+© 2026 سیدولي خان کوهستاني
+
+<br>
+
+د معلوماتو، لټون، تعلیم، کار، خبرونو او عامه خدماتو مرکز
+
+</footer>
+
+
+<script>
+
+
+/* =====================================================
+   TRANSLATE MENU
+===================================================== */
+
+function toggleTranslate(){
+
+const menu=
+document.getElementById("translateMenu");
+
+if(menu.style.display==="block"){
+
+menu.style.display="none";
+
+}else{
+
+menu.style.display="block";
+
+}
+
+}
+
+
+/* =====================================================
+   WORLD SLIDER
+===================================================== */
+
+let slideIndex=0;
+
+const slides=
+document.querySelectorAll(".slide");
+
+function changeSlide(){
+
+slides.forEach(
+s=>s.classList.remove("active")
+);
+
+slideIndex++;
+
+if(slideIndex>=slides.length){
+
+slideIndex=0;
+
+}
+
+slides[slideIndex]
+.classList.add("active");
+
+}
+
+setInterval(
+changeSlide,
+10000
+);
+
+
+/* =====================================================
+   PERSONAL SLIDER
+===================================================== */
+
+let personalIndex=0;
+
+const personalSlides=
+document.querySelectorAll(
+".personal-slide"
+);
+
+function changePersonal(){
+
+personalSlides.forEach(
+s=>s.classList.remove("active")
+);
+
+personalIndex++;
+
+if(
+personalIndex>=personalSlides.length
+){
+
+personalIndex=0;
+
+}
+
+personalSlides[
+personalIndex
+].classList.add("active");
+
+}
+
+
+/*
+   هر ۵ ثانیې وروسته نوی عکس
+*/
+
+setInterval(
+changePersonal,
+5000
+);
+
+
+/* =====================================================
+   WEATHER LOCATIONS
+===================================================== */
+
+const locations={
+
+kunar:{
+latitude:35.30448,
+longitude:71.54735
+},
+
+parun:{
+latitude:35.42,
+longitude:70.92
+}
+
+};
+
+
+/* =====================================================
+   WEATHER CODES
+===================================================== */
+
+function weatherInfo(code){
+
+if(code===0)
+
+return{
+text:"صافه هوا او لمر",
+icon:"☀️",
+type:"sun"
+};
+
+
+if(code===1||code===2)
+
+return{
+text:"نیمه ورېځ",
+icon:"🌤️",
+type:"cloud"
+};
+
+
+if(code===3)
+
+return{
+text:"وریځ",
+icon:"☁️",
+type:"cloud"
+};
+
+
+if(
+[45,48].includes(code)
+)
+
+return{
+text:"لوخړه",
+icon:"🌫️",
+type:"cloud"
+};
+
+
+if(
+[51,53,55,56,57]
+.includes(code)
+)
+
+return{
+text:"سپک باران",
+icon:"🌦️",
+type:"rain"
+};
+
+
+if(
+[61,63,65,66,67,80,81,82]
+.includes(code)
+)
+
+return{
+text:"باران",
+icon:"🌧️",
+type:"rain"
+};
+
+
+if(
+[71,73,75,77,85,86]
+.includes(code)
+)
+
+return{
+text:"واوره",
+icon:"🌨️",
+type:"cloud"
+};
+
+
+if(
+[95,96,99]
+.includes(code)
+)
+
+return{
+text:"تندر او باران",
+icon:"⛈️",
+type:"storm"
+};
+
+
+return{
+text:"نامعلومه هوا",
+icon:"🌤️",
+type:"cloud"
+};
+
+}
+
+
+/* =====================================================
+   WEATHER ANIMATION
+===================================================== */
+
+function setAnimation(
+container,
+type
+){
+
+container.querySelectorAll(
+".sun-animation,.sun-rays,.cloud-animation,.rain-animation,.storm-animation"
+).forEach(
+e=>e.remove()
+);
+
+
+if(type==="sun"){
+
+let sun=
+document.createElement("div");
+
+sun.className=
+"sun-animation";
+
+let rays=
+document.createElement("div");
+
+rays.className=
+"sun-rays";
+
+container.appendChild(sun);
+container.appendChild(rays);
+
+}
+
+
+if(type==="cloud"){
+
+let cloud=
+document.createElement("div");
+
+cloud.className=
+"cloud-animation";
+
+cloud.innerHTML="☁️";
+
+
+let cloud2=
+document.createElement("div");
+
+cloud2.className=
+"cloud-animation two";
+
+cloud2.innerHTML="☁️";
+
+container.appendChild(cloud);
+container.appendChild(cloud2);
+
+}
+
+
+if(type==="rain"){
+
+let rain=
+document.createElement("div");
+
+rain.className=
+"rain-animation";
+
+
+for(
+let i=0;
+i<25;
+i++
+){
+
+let drop=
+document.createElement("div");
+
+drop.className=
+"rain-drop";
+
+drop.style.left=
+Math.random()*100+"%";
+
+drop.style.animationDelay=
+Math.random()*1.5+"s";
+
+rain.appendChild(drop);
+
+}
+
+container.appendChild(rain);
+
+
+let cloud=
+document.createElement("div");
+
+cloud.className=
+"cloud-animation";
+
+cloud.innerHTML="☁️";
+
+container.appendChild(cloud);
+
+}
+
+
+if(type==="storm"){
+
+let storm=
+document.createElement("div");
+
+storm.className=
+"storm-animation";
+
+
+let lightning=
+document.createElement("div");
+
+lightning.className=
+"lightning";
+
+lightning.innerHTML="⚡";
+
+storm.appendChild(lightning);
+
+container.appendChild(storm);
+
+}
+
+}
+
+
+/* =====================================================
+   DAY NAME
+===================================================== */
+
+function dayName(
+dateString
+){
+
+const days=[
+
+"یکشنبه",
+"دوشنبه",
+"سه شنبه",
+"چهارشنبه",
+"پنجشنبه",
+"جمعه",
+"شنبه"
+
+];
+
+const d=
+new Date(
+dateString+"T12:00:00"
+);
+
+return days[d.getDay()];
+
+}
+
+
+/* =====================================================
+   LOAD WEATHER
+===================================================== */
+
+async function loadWeather(key){
+
+const location=
+locations[key];
+
+
+const url=
+
+"https://api.open-meteo.com/v1/forecast?"+
+"latitude="+
+location.latitude+
+"&longitude="+
+location.longitude+
+"&current=temperature_2m,weather_code,is_day"+
+"&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max"+
+"&timezone=auto"+
+"&forecast_days=3";
+
+
+try{
+
+const response=
+await fetch(url);
+
+
+if(!response.ok)
+
+throw new Error(
+"Weather API Error"
+);
+
+
+const data=
+await response.json();
+
+
+const current=
+data.current;
+
+const daily=
+data.daily;
+
+
+const info=
+weatherInfo(
+current.weather_code
+);
+
+
+const prefix=
+key==="kunar"
+?
+"kunar"
+:
+"parun";
+
+
+document.getElementById(
+prefix+"Icon"
+).innerHTML=
+info.icon;
+
+
+document.getElementById(
+prefix+"Text"
+).innerText=
+info.text;
+
+
+document.getElementById(
+prefix+"Temp"
+).innerText=
+
+Math.round(
+current.temperature_2m
+)+"°C";
+
+
+setAnimation(
+
+document.getElementById(
+prefix+"Weather"
+),
+
+info.type
+
+);
+
+
+document.getElementById(
+prefix+"Update"
+).innerText=
+
+"🕐 تازه: "+
+new Date().toLocaleTimeString(
+"ps-AF",
+{
+hour:"2-digit",
+minute:"2-digit"
+}
+);
+
+
+let html="";
+
+
+for(
+let i=0;
+i<3;
+i++
+){
+
+const dailyInfo=
+weatherInfo(
+daily.weather_code[i]
+);
+
+
+html+=`
+
+<tr>
+
+<td>
+${i===0
+?
+"نن"
+:
+dayName(
+daily.time[i]
+)}
+</td>
+
+<td class="forecast-icon">
+${dailyInfo.icon}
+</td>
+
+<td>
+${Math.round(
+daily.temperature_2m_max[i]
+)}°
+</td>
+
+<td>
+${Math.round(
+daily.temperature_2m_min[i]
+)}°
+</td>
+
+<td>
+${daily.precipitation_probability_max[i]??0}%
+</td>
+
+</tr>
+
+`;
+
+}
+
+
+document.getElementById(
+prefix+"Forecast"
+).innerHTML=
+html;
+
+
+}catch(error){
+
+console.log(error);
+
+
+const prefix=
+key==="kunar"
+?
+"kunar"
+:
+"parun";
+
+
+document.getElementById(
+prefix+"Text"
+).innerText=
+"د هوا معلومات نه ترلاسه کېږي";
+
+
+document.getElementById(
+prefix+"Update"
+).innerText=
+"د انټرنېټ ستونزه";
+
+}
+
+}
+
+
+/* لومړی اپډیټ */
+
+loadWeather("kunar");
+
+loadWeather("parun");
+
+
+/* هر ۱۵ دقیقې */
+
+setInterval(
+()=>loadWeather("kunar"),
+15*60*1000
+);
+
+setInterval(
+()=>loadWeather("parun"),
+15*60*1000
+);
+
+
+/* =====================================================
+   AFGHANISTAN NEWS RSS
+===================================================== */
+
+async function loadNews(){
+
+const newsList=
+document.getElementById(
+"newsList"
+);
+
+
+try{
+
+const rssUrl=
+"https://feeds.bbci.co.uk/pashto/rss.xml";
+
+
+const api=
+"https://api.rss2json.com/v1/api.json?rss_url="+
+encodeURIComponent(rssUrl);
+
+
+const response=
+await fetch(api);
+
+
+const data=
+await response.json();
+
+
+if(
+!data.items ||
+!data.items.length
+){
+
+throw new Error(
+"No news"
+);
+
+}
+
+
+let html="";
+
+
+data.items.slice(0,10)
+.forEach(
+item=>{
+
+
+let image="";
+
+
+if(
+item.enclosure &&
+item.enclosure.link
+){
+
+image=
+item.enclosure.link;
+
+}
+
+
+if(!image){
+
+image=
+"https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=600&q=80";
+
+}
+
+
+let summary=
+item.description
+||
+"د خبر لنډ معلومات د اصلي سرچینې له مخې.";
+
+
+summary=
+summary
+.replace(/<[^>]*>/g,"")
+.substring(0,180);
+
+
+html+=`
+
+<div class="news-item">
+
+<img
+src="${image}"
+onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=600&q=80'">
+
+<a
+href="${item.link}"
+target="_blank">
+
+${item.title}
+
+</a>
+
+<div class="news-summary">
+
+${summary}...
+
+</div>
+
+<div class="news-source">
+
+📰 سرچینه: BBC پښتو
+
+</div>
+
+</div>
+
+`;
+
+});
+
+
+newsList.innerHTML=
+html+html;
+
+
+}catch(error){
+
+console.log(
+"News error:",
+error
+);
+
+
+newsList.innerHTML=`
+
+<div class="news-item">
+
+<img
+src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=600&q=80">
+
+<a
+href="https://www.bbc.com/pashto"
+target="_blank">
+
+د افغانستان تازه خبرونه
+
+</a>
+
+<div class="news-summary">
+
+د BBC پښتو رسمي پاڼه کې د افغانستان او نړۍ تازه خبرونه، راپورونه او مهم معلومات وګورئ.
+
+</div>
+
+<div class="news-source">
+
+📰 BBC پښتو
+
+</div>
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =====================================================
+   TECHNOLOGY NEWS RSS
+===================================================== */
+
+async function loadTechNews(){
+
+const techList=
+document.getElementById(
+"techNewsList"
+);
+
+
+try{
+
+
+/*
+   BBC Technology RSS
+*/
+
+const rssUrl=
+"https://feeds.bbci.co.uk/news/technology/rss.xml";
+
+
+const api=
+"https://api.rss2json.com/v1/api.json?rss_url="+
+encodeURIComponent(rssUrl);
+
+
+const response=
+await fetch(api);
+
+
+const data=
+await response.json();
+
+
+if(
+!data.items ||
+!data.items.length
+){
+
+throw new Error(
+"No technology news"
+);
+
+}
+
+
+let html="";
+
+
+data.items.slice(0,10)
+.forEach(
+item=>{
+
+
+let image="";
+
+
+if(
+item.enclosure &&
+item.enclosure.link
+){
+
+image=
+item.enclosure.link;
+
+}
+
+
+if(!image){
+
+image=
+"https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80";
+
+}
+
+
+let summary=
+item.description
+||
+"د ټکنالوژۍ د خبر لنډ معلومات.";
+
+
+summary=
+summary
+.replace(/<[^>]*>/g,"")
+.substring(0,170);
+
+
+html+=`
+
+<div class="tech-news-item">
+
+<img
+src="${image}"
+onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80'">
+
+<a
+href="${item.link}"
+target="_blank">
+
+${item.title}
+
+</a>
+
+<div class="tech-summary">
+
+${summary}...
+
+</div>
+
+<div class="tech-source">
+
+💻 سرچینه: BBC Technology
+
+</div>
+
+</div>
+
+`;
+
+});
+
+
+/*
+   دوه ځله لیست کوو،
+   څو حرکت مسلسل ښکاره شي.
+*/
+
+techList.innerHTML=
+html+html;
+
+
+}catch(error){
+
+console.log(
+"Technology News Error:",
+error
+);
+
+
+techList.innerHTML=`
+
+<div class="tech-news-item">
+
+<img
+src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80">
+
+<a
+href="https://www.bbc.com/news/technology"
+target="_blank">
+
+💻 د ټکنالوژۍ تازه خبرونه
+
+</a>
+
+<div class="tech-summary">
+
+د مصنوعي ځیرکتیا، کمپیوټر، موبایل، انټرنېټ او نوې ټکنالوژۍ مهم خبرونه دلته وګورئ.
+
+</div>
+
+<div class="tech-source">
+
+💻 BBC Technology
+
+</div>
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =====================================================
+   لومړی خبرونه
+===================================================== */
+
+loadNews();
+
+loadTechNews();
+
+
+/*
+   هر ۳۰ دقیقې خبرونه تازه کېږي
+*/
+
+setInterval(
+loadNews,
+30*60*1000
+);
+
+setInterval(
+loadTechNews,
+30*60*1000
+);
+
+
+/* =====================================================
+   SEARCH DATA
+===================================================== */
+
+const searchData=[
+
+
+[
+"کانکور",
+"کانکور، نتایج، ازموینه، پوهنتون",
+"https://nexa.gov.af/fa/result/113/search"
+],
+
+
+[
+"د کانکور معلومات",
+"کانکور، ازموینه، نتایج",
+"https://nexa.gov.af/"
+],
+
+
+[
+"دندې",
+"کار، دندې، استخدام، بستونه",
+"https://www.jobs.af/"
+],
+
+
+[
+"ACBAR",
+"ACBAR، موسسات، دندې",
+"https://www.acbar.org/jobs"
+],
+
+
+[
+"پوهنې وزارت",
+"پوهنه، ښوونځي، تعلیم",
+"https://moe.gov.af/"
+],
+
+
+[
+"لوړو زده کړو",
+"پوهنتون، محصلین، تحصیلات",
+"https://mohe.gov.af/"
+],
+
+
+[
+"دفاع وزارت",
+"دفاع وزارت، استخدام، معلومات",
+"https://mod.gov.af/"
+],
+
+
+[
+"کنړ",
+"کنړ، اسعدآباد، ناړۍ، دوکلام، بریکوټ",
+"https://kunar.gov.af/"
+],
+
+
+[
+"نورستان",
+"نورستان، پارون، ولایت",
+"https://nuristan.gov.af/"
+],
+
+
+[
+"افغانستان خبرونه",
+"افغانستان، تازه خبرونه",
+"https://www.bbc.com/pashto"
+],
+
+
+[
+"طلوع نیوز",
+"افغانستان، تازه خبرونه",
+"https://www.tolonews.com/"
+],
+
+
+[
+"ټکنالوژي",
+"کمپیوټر، موبایل، انټرنېټ، مصنوعي ځیرکتیا",
+"https://www.microsoft.com/"
+],
+
+
+[
+"مصنوعي ځیرکتیا",
+"AI، مصنوعي ځیرکتیا، ټکنالوژي",
+"https://www.microsoft.com/"
+],
+
+
+[
+"هوا",
+"د افغانستان د هوا معلومات",
+"https://open-meteo.com/"
+]
+
+
+];
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+function searchSite(){
+
+const q=
+document
+.getElementById(
+"searchInput"
+)
+.value
+.trim()
+.toLowerCase();
+
+
+const results=
+document.getElementById(
+"results"
+);
+
+
+if(!q){
+
+results.innerHTML=
+
+"<div class='result'>"+
+"مهرباني وکړئ د لټون لپاره یو څه ولیکئ."+
+"</div>";
+
+return;
+
+}
+
+
+const found=
+searchData.filter(
+
+x=>
+
+x[0]
+.toLowerCase()
+.includes(q)
+
+||
+
+x[1]
+.toLowerCase()
+.includes(q)
+
+);
+
+
+if(found.length){
+
+
+results.innerHTML=
+
+found.map(
+x=>`
+
+<div class="result">
+
+<a
+href="${x[2]}"
+target="_blank">
+
+${x[0]}
+
+</a>
+
+<p>
+${x[1]}
+</p>
+
+</div>
+
+`
+).join("");
+
+
+}else{
+
+
+results.innerHTML=
+
+`
+
+<div class="result">
+
+❌ په دې پاڼه کې
+<strong>${q}</strong>
+پیدا نه شو.
+
+<br><br>
+
+د Google یا Yahoo له لارې یې ولټوئ.
+
+</div>
+
+`;
+
+}
+
+
+document.getElementById(
+"google"
+).href=
+
+"https://www.google.com/search?q="+
+encodeURIComponent(q);
+
+
+document.getElementById(
+"yahoo"
+).href=
+
+"https://search.yahoo.com/search?p="+
+encodeURIComponent(q);
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
