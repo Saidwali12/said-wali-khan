@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>سیدولي خان | نړیوال Live Cricket Center</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ font-family:Tahoma,Arial,sans-serif;
+ background:#eef3f6;
+ color:#172b3a;
+}
+
+.top{
+ height:45px;
+ overflow:hidden;
+ background:#163f5c;
+ color:white;
+ display:flex;
+ align-items:center;
+}
+
+.ticker{
+ white-space:nowrap;
+ font-weight:bold;
+ animation:move 27s linear infinite;
+ padding-left:100%;
+}
+
+@keyframes move{
+ from{transform:translateX(0)}
+ to{transform:translateX(100%)}
+}
+
+header{
+ position:relative;
+ min-height:300px;
+ background:linear-gradient(135deg,#163f5c,#286b82);
+ color:white;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ overflow:hidden;
+}
+
+.photo{
+ position:absolute;
+ right:35px;
+ bottom:25px;
+ width:180px;
+ height:180px;
+ border-radius:50%;
+ overflow:hidden;
+ border:5px solid white;
+ background:#d9e4ea;
+ box-shadow:0 7px 25px #0006;
+}
+
+.photo img{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+}
+
+.headerText{
+ text-align:center;
+ padding:30px 240px 30px 20px;
+}
+
+.headerText h1{
+ font-size:35px;
+ margin:10px 0;
+}
+
+.headerText p{
+ font-size:17px;
+}
+
+.flags{
+ font-size:29px;
+ letter-spacing:5px;
+}
+
+.back{
+ position:absolute;
+ left:20px;
+ top:18px;
+ z-index:5;
+ border:0;
+ border-radius:25px;
+ padding:10px 18px;
+ background:white;
+ color:#163f5c;
+ font-weight:bold;
+ cursor:pointer;
+}
+
+.livebar{
+ background:#a92323;
+ color:white;
+ text-align:center;
+ padding:12px;
+ font-weight:bold;
+}
+
+.container{
+ width:94%;
+ max-width:1250px;
+ margin:auto;
+ padding:20px 0 50px;
+}
+
+.title{
+ background:white;
+ border-right:5px solid #286b82;
+ padding:14px 18px;
+ margin:18px 0;
+ border-radius:12px;
+ font-size:22px;
+ font-weight:bold;
+ box-shadow:0 3px 12px #0000000d;
+}
+
+.filters{
+ display:flex;
+ flex-wrap:wrap;
+ gap:9px;
+ margin-bottom:20px;
+}
+
+.filter{
+ border:1px solid #d3dfe6;
+ background:white;
+ color:#286b82;
+ border-radius:25px;
+ padding:10px 16px;
+ font-weight:bold;
+ cursor:pointer;
+}
+
+.filter.active,
+.filter:hover{
+ background:#286b82;
+ color:white;
+}
+
+.matches{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+ gap:18px;
+}
+
+.card{
+ background:white;
+ border-radius:16px;
+ overflow:hidden;
+ border-top:5px solid #286b82;
+ box-shadow:0 5px 18px #00000012;
+}
+
+.card.live{
+ border-top-color:#a92323;
+}
+
+.cardHead{
+ display:flex;
+ justify-content:space-between;
+ padding:12px 15px;
+ background:#f7fafc;
+}
+
+.live{
+ background:#a92323;
+ color:white;
+ padding:4px 10px;
+ border-radius:20px;
+ font-size:12px;
+}
+
+.team{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:15px;
+ border-bottom:1px solid #edf1f4;
+}
+
+.teamName{
+ display:flex;
+ align-items:center;
+ gap:9px;
+ font-weight:bold;
+}
+
+.flag{
+ font-size:28px;
+}
+
+.score{
+ font-size:20px;
+ font-weight:bold;
+ color:#163f5c;
+}
+
+.status{
+ margin:12px;
+ background:#f1f5f8;
+ padding:11px;
+ border-radius:9px;
+ text-align:center;
+ font-weight:bold;
+ font-size:14px;
+}
+
+.venue{
+ padding:0 14px 12px;
+ color:#687985;
+ font-size:12px;
+ line-height:1.8;
+}
+
+.view{
+ width:calc(100% - 24px);
+ margin:0 12px 14px;
+ padding:12px;
+ border:0;
+ border-radius:9px;
+ background:#286b82;
+ color:white;
+ font-weight:bold;
+ cursor:pointer;
+}
+
+.view:hover{
+ background:#163f5c;
+}
+
+.loading,
+.empty,
+.error{
+ background:white;
+ padding:30px;
+ text-align:center;
+ border-radius:14px;
+ box-shadow:0 3px 12px #0000000d;
+}
+
+.error{
+ border-right:5px solid #a92323;
+}
+
+.detail{
+ display:none;
+ background:white;
+ border-radius:18px;
+ margin-top:25px;
+ padding:20px;
+ box-shadow:0 5px 20px #00000015;
+}
+
+.detail.show{
+ display:block;
+}
+
+.detailTitle{
+ text-align:center;
+ color:#163f5c;
+}
+
+.scoreBox{
+ background:linear-gradient(135deg,#163f5c,#286b82);
+ color:white;
+ padding:25px;
+ border-radius:15px;
+ text-align:center;
+ margin:20px 0;
+}
+
+.bigScore{
+ font-size:38px;
+ font-weight:900;
+}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+ gap:12px;
+}
+
+.stat{
+ background:#f3f7f9;
+ padding:15px;
+ border-radius:11px;
+ text-align:center;
+}
+
+.stat strong{
+ display:block;
+ font-size:22px;
+ color:#286b82;
+ margin-top:6px;
+}
+
+.subTitle{
+ border-right:5px solid #286b82;
+ padding-right:10px;
+ margin-top:28px;
+ font-size:20px;
+}
+
+.players{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+ gap:15px;
+ margin-top:15px;
+}
+
+.playerBox{
+ background:#f7fafc;
+ border-radius:12px;
+ padding:15px;
+}
+
+.player{
+ padding:10px;
+ border-bottom:1px solid #dfe7ec;
+ line-height:1.9;
+}
+
+.commentary{
+ background:#18242e;
+ color:white;
+ border-radius:14px;
+ padding:15px;
+ margin-top:15px;
+}
+
+.ball{
+ padding:11px;
+ border-bottom:1px solid #34414c;
+ line-height:1.8;
+}
+
+.news{
+ margin-top:35px;
+}
+
+.newsBox{
+ background:white;
+ border-radius:15px;
+ padding:20px;
+ box-shadow:0 4px 15px #00000010;
+}
+
+.newsItem{
+ display:block;
+ padding:13px 5px;
+ border-bottom:1px solid #e2e8ed;
+ text-decoration:none;
+ color:#243746;
+ line-height:1.8;
+}
+
+.newsItem:hover{
+ color:#286b82;
+}
+
+.refresh{
+ color:#667985;
+ font-size:12px;
+ text-align:center;
+ margin-top:12px;
+}
+
+footer{
+ background:#163f5c;
+ color:white;
+ text-align:center;
+ padding:25px;
+ line-height:2;
+}
+
+@media(max-width:700px){
+
+ header{
+  min-height:390px;
+  align-items:flex-end;
+ }
+
+ .photo{
+  right:50%;
+  transform:translateX(50%);
+  top:60px;
+  bottom:auto;
+  width:135px;
+  height:135px;
+ }
+
+ .headerText{
+  padding:20px 15px 25px;
+ }
+
+ .headerText h1{
+  font-size:25px;
+ }
+
+ .flags{
+  font-size:22px;
+ }
+
+ .back{
+  top:52px;
+  left:10px;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+ <div class="ticker">
+ 🏏🌍 د نړۍ د هر ځای تازه کرکټ لوبې، Live Score، Runs، Wickets، Overs او Ball-by-Ball معلومات دلته ترلاسه کړئ
+ </div>
+</div>
+
+<header>
+
+<button class="back" onclick="goBack()">⬅️ شاته تګ</button>
+
+<!-- خپل عکس دلته واچوه -->
+<div class="photo">
+ <img src="afghanistan-cricket.jpg" alt="افغانستان کرکټ">
+</div>
+
+<div class="headerText">
+ <div>🌍 WORLD CRICKET</div>
+
+ <h1>🏏 نړیوال Live Cricket Center</h1>
+
+ <p>
+ د نړۍ د کرکټ ژوندۍ پایلې او تازه معلومات
+ </p>
+
+ <div class="flags">
+ 🇦🇫 🇮🇳 🇵🇰 🇱🇰 🇦🇺 🇬🇧 🇧🇩 🇿🇦 🇳🇿
+ </div>
+</div>
+
+</header>
+
+<div class="livebar">
+ 🔴 LIVE — معلومات هر 30 ثانیې تازه کېږي
+</div>
+
+<main class="container">
+
+<div class="title">
+🏏 د نړۍ روانې کرکټ لوبې
+</div>
+
+<div class="filters">
+
+<button class="filter active" onclick="showAll(this)">
+🌍 ټولې
+</button>
+
+<button class="filter" onclick="filterTeam('afghanistan',this)">
+🇦🇫 افغانستان
+</button>
+
+<button class="filter" onclick="filterTeam('india',this)">
+🇮🇳 هند
+</button>
+
+<button class="filter" onclick="filterTeam('pakistan',this)">
+🇵🇰 پاکستان
+</button>
+
+<button class="filter" onclick="filterTeam('australia',this)">
+🇦🇺 استرالیا
+</button>
+
+<button class="filter" onclick="filterTeam('england',this)">
+🏴 انګلستان
+</button>
+
+<button class="filter" onclick="loadLive()">
+🔄 تازه کول
+</button>
+
+</div>
+
+<div id="matches">
+
+<div class="loading">
+⏳ Live لوبې راټولېږي...
+</div>
+
+</div>
+
+<div id="detail" class="detail">
+<div id="detailContent"></div>
+</div>
+
+<section class="news">
+
+<div class="title">
+📰 د نړۍ تازه کرکټ معلومات او د ICC خبرونه
+</div>
+
+<div class="newsBox">
+
+<a class="newsItem"
+href="https://www.icc-cricket.com/news"
+target="_blank">
+
+🏛️ د ICC رسمي تازه خبرونه او اعلانونه →
+</a>
+
+<a class="newsItem"
+href="https://www.icc-cricket.com/fixtures-results"
+target="_blank">
+
+📅 د ICC رسمي Fixtures & Results →
+</a>
+
+<a class="newsItem"
+href="https://www.icc-cricket.com/rankings"
+target="_blank">
+
+🏆 د ICC تازه Rankings →
+</a>
+
+<a class="newsItem"
+href="https://www.icc-cricket.com/news"
+target="_blank">
+
+🌍 د نړیوال کرکټ تازه خبرونه →
+</a>
+
+<p class="refresh">
+د ICC رسمي خبرونو لپاره پورته لینکونه هر وخت تازه معلومات ښيي.
+</p>
+
+</div>
+
+</section>
+
+</main>
+
+<footer>
+🏏 سیدولي خان کوهستاني
+<br>
+نړیوال Live Cricket Center
+<br>
+🌍 Live Score • Commentary • Cricket News
+<br>
+© 2026
+</footer>
+
+<script>
+
+/* =====================================================
+   ستا Cloudflare Worker
+===================================================== */
+
+const API =
+"https://saidwali-cricket.walizaad2.workers.dev";
+
+
+let allMatches=[];
+
+
+/* =====================================================
+   API
+===================================================== */
+
+async function api(path){
+
+ const response=await fetch(API+path);
+
+ if(!response.ok){
+  throw new Error("API Error "+response.status);
+ }
+
+ return await response.json();
+}
+
+
+/* =====================================================
+   LIVE
+===================================================== */
+
+async function loadLive(){
+
+ const box=document.getElementById("matches");
+
+ box.innerHTML=`
+ <div class="loading">
+ ⏳ د Live لوبو معلومات تازه کېږي...
+ </div>
+ `;
+
+ try{
+
+  const result=await api("/live");
+
+  allMatches=result.data||[];
+
+  renderMatches(allMatches);
+
+ }catch(error){
+
+  box.innerHTML=`
+  <div class="error">
+  ❌ Live معلومات ترلاسه نه شول.
+  <br><br>
+  ${escapeHTML(error.message)}
+  </div>
+  `;
+
+ }
+
+}
+
+
+/* =====================================================
+   MATCHES
+===================================================== */
+
+function renderMatches(list){
+
+ const box=document.getElementById("matches");
+
+ if(!list.length){
+
+  box.innerHTML=`
+  <div class="empty">
+  🏏 اوس مهال په API کې روانه لوبه نشته.
+  </div>
+  `;
+
+  return;
+ }
+
+ box.innerHTML="";
+
+ list.forEach(match=>{
+
+  const a=match.first_team||{};
+  const b=match.second_team||{};
+
+  const live=
+  String(match.state||"")
+  .toLowerCase()
+  .includes("progress");
+
+  const card=document.createElement("div");
+
+  card.className=
+  "card "+(live?"live":"");
+
+  card.dataset.teams=(
+   (a.full_name||"")+" "+
+   (b.full_name||"")
+  ).toLowerCase();
+
+  card.innerHTML=`
+
+  <div class="cardHead">
+
+   <span>
+   🏏 ${escapeHTML(match.format||"CRICKET")}
+   </span>
+
+   ${
+    live
+    ? `<span class="live">🔴 LIVE</span>`
+    : `<span>${escapeHTML(match.state||"")}</span>`
+   }
+
+  </div>
+
+  <div class="team">
+
+   <div class="teamName">
+
+    <span class="flag">
+    ${flag(a.full_name)}
+    </span>
+
+    ${escapeHTML(a.full_name||"Team 1")}
+
+   </div>
+
+   <div class="score">
+    ${escapeHTML(a.score||"--")}
+   </div>
+
+  </div>
+
+  <div class="team">
+
+   <div class="teamName">
+
+    <span class="flag">
+    ${flag(b.full_name)}
+    </span>
+
+    ${escapeHTML(b.full_name||"Team 2")}
+
+   </div>
+
+   <div class="score">
+    ${escapeHTML(b.score||"--")}
+   </div>
+
+  </div>
+
+  <div class="status">
+
+   ${escapeHTML(
+    match.status_detail||
+    match.short_status||
+    match.status||
+    ""
+   )}
+
+  </div>
+
+  <div class="venue">
+
+   📍 ${escapeHTML(match.venue||"")}
+
+   <br>
+
+   🏆 ${escapeHTML(match.series_name||"")}
+
+  </div>
+
+  <button
+  class="view"
+  onclick="openMatch(${Number(match.match_id)})">
+
+  📊 بشپړ Live معلومات
+
+  </button>
+
+  `;
+
+  box.appendChild(card);
+
+ });
+
+}
+
+
+/* =====================================================
+   SCORECARD + COMMENTARY
+===================================================== */
+
+async function openMatch(id){
+
+ const detail=document.getElementById("detail");
+ const content=document.getElementById("detailContent");
+
+ detail.classList.add("show");
+
+ content.innerHTML=`
+ <div class="loading">
+ ⏳ د Batsman، Bowler او Ball-by-Ball معلومات راټولېږي...
+ </div>
+ `;
+
+ detail.scrollIntoView({behavior:"smooth"});
+
+ try{
+
+  const score=await api("/scorecard/"+id);
+
+  let commentary=null;
+
+  try{
+   commentary=await api("/commentary/"+id);
+  }catch(e){}
+
+  renderDetail(score,commentary);
+
+ }catch(error){
+
+  content.innerHTML=`
+  <div class="error">
+  ❌ د لوبې Scorecard ترلاسه نه شو.
+  <br><br>
+  ${escapeHTML(error.message)}
+  </div>
+  `;
+
+ }
+
+}
+
+
+/* =====================================================
+   DETAIL
+===================================================== */
+
+function renderDetail(result,commentary){
+
+ const d=result.data||result;
+
+ const t1=d.first_team||d.team1||{};
+ const t2=d.second_team||d.team2||{};
+
+ const score=
+ d.score||
+ d.current_score||
+ t1.score||
+"--";
+
+ const runs=
+ d.runs??
+ t1.runs??
+"--";
+
+ const wickets=
+ d.wickets??
+ t1.wickets??
+"--";
+
+ const overs=
+ d.overs??
+ t1.overs??
+"--";
+
+ const bats=
+ d.batsmen||
+ d.batters||
+ d.current_batsmen||
+[];
+
+ const bowlers=
+ d.bowlers||
+ d.current_bowlers||
+[];
+
+ document.getElementById("detailContent").innerHTML=`
+
+ <h2 class="detailTitle">
+
+ ${flag(t1.full_name)}
+ ${escapeHTML(t1.full_name||"Team 1")}
+
+ VS
+
+ ${escapeHTML(t2.full_name||"Team 2")}
+ ${flag(t2.full_name)}
+
+ </h2>
+
+ <div class="scoreBox">
+
+  <div class="bigScore">
+  ${escapeHTML(score)}
+  </div>
+
+  <div>
+  ⏱️ Overs: ${escapeHTML(String(overs))}
+  </div>
+
+ </div>
+
+ <div class="stats">
+
+  <div class="stat">
+  🏏 Runs
+  <strong>${escapeHTML(String(runs))}</strong>
+  </div>
+
+  <div class="stat">
+  ❌ Wickets
+  <strong>${escapeHTML(String(wickets))}</strong>
+  </div>
+
+  <div class="stat">
+  ⏱️ Overs
+  <strong>${escapeHTML(String(overs))}</strong>
+  </div>
+
+  <div class="stat">
+  📈 Run Rate
+  <strong>
+  ${escapeHTML(
+   String(
+    d.run_rate||
+    t1.run_rate||
+    "--"
+   )
+  )}
+  </strong>
+  </div>
+
+ </div>
+
+ <div class="subTitle">
+ 👤 اوسني Batsmen
+ </div>
+
+ <div class="players">
+
+  <div class="playerBox">
+  ${playersHTML(bats)}
+  </div>
+
+  <div class="playerBox">
+
+   <h3>🎯 اوسنی Bowler</h3>
+
+   ${playersHTML(bowlers)}
+
+  </div>
+
+ </div>
+
+ <div class="subTitle">
+ 🎙️ Ball-by-Ball Commentary
+ </div>
+
+ <div class="commentary">
+
+ ${commentaryHTML(commentary)}
+
+ </div>
+
+ `;
+
+}
+
+
+/* =====================================================
+   PLAYERS
+===================================================== */
+
+function playersHTML(list){
+
+ if(!Array.isArray(list)||!list.length){
+
+  return `
+  <div class="player">
+  ℹ️ د لوبغاړي تفصیلي معلومات API کې
+  اوس نه دي ورکړل شوي.
+  </div>
+  `;
+
+ }
+
+ return list.map(p=>`
+
+ <div class="player">
+
+ 👤 <b>
+ ${escapeHTML(
+  p.name||
+  p.player_name||
+  "Player"
+ )}
+ </b>
+
+ <br>
+
+ 🏏 Runs:
+ ${escapeHTML(
+  String(
+   p.runs??
+   p.score??
+   "--"
+  )
+ )}
+
+ &nbsp;&nbsp;
+
+ ⚾ Balls:
+ ${escapeHTML(
+  String(
+   p.balls??
+   p.balls_faced??
+   "--"
+  )
+ )}
+
+ </div>
+
+ `).join("");
+
+}
+
+
+/* =====================================================
+   COMMENTARY
+===================================================== */
+
+function commentaryHTML(result){
+
+ if(!result){
+
+  return `
+  <div class="ball">
+  🎙️ Commentary لا تر اوسه موجود نه دی.
+  </div>
+  `;
+
+ }
+
+ const data=
+ result.data||
+ result.commentary||
+ result.comments||
+[];
+
+ if(!Array.isArray(data)||!data.length){
+
+  return `
+  <div class="ball">
+  🎙️ Ball-by-Ball معلومات API کې نه دي موجود.
+  </div>
+  `;
+
+ }
+
+ return data.slice(-30).reverse().map(c=>`
+
+ <div class="ball">
+
+ 🏏
+
+ ${escapeHTML(
+  c.text||
+  c.commentary||
+  c.description||
+  c.event||
+  ""
+ )}
+
+ </div>
+
+ `).join("");
+
+}
+
+
+/* =====================================================
+   FILTER
+===================================================== */
+
+function filterTeam(team,button){
+
+ document
+ .querySelectorAll(".filter")
+ .forEach(x=>x.classList.remove("active"));
+
+ button.classList.add("active");
+
+ document
+ .querySelectorAll(".card")
+ .forEach(card=>{
+
+  const text=card.dataset.teams||"";
+
+  card.style.display=
+  text.includes(team)
+  ?""
+  :"none";
+
+ });
+
+}
+
+
+/* =====================================================
+   ALL
+===================================================== */
+
+function showAll(button){
+
+ document
+ .querySelectorAll(".filter")
+ .forEach(x=>x.classList.remove("active"));
+
+ button.classList.add("active");
+
+ document
+ .querySelectorAll(".card")
+ .forEach(x=>x.style.display="");
+
+}
+
+
+/* =====================================================
+   FLAGS
+===================================================== */
+
+function flag(name){
+
+ const n=String(name||"").toLowerCase();
+
+ if(n.includes("afghanistan"))return"🇦🇫";
+ if(n.includes("india"))return"🇮🇳";
+ if(n.includes("pakistan"))return"🇵🇰";
+ if(n.includes("sri lanka"))return"🇱🇰";
+ if(n.includes("ireland"))return"🇮🇪";
+ if(n.includes("australia"))return"🇦🇺";
+ if(n.includes("england"))return"🏴";
+ if(n.includes("bangladesh"))return"🇧🇩";
+ if(n.includes("new zealand"))return"🇳🇿";
+ if(n.includes("south africa"))return"🇿🇦";
+ if(n.includes("west indies"))return"🏝️";
+
+ return"🏏";
+}
+
+
+/* =====================================================
+   SECURITY
+===================================================== */
+
+function escapeHTML(value){
+
+ return String(value??"")
+ .replace(/[&<>"']/g,c=>({
+
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#039;"
+
+ })[c]);
+
+}
+
+
+/* =====================================================
+   BACK
+===================================================== */
+
+function goBack(){
+
+ if(history.length>1)
+ history.back();
+
+ else
+ location.href="index.html";
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+loadLive();
+
+
+/* هر 30 ثانیې Live لیست تازه کړه */
+
+setInterval(loadLive,30000);
+
+
+/* که یوه Live لوبه خلاصه وي، د هغې جزئیات هم
+   هر 15 ثانیې بیا غوښتل کېدای شي */
+
+setInterval(()=>{
+
+ const detail=
+ document.getElementById("detail");
+
+ if(
+  detail.classList.contains("show")
+ ){
+  /* کاروونکی کولای شي بیا پر لوبه کلیک وکړي */
+ }
+
+},15000);
+
+</script>
+
+</body>
+</html>
