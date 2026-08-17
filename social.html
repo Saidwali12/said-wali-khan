@@ -3,1831 +3,2064 @@
 <html lang="ps" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>سیدولي افغاني نړیواله ټولنیزه شبکه</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S-Book | سیدولي خان بوک</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+*{box-sizing:border-box}
+:root{
+ --blue:#1877f2;
+ --blue2:#0866ff;
+ --bg:#f0f2f5;
+ --card:#fff;
+ --text:#050505;
+ --muted:#65676b;
+ --border:#dddfe2;
+ --green:#31a24c;
+ --danger:#e41e3f;
+}
 body{
-font-family:Tahoma,Arial,sans-serif;
-background:#eef2f6;color:#172033;min-height:100vh
+ margin:0;
+ font-family:Arial,"Noto Sans Arabic",sans-serif;
+ background:var(--bg);
+ color:var(--text);
 }
-button,input,textarea{font-family:inherit}
-button{cursor:pointer}
-button:disabled{opacity:.6;cursor:not-allowed}
-
-header{
-height:62px;background:#1877f2;color:#fff;
-display:flex;align-items:center;justify-content:space-between;
-padding:0 18px;position:sticky;top:0;z-index:1000;
-box-shadow:0 2px 10px #0003
+button,input,textarea,select{font-family:inherit}
+button{cursor:pointer;border:0}
+.topbar{
+ position:sticky;
+ top:0;
+ z-index:1000;
+ height:64px;
+ background:#fff;
+ border-bottom:1px solid #ddd;
+ display:flex;
+ align-items:center;
+ padding:0 18px;
+ gap:15px;
+ direction:rtl;
 }
-.logo{font-size:20px;font-weight:bold;white-space:nowrap}
-.header-actions{display:flex;align-items:center;gap:6px}
-.header-actions button{
-border:0;background:#ffffff22;color:#fff;
-min-width:40px;height:40px;border-radius:50%;font-size:18px
+.brand{
+ font-size:28px;
+ font-weight:900;
+ color:var(--blue);
+ white-space:nowrap;
 }
-.header-actions button:hover{background:#ffffff3d}
+.brand small{
+ display:block;
+ font-size:10px;
+ color:#555;
+ text-align:center;
+}
+.search{
+ width:280px;
+ background:#f0f2f5;
+ border-radius:22px;
+ padding:11px 17px;
+ border:0;
+ outline:none;
+ font-size:15px;
+}
+.top-actions{
+ margin-right:auto;
+ display:flex;
+ align-items:center;
+ gap:8px;
+}
+.icon-btn{
+ width:43px;height:43px;
+ border-radius:50%;
+ background:#e4e6eb;
+ font-size:20px;
+ position:relative;
+}
 .badge{
-background:#e41e3f;color:#fff;border-radius:20px;
-padding:1px 5px;font-size:10px
+ position:absolute;
+ top:-2px;
+ right:-2px;
+ background:#e41e3f;
+ color:#fff;
+ border-radius:20px;
+ font-size:11px;
+ min-width:18px;
+ padding:3px;
 }
-
-.container{max-width:1200px;margin:20px auto;padding:0 12px}
-.hidden{display:none!important}
+.layout{
+ max-width:1500px;
+ margin:auto;
+ display:grid;
+ grid-template-columns:280px minmax(450px,680px) 280px;
+ gap:18px;
+ padding:18px;
+ direction:ltr;
+}
+.left,.right,.feed{direction:rtl}
+.side{
+ position:sticky;
+ top:82px;
+ height:max-content;
+}
+.profile-mini{
+ background:#fff;
+ border-radius:10px;
+ padding:14px;
+ display:flex;
+ align-items:center;
+ gap:10px;
+ margin-bottom:10px;
+}
+.avatar{
+ width:45px;height:45px;
+ border-radius:50%;
+ object-fit:cover;
+ background:#ddd;
+}
+.menu{
+ background:#fff;
+ border-radius:10px;
+ padding:8px;
+}
+.menu-item{
+ display:flex;
+ align-items:center;
+ gap:13px;
+ padding:12px;
+ border-radius:8px;
+ font-weight:bold;
+ color:#222;
+}
+.menu-item:hover{background:#f0f2f5}
+.menu-icon{
+ width:30px;
+ text-align:center;
+ font-size:21px;
+}
 .card{
-background:#fff;border-radius:14px;padding:16px;
-margin-bottom:15px;box-shadow:0 2px 10px #00000012
+ background:var(--card);
+ border-radius:10px;
+ box-shadow:0 1px 2px rgba(0,0,0,.12);
+ margin-bottom:14px;
+ overflow:hidden;
+}
+.create{
+ padding:14px;
+}
+.create-row{
+ display:flex;
+ gap:10px;
+ align-items:center;
+}
+.post-input{
+ flex:1;
+ background:#f0f2f5;
+ border:0;
+ border-radius:25px;
+ padding:13px 18px;
+ font-size:15px;
+ outline:none;
+ cursor:pointer;
+}
+.create-tools{
+ border-top:1px solid #eee;
+ margin-top:14px;
+ padding-top:10px;
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+}
+.tool{
+ padding:10px;
+ background:#fff;
+ border-radius:7px;
+ font-weight:bold;
+ color:#65676b;
+}
+.tool:hover{background:#f0f2f5}
+.stories{
+ display:flex;
+ gap:9px;
+ overflow-x:auto;
+ padding:12px;
+}
+.story{
+ min-width:110px;
+ height:180px;
+ border-radius:10px;
+ overflow:hidden;
+ position:relative;
+ background:linear-gradient(#ddd,#555);
+ color:#fff;
+ cursor:pointer;
+}
+.story img{
+ width:100%;height:100%;object-fit:cover;
+}
+.story::after{
+ content:"";
+ position:absolute;
+ inset:0;
+ background:linear-gradient(transparent,rgba(0,0,0,.75));
+}
+.story-name{
+ position:absolute;
+ bottom:9px;
+ right:8px;
+ left:8px;
+ z-index:2;
+ font-size:13px;
+ font-weight:bold;
+}
+.story-avatar{
+ position:absolute;
+ top:9px;
+ right:9px;
+ width:38px;height:38px;
+ border-radius:50%;
+ border:3px solid var(--blue);
+ z-index:3;
+ object-fit:cover;
+}
+.story-add{
+ display:flex;
+ flex-direction:column;
+ justify-content:flex-end;
+ align-items:center;
+ padding-bottom:12px;
+ background:#fff;
+ color:#111;
+}
+.story-add .plus{
+ position:absolute;
+ bottom:36px;
+ background:var(--blue);
+ color:#fff;
+ width:38px;height:38px;
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ border:4px solid #fff;
+ z-index:3;
+}
+.story-add span{
+ z-index:4;
+}
+.post-head{
+ display:flex;
+ gap:10px;
+ padding:13px 15px;
+ align-items:center;
+}
+.post-info{flex:1}
+.post-name{font-weight:bold}
+.post-time{font-size:12px;color:var(--muted);margin-top:3px}
+.more{
+ background:transparent;
+ font-size:22px;
+}
+.post-text{
+ padding:0 15px 12px;
+ line-height:1.8;
+ font-size:16px;
+ white-space:pre-wrap;
+}
+.post-image{
+ width:100%;
+ max-height:650px;
+ object-fit:cover;
+ display:block;
+}
+.stats{
+ padding:9px 15px;
+ color:var(--muted);
+ display:flex;
+ justify-content:space-between;
+ font-size:14px;
+}
+.post-actions{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ border-top:1px solid #eee;
+ margin:0 12px;
+}
+.post-action{
+ background:#fff;
+ padding:11px;
+ color:#65676b;
+ font-weight:bold;
+ border-radius:7px;
+}
+.post-action:hover{background:#f0f2f5}
+.liked{color:var(--blue)}
+.comment-box{
+ display:flex;
+ gap:8px;
+ padding:10px 15px 15px;
+}
+.comment-input{
+ flex:1;
+ border:0;
+ background:#f0f2f5;
+ border-radius:20px;
+ padding:10px 14px;
+ outline:none;
+}
+.send{
+ background:var(--blue);
+ color:#fff;
+ width:40px;
+ border-radius:50%;
+}
+.right-title{
+ font-weight:bold;
+ color:#65676b;
+ padding:8px;
+}
+.contact{
+ display:flex;
+ gap:10px;
+ align-items:center;
+ padding:8px;
+ border-radius:8px;
+}
+.contact:hover{background:#ddd}
+.online{
+ width:10px;height:10px;
+ background:#31a24c;
+ border:2px solid #fff;
+ border-radius:50%;
+ margin-right:-18px;
+ margin-top:30px;
+ z-index:2;
+}
+.login-overlay{
+ position:fixed;
+ inset:0;
+ background:rgba(255,255,255,.96);
+ z-index:5000;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+}
+.login-box{
+ width:430px;
+ max-width:100%;
+ text-align:center;
+}
+.login-box h1{
+ color:var(--blue);
+ font-size:48px;
+ margin:0 0 5px;
+}
+.login-box p{color:#65676b}
+.form{
+ background:#fff;
+ padding:20px;
+ border-radius:10px;
+ box-shadow:0 3px 18px rgba(0,0,0,.18);
+}
+.form input{
+ width:100%;
+ padding:14px;
+ margin:6px 0;
+ border:1px solid #ddd;
+ border-radius:7px;
+ font-size:16px;
+ outline:none;
 }
 .primary{
-width:100%;border:0;border-radius:9px;
-background:#1877f2;color:#fff;padding:12px;
-font-size:16px;font-weight:bold
+ background:var(--blue);
+ color:#fff;
+ width:100%;
+ padding:13px;
+ border-radius:7px;
+ font-size:17px;
+ font-weight:bold;
+ margin-top:8px;
 }
-.primary:hover{background:#0d65d5}
-.secondary,.success,.danger{
-border:0;border-radius:8px;padding:9px 13px;font-weight:bold
+.secondary{
+ background:#42b72a;
+ color:#fff;
+ padding:12px 20px;
+ border-radius:7px;
+ font-weight:bold;
+ margin-top:12px;
 }
-.secondary{background:#e7f0ff;color:#1877f2}
-.success{background:#e5f8ea;color:#087b25}
-.danger{background:#ffe8e8;color:#d60000}
-
-input,textarea{
-width:100%;border:1px solid #ccd3dc;border-radius:10px;
-padding:12px;margin-bottom:10px;outline:none;font-size:15px
+.modal{
+ display:none;
+ position:fixed;
+ inset:0;
+ z-index:4000;
+ background:rgba(0,0,0,.55);
+ align-items:center;
+ justify-content:center;
+ padding:15px;
 }
-input:focus,textarea:focus{
-border-color:#1877f2;box-shadow:0 0 0 2px #1877f21c
+.modal-box{
+ background:#fff;
+ width:550px;
+ max-width:100%;
+ max-height:90vh;
+ overflow:auto;
+ border-radius:12px;
 }
-textarea{min-height:100px;resize:vertical}
-
-.auth-wrapper{
-min-height:calc(100vh - 62px);display:flex;
-align-items:center;justify-content:center;padding:25px 12px
+.modal-head{
+ padding:15px;
+ border-bottom:1px solid #ddd;
+ display:flex;
+ justify-content:space-between;
+ font-size:19px;
+ font-weight:bold;
 }
-.auth-box{
-width:100%;max-width:430px;background:#fff;border-radius:16px;
-padding:28px;box-shadow:0 5px 25px #0002
+.close{
+ width:35px;height:35px;
+ border-radius:50%;
+ background:#eee;
+ font-size:20px;
 }
-.auth-logo{text-align:center;font-size:38px;margin-bottom:8px}
-.auth-box h2{text-align:center;color:#1877f2;margin-bottom:8px}
-.auth-description{text-align:center;color:#777;margin-bottom:22px;line-height:1.7}
-.auth-switch{text-align:center;margin-top:16px;color:#666}
-
-.app-grid{
-display:grid;grid-template-columns:250px minmax(0,1fr) 260px;
-gap:16px;align-items:start
+.modal-body{padding:18px}
+.modal-body textarea{
+ width:100%;
+ min-height:130px;
+ resize:vertical;
+ border:1px solid #ddd;
+ border-radius:8px;
+ padding:12px;
+ font-size:16px;
+ outline:none;
 }
-.left-side,.right-side{position:sticky;top:78px}
-
-.profile-mini{text-align:center}
-.avatar{
-width:82px;height:82px;border-radius:50%;object-fit:cover;
-display:block;margin:0 auto 10px;background:#ddd;
-border:3px solid #e7f0ff
+.file-label{
+ display:block;
+ padding:13px;
+ background:#f0f2f5;
+ border-radius:8px;
+ margin-top:10px;
+ text-align:center;
+ font-weight:bold;
 }
-.avatar-small{
-width:44px;height:44px;border-radius:50%;object-fit:cover;
-background:#ddd;flex-shrink:0
+#imagePreview{
+ max-width:100%;
+ max-height:300px;
+ display:none;
+ margin-top:12px;
+ border-radius:8px;
 }
-
-.menu button{
-width:100%;border:0;background:transparent;text-align:right;
-padding:13px;border-radius:9px;margin-bottom:4px;font-size:15px
+.empty{
+ text-align:center;
+ padding:35px;
+ color:#777;
 }
-.menu button:hover{background:#eef4ff}
-.menu button.active{background:#e7f0ff;color:#1877f2;font-weight:bold}
-
-.create-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.create-head img{width:45px;height:45px;border-radius:50%;object-fit:cover}
-.post-tools{display:flex;gap:7px;margin-bottom:10px}
-.post-tools span{
-flex:1;padding:9px;border-radius:8px;background:#f4f6f8;
-text-align:center;color:#555;font-size:13px
+.loader{
+ text-align:center;
+ padding:30px;
+ color:#666;
 }
-
-.post-header{display:flex;align-items:center;gap:10px}
-.post-author{flex:1}
-.post-name{font-weight:bold}
-.post-date{font-size:12px;color:#777;margin-top:3px}
-.post-text{white-space:pre-wrap;line-height:1.9;margin:13px 0;font-size:15px}
-.post-image{
-display:block;width:100%;max-height:600px;object-fit:cover;
-border-radius:12px;margin-top:10px;background:#eee
-}
-.post-stats{
-display:flex;justify-content:space-between;color:#666;
-font-size:13px;padding:10px 3px
-}
-.post-actions{display:flex;gap:5px;border-top:1px solid #eee;padding-top:8px}
-.post-actions button{
-flex:1;border:0;background:#f1f3f5;padding:10px;border-radius:8px;
-font-weight:bold
-}
-.comments{margin-top:10px}
-.comment{
-background:#f1f3f5;border-radius:10px;padding:9px 11px;margin-top:7px
-}
-.comment strong{display:block;margin-bottom:3px}
-.comment-form{display:flex;gap:7px;margin-top:10px}
-.comment-form input{margin:0}
-.comment-form button{
-border:0;border-radius:8px;background:#1877f2;color:#fff;padding:0 16px
-}
-
-.user-row{
-display:flex;align-items:center;gap:10px;padding:11px 0;
-border-bottom:1px solid #eee
-}
-.user-row:last-child{border-bottom:0}
-.user-info{flex:1;min-width:0}
-.user-info strong{display:block}
-.user-info small{color:#777}
-
-.request{
-display:flex;align-items:center;gap:9px;padding:10px 0;
-border-bottom:1px solid #eee
-}
-.request-info{flex:1}
-.request-buttons{display:flex;gap:4px}
-
-.chat-box{
-height:430px;overflow-y:auto;background:#edf1f5;
-border-radius:12px;padding:12px
-}
-.chat-empty{
-height:100%;display:flex;align-items:center;
-justify-content:center;color:#777
-}
-.message{
-max-width:75%;padding:9px 12px;margin:6px 0;
-border-radius:14px;line-height:1.7;word-break:break-word
-}
-.message.mine{
-margin-right:0;margin-left:auto;background:#1877f2;color:#fff;
-border-bottom-right-radius:4px
-}
-.message.theirs{
-margin-left:0;margin-right:auto;background:#fff;
-border-bottom-left-radius:4px
-}
-.message-time{display:block;font-size:10px;opacity:.7;margin-top:3px}
-.chat-send{display:flex;gap:7px;margin-top:10px}
-.chat-send input{margin:0}
-.chat-send button{
-border:0;border-radius:9px;padding:0 20px;
-background:#1877f2;color:#fff;font-weight:bold
-}
-
-.profile-top{text-align:center;padding:20px}
-.profile-top .avatar{width:120px;height:120px}
-.profile-name{font-size:23px;margin:8px 0}
-.profile-bio{color:#666;line-height:1.8}
-.stats{display:flex;justify-content:center;gap:60px;margin-top:18px}
-.stat{text-align:center}
-.stat strong{display:block;font-size:20px;color:#1877f2}
-
-.notification{
-background:#fff5d9;border-radius:10px;padding:11px;margin-bottom:8px
-}
-.notification-actions{margin-top:8px;display:flex;gap:6px}
-
-.side-title{font-weight:bold;margin-bottom:10px}
-.side-info{line-height:1.9;color:#555;font-size:14px}
-
-.search-box{position:relative;margin:12px 0}
-.search-box input{padding-right:42px}
-.search-icon{position:absolute;right:14px;top:12px}
-
-.loading,.empty{text-align:center;color:#777;padding:25px}
-.spinner{
-display:inline-block;width:25px;height:25px;border:3px solid #ddd;
-border-top-color:#1877f2;border-radius:50%;
-animation:spin .8s linear infinite
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
+.mobile-nav{display:none}
 .toast{
-position:fixed;left:20px;bottom:20px;background:#172033;color:#fff;
-padding:13px 18px;border-radius:10px;display:none;z-index:5000;
-box-shadow:0 4px 20px #0003;max-width:350px
+ position:fixed;
+ bottom:25px;
+ left:50%;
+ transform:translateX(-50%);
+ background:#222;
+ color:#fff;
+ padding:12px 20px;
+ border-radius:8px;
+ z-index:9999;
+ display:none;
 }
-
-@media(max-width:950px){
-.app-grid{grid-template-columns:1fr}
-.left-side,.right-side{display:none}
-.container{max-width:700px}
+@media(max-width:1050px){
+ .layout{grid-template-columns:220px minmax(400px,1fr)}
+ .right{display:none}
 }
-@media(max-width:600px){
-header{height:58px;padding:0 7px}
-.logo{font-size:14px}
-.header-actions{gap:3px}
-.header-actions button{min-width:34px;height:34px;font-size:15px}
-.container{margin-top:10px;padding:0 7px}
-.card{border-radius:10px;padding:12px}
-.auth-box{padding:20px}
-.post-actions button{font-size:12px}
-.request{align-items:flex-start;flex-wrap:wrap}
-.request-buttons{width:100%;margin-right:54px}
-.request-buttons button{flex:1}
-.user-row{flex-wrap:wrap}
-.user-row .secondary{width:100%}
-.stats{gap:35px}
-.chat-box{height:55vh}
+@media(max-width:750px){
+ .topbar{height:58px;padding:0 9px}
+ .brand{font-size:22px}
+ .brand small{display:none}
+ .search{width:150px}
+ .layout{
+  display:block;
+  padding:8px;
+ }
+ .left{display:none}
+ .feed{width:100%}
+ .mobile-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:60px;
+  background:#fff;
+  border-top:1px solid #ddd;
+  z-index:2000;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+ }
+ .mobile-nav button{
+  background:#fff;
+  font-size:20px;
+ }
+ .mobile-nav small{display:block;font-size:10px}
+ .top-actions{gap:3px}
+ .top-actions .icon-btn{width:38px;height:38px}
+ .stories{padding:8px}
+ .story{min-width:95px;height:160px}
 }
 </style>
 </head>
 
 <body>
 
-<header>
-<div class="logo">🌐 سیدولي افغاني نړیواله ټولنیزه شبکه</div>
+<!-- LOGIN -->
+<div class="login-overlay" id="loginOverlay">
+ <div class="login-box">
+  <h1>S-Book</h1>
+  <h2>سیدولي خان بوک</h2>
+  <p>د افغانستان نړیواله ټولنیزه شبکه</p>
 
-<div class="header-actions">
-<button onclick="showSection('home')" title="کور">🏠</button>
-<button onclick="showSection('friends')" title="ملګري">👥</button>
-<button onclick="showSection('notifications')" title="خبرتیاوې">
-🔔 <span id="notificationCount"></span>
-</button>
-<button onclick="showSection('messages')" title="پیغامونه">💬</button>
-<button onclick="showSection('profile')" title="پروفایل">👤</button>
-<button onclick="logout()" title="وتل">🚪</button>
+  <div class="form">
+   <input id="loginEmail" type="email" placeholder="ایمیل / Email">
+   <input id="loginPassword" type="password" placeholder="پاسورډ / Password">
+   <button class="primary" onclick="login()">ننوتل / Log In</button>
+   <button class="secondary" onclick="openRegister()">نوی حساب جوړول / Create Account</button>
+   <p style="font-size:13px">ستاسې حساب به د سیدولي خان بوک له Cloudflare D1 سیستم سره وصل شي.</p>
+  </div>
+ </div>
 </div>
+
+<!-- REGISTER MODAL -->
+<div class="modal" id="registerModal">
+ <div class="modal-box">
+  <div class="modal-head">
+   <span>نوی S-Book حساب جوړ کړئ</span>
+   <button class="close" onclick="closeModal('registerModal')">×</button>
+  </div>
+  <div class="modal-body">
+   <input id="regName" class="comment-input" style="width:100%;margin-bottom:8px" placeholder="بشپړ نوم">
+   <input id="regEmail" class="comment-input" style="width:100%;margin-bottom:8px" placeholder="ایمیل">
+   <input id="regPassword" type="password" class="comment-input" style="width:100%;margin-bottom:8px" placeholder="پاسورډ">
+   <button class="primary" onclick="register()">حساب جوړول</button>
+  </div>
+ </div>
+</div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+ <div class="brand">
+  S-Book
+  <small>سیدولي خان بوک</small>
+ </div>
+
+ <input class="search" id="searchInput"
+        placeholder="په S-Book کې لټون..."
+        onkeydown="if(event.key==='Enter') searchUsers()">
+
+ <div class="top-actions">
+  <button class="icon-btn" onclick="loadHome()">⌂</button>
+  <button class="icon-btn" onclick="showNotifications()">🔔
+   <span class="badge" id="notificationBadge">0</span>
+  </button>
+  <button class="icon-btn" onclick="showMessages()">💬</button>
+  <button class="icon-btn" onclick="logout()">↪</button>
+ </div>
 </header>
 
-<section id="loginPage" class="auth-wrapper">
-<div class="auth-box">
-<div class="auth-logo">🌐</div>
-<h2>سیدولي ټولنیزه شبکه</h2>
-<p class="auth-description">
-خپل حساب ته ننوتئ او له خپلو ملګرو سره اړیکه ونیسئ.
-</p>
+<!-- MAIN -->
+<div class="layout">
 
-<input id="loginEmail" type="email" placeholder="📧 ایمیل">
-<input id="loginPassword" type="password" placeholder="🔐 پټنوم">
+ <!-- LEFT -->
+ <aside class="left side">
+  <div class="profile-mini">
+   <img id="miniAvatar" class="avatar" src="">
+   <div>
+    <div id="miniName">S-Book کاروونکی</div>
+    <small style="color:#777">زما پروفایل</small>
+   </div>
+  </div>
 
-<button id="loginButton" class="primary" onclick="login()">ننوتل</button>
+  <div class="menu">
+   <div class="menu-item" onclick="loadHome()"><span class="menu-icon">🏠</span>کور / Home</div>
+   <div class="menu-item" onclick="loadProfile()"><span class="menu-icon">👤</span>پروفایل</div>
+   <div class="menu-item" onclick="showFriends()"><span class="menu-icon">👥</span>ملګري</div>
+   <div class="menu-item" onclick="showMessages()"><span class="menu-icon">💬</span>پیغامونه</div>
+   <div class="menu-item" onclick="showNotifications()"><span class="menu-icon">🔔</span>خبرتیاوې</div>
+   <div class="menu-item" onclick="showGroups()"><span class="menu-icon">👨‍👩‍👧‍👦</span>ګروپونه</div>
+   <div class="menu-item" onclick="showPages()"><span class="menu-icon">📄</span>پاڼې</div>
+   <div class="menu-item" onclick="showReels()"><span class="menu-icon">🎬</span>Reels</div>
+   <div class="menu-item" onclick="showMarketplace()"><span class="menu-icon">🛒</span>بازار</div>
+   <div class="menu-item" onclick="showEvents()"><span class="menu-icon">📅</span>Events</div>
+  </div>
+ </aside>
 
-<div class="auth-switch">
-حساب نه لرئ؟
-<button class="secondary" onclick="showRegister()">نوی حساب جوړ کړئ</button>
-</div>
-</div>
-</section>
+ <!-- FEED -->
+ <main class="feed" id="mainContent">
 
-<section id="registerPage" class="auth-wrapper hidden">
-<div class="auth-box">
-<div class="auth-logo">📝</div>
-<h2>نوی حساب جوړول</h2>
+  <!-- STORIES -->
+  <div class="card">
+   <div class="stories" id="stories">
+    <div class="story story-add" onclick="openStoryModal()">
+     <div class="plus">+</div>
+     <span>Story جوړول</span>
+    </div>
+   </div>
+  </div>
 
-<p class="auth-description">
-خپل معلومات ولیکئ او د شبکې غړی شئ.
-</p>
+  <!-- CREATE POST -->
+  <div class="card create">
+   <div class="create-row">
+    <img id="createAvatar" class="avatar" src="">
+    <button class="post-input" onclick="openPostModal()">څه فکر کوئ؟ / What's on your mind?</button>
+   </div>
 
-<input id="registerName" placeholder="👤 بشپړ نوم">
-<input id="registerEmail" type="email" placeholder="📧 ایمیل">
-<input id="registerPassword" type="password" placeholder="🔐 پټنوم — لږ تر لږه ۶ حروف">
+   <div class="create-tools">
+    <button class="tool" onclick="openPostModal()">🔴 ژوندۍ خپرونه</button>
+    <button class="tool" onclick="openPostModal()">🖼️ عکس / ویډیو</button>
+    <button class="tool" onclick="openPostModal()">😊 احساس / فعالیت</button>
+   </div>
+  </div>
 
-<button id="registerButton" class="primary" onclick="register()">
-حساب جوړول
-</button>
+  <div id="feedPosts">
+   <div class="loader">Posts loading...</div>
+  </div>
 
-<div class="auth-switch">
-حساب لرئ؟
-<button class="secondary" onclick="showLogin()">ننوتل</button>
-</div>
-</div>
-</section>
+ </main>
 
-<main id="app" class="container hidden">
+ <!-- RIGHT -->
+ <aside class="right side">
 
-<div class="app-grid">
+  <div class="right-title">ستوري / Stories</div>
 
-<aside class="left-side">
+  <div class="card">
+   <div class="right-title">ستاسې اړیکې</div>
 
-<div class="card profile-mini">
-<img id="miniPhoto" class="avatar" src="" alt="Profile">
-<h3 id="miniName">کاروونکی</h3>
-<p id="miniBio" style="color:#777;margin-top:5px">ستاسو پروفایل</p>
-</div>
+   <div class="contact">
+    <img class="avatar" src="">
+    <span>احمد</span>
+    <span class="online"></span>
+   </div>
 
-<div class="card menu">
+   <div class="contact">
+    <img class="avatar" src="">
+    <span>محمود</span>
+    <span class="online"></span>
+   </div>
 
-<button id="menu-home" onclick="showSection('home')">🏠 کور</button>
-<button id="menu-profile" onclick="showSection('profile')">👤 زما پروفایل</button>
-<button id="menu-friends" onclick="showSection('friends')">👥 ملګري</button>
-<button id="menu-notifications" onclick="showSection('notifications')">🔔 خبرتیاوې</button>
-<button id="menu-messages" onclick="showSection('messages')">💬 پیغامونه</button>
-<button id="menu-users" onclick="showSection('users')">🔎 خلک پیدا کړه</button>
+   <div class="contact">
+    <img class="avatar" src="">
+    <span>ملګري</span>
+   </div>
+  </div>
 
-</div>
-</aside>
+  <div class="card">
+   <div class="right-title">S-Book</div>
+   <div style="padding:12px;color:#666;line-height:1.8">
+    سیدولي خان بوک<br>
+    د افغانستان نړیواله ټولنیزه شبکه
+   </div>
+  </div>
 
-<section>
-
-<div id="homeSection">
-
-<div class="card">
-
-<div class="create-head">
-<img id="createPhoto" src="" alt="">
-<div>
-<strong id="createName">نوی پوسټ</strong>
-<div style="color:#777;font-size:12px">څه فکر کوئ؟</div>
-</div>
-</div>
-
-<textarea id="postText" placeholder="څه فکر کوئ؟ له خپلو ملګرو سره یې شریک کړئ..."></textarea>
-
-<input id="postImage" placeholder="🖼️ د عکس URL — اختیاري">
-
-<div class="post-tools">
-<span>🖼️ عکس</span>
-<span>😊 احساس</span>
-<span>🌍 عامه پوسټ</span>
-</div>
-
-<button id="postButton" class="primary" onclick="createPost()">
-📢 پوسټ خپرول
-</button>
-
-</div>
-
-<div id="posts">
-<div class="loading">
-<span class="spinner"></span><br>
-پوسټونه ترلاسه کېږي...
-</div>
+ </aside>
 </div>
 
+<!-- MOBILE NAV -->
+<nav class="mobile-nav">
+ <button onclick="loadHome()">🏠<small>کور</small></button>
+ <button onclick="showFriends()">👥<small>ملګري</small></button>
+ <button onclick="openPostModal()">➕<small>Post</small></button>
+ <button onclick="showMessages()">💬<small>پیغام</small></button>
+ <button onclick="loadProfile()">👤<small>پروفایل</small></button>
+</nav>
+
+<!-- POST MODAL -->
+<div class="modal" id="postModal">
+ <div class="modal-box">
+  <div class="modal-head">
+   <span>نوی پوسټ جوړ کړئ</span>
+   <button class="close" onclick="closeModal('postModal')">×</button>
+  </div>
+
+  <div class="modal-body">
+   <textarea id="postText" placeholder="څه فکر کوئ؟"></textarea>
+
+   <label class="file-label">
+    🖼️ عکس انتخاب کړئ
+    <input type="file" id="postImage"
+           accept="image/*"
+           style="display:none"
+           onchange="previewImage(this)">
+   </label>
+
+   <img id="imagePreview">
+
+   <select id="postPrivacy"
+           style="width:100%;padding:12px;margin-top:10px;border:1px solid #ddd;border-radius:8px">
+    <option value="public">🌍 Public</option>
+    <option value="friends">👥 Friends</option>
+    <option value="private">🔒 Only me</option>
+   </select>
+
+   <button class="primary" onclick="createPost()">Post خپرول</button>
+  </div>
+ </div>
 </div>
 
-<div id="friendsSection" class="hidden">
+<!-- STORY MODAL -->
+<div class="modal" id="storyModal">
+ <div class="modal-box">
+  <div class="modal-head">
+   <span>نوی Story</span>
+   <button class="close" onclick="closeModal('storyModal')">×</button>
+  </div>
+  <div class="modal-body">
+   <textarea id="storyText" placeholder="Story متن..."></textarea>
 
-<div class="card">
-<h2>👥 زما ملګري</h2>
-<div id="friendsList" style="margin-top:10px"></div>
+   <label class="file-label">
+    🖼️ Story عکس
+    <input type="file" id="storyImage"
+           accept="image/*"
+           style="display:none">
+   </label>
+
+   <button class="primary" onclick="createStory()">Story خپرول</button>
+  </div>
+ </div>
 </div>
 
-<div class="card">
-<h2>🤝 د ملګرتیا غوښتنې</h2>
-<div id="requestsList" style="margin-top:10px"></div>
-</div>
-
-</div>
-
-<div id="notificationsSection" class="hidden">
-<div class="card">
-<h2>🔔 خبرتیاوې</h2>
-<div id="notificationsList" style="margin-top:12px"></div>
-</div>
-</div>
-
-<div id="usersSection" class="hidden">
-<div class="card">
-
-<h2>🔎 خلک پیدا کړه</h2>
-
-<div class="search-box">
-<span class="search-icon">🔍</span>
-<input id="userSearch"
-placeholder="د نوم یا ایمیل له لارې لټون..."
-oninput="searchUsers()">
-</div>
-
-<div id="usersList"></div>
-
-</div>
-</div>
-
-<div id="messagesSection" class="hidden">
-
-<div class="card">
-
-<h2>💬 پیغامونه</h2>
-
-<div id="chatTitle" style="margin:12px 0;font-weight:bold">
-لومړی یو ملګری انتخاب کړئ
-</div>
-
-<div id="chatBox" class="chat-box">
-<div class="chat-empty">یو ملګری انتخاب کړئ.</div>
-</div>
-
-<div class="chat-send">
-<input id="messageInput"
-placeholder="پیغام ولیکئ..."
-onkeydown="messageEnter(event)">
-<button onclick="sendMessage()">لېږل</button>
-</div>
-
-</div>
-</div>
-
-<div id="profileSection" class="hidden">
-
-<div class="card profile-top">
-
-<img id="profilePhoto" class="avatar" src="" alt="Profile">
-
-<h2 id="profileName" class="profile-name">---</h2>
-
-<p id="profileEmail" style="color:#777">---</p>
-
-<p id="profileBio" class="profile-bio">---</p>
-
-<div class="stats">
-
-<div class="stat">
-<strong id="profilePosts">0</strong>
-پوسټونه
-</div>
-
-<div class="stat">
-<strong id="profileFriends">0</strong>
-ملګري
-</div>
-
-</div>
-</div>
-
-<div class="card">
-
-<h3>✏️ پروفایل سمول</h3>
-<br>
-
-<label>نوم</label>
-<input id="editName" placeholder="ستاسو نوم">
-
-<label>د پروفایل عکس URL</label>
-<input id="editPhoto" placeholder="https://...">
-
-<label>Bio</label>
-<textarea id="editBio" placeholder="ستاسو په اړه..."></textarea>
-
-<button id="profileSaveButton"
-class="primary"
-onclick="updateProfile()">
-💾 معلومات ساتل
-</button>
-
-</div>
-</div>
-
-</section>
-
-<aside class="right-side">
-
-<div class="card">
-<div class="side-title">🔔 وروستۍ خبرتیاوې</div>
-<div id="sideNotifications">هیڅ خبرتیا نشته</div>
-</div>
-
-<div class="card">
-<div class="side-title">ℹ️ د شبکې معلومات</div>
-
-<div class="side-info">
-<b>سیدولي افغاني نړیواله ټولنیزه شبکه</b>
-<br><br>
-API Version: <b>5.0.0</b><br>
-Database: <b>D1</b><br>
-Server: <b>Cloudflare Worker</b><br>
-Status: <b style="color:#087b25">Online</b>
-</div>
-
-</div>
-</aside>
-
-</div>
-</main>
-
-<div id="toast" class="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
 /* =========================================================
-   SAID WALI SOCIAL NETWORK
-   CLOUDFLARE WORKER API V5.0.0
-========================================================= */
+   S-BOOK API
+   ========================================================= */
 
-const API =
-"https://saidwali-social-api.walizaad2.workers.dev";
+const API = "https://saidwali-social-api.walizaad2.workers.dev";
 
-let token = localStorage.getItem("saidwali_token") || "";
 let currentUser = null;
-let currentChatUser = null;
-let chatTimer = null;
-let searchTimer = null;
-let notificationTimer = null;
+let token = localStorage.getItem("sbook_token");
 
-const DEFAULT_AVATAR =
-"data:image/svg+xml;charset=UTF-8," +
-encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150">
-<rect width="150" height="150" fill="#e7edf5"/>
-<circle cx="75" cy="55" r="30" fill="#9aa8b8"/>
-<path d="M25 140 C30 105 50 90 75 90 C100 90 120 105 125 140Z"
-fill="#9aa8b8"/>
-</svg>`);
-
-/* =========================
-   HELPERS
-========================= */
+/* ---------- HELPERS ---------- */
 
 function toast(message){
-const box=document.getElementById("toast");
-box.textContent=message || "";
-box.style.display="block";
-clearTimeout(toast.timer);
-toast.timer=setTimeout(()=>box.style.display="none",3000);
+ const t=document.getElementById("toast");
+ t.textContent=message;
+ t.style.display="block";
+ setTimeout(()=>t.style.display="none",3000);
 }
 
-function escapeHtml(value){
-return String(value ?? "")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+function closeModal(id){
+ document.getElementById(id).style.display="none";
 }
 
-function escapeAttr(value){
-return escapeHtml(value);
+function openRegister(){
+ document.getElementById("registerModal").style.display="flex";
 }
 
-/* =========================
-   API
-========================= */
-
-async function api(path,options={}){
-const headers={
-"Content-Type":"application/json",
-...(options.headers || {})
-};
-
-if(token){
-headers.Authorization="Bearer "+token;
+function openPostModal(){
+ document.getElementById("postModal").style.display="flex";
 }
 
-let response;
-
-try{
-response=await fetch(API+path,{
-...options,
-headers
-});
-}catch(error){
-throw new Error("له سرور سره اړیکه ونه شوه");
+function openStoryModal(){
+ document.getElementById("storyModal").style.display="flex";
 }
 
-let data;
+async function api(path, options={}){
+ const headers={
+  "Content-Type":"application/json",
+  ...(options.headers||{})
+ };
 
-try{
-data=await response.json();
-}catch(error){
-throw new Error("API ناسم JSON ځواب ورکړ");
+ if(token){
+  headers.Authorization="Bearer "+token;
+ }
+
+ const res=await fetch(API+path,{
+  ...options,
+  headers
+ });
+
+ let data={};
+
+ try{
+  data=await res.json();
+ }catch(e){}
+
+ if(!res.ok){
+  throw new Error(data.message||data.error||"API Error");
+ }
+
+ return data;
 }
 
-if(!response.ok){
-throw new Error(
-data.message ||
-data.error ||
-"Server Error"
-);
-}
-
-return data;
-}
-
-/* =========================
-   AUTH PAGES
-========================= */
-
-function showLogin(){
-document.getElementById("loginPage").classList.remove("hidden");
-document.getElementById("registerPage").classList.add("hidden");
-document.getElementById("app").classList.add("hidden");
-}
-
-function showRegister(){
-document.getElementById("loginPage").classList.add("hidden");
-document.getElementById("registerPage").classList.remove("hidden");
-document.getElementById("app").classList.add("hidden");
-}
-
-function showApp(){
-document.getElementById("loginPage").classList.add("hidden");
-document.getElementById("registerPage").classList.add("hidden");
-document.getElementById("app").classList.remove("hidden");
-}
-
-/* =========================
-   REGISTER
-   V5 API:
-   /api/auth/register
-========================= */
-
-async function register(){
-
-const name=document.getElementById("registerName").value.trim();
-const email=document.getElementById("registerEmail").value.trim().toLowerCase();
-const password=document.getElementById("registerPassword").value;
-
-if(!name || !email || !password){
-toast("نوم، ایمیل او پټنوم ولیکئ");
-return;
-}
-
-if(password.length<6){
-toast("پټنوم باید لږ تر لږه ۶ حروف ولري");
-return;
-}
-
-const button=document.getElementById("registerButton");
-
-button.disabled=true;
-button.textContent="⏳ حساب جوړېږي...";
-
-try{
-
-const data=await api("/api/auth/register",{
-method:"POST",
-body:JSON.stringify({
-name,
-email,
-password
-})
-});
-
-toast(data.message || "حساب جوړ شو");
-
-document.getElementById("loginEmail").value=email;
-document.getElementById("loginPassword").value="";
-
-showLogin();
-
-}catch(error){
-
-toast(error.message);
-
-}finally{
-
-button.disabled=false;
-button.textContent="حساب جوړول";
-
-}
-}
-
-/* =========================
-   LOGIN
-   V5 API:
-   /api/auth/login
-========================= */
+/* ---------- AUTH ---------- */
 
 async function login(){
 
-const email=document.getElementById("loginEmail").value.trim().toLowerCase();
-const password=document.getElementById("loginPassword").value;
+ const email=document.getElementById("loginEmail").value.trim();
+ const password=document.getElementById("loginPassword").value;
 
-if(!email || !password){
-toast("ایمیل او پټنوم ولیکئ");
-return;
+ if(!email||!password){
+  toast("ایمیل او پاسورډ ولیکئ");
+  return;
+ }
+
+ try{
+
+  /*
+   * ستا موجود Worker د login route کاروي.
+   */
+  const data=await api("/auth/login",{
+   method:"POST",
+   body:JSON.stringify({
+    email,
+    password
+   })
+  });
+
+  token=data.token||
+        data.access_token||
+        data.session?.token||
+        data.data?.token;
+
+  currentUser=data.user||
+              data.data?.user||
+              data.profile||
+              null;
+
+  if(token){
+   localStorage.setItem("sbook_token",token);
+  }
+
+  if(currentUser){
+   localStorage.setItem("sbook_user",JSON.stringify(currentUser));
+  }
+
+  document.getElementById("loginOverlay").style.display="none";
+
+  await initialize();
+
+ }catch(e){
+
+  toast("ننوتل ناکام شو: "+e.message);
+
+ }
 }
 
-const button=document.getElementById("loginButton");
+async function register(){
 
-button.disabled=true;
-button.textContent="⏳ ننوتل...";
+ const name=document.getElementById("regName").value.trim();
+ const email=document.getElementById("regEmail").value.trim();
+ const password=document.getElementById("regPassword").value;
 
-try{
+ if(!name||!email||!password){
+  toast("ټول معلومات ولیکئ");
+  return;
+ }
 
-const data=await api("/api/auth/login",{
-method:"POST",
-body:JSON.stringify({
-email,
-password
-})
-});
+ try{
 
-token=data.token || data.access_token || data.session?.token || "";
+  const data=await api("/auth/register",{
+   method:"POST",
+   body:JSON.stringify({
+    name,
+    email,
+    password
+   })
+  });
 
-if(!token){
-throw new Error("له API څخه Login Token ترلاسه نه شو");
+  toast(data.message||"حساب جوړ شو");
+
+  closeModal("registerModal");
+
+  document.getElementById("loginEmail").value=email;
+
+ }catch(e){
+
+  toast("حساب جوړول ناکام شول: "+e.message);
+
+ }
 }
 
-localStorage.setItem("saidwali_token",token);
+function logout(){
 
-currentUser=data.user || data.data?.user || null;
+ localStorage.removeItem("sbook_token");
+ localStorage.removeItem("sbook_user");
 
-if(!currentUser){
-await loadMe();
-}else{
-showApp();
-updateUserUI();
-await loadAll();
+ token=null;
+ currentUser=null;
+
+ document.getElementById("loginOverlay").style.display="flex";
 }
 
-toast("په بریالیتوب داخل شوې");
-
-}catch(error){
-
-toast(error.message);
-
-}finally{
-
-button.disabled=false;
-button.textContent="ننوتل";
-
-}
-}
-
-/* =========================
-   LOGOUT
-   /api/auth/logout
-========================= */
-
-async function logout(){
-
-try{
-
-if(token){
-await api("/api/auth/logout",{method:"POST"});
-}
-
-}catch(error){}
-
-token="";
-currentUser=null;
-currentChatUser=null;
-
-localStorage.removeItem("saidwali_token");
-
-if(chatTimer) clearInterval(chatTimer);
-if(notificationTimer) clearInterval(notificationTimer);
-
-chatTimer=null;
-notificationTimer=null;
-
-showLogin();
-
-toast("له حساب څخه ووتل");
-}
-
-/* =========================
-   ME
-   /api/auth/me
-========================= */
+/* ---------- USER ---------- */
 
 async function loadMe(){
 
-try{
+ try{
 
-const data=await api("/api/auth/me");
+  const data=await api("/auth/me");
 
-currentUser=data.user || data.data?.user || data;
+  currentUser=data.user||
+               data.data?.user||
+               data.profile||
+               data;
 
-showApp();
-updateUserUI();
-await loadAll();
+  localStorage.setItem("sbook_user",JSON.stringify(currentUser));
 
-}catch(error){
+ }catch(e){
 
-token="";
-currentUser=null;
-localStorage.removeItem("saidwali_token");
-showLogin();
+  const saved=localStorage.getItem("sbook_user");
 
+  if(saved){
+   currentUser=JSON.parse(saved);
+  }
+
+ }
+
+ updateUserUI();
 }
-}
-
-/* =========================
-   LOAD EVERYTHING
-========================= */
-
-async function loadAll(){
-
-updateUserUI();
-
-await Promise.allSettled([
-loadPosts(),
-loadNotifications(),
-loadFriends(),
-loadProfile()
-]);
-
-startNotificationRefresh();
-}
-
-/* =========================
-   USER UI
-========================= */
 
 function updateUserUI(){
 
-if(!currentUser)return;
+ if(!currentUser)return;
 
-const photo=currentUser.photo || currentUser.avatar || DEFAULT_AVATAR;
-const name=currentUser.name || currentUser.full_name || "کاروونکی";
+ const name=currentUser.name||"S-Book کاروونکی";
 
-document.getElementById("miniPhoto").src=photo;
-document.getElementById("miniName").textContent=name;
-document.getElementById("miniBio").textContent=currentUser.bio || "ستاسو پروفایل";
+ document.getElementById("miniName").textContent=name;
 
-document.getElementById("profilePhoto").src=photo;
-document.getElementById("createPhoto").src=photo;
-document.getElementById("createName").textContent=name;
+ const photo=currentUser.photo||
+             currentUser.avatar||
+             "";
 
-document.getElementById("profileName").textContent=name;
-document.getElementById("profileEmail").textContent=currentUser.email || "";
-document.getElementById("profileBio").textContent=
-currentUser.bio || "تر اوسه Bio نه دی لیکل شوی";
+ if(photo){
 
-document.getElementById("editName").value=name;
-document.getElementById("editPhoto").value=currentUser.photo || "";
-document.getElementById("editBio").value=currentUser.bio || "";
-}
+  document.getElementById("miniAvatar").src=photo;
+  document.getElementById("createAvatar").src=photo;
 
-/* =========================
-   SECTIONS
-========================= */
-
-function showSection(section){
-
-const sections=[
-"home",
-"friends",
-"notifications",
-"users",
-"messages",
-"profile"
-];
-
-sections.forEach(name=>{
-
-const el=document.getElementById(name+"Section");
-if(el)el.classList.add("hidden");
-
-const menu=document.getElementById("menu-"+name);
-if(menu)menu.classList.remove("active");
-
-});
-
-const selected=document.getElementById(section+"Section");
-
-if(selected)selected.classList.remove("hidden");
-
-const selectedMenu=document.getElementById("menu-"+section);
-
-if(selectedMenu)selectedMenu.classList.add("active");
-
-if(section==="home")loadPosts();
-
-if(section==="friends"){
-loadFriends();
-loadFriendRequests();
-}
-
-if(section==="notifications")loadNotifications();
-
-if(section==="users")performUserSearch();
-
-if(section==="messages" && currentChatUser)loadMessages();
-
-if(section==="profile")loadProfile();
-
-window.scrollTo({top:0,behavior:"smooth"});
-}
-
-/* =========================
-   CREATE POST
-   /api/posts
-========================= */
-
-async function createPost(){
-
-const text=document.getElementById("postText").value.trim();
-const image=document.getElementById("postImage").value.trim();
-
-if(!text && !image){
-toast("متن یا عکس ولیکئ");
-return;
-}
-
-const button=document.getElementById("postButton");
-
-button.disabled=true;
-button.textContent="⏳ خپرېږي...";
-
-try{
-
-await api("/api/posts",{
-method:"POST",
-body:JSON.stringify({
-text,
-image
-})
-});
-
-document.getElementById("postText").value="";
-document.getElementById("postImage").value="";
-
-toast("پوسټ په بریالیتوب خپور شو");
-
-await loadPosts();
-
-}catch(error){
-
-toast(error.message);
-
-}finally{
-
-button.disabled=false;
-button.textContent="📢 پوسټ خپرول";
+ }
 
 }
+
+/* ---------- HOME ---------- */
+
+async function initialize(){
+
+ document.getElementById("loginOverlay").style.display="none";
+
+ await loadMe();
+
+ await Promise.all([
+  loadPosts(),
+  loadStories(),
+  loadNotifications()
+ ]);
+
 }
 
-/* =========================
-   POSTS
-========================= */
+async function loadHome(){
+
+ document.getElementById("mainContent").innerHTML=`
+
+ <div class="card">
+  <div class="stories" id="stories"></div>
+ </div>
+
+ <div class="card create">
+  <div class="create-row">
+   <img id="createAvatar" class="avatar"
+        src="${currentUser?.photo||""}">
+   <button class="post-input"
+           onclick="openPostModal()">
+   څه فکر کوئ؟ / What's on your mind?
+   </button>
+  </div>
+
+  <div class="create-tools">
+   <button class="tool" onclick="openPostModal()">🔴 ژوندۍ خپرونه</button>
+   <button class="tool" onclick="openPostModal()">🖼️ عکس / ویډیو</button>
+   <button class="tool" onclick="openPostModal()">😊 احساس / فعالیت</button>
+  </div>
+ </div>
+
+ <div id="feedPosts">
+  <div class="loader">Loading...</div>
+ </div>
+ `;
+
+ await loadStories();
+ await loadPosts();
+}
+
+/* ---------- POSTS ---------- */
 
 async function loadPosts(){
 
-const box=document.getElementById("posts");
+ const box=document.getElementById("feedPosts");
 
-box.innerHTML=`
-<div class="loading">
-<span class="spinner"></span><br>
-پوسټونه ترلاسه کېږي...
-</div>`;
+ if(!box)return;
 
-try{
+ try{
 
-const data=await api("/api/posts");
+  const data=await api("/posts");
 
-const posts=data.posts || data.data || [];
+  const posts=
+   data.posts||
+   data.data||
+   data.results||
+   (Array.isArray(data)?data:[]);
 
-if(!posts.length){
+  if(!posts.length){
 
-box.innerHTML=`
-<div class="card empty">
-تر اوسه هېڅ پوسټ نشته.
-<br>
-<small>خپل لومړی پوسټ جوړ کړئ.</small>
-</div>`;
+   box.innerHTML=`
+    <div class="card empty">
+     تر اوسه کوم پوسټ نشته.<br>
+     لومړی پوسټ تاسې جوړ کړئ.
+    </div>
+   `;
 
-return;
+   return;
+  }
+
+  box.innerHTML=posts.map(renderPost).join("");
+
+ }catch(e){
+
+  box.innerHTML=`
+   <div class="card empty">
+    د Posts ترلاسه کولو پر مهال ستونزه راغله.
+    <br><small>${escapeHtml(e.message)}</small>
+   </div>
+  `;
+
+ }
 }
-
-box.innerHTML=posts.map(renderPost).join("");
-
-}catch(error){
-
-box.innerHTML=`
-<div class="card empty">
-❌ ${escapeHtml(error.message)}
-</div>`;
-
-}
-}
-
-/* =========================
-   RENDER POST
-========================= */
 
 function renderPost(post){
 
-const photo=post.photo || post.avatar || DEFAULT_AVATAR;
+ const user=post.user||post.author||{};
 
-const image=post.image ? `
-<img
-class="post-image"
-src="${escapeAttr(post.image)}"
-alt="Post"
-loading="lazy"
-onerror="this.style.display='none'">
-`:"";
+ const name=user.name||
+            post.user_name||
+            post.author_name||
+            "S-Book کاروونکی";
 
-const postId=post.id || post.post_id;
+ const photo=user.photo||
+             post.user_photo||
+             "";
 
-return `
-<article class="card">
+ const image=post.image||
+             post.media_url||
+             post.photo||
+             "";
 
-<div class="post-header">
+ const text=post.text||
+            post.content||
+            "";
 
-<img
-class="avatar-small"
-src="${escapeAttr(photo)}"
-alt="">
+ const id=post.id;
 
-<div class="post-author">
+ const likes=post.likes_count||
+             post.like_count||
+             post.likes||
+             0;
 
-<div class="post-name">
-${escapeHtml(post.name || post.author_name || "کاروونکی")}
-</div>
+ const comments=post.comments_count||
+                 post.comment_count||
+                 0;
 
-<div class="post-date">
-${escapeHtml(post.created_at || "")}
-</div>
+ const shares=post.shares_count||
+              post.share_count||
+              0;
 
-</div>
-</div>
+ return `
+ <article class="card" data-post="${id}">
 
-${post.text ? `
-<div class="post-text">
-${escapeHtml(post.text)}
-</div>`:""}
+  <div class="post-head">
 
-${image}
+   <img class="avatar"
+        src="${escapeAttr(photo)}"
+        onerror="this.style.display='none'">
 
-<div class="post-stats">
+   <div class="post-info">
+    <div class="post-name">${escapeHtml(name)}</div>
+    <div class="post-time">
+     ${escapeHtml(post.created_at||"اوس")}
+     · 🌍
+    </div>
+   </div>
 
-<span>
-👍 ${Number(post.likes || post.like_count || 0)} Like
-</span>
+   <button class="more">•••</button>
 
-<span>
-💬 ${Number(post.comments || post.comment_count || 0)} تبصرې
-</span>
+  </div>
 
-</div>
+  ${text?`<div class="post-text">${escapeHtml(text)}</div>`:""}
 
-<div class="post-actions">
+  ${image?
+   `<img class="post-image"
+         src="${escapeAttr(image)}"
+         loading="lazy">`
+   :""
+  }
 
-<button onclick="likePost('${escapeAttr(postId)}')">
-👍 Like
-</button>
+  <div class="stats">
+   <span>👍 ❤️ ${likes}</span>
+   <span>${comments} تبصرې · ${shares} شریکول</span>
+  </div>
 
-<button onclick="loadComments('${escapeAttr(postId)}')">
-💬 تبصرې
-</button>
+  <div class="post-actions">
 
-</div>
+   <button class="post-action"
+           onclick="likePost('${id}',this)">
+    👍 خوښول
+   </button>
 
-<div id="comments-${escapeAttr(postId)}" class="comments"></div>
+   <button class="post-action"
+           onclick="focusComment('${id}')">
+    💬 تبصره
+   </button>
 
-<div class="comment-form">
+   <button class="post-action"
+           onclick="sharePost('${id}')">
+    ↗ شریکول
+   </button>
 
-<input
-id="commentInput-${escapeAttr(postId)}"
-placeholder="تبصره ولیکئ..."
-onkeydown="commentEnter(event,'${escapeAttr(postId)}')">
+  </div>
 
-<button onclick="addComment('${escapeAttr(postId)}')">
-لېږل
-</button>
+  <div class="comment-box">
+   <input id="comment-${id}"
+          class="comment-input"
+          placeholder="تبصره ولیکئ...">
+   <button class="send"
+           onclick="commentPost('${id}')">➤</button>
+  </div>
 
-</div>
-
-</article>`;
+ </article>
+ `;
 }
 
-/* =========================
-   LIKE
-========================= */
+/* ---------- CREATE POST ---------- */
 
-async function likePost(id){
+async function createPost(){
 
-try{
+ const text=document.getElementById("postText").value.trim();
+ const file=document.getElementById("postImage").files[0];
+ const privacy=document.getElementById("postPrivacy").value;
 
-const data=await api(
-"/api/posts/"+encodeURIComponent(id)+"/like",
-{method:"POST"}
-);
+ if(!text && !file){
+  toast("د پوسټ لپاره متن یا عکس ورکړئ");
+  return;
+ }
 
-toast(data.message || (data.liked ? "👍 Like وشو":"Like لرې شو"));
+ /*
+  * مهم:
+  * که Worker د media upload لپاره R2 endpoint لري،
+  * دلته یې له موجود API سره کاروو.
+  *
+  * لومړی د متن پوسټ جوړول.
+  */
 
-await loadPosts();
+ try{
 
-}catch(error){
+  let body={
+   text,
+   privacy
+  };
 
-toast(error.message);
+  /*
+   * د موجود posts API سره JSON POST.
+   */
+  const data=await api("/posts",{
+   method:"POST",
+   body:JSON.stringify(body)
+  });
 
-}
-}
+  /*
+   * که عکس انتخاب شوی وي او API د image field مني،
+   * د base64 په شکل یې لېږو.
+   */
+  if(file && data){
 
-/* =========================
-   COMMENTS
-========================= */
+   try{
 
-async function loadComments(postId){
+    const base64=await fileToBase64(file);
 
-const box=document.getElementById("comments-"+postId);
+    const postId=data.post?.id||
+                 data.data?.id||
+                 data.id;
 
-if(!box)return;
+    if(postId){
 
-box.innerHTML=`<div class="loading">تبصرې ترلاسه کېږي...</div>`;
+     await api("/posts/"+postId+"/media",{
+      method:"POST",
+      body:JSON.stringify({
+       media_type:"image",
+       media_url:base64,
+       file_name:file.name,
+       mime_type:file.type
+      })
+     });
 
-try{
+    }
 
-const data=await api(
-"/api/posts/"+encodeURIComponent(postId)+"/comments"
-);
+   }catch(imageError){
 
-const comments=data.comments || data.data || [];
+    console.log("Media upload:",imageError);
 
-if(!comments.length){
+   }
 
-box.innerHTML=`<div class="empty">تر اوسه تبصره نشته.</div>`;
-return;
+  }
 
-}
+  document.getElementById("postText").value="";
+  document.getElementById("postImage").value="";
+  document.getElementById("imagePreview").style.display="none";
 
-box.innerHTML=comments.map(c=>`
+  closeModal("postModal");
 
-<div class="comment">
+  toast("ستاسې پوسټ خپور شو ✅");
 
-<strong>
-${escapeHtml(c.name || "کاروونکی")}
-</strong>
+  await loadPosts();
 
-<span>
-${escapeHtml(c.text || c.comment || "")}
-</span>
+ }catch(e){
 
-<div style="font-size:10px;color:#777;margin-top:4px">
-${escapeHtml(c.created_at || "")}
-</div>
+  toast("پوسټ خپور نشو: "+e.message);
 
-</div>
-
-`).join("");
-
-}catch(error){
-
-box.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;
-
-}
-}
-
-async function addComment(postId){
-
-const input=document.getElementById("commentInput-"+postId);
-
-if(!input)return;
-
-const text=input.value.trim();
-
-if(!text){
-toast("تبصره ولیکئ");
-return;
+ }
 }
 
-try{
+function fileToBase64(file){
 
-await api(
-"/api/posts/"+encodeURIComponent(postId)+"/comments",
-{
-method:"POST",
-body:JSON.stringify({text})
-}
-);
+ return new Promise((resolve,reject)=>{
 
-input.value="";
+  const reader=new FileReader();
 
-toast("تبصره ثبت شوه");
+  reader.onload=()=>resolve(reader.result);
+  reader.onerror=reject;
 
-await loadComments(postId);
-await loadPosts();
+  reader.readAsDataURL(file);
 
-}catch(error){
-
-toast(error.message);
-
-}
-}
-
-function commentEnter(event,postId){
-
-if(event.key==="Enter"){
-event.preventDefault();
-addComment(postId);
-}
-}
-
-/* =========================
-   SEARCH USERS
-========================= */
-
-function searchUsers(){
-
-clearTimeout(searchTimer);
-
-searchTimer=setTimeout(performUserSearch,350);
-}
-
-async function performUserSearch(){
-
-const input=document.getElementById("userSearch");
-const box=document.getElementById("usersList");
-
-if(!input || !box)return;
-
-const q=input.value.trim();
-
-box.innerHTML=`<div class="loading">لټون کېږي...</div>`;
-
-try{
-
-const data=await api(
-"/api/search/users?q="+encodeURIComponent(q)
-);
-
-let users=data.users || data.data || [];
-
-if(currentUser){
-users=users.filter(u=>u.id!==currentUser.id);
-}
-
-if(!users.length){
-
-box.innerHTML=`<div class="empty">کاروونکی پیدا نه شو.</div>`;
-return;
-}
-
-box.innerHTML=users.map(u=>`
-
-<div class="user-row">
-
-<img
-class="avatar-small"
-src="${escapeAttr(u.photo || u.avatar || DEFAULT_AVATAR)}">
-
-<div class="user-info">
-
-<strong>
-${escapeHtml(u.name || "کاروونکی")}
-</strong>
-
-<small>
-${escapeHtml(u.email || "")}
-</small>
-
-${u.bio ? `<div><small>${escapeHtml(u.bio)}</small></div>`:""}
-
-</div>
-
-<button
-class="secondary"
-onclick="sendFriendRequest('${escapeAttr(u.id)}')">
-
-🤝 ملګری کول
-
-</button>
-
-</div>
-
-`).join("");
-
-}catch(error){
-
-box.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;
-
-}
-}
-
-/* =========================
-   FRIEND REQUEST
-========================= */
-
-async function sendFriendRequest(userId){
-
-try{
-
-const data=await api(
-"/api/friends/request",
-{
-method:"POST",
-body:JSON.stringify({
-receiver_id:userId
-})
-}
-);
-
-toast(data.message || "د ملګرتیا غوښتنه واستول شوه");
-
-await performUserSearch();
-
-}catch(error){
-
-toast(error.message);
-
-}
-}
-
-/* =========================
-   FRIEND REQUESTS
-========================= */
-
-async function loadFriendRequests(){
-
-const box=document.getElementById("requestsList");
-
-box.innerHTML=`<div class="loading">غوښتنې ترلاسه کېږي...</div>`;
-
-try{
-
-const data=await api("/api/friends/requests");
-
-const requests=data.requests || data.data || [];
-
-if(!requests.length){
-
-box.innerHTML=`
-<div class="empty">
-هیڅ نوې ملګرتیا غوښتنه نشته.
-</div>`;
-
-return;
-}
-
-box.innerHTML=requests.map(r=>`
-
-<div class="request">
-
-<img
-class="avatar-small"
-src="${escapeAttr(r.photo || DEFAULT_AVATAR)}">
-
-<div class="request-info">
-
-<strong>
-${escapeHtml(r.name || "کاروونکی")}
-</strong>
-
-<div style="font-size:12px;color:#777">
-${escapeHtml(r.email || "")}
-</div>
-
-</div>
-
-<div class="request-buttons">
-
-<button
-class="success"
-onclick="friendAction('${escapeAttr(r.id)}','accept')">
-قبول
-</button>
-
-<button
-class="danger"
-onclick="friendAction('${escapeAttr(r.id)}','reject')">
-رد
-</button>
-
-</div>
-
-</div>
-
-`).join("");
-
-}catch(error){
-
-box.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;
-
-}
-}
-
-async function friendAction(id,action){
-
-try{
-
-const data=await api(
-"/api/friends/"+encodeURIComponent(id)+"/"+action,
-{method:"POST"}
-);
-
-toast(data.message || "عملیات ترسره شوه");
-
-await loadFriendRequests();
-await loadFriends();
-await loadNotifications();
-
-}catch(error){
-
-toast(error.message);
-
-}
-}
-
-/* =========================
-   FRIENDS
-========================= */
-
-async function loadFriends(){
-
-const box=document.getElementById("friendsList");
-
-try{
-
-const data=await api("/api/friends");
-
-const friends=data.friends || data.data || [];
-
-document.getElementById("profileFriends").textContent=friends.length;
-
-if(!friends.length){
-
-box.innerHTML=`<div class="empty">تر اوسه ملګري نشته.</div>`;
-return;
-}
-
-box.innerHTML=friends.map(f=>`
-
-<div class="user-row">
-
-<img
-class="avatar-small"
-src="${escapeAttr(f.photo || DEFAULT_AVATAR)}">
-
-<div class="user-info">
-
-<strong>
-${escapeHtml(f.name || "کاروونکی")}
-</strong>
-
-<small>
-${escapeHtml(f.email || "")}
-</small>
-
-</div>
-
-<button
-class="secondary"
-onclick='openChat(${JSON.stringify({
-id:f.id,
-name:f.name,
-photo:f.photo || ""
-})})'>
-
-💬 پیغام
-
-</button>
-
-</div>
-
-`).join("");
-
-}catch(error){
-
-box.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;
-
-}
-}
-
-/* =========================
-   NOTIFICATIONS
-========================= */
-
-async function loadNotifications(){
-
-if(!token)return;
-
-try{
-
-const data=await api("/api/notifications");
-
-const notifications=data.notifications || data.data || [];
-
-const count=document.getElementById("notificationCount");
-
-count.textContent=
-data.total || notifications.length || "";
-
-const box=document.getElementById("notificationsList");
-const side=document.getElementById("sideNotifications");
-
-if(!notifications.length){
-
-box.innerHTML=`<div class="empty">هیڅ نوې خبرتیا نشته.</div>`;
-side.innerHTML=`<div style="color:#777">هیڅ خبرتیا نشته</div>`;
-return;
-}
-
-box.innerHTML=notifications.map(n=>`
-
-<div class="notification">
-
-🔔
-
-<strong>
-${escapeHtml(n.sender_name || n.name || "کاروونکی")}
-</strong>
-
-${escapeHtml(n.message || "تاسو ته د ملګرتیا غوښتنه کړې.")}
-
-${n.type==="friend_request" || n.sender_id ? `
-
-<div class="notification-actions">
-
-<button
-class="success"
-onclick="friendAction('${escapeAttr(n.id)}','accept')">
-قبول
-</button>
-
-<button
-class="danger"
-onclick="friendAction('${escapeAttr(n.id)}','reject')">
-رد
-</button>
-
-</div>`:""}
-
-</div>
-
-`).join("");
-
-side.innerHTML=notifications.slice(0,5).map(n=>`
-
-<div class="notification">
-🔔 ${escapeHtml(n.sender_name || n.name || n.message || "نوې خبرتیا")}
-</div>
-
-`).join("");
-
-}catch(error){}
+ });
 
 }
 
-/* =========================
-   CHAT
-========================= */
+function previewImage(input){
 
-function openChat(user){
+ const file=input.files[0];
 
-currentChatUser=user;
+ if(!file)return;
 
-showSection("messages");
+ const img=document.getElementById("imagePreview");
 
-document.getElementById("chatTitle").textContent=
-"💬 "+user.name;
-
-loadMessages();
-
-if(chatTimer)clearInterval(chatTimer);
-
-chatTimer=setInterval(loadMessages,5000);
-}
-
-async function loadMessages(){
-
-if(!currentChatUser)return;
-
-try{
-
-const data=await api(
-"/api/messages?user_id="+
-encodeURIComponent(currentChatUser.id)
-);
-
-const messages=data.messages || data.data || [];
-
-const box=document.getElementById("chatBox");
-
-if(!messages.length){
-
-box.innerHTML=`<div class="chat-empty">تر اوسه پیغام نشته.</div>`;
-return;
-}
-
-box.innerHTML=messages.map(m=>`
-
-<div class="message ${
-currentUser && m.sender_id===currentUser.id
-?"mine":"theirs"
-}">
-
-${escapeHtml(m.message || m.text || "")}
-
-<span class="message-time">
-${escapeHtml(m.created_at || "")}
-</span>
-
-</div>
-
-`).join("");
-
-box.scrollTop=box.scrollHeight;
-
-for(const message of messages){
-
-if(
-currentUser &&
-message.receiver_id===currentUser.id &&
-Number(message.seen)===0
-){
-
-markMessageSeen(message.id);
-
-}
-}
-
-}catch(error){
-
-toast(error.message);
-
-}
-}
-
-async function sendMessage(){
-
-if(!currentChatUser){
-
-toast("لومړی یو ملګری انتخاب کړئ");
-return;
-}
-
-const input=document.getElementById("messageInput");
-const message=input.value.trim();
-
-if(!message)return;
-
-try{
-
-await api("/api/messages",{
-method:"POST",
-body:JSON.stringify({
-receiver_id:currentChatUser.id,
-message
-})
-});
-
-input.value="";
-
-await loadMessages();
-
-}catch(error){
-
-toast(error.message);
-
-}
-}
-
-function messageEnter(event){
-
-if(event.key==="Enter"){
-event.preventDefault();
-sendMessage();
-}
-}
-
-async function markMessageSeen(messageId){
-
-try{
-
-await api("/api/messages/seen",{
-method:"POST",
-body:JSON.stringify({
-message_id:messageId
-})
-});
-
-}catch(error){}
+ img.src=URL.createObjectURL(file);
+ img.style.display="block";
 
 }
 
-/* =========================
-   PROFILE
-========================= */
+/* ---------- LIKE ---------- */
+
+async function likePost(id,button){
+
+ try{
+
+  await api("/posts/"+id+"/like",{
+   method:"POST"
+  });
+
+  button.classList.add("liked");
+
+  await loadPosts();
+
+ }catch(e){
+
+  toast("Like ستونزه: "+e.message);
+
+ }
+}
+
+/* ---------- COMMENT ---------- */
+
+function focusComment(id){
+
+ const input=document.getElementById("comment-"+id);
+
+ if(input){
+
+  input.focus();
+
+ }
+
+}
+
+async function commentPost(id){
+
+ const input=document.getElementById("comment-"+id);
+
+ if(!input)return;
+
+ const text=input.value.trim();
+
+ if(!text)return;
+
+ try{
+
+  await api("/posts/"+id+"/comments",{
+   method:"POST",
+   body:JSON.stringify({
+    text
+   })
+  });
+
+  input.value="";
+
+  toast("تبصره ثبت شوه");
+
+  await loadPosts();
+
+ }catch(e){
+
+  toast("تبصره ثبت نشوه: "+e.message);
+
+ }
+}
+
+/* ---------- SHARE ---------- */
+
+async function sharePost(id){
+
+ const text=prompt("د شریکولو لپاره متن ولیکئ:");
+
+ try{
+
+  await api("/posts/"+id+"/share",{
+   method:"POST",
+   body:JSON.stringify({
+    text:text||""
+   })
+  });
+
+  toast("پوسټ شریک شو ✅");
+
+ }catch(e){
+
+  /*
+   * fallback browser share
+   */
+  if(navigator.share){
+
+   navigator.share({
+    title:"S-Book",
+    text:"S-Book پوسټ",
+    url:location.href
+   });
+
+  }else{
+
+   toast("Share: "+e.message);
+
+  }
+
+ }
+
+}
+
+/* ---------- STORIES ---------- */
+
+async function loadStories(){
+
+ const box=document.getElementById("stories");
+
+ if(!box)return;
+
+ try{
+
+  const data=await api("/stories");
+
+  const stories=
+   data.stories||
+   data.data||
+   (Array.isArray(data)?data:[]);
+
+  let html=`
+
+  <div class="story story-add"
+       onclick="openStoryModal()">
+
+   <div class="plus">+</div>
+
+   <span>Story جوړول</span>
+
+  </div>
+  `;
+
+  html+=stories.map(s=>{
+
+   const user=s.user||{};
+
+   const photo=s.image||
+               s.media_url||
+               "";
+
+   const avatar=user.photo||"";
+
+   return `
+   <div class="story"
+        onclick="viewStory('${s.id}')">
+
+    ${photo?
+     `<img src="${escapeAttr(photo)}">`
+     :""
+    }
+
+    ${avatar?
+     `<img class="story-avatar"
+           src="${escapeAttr(avatar)}">`
+     :""
+    }
+
+    <div class="story-name">
+     ${escapeHtml(user.name||"Story")}
+    </div>
+
+   </div>
+   `;
+
+  }).join("");
+
+  box.innerHTML=html;
+
+ }catch(e){
+
+  box.innerHTML=`
+   <div class="story story-add"
+        onclick="openStoryModal()">
+    <div class="plus">+</div>
+    <span>Story جوړول</span>
+   </div>
+  `;
+
+ }
+}
+
+async function createStory(){
+
+ const text=document.getElementById("storyText").value.trim();
+ const file=document.getElementById("storyImage").files[0];
+
+ if(!text&&!file){
+  toast("Story متن یا عکس ورکړئ");
+  return;
+ }
+
+ try{
+
+  let body={
+   text,
+   expires_at:new Date(Date.now()+24*60*60*1000).toISOString()
+  };
+
+  if(file){
+   body.image=await fileToBase64(file);
+  }
+
+  await api("/stories",{
+   method:"POST",
+   body:JSON.stringify(body)
+  });
+
+  document.getElementById("storyText").value="";
+  document.getElementById("storyImage").value="";
+
+  closeModal("storyModal");
+
+  toast("Story خپور شو ✅");
+
+  await loadStories();
+
+ }catch(e){
+
+  toast("Story جوړ نشو: "+e.message);
+
+ }
+}
+
+async function viewStory(id){
+
+ try{
+
+  await api("/stories/"+id+"/view",{
+   method:"POST"
+  });
+
+ }catch(e){}
+
+}
+
+/* ---------- PROFILE ---------- */
 
 async function loadProfile(){
 
-if(!currentUser)return;
+ if(!currentUser){
 
-try{
+  toast("لومړی Login وکړئ");
+  return;
 
-const data=await api(
-"/api/profile/"+encodeURIComponent(currentUser.id)
-);
+ }
 
-currentUser=data.user || data.data?.user || currentUser;
+ document.getElementById("mainContent").innerHTML=`
 
-updateUserUI();
+ <div class="card">
 
-document.getElementById("profilePosts").textContent=
-(data.posts || []).length;
+  <div style="
+   height:220px;
+   background:#d8dadf;
+   position:relative;
+  ">
 
-await loadFriends();
+   <img src="${escapeAttr(currentUser.cover_photo||"")}"
+        style="width:100%;height:100%;object-fit:cover">
 
-}catch(error){
+  </div>
 
-toast(error.message);
+  <div style="
+   padding:0 20px 20px;
+   margin-top:-55px;
+   position:relative;
+  ">
 
-}
-}
+   <img src="${escapeAttr(currentUser.photo||"")}"
+        class="avatar"
+        style="
+         width:110px;
+         height:110px;
+         border:5px solid #fff;
+        ">
 
-/* =========================
-   UPDATE PROFILE
-========================= */
+   <h2>${escapeHtml(currentUser.name||"S-Book")}</h2>
 
-async function updateProfile(){
+   <p style="color:#65676b">
+    ${escapeHtml(currentUser.bio||"د S-Book کاروونکی")}
+   </p>
 
-const name=document.getElementById("editName").value.trim();
-const photo=document.getElementById("editPhoto").value.trim();
-const bio=document.getElementById("editBio").value.trim();
+   <button class="primary"
+           style="width:auto;padding:10px 25px"
+           onclick="editProfile()">
+    ✏️ پروفایل Edit
+   </button>
 
-if(!name){
-toast("نوم ضروري دی");
-return;
-}
+  </div>
 
-const button=document.getElementById("profileSaveButton");
+ </div>
 
-button.disabled=true;
-button.textContent="⏳ ساتل کېږي...";
+ <div id="feedPosts">
+  <div class="loader">Profile posts...</div>
+ </div>
+ `;
 
-try{
-
-const data=await api("/api/profile",{
-method:"PUT",
-body:JSON.stringify({
-name,
-photo,
-bio
-})
-});
-
-currentUser=data.user || data.data?.user || currentUser;
-
-updateUserUI();
-
-toast("پروفایل په بریالیتوب تازه شو");
-
-}catch(error){
-
-toast(error.message);
-
-}finally{
-
-button.disabled=false;
-button.textContent="💾 معلومات ساتل";
-
-}
-}
-
-/* =========================
-   AUTO NOTIFICATIONS
-========================= */
-
-function startNotificationRefresh(){
-
-if(notificationTimer)clearInterval(notificationTimer);
-
-notificationTimer=setInterval(
-loadNotifications,
-15000
-);
-}
-
-/* =========================
-   ENTER LOGIN
-========================= */
-
-document.addEventListener("keydown",event=>{
-
-if(event.key!=="Enter")return;
-
-const loginPage=document.getElementById("loginPage");
-
-if(!loginPage.classList.contains("hidden")){
-
-const active=document.activeElement;
-
-if(
-active &&
-(
-active.id==="loginEmail" ||
-active.id==="loginPassword"
-)
-){
-
-login();
-
-}
-}
-
-});
-
-/* =========================
-   START
-========================= */
-
-window.addEventListener("load",async()=>{
-
-if(token){
-
-await loadMe();
-
-}else{
-
-showLogin();
+ await loadPosts();
 
 }
 
-});
+function editProfile(){
 
+ const name=prompt("نوی نوم:",currentUser.name||"");
+
+ if(name===null)return;
+
+ api("/users/"+currentUser.id,{
+  method:"PUT",
+  body:JSON.stringify({
+   name
+  })
+ }).then(()=>{
+
+  currentUser.name=name;
+
+  localStorage.setItem(
+   "sbook_user",
+   JSON.stringify(currentUser)
+  );
+
+  updateUserUI();
+
+  toast("پروفایل تازه شو");
+
+ }).catch(e=>toast(e.message));
+
+}
+
+/* ---------- FRIENDS ---------- */
+
+async function showFriends(){
+
+ document.getElementById("mainContent").innerHTML=`
+ <div class="card">
+  <div class="modal-head">👥 ملګري</div>
+  <div class="modal-body" id="friendsBox">
+   <div class="loader">Loading...</div>
+  </div>
+ </div>
+ `;
+
+ const box=document.getElementById("friendsBox");
+
+ try{
+
+  const data=await api("/friends");
+
+  const friends=
+   data.friends||
+   data.data||
+   (Array.isArray(data)?data:[]);
+
+  if(!friends.length){
+
+   box.innerHTML=`<div class="empty">تر اوسه ملګري نشته.</div>`;
+   return;
+
+  }
+
+  box.innerHTML=friends.map(f=>{
+
+   const u=f.user||f;
+
+   return `
+   <div class="contact">
+    <img class="avatar"
+         src="${escapeAttr(u.photo||"")}">
+    <strong>${escapeHtml(u.name||"کاروونکی")}</strong>
+   </div>
+   `;
+
+  }).join("");
+
+ }catch(e){
+
+  box.innerHTML=`<div class="empty">${escapeHtml(e.message)}</div>`;
+
+ }
+}
+
+/* ---------- MESSAGES ---------- */
+
+async function showMessages(){
+
+ document.getElementById("mainContent").innerHTML=`
+
+ <div class="card">
+
+  <div class="modal-head">
+   💬 Messenger
+  </div>
+
+  <div class="modal-body">
+
+   <div class="empty">
+    ستاسې د S-Book پیغامونه
+   </div>
+
+   <div id="messagesBox"></div>
+
+  </div>
+
+ </div>
+ `;
+
+ try{
+
+  const data=await api("/messages");
+
+  const messages=
+   data.messages||
+   data.data||
+   (Array.isArray(data)?data:[]);
+
+  const box=document.getElementById("messagesBox");
+
+  if(!messages.length){
+
+   box.innerHTML=`
+    <div class="empty">
+     تر اوسه پیغام نشته.
+    </div>
+   `;
+
+   return;
+
+  }
+
+  box.innerHTML=messages.map(m=>`
+
+   <div class="card" style="padding:12px">
+
+    <strong>
+     ${escapeHtml(
+      m.sender?.name||
+      m.sender_name||
+      "کاروونکی"
+     )}
+    </strong>
+
+    <p>${escapeHtml(m.message||"")}</p>
+
+   </div>
+
+  `).join("");
+
+ }catch(e){
+
+  document.getElementById("messagesBox").innerHTML=
+   `<div class="empty">${escapeHtml(e.message)}</div>`;
+
+ }
+
+}
+
+/* ---------- NOTIFICATIONS ---------- */
+
+async function loadNotifications(){
+
+ try{
+
+  const data=await api("/notifications");
+
+  const items=
+   data.notifications||
+   data.data||
+   (Array.isArray(data)?data:[]);
+
+  const unread=items.filter(
+   n=>!n.is_read
+  ).length;
+
+  document.getElementById(
+   "notificationBadge"
+  ).textContent=unread;
+
+ }catch(e){}
+
+}
+
+async function showNotifications(){
+
+ document.getElementById("mainContent").innerHTML=`
+
+ <div class="card">
+
+  <div class="modal-head">
+   🔔 خبرتیاوې
+  </div>
+
+  <div class="modal-body"
+       id="notificationsBox">
+
+   <div class="loader">Loading...</div>
+
+  </div>
+
+ </div>
+ `;
+
+ try{
+
+  const data=await api("/notifications");
+
+  const list=
+   data.notifications||
+   data.data||
+   (Array.isArray(data)?data:[]);
+
+  const box=document.getElementById("notificationsBox");
+
+  if(!list.length){
+
+   box.innerHTML=`
+    <div class="empty">
+     نوې خبرتیا نشته.
+    </div>
+   `;
+
+   return;
+
+  }
+
+  box.innerHTML=list.map(n=>`
+
+   <div class="contact"
+        style="background:${n.is_read?"":"#eef5ff"}">
+
+    <span style="font-size:24px">🔔</span>
+
+    <div>
+     <strong>
+      ${escapeHtml(n.message||"خبرتیا")}
+     </strong>
+     <br>
+     <small>${escapeHtml(n.created_at||"")}</small>
+    </div>
+
+   </div>
+
+  `).join("");
+
+ }catch(e){
+
+  document.getElementById("notificationsBox").innerHTML=
+   `<div class="empty">${escapeHtml(e.message)}</div>`;
+
+ }
+}
+
+/* ---------- SEARCH ---------- */
+
+async function searchUsers(){
+
+ const q=document.getElementById("searchInput").value.trim();
+
+ if(!q)return;
+
+ document.getElementById("mainContent").innerHTML=`
+
+ <div class="card">
+
+  <div class="modal-head">
+   🔎 د "${escapeHtml(q)}" لټون
+  </div>
+
+  <div class="modal-body"
+       id="searchResults">
+
+   <div class="loader">Searching...</div>
+
+  </div>
+
+ </div>
+ `;
+
+ try{
+
+  const data=await api(
+   "/search?q="+encodeURIComponent(q)
+  );
+
+  const users=
+   data.users||
+   data.data||
+   data.results||
+   [];
+
+  const box=document.getElementById("searchResults");
+
+  if(!users.length){
+
+   box.innerHTML=`
+    <div class="empty">
+     نتیجه پیدا نشوه.
+    </div>
+   `;
+
+   return;
+
+  }
+
+  box.innerHTML=users.map(u=>`
+
+   <div class="contact">
+
+    <img class="avatar"
+         src="${escapeAttr(u.photo||"")}">
+
+    <div style="flex:1">
+     <strong>${escapeHtml(u.name||"کاروونکی")}</strong>
+     <br>
+     <small>${escapeHtml(u.email||"")}</small>
+    </div>
+
+    <button
+     class="primary"
+     style="width:auto"
+     onclick="sendFriendRequest('${u.id}')">
+     Add Friend
+    </button>
+
+   </div>
+
+  `).join("");
+
+ }catch(e){
+
+  document.getElementById("searchResults").innerHTML=
+   `<div class="empty">${escapeHtml(e.message)}</div>`;
+
+ }
+}
+
+/* ---------- FRIEND REQUEST ---------- */
+
+async function sendFriendRequest(userId){
+
+ try{
+
+  await api("/friends/request",{
+   method:"POST",
+   body:JSON.stringify({
+    receiver_id:userId
+   })
+  });
+
+  toast("Friend Request واستول شو ✅");
+
+ }catch(e){
+
+  toast("Request: "+e.message);
+
+ }
+}
+
+/* ---------- OTHER SECTIONS ---------- */
+
+async function genericSection(title,icon,path){
+
+ document.getElementById("mainContent").innerHTML=`
+
+ <div class="card">
+
+  <div class="modal-head">
+   ${icon} ${title}
+  </div>
+
+  <div class="modal-body"
+       id="genericBox">
+
+   <div class="loader">Loading...</div>
+
+  </div>
+
+ </div>
+ `;
+
+ try{
+
+  const data=await api(path);
+
+  const list=
+   data.data||
+   data.items||
+   data.results||
+   [];
+
+  const box=document.getElementById("genericBox");
+
+  if(!Array.isArray(list)||!list.length){
+
+   box.innerHTML=`
+    <div class="empty">
+     ${title} کې تر اوسه معلومات نشته.
+    </div>
+   `;
+
+   return;
+  }
+
+  box.innerHTML=list.map(x=>`
+
+   <div class="card" style="padding:14px">
+
+    <strong>
+     ${escapeHtml(
+      x.name||
+      x.title||
+      x.question||
+      "S-Book"
+     )}
+    </strong>
+
+    <p>
+     ${escapeHtml(
+      x.description||
+      x.text||
+      x.caption||
+      ""
+     )}
+    </p>
+
+   </div>
+
+  `).join("");
+
+ }catch(e){
+
+  document.getElementById("genericBox").innerHTML=
+   `<div class="empty">${escapeHtml(e.message)}</div>`;
+
+ }
+}
+
+function showGroups(){
+ genericSection("ګروپونه","👨‍👩‍👧‍👦","/groups");
+}
+
+function showPages(){
+ genericSection("پاڼې","📄","/pages");
+}
+
+function showReels(){
+ genericSection("Reels","🎬","/reels");
+}
+
+function showMarketplace(){
+ genericSection("Marketplace","🛒","/marketplace");
+}
+
+function showEvents(){
+ genericSection("Events","📅","/events");
+}
+
+/* ---------- SECURITY ---------- */
+
+function escapeHtml(value){
+
+ return String(value??"")
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+
+}
+
+function escapeAttr(value){
+
+ return escapeHtml(value);
+
+}
+
+/* ---------- START ---------- */
+
+(async function(){
+
+ const saved=localStorage.getItem("sbook_user");
+
+ if(saved){
+
+  try{
+   currentUser=JSON.parse(saved);
+  }catch(e){}
+
+ }
+
+ if(token){
+
+  document.getElementById(
+   "loginOverlay"
+  ).style.display="none";
+
+  await initialize();
+
+ }else{
+
+  document.getElementById(
+   "loginOverlay"
+  ).style.display="flex";
+
+ }
+
+})();
 </script>
 
 </body>
