@@ -1354,7 +1354,1991 @@ const API_URL =
    USER STATE
 ========================================================= */
 
+```html
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>S BOOK | سیدولي افغاني نړیواله ټولنیزه شبکه</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:Tahoma,Arial,sans-serif;
+background:#f0f2f5;
+color:#17202a
+}
+
+button,input,textarea{font-family:inherit}
+
+#auth-view{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:25px
+}
+
+.login-wrapper{
+width:100%;
+max-width:1000px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:50px
+}
+
+.login-left{
+flex:1;
+text-align:right
+}
+
+.login-left img{
+width:180px;
+height:180px;
+object-fit:cover;
+border-radius:20px;
+box-shadow:0 5px 20px #0002
+}
+
+.login-logo{
+color:#087fce;
+font-size:50px;
+font-weight:900;
+margin:12px 0
+}
+
+.login-left h2{
+line-height:1.8
+}
+
+.login-card{
+width:100%;
+max-width:400px;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 5px 20px #0002
+}
+
+.login-card input,
+.modal-box input{
+width:100%;
+padding:14px;
+border:1px solid #dddfe2;
+border-radius:8px;
+margin-bottom:12px;
+font-size:16px;
+outline:none
+}
+
+.login-card input:focus,
+.modal-box input:focus{
+border-color:#1877f2;
+box-shadow:0 0 0 2px #e7f3ff
+}
+
+.btn-login{
+width:100%;
+padding:13px;
+border:0;
+border-radius:7px;
+background:#1877f2;
+color:#fff;
+font-size:19px;
+font-weight:bold;
+cursor:pointer
+}
+
+.create-account{
+display:block;
+margin:auto;
+padding:12px 20px;
+border:0;
+border-radius:7px;
+background:#42b72a;
+color:#fff;
+font-size:17px;
+font-weight:bold;
+cursor:pointer
+}
+
+.divider{
+height:1px;
+background:#ddd;
+margin:20px 0
+}
+
+.error{
+color:#d93025;
+text-align:center;
+font-weight:bold;
+font-size:14px;
+margin-bottom:10px;
+display:none
+}
+
+.success{
+color:#188038;
+text-align:center;
+font-weight:bold;
+font-size:14px;
+margin-bottom:10px;
+display:none
+}
+
+.loading{
+text-align:center;
+color:#087fce;
+font-weight:bold;
+display:none;
+margin:10px
+}
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+z-index:9999;
+background:#0008;
+align-items:center;
+justify-content:center;
+padding:20px
+}
+
+.modal-box{
+background:#fff;
+width:100%;
+max-width:430px;
+border-radius:12px;
+padding:22px;
+position:relative
+}
+
+.close{
+position:absolute;
+left:15px;
+top:8px;
+font-size:30px;
+cursor:pointer;
+color:#777
+}
+
+.modal-box h2{margin-bottom:8px}
+
+.modal-box p{
+color:#777;
+margin-bottom:18px
+}
+
+#home-view{display:none}
+
+.header{
+height:64px;
+background:#fff;
+position:sticky;
+top:0;
+z-index:1000;
+display:flex;
+align-items:center;
+gap:20px;
+padding:0 22px;
+box-shadow:0 1px 8px #0002
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+min-width:180px
+}
+
+.logo-icon{
+width:44px;
+height:44px;
+border-radius:50%;
+background:linear-gradient(135deg,#087fce,#00b894);
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:23px;
+font-weight:bold
+}
+
+.logo strong{
+color:#087fce;
+font-size:20px
+}
+
+.search{
+flex:1;
+max-width:500px
+}
+
+.search input{
+width:100%;
+border:0;
+outline:0;
+background:#f0f2f5;
+padding:12px 18px;
+border-radius:25px
+}
+
+.header-icons{
+margin-right:auto;
+display:flex;
+gap:8px
+}
+
+.icon-btn{
+width:42px;
+height:42px;
+border:0;
+border-radius:50%;
+background:#f0f2f5;
+cursor:pointer;
+font-size:18px
+}
+
+.layout{
+max-width:1450px;
+margin:auto;
+display:grid;
+grid-template-columns:250px minmax(400px,700px) 280px;
+gap:20px;
+padding:22px
+}
+
+.sidebar,.rightbar{
+position:sticky;
+top:85px;
+height:max-content
+}
+
+.mini-profile,.menu,.card,.create-post,.post{
+background:#fff;
+border-radius:15px;
+box-shadow:0 1px 5px #0001
+}
+
+.mini-profile{
+padding:18px;
+margin-bottom:15px;
+text-align:center
+}
+
+.avatar{
+width:70px;
+height:70px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid #fff;
+box-shadow:0 1px 5px #0003
+}
+
+.mini-profile strong{
+display:block;
+margin-top:8px
+}
+
+.mini-profile small{color:#777}
+
+.menu{
+padding:10px
+}
+
+.menu-item{
+padding:14px;
+border-radius:10px;
+display:flex;
+align-items:center;
+gap:12px;
+cursor:pointer
+}
+
+.menu-item:hover{
+background:#f0f2f5
+}
+
+.menu-item.active{
+background:#e8f4ff;
+color:#087fce;
+font-weight:bold
+}
+
+.menu-icon{
+width:32px;
+text-align:center;
+font-size:19px
+}
+
+.stories{
+display:flex;
+gap:10px;
+overflow-x:auto;
+margin-bottom:15px
+}
+
+.story{
+min-width:115px;
+height:175px;
+border-radius:15px;
+overflow:hidden;
+position:relative;
+background:linear-gradient(145deg,#087fce,#00b894);
+color:#fff;
+box-shadow:0 1px 5px #0002
+}
+
+.story img{
+width:100%;
+height:100%;
+object-fit:cover;
+opacity:.75
+}
+
+.story-name{
+position:absolute;
+bottom:10px;
+right:8px;
+left:8px;
+font-size:12px;
+font-weight:bold
+}
+
+.story-add{
+display:flex;
+align-items:center;
+justify-content:center;
+background:#fff;
+color:#087fce
+}
+
+.story-add span{
+text-align:center;
+font-size:13px
+}
+
+.create-post,.post{
+margin-bottom:15px;
+padding:16px
+}
+
+.create-top{
+display:flex;
+align-items:center;
+gap:10px
+}
+
+.create-top .avatar{
+width:48px;
+height:48px
+}
+
+.create-input{
+flex:1;
+background:#f0f2f5;
+border:0;
+border-radius:25px;
+padding:13px 18px;
+color:#777;
+cursor:pointer
+}
+
+#post-text{
+display:none;
+width:100%;
+margin-top:12px;
+min-height:100px;
+padding:12px;
+border:1px solid #ddd;
+border-radius:10px;
+resize:vertical;
+font-size:15px
+}
+
+#post-submit-area{
+display:none;
+margin-top:10px;
+text-align:left
+}
+
+.post-actions{
+display:flex;
+border-top:1px solid #eee;
+margin-top:15px;
+padding-top:12px
+}
+
+.post-action{
+flex:1;
+border:0;
+background:#fff;
+padding:10px;
+cursor:pointer;
+border-radius:8px
+}
+
+.post-action:hover{
+background:#f0f2f5
+}
+
+.photo{color:#00a86b}
+.video{color:#e74c3c}
+.feeling{color:#f39c12}
+
+.post-header{
+display:flex;
+align-items:center;
+gap:10px
+}
+
+.post-header .avatar{
+width:45px;
+height:45px
+}
+
+.post-info strong{display:block}
+.post-info small{color:#777}
+
+.post-text{
+padding:15px 3px;
+line-height:1.9;
+white-space:pre-wrap;
+word-break:break-word
+}
+
+.post-stats{
+display:flex;
+justify-content:space-between;
+color:#777;
+font-size:13px;
+padding:12px 3px
+}
+
+.post-buttons{
+border-top:1px solid #eee;
+display:flex
+}
+
+.post-buttons button{
+flex:1;
+border:0;
+background:#fff;
+padding:12px;
+cursor:pointer
+}
+
+.post-buttons button:hover{
+background:#f0f2f5
+}
+
+.card{
+padding:16px;
+margin-bottom:15px
+}
+
+.card-title{
+font-weight:bold;
+margin-bottom:14px
+}
+
+.news{
+padding:10px 0;
+border-bottom:1px solid #eee;
+line-height:1.7;
+font-size:13px
+}
+
+.source{
+color:#087fce;
+font-size:11px
+}
+
+.person{
+display:flex;
+align-items:center;
+gap:10px;
+padding:8px 0
+}
+
+.person .avatar{
+width:40px;
+height:40px
+}
+
+.empty{
+text-align:center;
+background:#fff;
+border-radius:12px;
+padding:30px;
+color:#777
+}
+
+footer{
+text-align:center;
+padding:20px;
+color:#777;
+font-size:12px
+}
+
+.mobile-nav{
+display:none
+}
+
+@media(max-width:1050px){
+
+.layout{
+grid-template-columns:80px minmax(400px,700px)
+}
+
+.rightbar{display:none}
+
+.menu-item span:not(.menu-icon),
+.mini-profile strong,
+.mini-profile small{
+display:none
+}
+
+.mini-profile{padding:10px}
+}
+
+@media(max-width:700px){
+
+#auth-view{
+padding:20px 12px
+}
+
+.login-wrapper{
+flex-direction:column;
+gap:20px
+}
+
+.login-left{text-align:center}
+
+.login-left img{
+width:110px;
+height:110px
+}
+
+.login-logo{font-size:38px}
+
+.login-left h2{font-size:18px}
+
+.header{
+height:58px;
+padding:0 10px
+}
+
+.logo{min-width:auto}
+
+.logo strong{display:none}
+
+.search{display:none}
+
+.layout{
+display:block;
+padding:10px
+}
+
+.sidebar{display:none}
+
+.mobile-nav{
+display:flex;
+position:fixed;
+bottom:0;
+right:0;
+left:0;
+height:62px;
+background:#fff;
+z-index:2000;
+box-shadow:0 -2px 10px #0002
+}
+
+.mobile-nav button{
+flex:1;
+border:0;
+background:#fff;
+font-size:18px
+}
+
+.mobile-nav small{
+display:block;
+font-size:9px
+}
+
+body{padding-bottom:65px}
+
+.story{
+min-width:105px;
+height:155px
+}
+}
+</style>
+</head>
+
+<body>
+
+<section id="auth-view">
+
+<div class="login-wrapper">
+
+<div class="login-left">
+
+<img src="said.png" alt="S BOOK"
+onerror="this.style.display='none'">
+
+<div class="login-logo">S BOOK</div>
+
+<h2>
+پخیر راغلۍ د سیدولي افغاني نړیوالې ټولنیزې شبکې ته 🌐
+</h2>
+
+</div>
+
+<div class="login-card">
+
+<div id="login-error" class="error"></div>
+<div id="login-success" class="success"></div>
+
+<div id="login-loading" class="loading">
+⏳ د ننوتلو غوښتنه لېږل کېږي...
+</div>
+
+<input
+id="login-username"
+type="text"
+placeholder="د کاروونکي نوم"
+autocomplete="username">
+
+<input
+id="login-password"
+type="password"
+placeholder="پاسورډ"
+autocomplete="current-password">
+
+<button class="btn-login" onclick="handleLogin()">
+ننوتل
+</button>
+
+<div class="divider"></div>
+
+<button class="create-account"
+onclick="openRegister()">
+نوی اکاونټ جوړ کړئ
+</button>
+
+</div>
+</div>
+</section>
+
+
+<div id="register-modal" class="modal">
+
+<div class="modal-box">
+
+<span class="close" onclick="closeRegister()">×</span>
+
+<h2>نوی اکاونټ جوړ کړئ</h2>
+
+<p>
+د S BOOK ټولنیزې شبکې سره یوځای شئ.
+</p>
+
+<div id="register-error" class="error"></div>
+<div id="register-success" class="success"></div>
+
+<div id="register-loading" class="loading">
+⏳ اکاونټ جوړېږي...
+</div>
+
+<input
+id="reg-fullname"
+type="text"
+placeholder="بشپړ نوم">
+
+<input
+id="reg-username"
+type="text"
+placeholder="Username"
+autocomplete="username">
+
+<input
+id="reg-password"
+type="password"
+placeholder="پاسورډ"
+autocomplete="new-password">
+
+<button
+class="create-account"
+style="width:100%"
+onclick="handleRegister()">
+راجستر کول
+</button>
+
+</div>
+</div>
+
+
+<section id="home-view">
+
+<header class="header">
+
+<div class="logo">
+
+<div class="logo-icon">س</div>
+
+<strong>S BOOK</strong>
+
+</div>
+
+<div class="search">
+
+<input
+id="search-input"
+type="search"
+placeholder="خلک، پوسټونه او خبرونه ولټوئ...">
+
+</div>
+
+<div class="header-icons">
+
+<button class="icon-btn">🔍</button>
+
+<button class="icon-btn"
+onclick="showFriends()">
+👥
+</button>
+
+<button class="icon-btn">💬</button>
+
+<button class="icon-btn"
+onclick="logout()">
+🚪
+</button>
+
+</div>
+
+</header>
+
+
+<div class="layout">
+
+<aside class="sidebar">
+
+<div class="mini-profile">
+
+<img
+id="mini-avatar"
+class="avatar"
+src="said.png">
+
+<strong id="mini-name">
+کاروونکی
+</strong>
+
+<small>
+زما پروفایل
+</small>
+
+</div>
+
+<div class="menu">
+
+<div class="menu-item active">
+<span class="menu-icon">🏠</span>
+<span>کور</span>
+</div>
+
+<div class="menu-item"
+onclick="loadMyProfile()">
+<span class="menu-icon">👤</span>
+<span>پروفایل</span>
+</div>
+
+<div class="menu-item"
+onclick="showFriends()">
+<span class="menu-icon">👥</span>
+<span>ملګري</span>
+</div>
+
+<div class="menu-item">
+<span class="menu-icon">💬</span>
+<span>پیغامونه</span>
+</div>
+
+<div class="menu-item">
+<span class="menu-icon">🔔</span>
+<span>خبرتیاوې</span>
+</div>
+
+<div class="menu-item">
+<span class="menu-icon">👨‍👩‍👧</span>
+<span>ګروپونه</span>
+</div>
+
+<div class="menu-item">
+<span class="menu-icon">📰</span>
+<span>نړیوال خبرونه</span>
+</div>
+
+<div class="menu-item">
+<span class="menu-icon">⭐</span>
+<span>تعقیب شوي</span>
+</div>
+
+<div class="menu-item"
+onclick="logout()">
+<span class="menu-icon">🚪</span>
+<span>وتل</span>
+</div>
+
+</div>
+</aside>
+
+
+<main>
+
+<div class="stories">
+
+<div class="story story-add">
+
+<span>
+➕
+<br>
+ستوري اضافه کړه
+</span>
+
+</div>
+
+<div class="story">
+<img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400">
+<div class="story-name">مریم</div>
+</div>
+
+<div class="story">
+<img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400">
+<div class="story-name">احمد</div>
+</div>
+
+<div class="story">
+<img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400">
+<div class="story-name">فاطمه</div>
+</div>
+
+<div class="story">
+<img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400">
+<div class="story-name">محمد</div>
+</div>
+
+</div>
+
+
+<div class="create-post">
+
+<div class="create-top">
+
+<img
+id="post-avatar"
+class="avatar"
+src="said.png">
+
+<div
+class="create-input"
+onclick="focusPost()">
+
+څه فکر کوې،
+<span id="post-name">...</span>؟
+
+</div>
+
+</div>
+
+<textarea
+id="post-text"
+placeholder="خپل پوسټ ولیکئ...">
+</textarea>
+
+<div id="post-submit-area">
+
+<button
+onclick="sendPost()"
+style="
+background:#1877f2;
+color:white;
+border:0;
+border-radius:7px;
+padding:10px 25px;
+font-weight:bold;
+cursor:pointer">
+خپرول
+</button>
+
+<button
+onclick="cancelPost()"
+style="
+background:#eee;
+border:0;
+border-radius:7px;
+padding:10px 20px;
+margin-right:5px;
+cursor:pointer">
+لغوه
+</button>
+
+</div>
+
+<div class="post-actions">
+
+<button class="post-action photo"
+onclick="alert('د عکس Upload برخه به د R2 سره وصل کړو.')">
+📷 عکس/ویډیو
+</button>
+
+<button class="post-action video">
+🎥 Live
+</button>
+
+<button
+class="post-action feeling"
+onclick="focusPost()">
+😊 احساس
+</button>
+
+</div>
+
+</div>
+
+
+<div id="feed-container">
+
+<div class="empty">
+⏳ پوسټونه لوډ کېږي...
+</div>
+
+</div>
+
+</main>
+
+
+<aside class="rightbar">
+
+<div class="card">
+
+<div class="card-title">
+📰 نړیوال خبرونه
+</div>
+
+<div class="news">
+<div class="source">S BOOK News</div>
+د افغانستان او نړۍ تازه خبرونه
+</div>
+
+<div class="news">
+<div class="source">BBC Pashto</div>
+د نړۍ تازه مهم خبرونه
+</div>
+
+<div class="news">
+<div class="source">VOA</div>
+تازه نړیوال راپورونه
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-title">
+👥 زما ملګري
+</div>
+
+<div id="friends-container">
+
+<div style="color:#777">
+د ملګرو معلومات لوډ کېږي...
+</div>
+
+</div>
+
+</div>
+
+</aside>
+
+</div>
+
+
+<nav class="mobile-nav">
+
+<button>
+🏠
+<small>کور</small>
+</button>
+
+<button onclick="showFriends()">
+👥
+<small>ملګري</small>
+</button>
+
+<button onclick="focusPost()">
+➕
+<small>پوسټ</small>
+</button>
+
+<button>
+💬
+<small>پیغام</small>
+</button>
+
+<button onclick="loadMyProfile()">
+👤
+<small>پروفایل</small>
+</button>
+
+</nav>
+
+
+<footer>
+© 2026 S BOOK — سیدولي افغاني نړیواله ټولنیزه شبکه
+</footer>
+
+</section>
+
+
+<script>
+
+/* =========================================================
+   REAL CLOUDFLARE WORKER
+========================================================= */
+
+const API_URL =
+"https://saidwali-social-api.walizaad2.workers.dev";
+
+
+let currentUserId = null;
 let currentUser = null;
+let currentFullname = null;
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function show(id,msg){
+
+const el=document.getElementById(id);
+
+if(!el)return;
+
+el.textContent=msg;
+el.style.display="block";
+}
+
+function hide(id){
+
+const el=document.getElementById(id);
+
+if(!el)return;
+
+el.style.display="none";
+}
+
+function escapeHTML(value){
+
+return String(value ?? "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+
+/* =========================================================
+   REGISTER
+========================================================= */
+
+async function handleRegister(){
+
+const fullname=
+document.getElementById("reg-fullname").value.trim();
+
+const username=
+document.getElementById("reg-username").value.trim();
+
+const password=
+document.getElementById("reg-password").value;
+
+hide("register-error");
+hide("register-success");
+
+if(!fullname||!username||!password){
+
+show(
+"register-error",
+"ټول معلومات بشپړ ولیکئ."
+);
+
+return;
+}
+
+if(password.length<6){
+
+show(
+"register-error",
+"Password باید لږ تر لږه ۶ حروف ولري."
+);
+
+return;
+}
+
+document.getElementById("register-loading")
+.style.display="block";
+
+try{
+
+const response=await fetch(
+API_URL+"/api/register",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+full_name:fullname,
+username:username,
+password:password
+})
+}
+);
+
+const data=await response.json();
+
+if(response.ok&&data.success){
+
+show(
+"register-success",
+"اکاونټ جوړ شو. اوس Login وکړئ."
+);
+
+document.getElementById("reg-fullname").value="";
+document.getElementById("reg-username").value="";
+document.getElementById("reg-password").value="";
+
+}else{
+
+show(
+"register-error",
+data.error||"اکاونټ جوړ نه شو."
+);
+}
+
+}catch(e){
+
+console.error(e);
+
+show(
+"register-error",
+"Cloudflare Worker سره اتصال ونه شو."
+);
+
+}finally{
+
+document.getElementById("register-loading")
+.style.display="none";
+}
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function handleLogin(){
+
+const username=
+document.getElementById("login-username").value.trim();
+
+const password=
+document.getElementById("login-password").value;
+
+hide("login-error");
+hide("login-success");
+
+if(!username||!password){
+
+show(
+"login-error",
+"Username او Password دواړه ولیکئ."
+);
+
+return;
+}
+
+document.getElementById("login-loading")
+.style.display="block";
+
+try{
+
+const response=await fetch(
+API_URL+"/api/login",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+username,
+password
+})
+}
+);
+
+const data=await response.json();
+
+console.log("LOGIN:",data);
+
+if(response.ok&&data.success&&data.user){
+
+const user=data.user;
+
+currentUserId=Number(user.id);
+currentUser=user.username;
+currentFullname=user.full_name;
+
+localStorage.setItem(
+"sbook_user_id",
+String(currentUserId)
+);
+
+localStorage.setItem(
+"sbook_username",
+currentUser
+);
+
+localStorage.setItem(
+"sbook_fullname",
+currentFullname
+);
+
+localStorage.setItem(
+"sbook_user",
+JSON.stringify(user)
+);
+
+showHome();
+
+}else{
+
+show(
+"login-error",
+data.error||"Username یا Password غلط دی."
+);
+}
+
+}catch(e){
+
+console.error(e);
+
+show(
+"login-error",
+"Cloudflare Worker سره اتصال ونه شو."
+);
+
+}finally{
+
+document.getElementById("login-loading")
+.style.display="none";
+}
+}
+
+
+/* =========================================================
+   HOME
+========================================================= */
+
+function showHome(){
+
+document.getElementById("auth-view")
+.style.display="none";
+
+document.getElementById("register-modal")
+.style.display="none";
+
+document.getElementById("home-view")
+.style.display="block";
+
+document.getElementById("mini-name")
+.textContent=
+currentFullname||currentUser;
+
+document.getElementById("post-name")
+.textContent=
+currentFullname||currentUser;
+
+loadPosts();
+loadFriends();
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function logout(){
+
+localStorage.removeItem("sbook_user_id");
+localStorage.removeItem("sbook_username");
+localStorage.removeItem("sbook_fullname");
+localStorage.removeItem("sbook_user");
+
+currentUserId=null;
+currentUser=null;
+currentFullname=null;
+
+document.getElementById("home-view")
+.style.display="none";
+
+document.getElementById("auth-view")
+.style.display="flex";
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openRegister(){
+
+document.getElementById("register-modal")
+.style.display="flex";
+}
+
+function closeRegister(){
+
+document.getElementById("register-modal")
+.style.display="none";
+}
+
+
+/* =========================================================
+   POST BOX
+========================================================= */
+
+function focusPost(){
+
+const box=document.getElementById("post-text");
+
+box.style.display="block";
+
+document.getElementById("post-submit-area")
+.style.display="block";
+
+box.focus();
+}
+
+function cancelPost(){
+
+document.getElementById("post-text").value="";
+
+document.getElementById("post-text")
+.style.display="none";
+
+document.getElementById("post-submit-area")
+.style.display="none";
+}
+
+
+/* =========================================================
+   CREATE POST
+========================================================= */
+
+async function sendPost(){
+
+if(!currentUserId){
+
+alert("لومړی Login وکړئ.");
+return;
+}
+
+const content=
+document.getElementById("post-text")
+.value.trim();
+
+if(!content){
+
+alert("خپل Post ولیکئ.");
+return;
+}
+
+try{
+
+const response=await fetch(
+API_URL+"/api/posts",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+
+user_id:currentUserId,
+
+content:content,
+
+post_type:"text",
+
+privacy:"public"
+
+})
+}
+);
+
+const data=await response.json();
+
+console.log("CREATE POST:",data);
+
+if(response.ok&&data.success){
+
+cancelPost();
+
+await loadPosts();
+
+}else{
+
+alert(
+data.error||
+"Post جوړ نه شو."
+);
+}
+
+}catch(e){
+
+console.error(e);
+
+alert(
+"Cloudflare API سره ستونزه راغله."
+);
+}
+}
+
+
+/* =========================================================
+   LOAD POSTS
+========================================================= */
+
+async function loadPosts(){
+
+const container=
+document.getElementById("feed-container");
+
+container.innerHTML=
+'<div class="empty">⏳ پوسټونه لوډ کېږي...</div>';
+
+try{
+
+const response=await fetch(
+API_URL+"/api/posts?limit=50&offset=0"
+);
+
+const data=await response.json();
+
+console.log("POSTS:",data);
+
+if(!response.ok||
+!data.success||
+!Array.isArray(data.posts)){
+
+container.innerHTML=
+'<div class="empty">پوسټونه ترلاسه نه شول.</div>';
+
+return;
+}
+
+if(data.posts.length===0){
+
+container.innerHTML=
+'<div class="empty">تر اوسه هېڅ Post نشته. لومړی Post جوړ کړئ 🎉</div>';
+
+return;
+}
+
+container.innerHTML="";
+
+data.posts.forEach(post=>{
+
+const article=document.createElement("article");
+
+article.className="post";
+
+const name=
+escapeHTML(
+post.full_name||
+post.username||
+"کاروونکی"
+);
+
+const username=
+escapeHTML(
+post.username||
+"user"
+);
+
+const content=
+escapeHTML(post.content||"");
+
+const avatar=
+post.avatar_url||
+"said.png";
+
+article.innerHTML=`
+
+<div class="post-header">
+
+<img
+class="avatar"
+src="${avatar}"
+onerror="this.src='said.png'"
+>
+
+<div class="post-info">
+
+<strong>${name}</strong>
+
+<small>
+@${username}
+ · 🌍 عامه
+ · ${safeDate(post.created_at)}
+</small>
+
+</div>
+
+</div>
+
+<div class="post-text">
+${content}
+</div>
+
+<div class="post-stats">
+
+<span>
+❤️ ${post.likes_count||0} خوښونې
+</span>
+
+<span>
+💬 ${post.comments_count||0} تبصرې
+</span>
+
+</div>
+
+<div class="post-buttons">
+
+<button
+onclick="likePost(${post.id})">
+❤️ خوښول
+</button>
+
+<button
+onclick="commentPost(${post.id})">
+💬 تبصره
+</button>
+
+<button
+onclick="sharePost(${post.id})">
+↗ شریکول
+</button>
+
+<button
+onclick="openPost(${post.id})">
+⋯ نور
+</button>
+
+</div>
+
+`;
+
+container.appendChild(article);
+
+});
+
+}catch(e){
+
+console.error(e);
+
+container.innerHTML=
+'<div class="empty">❌ د Cloudflare API سره ستونزه راغله.</div>';
+}
+}
+
+
+/* =========================================================
+   LIKE
+========================================================= */
+
+async function likePost(postId){
+
+if(!currentUserId){
+
+alert("لومړی Login وکړئ.");
+return;
+}
+
+try{
+
+const response=await fetch(
+API_URL+
+"/api/posts/"+
+postId+
+"/reaction",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+
+user_id:currentUserId,
+
+reaction_type:"like"
+
+})
+}
+);
+
+const data=await response.json();
+
+if(response.ok&&data.success){
+
+await loadPosts();
+
+}else{
+
+alert(
+data.error||
+"Like ثبت نه شو."
+);
+}
+
+}catch(e){
+
+console.error(e);
+
+alert("Like کې ستونزه راغله.");
+}
+}
+
+
+/* =========================================================
+   SINGLE POST
+========================================================= */
+
+async function openPost(postId){
+
+try{
+
+const response=await fetch(
+API_URL+"/api/posts/"+postId
+);
+
+const data=await response.json();
+
+if(response.ok&&data.success){
+
+alert(
+(data.post.full_name||
+data.post.username||
+"Post")+
+"\n\n"+
+(data.post.content||"")
+);
+
+}else{
+
+alert(
+data.error||
+"Post پیدا نه شو."
+);
+}
+
+}catch(e){
+
+console.error(e);
+}
+}
+
+
+/* =========================================================
+   COMMENT
+========================================================= */
+
+function commentPost(postId){
+
+alert(
+"د Comment سیستم به د موجود SQL Schema له مطابق API سره وصلوو.\n\nPost ID: "+
+postId
+);
+}
+
+
+/* =========================================================
+   SHARE
+========================================================= */
+
+async function sharePost(postId){
+
+const link=
+location.origin+
+location.pathname+
+"?post="+postId;
+
+try{
+
+if(navigator.share){
+
+await navigator.share({
+title:"S BOOK",
+text:"S BOOK Post",
+url:link
+});
+
+}else{
+
+await navigator.clipboard.writeText(link);
+
+alert("د Post لینک Copy شو.");
+
+}
+
+}catch(e){}
+}
+
+
+/* =========================================================
+   FRIENDS
+========================================================= */
+
+async function loadFriends(){
+
+if(!currentUserId)return;
+
+const container=
+document.getElementById("friends-container");
+
+try{
+
+const response=await fetch(
+API_URL+
+"/api/friends/"+
+currentUserId
+);
+
+const data=await response.json();
+
+if(!response.ok||!data.success){
+
+container.innerHTML=
+"<div style='color:#777'>ملګري ترلاسه نه شول.</div>";
+
+return;
+}
+
+if(!data.friends.length){
+
+container.innerHTML=
+"<div style='color:#777'>تر اوسه ملګري نشته.</div>";
+
+return;
+}
+
+container.innerHTML="";
+
+data.friends.forEach(friend=>{
+
+const div=document.createElement("div");
+
+div.className="person";
+
+div.innerHTML=`
+
+<img
+class="avatar"
+src="${friend.avatar_url||"said.png"}"
+onerror="this.src='said.png'"
+>
+
+<span>
+${escapeHTML(
+friend.full_name||
+friend.username
+)}
+</span>
+
+`;
+
+container.appendChild(div);
+
+});
+
+}catch(e){
+
+console.error(e);
+
+container.innerHTML=
+"<div style='color:#777'>د ملګرو API سره ستونزه راغله.</div>";
+}
+}
+
+
+function showFriends(){
+
+loadFriends();
+
+alert(
+"ستاسې ملګري د ښي اړخ په برخه کې ښکاري."
+);
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+async function loadMyProfile(){
+
+if(!currentUserId)return;
+
+try{
+
+const response=await fetch(
+API_URL+
+"/api/users/"+
+currentUserId
+);
+
+const data=await response.json();
+
+if(response.ok&&data.success){
+
+const u=data.user;
+
+alert(
+
+"نوم: "+
+(u.full_name||"")+
+
+"\nUsername: @"+
+(u.username||"")+
+
+"\nEmail: "+
+(u.email||"")+
+
+"\nLocation: "+
+(u.location||"")+
+
+"\nBio: "+
+(u.bio||"")
+
+);
+
+}else{
+
+alert(
+data.error||
+"Profile پیدا نه شو."
+);
+}
+
+}catch(e){
+
+console.error(e);
+
+alert("Profile ترلاسه نه شو.");
+}
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function safeDate(date){
+
+if(!date)return"اوس";
+
+try{
+
+return new Date(date)
+.toLocaleString("ps-AF");
+
+}catch{
+
+return date;
+}
+}
+
+
+/* =========================================================
+   RESTORE LOGIN
+========================================================= */
+
+function restoreLogin(){
+
+const id=
+localStorage.getItem("sbook_user_id");
+
+const username=
+localStorage.getItem("sbook_username");
+
+const fullname=
+localStorage.getItem("sbook_fullname");
+
+if(id&&username){
+
+currentUserId=Number(id);
+
+currentUser=username;
+
+currentFullname=
+fullname||username;
+
+showHome();
+}
+}
+
+
+/* =========================================================
+   ENTER LOGIN
+========================================================= */
+
+document.getElementById(
+"login-password"
+).addEventListener(
+"keydown",
+e=>{
+
+if(e.key==="Enter"){
+handleLogin();
+}
+
+});
+
+
+/* =========================================================
+   START
+========================================================= */
+
+restoreLogin();
+
+</script>
+
+</body>
+</html>
+```
+
 let currentFullname = null;
 
 
