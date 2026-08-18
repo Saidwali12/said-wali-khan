@@ -1,139 +1,2040 @@
+```html
 <!DOCTYPE html>
 <html lang="ps" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سیدولي خان کوهستاني بوک - ننوتل یا ګډون</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #1c1e21; display: flex; flex-direction: column; min-height: 100vh; }
-        .fb-login-container { flex: 1; display: flex; justify-content: center; align-items: center; max-width: 1000px; margin: 0 auto; width: 100%; padding: 40px 20px; flex-wrap: wrap; gap: 40px; }
-        .fb-left { flex: 1; min-width: 300px; max-width: 500px; text-align: right; }
-        .fb-left img { max-width: 240px; height: auto; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 2px solid #fff; }
-        .fb-left h1 { font-size: 45px; color: #1877f2; font-weight: 900; margin-bottom: 10px; letter-spacing: -1px; }
-        .fb-left p { font-size: 24px; font-weight: bold; line-height: 32px; color: #1c1e21; }
-        .fb-right { flex: 1; min-width: 300px; max-width: 400px; }
-        .login-card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); border: 1px solid #dddfe2; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #dddfe2; border-radius: 6px; font-size: 16px; outline: none; }
-        input[type="text"]:focus, input[type="password"]:focus { border-color: #1877f2; box-shadow: 0 0 0 2px #e7f3ff; }
-        .btn-login { width: 100%; padding: 12px; background-color: #1877f2; border: none; border-radius: 6px; color: white; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .divider { border-bottom: 1px solid #dadde1; margin: 20px 0; }
-        .btn-create-account { display: block; width: fit-content; margin: 0 auto; padding: 12px 20px; background-color: #42b72a; border: none; border-radius: 6px; color: white; font-size: 17px; font-weight: bold; cursor: pointer; }
-        .error-message { color: #f02849; font-size: 14px; text-align: center; margin-bottom: 10px; font-weight: bold; display: none; }
-        .fb-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.8); justify-content: center; align-items: center; }
-        .modal-content { background-color: #fff; padding: 20px; border-radius: 8px; width: 100%; max-width: 432px; box-shadow: 0 12px 28px rgba(0,0,0,0.2); border: 1px solid #dddfe2; position: relative; }
-        .modal-header { border-bottom: 1px solid #dadde1; padding-bottom: 10px; margin-bottom: 15px; }
-        .modal-header h2 { font-size: 32px; font-weight: bold; color: #1c1e21; }
-        .modal-close { position: absolute; left: 15px; top: 15px; font-size: 24px; color: #606770; cursor: pointer; font-weight: bold; }
-        .app-view { max-width: 950px; margin: 20px auto; width: 100%; display: none; padding: 0 15px; flex-direction: column; gap: 20px; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 12px 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #dddfe2; }
-        .nav-logo-area { display: flex; align-items: center; gap: 12px; }
-        .nav-logo-area img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #1877f2; }
-        .navbar h2 { color: #1877f2; font-size: 24px; font-weight: 900; }
-        .btn-logout { background: #f02849; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .main-grid { display: flex; flex-wrap: wrap; gap: 20px; }
-        .feed-side { flex: 2; min-width: 300px; }
-        .chat-side { flex: 1; min-width: 280px; background: #fff; border-radius: 8px; border: 1px solid #dddfe2; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 15px; display: flex; flex-direction: column; height: 500px; }
-        .post-creator { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #dddfe2; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        textarea { width: 100%; height: 90px; padding: 12px; border: 1px solid #dddfe2; border-radius: 6px; resize: none; outline: none; font-size: 16px; }
-        .btn-post { background: #1877f2; color: white; border: none; padding: 8px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 8px; float: left; }
-        .post-card { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #dddfe2; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        .post-user { font-weight: bold; color: #1877f2; font-size: 18px; text-transform: capitalize; margin-bottom: 8px; }
-        .post-text { font-size: 16px; line-height: 24px; color: #1c1e21; margin-bottom: 12px; }
-        .chat-header { border-bottom: 1px solid #dadde1; padding-bottom: 10px; margin-bottom: 10px; font-weight: bold; font-size: 16px; }
-        .chat-messages { flex: 1; background: #f0f2f5; border-radius: 6px; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .msg { padding: 8px 12px; border-radius: 18px; max-width: 80%; font-size: 14px; width: fit-content; }
-        .msg.me { background: #0084ff; color: white; align-self: flex-start; }
-        .msg.you { background: #e4e6eb; color: black; align-self: flex-end; }
-        .chat-footer { display: flex; gap: 5px; margin-top: 10px; }
-        .chat-footer input { padding: 8px; margin: 0; font-size: 14px; width: 70%; }
-        .btn-send { background: #1877f2; color: white; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        footer { background-color: #fff; padding: 20px; text-align: center; font-size: 12px; color: #737373; border-top: 1px solid #ddd; margin-top: auto; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>S BOOK | سیدولي افغاني نړیواله ټولنیزه شبکه</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Tahoma,Arial,sans-serif;
+    background:#f0f2f5;
+    color:#17202a;
+}
+
+/* ================= LOGIN ================= */
+
+#auth-view{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px 20px;
+}
+
+.login-wrapper{
+    width:100%;
+    max-width:1000px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:50px;
+}
+
+.login-left{
+    flex:1;
+    text-align:right;
+}
+
+.login-left img{
+    width:190px;
+    height:190px;
+    object-fit:cover;
+    border-radius:20px;
+    margin-bottom:15px;
+    box-shadow:0 5px 20px #0002;
+}
+
+.login-logo{
+    color:#087fce;
+    font-size:48px;
+    font-weight:900;
+    margin-bottom:10px;
+}
+
+.login-left h2{
+    font-size:24px;
+    line-height:1.8;
+}
+
+.login-card{
+    width:100%;
+    max-width:400px;
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 5px 20px #0002;
+}
+
+.login-card input{
+    width:100%;
+    padding:15px;
+    border:1px solid #dddfe2;
+    border-radius:7px;
+    margin-bottom:12px;
+    font-size:16px;
+    outline:none;
+}
+
+.login-card input:focus{
+    border-color:#1877f2;
+    box-shadow:0 0 0 2px #e7f3ff;
+}
+
+.btn-login{
+    width:100%;
+    padding:13px;
+    border:0;
+    border-radius:7px;
+    background:#1877f2;
+    color:white;
+    font-size:19px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.btn-login:hover{
+    background:#166fe5;
+}
+
+.create-account{
+    display:block;
+    margin:0 auto;
+    padding:12px 20px;
+    border:0;
+    border-radius:7px;
+    background:#42b72a;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.create-account:hover{
+    background:#36a420;
+}
+
+.divider{
+    height:1px;
+    background:#dadde1;
+    margin:20px 0;
+}
+
+.error{
+    color:#d93025;
+    text-align:center;
+    font-weight:bold;
+    font-size:14px;
+    margin-bottom:10px;
+    display:none;
+}
+
+.success{
+    color:#188038;
+    text-align:center;
+    font-weight:bold;
+    font-size:14px;
+    margin-bottom:10px;
+    display:none;
+}
+
+.loading{
+    text-align:center;
+    color:#087fce;
+    font-weight:bold;
+    display:none;
+    margin:10px;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:#0008;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal-box{
+    background:white;
+    width:100%;
+    max-width:430px;
+    border-radius:12px;
+    padding:22px;
+    position:relative;
+}
+
+.close{
+    position:absolute;
+    left:15px;
+    top:10px;
+    font-size:28px;
+    cursor:pointer;
+    color:#777;
+}
+
+.modal-box h2{
+    font-size:28px;
+    margin-bottom:5px;
+}
+
+.modal-box p{
+    color:#777;
+    margin-bottom:18px;
+}
+
+.modal-box input{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:7px;
+    margin-bottom:12px;
+    font-size:16px;
+}
+
+/* ================= HOME ================= */
+
+#home-view{
+    display:none;
+    min-height:100vh;
+}
+
+.header{
+    height:64px;
+    background:#fff;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:0 22px;
+    box-shadow:0 1px 8px #0002;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:260px;
+}
+
+.logo-icon{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#087fce,#00b894);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:23px;
+    font-weight:bold;
+}
+
+.logo strong{
+    color:#087fce;
+    font-size:18px;
+}
+
+.search{
+    flex:1;
+    max-width:450px;
+}
+
+.search input{
+    width:100%;
+    border:0;
+    outline:0;
+    background:#f0f2f5;
+    padding:12px 18px;
+    border-radius:25px;
+    font-size:14px;
+}
+
+.header-icons{
+    margin-right:auto;
+    display:flex;
+    gap:8px;
+}
+
+.icon-btn{
+    width:42px;
+    height:42px;
+    border:0;
+    border-radius:50%;
+    background:#f0f2f5;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.icon-btn:hover{
+    background:#dfe5eb;
+}
+
+.layout{
+    max-width:1450px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:250px minmax(400px,700px) 280px;
+    gap:20px;
+    padding:22px;
+}
+
+.sidebar,
+.rightbar{
+    position:sticky;
+    top:85px;
+    height:max-content;
+}
+
+.mini-profile{
+    background:white;
+    padding:18px;
+    border-radius:15px;
+    margin-bottom:15px;
+    text-align:center;
+    box-shadow:0 1px 5px #0001;
+}
+
+.avatar{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid white;
+    box-shadow:0 1px 5px #0003;
+}
+
+.mini-profile strong{
+    display:block;
+    margin-top:8px;
+}
+
+.mini-profile small{
+    color:#777;
+}
+
+.menu{
+    background:white;
+    border-radius:15px;
+    padding:10px;
+    box-shadow:0 1px 5px #0001;
+}
+
+.menu-item{
+    padding:14px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.menu-item:hover{
+    background:#f0f2f5;
+}
+
+.menu-item.active{
+    background:#e8f4ff;
+    color:#087fce;
+    font-weight:bold;
+}
+
+.menu-icon{
+    width:32px;
+    text-align:center;
+    font-size:19px;
+}
+
+/* STORIES */
+
+.stories{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    margin-bottom:15px;
+}
+
+.story{
+    min-width:115px;
+    height:175px;
+    border-radius:15px;
+    overflow:hidden;
+    position:relative;
+    background:linear-gradient(145deg,#087fce,#00b894);
+    color:white;
+    box-shadow:0 1px 5px #0002;
+}
+
+.story img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:.75;
+}
+
+.story-name{
+    position:absolute;
+    bottom:10px;
+    right:8px;
+    left:8px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.story-add{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:white;
+    color:#087fce;
+}
+
+.story-add span{
+    text-align:center;
+    font-size:13px;
+}
+
+/* CREATE POST */
+
+.create-post,
+.post{
+    background:white;
+    border-radius:15px;
+    margin-bottom:15px;
+    padding:16px;
+    box-shadow:0 1px 5px #0001;
+}
+
+.create-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.create-top .avatar{
+    width:48px;
+    height:48px;
+}
+
+.create-input{
+    flex:1;
+    background:#f0f2f5;
+    border:0;
+    border-radius:25px;
+    padding:13px 18px;
+    color:#777;
+    cursor:pointer;
+}
+
+.post-actions{
+    display:flex;
+    border-top:1px solid #eee;
+    margin-top:15px;
+    padding-top:12px;
+}
+
+.post-action{
+    flex:1;
+    border:0;
+    background:white;
+    padding:10px;
+    cursor:pointer;
+    border-radius:8px;
+    font-size:14px;
+}
+
+.post-action:hover{
+    background:#f0f2f5;
+}
+
+.photo{
+    color:#00a86b;
+}
+
+.video{
+    color:#e74c3c;
+}
+
+.feeling{
+    color:#f39c12;
+}
+
+/* POST */
+
+.post-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.post-header .avatar{
+    width:45px;
+    height:45px;
+}
+
+.post-info strong{
+    display:block;
+}
+
+.post-info small{
+    color:#777;
+}
+
+.post-text{
+    padding:15px 3px;
+    line-height:1.9;
+    white-space:pre-wrap;
+}
+
+.post-stats{
+    display:flex;
+    justify-content:space-between;
+    color:#777;
+    font-size:13px;
+    padding:12px 3px;
+}
+
+.post-buttons{
+    border-top:1px solid #eee;
+    display:flex;
+}
+
+.post-buttons button{
+    flex:1;
+    border:0;
+    background:white;
+    padding:12px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.post-buttons button:hover{
+    background:#f0f2f5;
+}
+
+/* RIGHT */
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:16px;
+    margin-bottom:15px;
+    box-shadow:0 1px 5px #0001;
+}
+
+.card-title{
+    font-weight:bold;
+    margin-bottom:14px;
+    font-size:15px;
+}
+
+.news{
+    padding:10px 0;
+    border-bottom:1px solid #eee;
+    line-height:1.7;
+    font-size:13px;
+}
+
+.source{
+    color:#087fce;
+    font-size:11px;
+}
+
+.person{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 0;
+}
+
+.person .avatar{
+    width:40px;
+    height:40px;
+}
+
+/* EMPTY */
+
+.empty{
+    text-align:center;
+    background:white;
+    border-radius:12px;
+    padding:30px;
+    color:#777;
+}
+
+/* FOOTER */
+
+footer{
+    text-align:center;
+    padding:20px;
+    color:#777;
+    font-size:12px;
+}
+
+/* MOBILE */
+
+.mobile-nav{
+    display:none;
+}
+
+@media(max-width:1050px){
+
+    .layout{
+        grid-template-columns:80px minmax(400px,700px);
+    }
+
+    .rightbar{
+        display:none;
+    }
+
+    .menu-item span:not(.menu-icon),
+    .mini-profile strong,
+    .mini-profile small{
+        display:none;
+    }
+
+    .mini-profile{
+        padding:10px;
+    }
+
+    .logo strong{
+        display:none;
+    }
+}
+
+@media(max-width:700px){
+
+    #auth-view{
+        padding:20px 12px;
+    }
+
+    .login-wrapper{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .login-left{
+        text-align:center;
+    }
+
+    .login-left img{
+        width:110px;
+        height:110px;
+    }
+
+    .login-logo{
+        font-size:38px;
+    }
+
+    .login-left h2{
+        font-size:18px;
+    }
+
+    .header{
+        height:58px;
+        padding:0 10px;
+    }
+
+    .logo{
+        min-width:auto;
+    }
+
+    .search{
+        display:none;
+    }
+
+    .header-icons{
+        gap:4px;
+    }
+
+    .layout{
+        display:block;
+        padding:10px;
+    }
+
+    .sidebar{
+        display:none;
+    }
+
+    .mobile-nav{
+        display:flex;
+        position:fixed;
+        bottom:0;
+        right:0;
+        left:0;
+        height:62px;
+        background:white;
+        z-index:2000;
+        box-shadow:0 -2px 10px #0002;
+    }
+
+    .mobile-nav button{
+        flex:1;
+        border:0;
+        background:white;
+        font-size:18px;
+    }
+
+    .mobile-nav small{
+        display:block;
+        font-size:9px;
+    }
+
+    body{
+        padding-bottom:65px;
+    }
+
+    .story{
+        min-width:105px;
+        height:155px;
+    }
+
+    .post,
+    .create-post{
+        border-radius:10px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <div id="auth-view" class="fb-login-container">
-        <div class="fb-left">
-            <img src="said.png" alt="سیدولي کوهستاني ګروپ">
-            <h1>saidwali</h1>
-            <p>پخیر راغلۍ د سیدولي خان کوهستاني بوک ته! 🌐</p>
-        </div>
-        <div class="fb-right">
-            <div class="login-card">
-                <div class="error-message" id="login-error">نوم یا پاسورډ غلط دی!</div>
-                <input type="text" id="login-username" placeholder="د کاروونکي نوم (ahmad یا mahmoud)">
-                <input type="password" id="login-password" placeholder="پاسورډ (123)">
-                <button class="btn-login" onclick="handleLogin()">سیسټم ته ننوتل (Sign In)</button>
-                <div class="divider"></div>
-                <button class="btn-create-account" onclick="openModal()">نوی اکاونټ جوړول (Sign Up)</button>
-            </div>
-        </div>
+<!-- =========================================================
+     LOGIN / REGISTER
+========================================================= -->
+
+<section id="auth-view">
+
+<div class="login-wrapper">
+
+    <div class="login-left">
+
+        <!-- که said.png په GitHub کې موجود وي همدا کاروي -->
+        <img src="said.png" alt="S BOOK">
+
+        <div class="login-logo">S BOOK</div>
+
+        <h2>
+            پخیر راغلۍ د سیدولي افغاني نړیوالې ټولنیزې شبکې ته 🌐
+        </h2>
+
     </div>
 
-    <div id="register-modal" class="fb-modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal()">&times;</span>
-            <div class="modal-header">
-                <h2>ګډون جوړ کړئ</h2>
-            </div>
-            <input type="text" id="reg-fullname" placeholder="بشپړ نوم (لکه: احمد خان)">
-            <input type="text" id="reg-username" placeholder="مستعار نوم (username)">
-            <input type="password" id="reg-password" placeholder="نوی پاسورډ">
-            <button class="btn-create-account" style="width: 100%; margin-top: 10px;" onclick="handleRegister()">راجستر کړه</button>
+
+    <div class="login-card">
+
+        <div id="login-error" class="error"></div>
+        <div id="login-success" class="success"></div>
+        <div id="login-loading" class="loading">
+            ⏳ د ننوتلو غوښتنه لېږل کېږي...
         </div>
+
+        <input
+            type="text"
+            id="login-username"
+            placeholder="د کاروونکي نوم"
+            autocomplete="username"
+        >
+
+        <input
+            type="password"
+            id="login-password"
+            placeholder="پاسورډ"
+            autocomplete="current-password"
+        >
+
+        <button class="btn-login" onclick="handleLogin()">
+            ننوتل
+        </button>
+
+        <div class="divider"></div>
+
+        <button class="create-account" onclick="openRegister()">
+            نوی اکاونټ جوړ کړئ
+        </button>
+
     </div>
 
-    <div id="main-view" class="app-view">
-        <div class="navbar">
-            <div class="nav-logo-area">
-                <img src="said.png" alt="لوګو">
-                <h2>سیدولي کوهستاني ګروپ 🌐</h2>
-            </div>
-            <div>
-                <span id="user-display" style="font-weight: bold; margin-left: 15px; color: #4b4f56;"></span>
-                <button class="btn-logout" onclick="location.reload()">وتل</button>
-            </div>
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     REGISTER MODAL
+========================================================= -->
+
+<div id="register-modal" class="modal">
+
+    <div class="modal-box">
+
+        <span class="close" onclick="closeRegister()">×</span>
+
+        <h2>نوی اکاونټ جوړ کړئ</h2>
+
+        <p>
+            د S BOOK ټولنیزې شبکې سره یوځای شئ.
+        </p>
+
+        <div id="register-error" class="error"></div>
+        <div id="register-success" class="success"></div>
+        <div id="register-loading" class="loading">
+            ⏳ اکاونټ جوړېږي...
         </div>
-        
-        <div class="main-grid">
-            <div class="feed-side">
-                <div class="post-creator">
-                    <textarea id="post-text" placeholder="څه نوي لرئ؟ دلته یې خپور کړئ..."></textarea>
-                    <button class="btn-post" onclick="sendPost()">پوسټ کول</button>
-                    <div style="clear: both;"></div>
-                </div>
-                <div id="feed-container"></div>
-            </div>
-            
-            <div class="chat-side">
-                <div class="chat-header">
-                    میسنجر (چټ) 💬
-                    <select id="chat-target" onchange="loadMessages()" style="width:100%; margin-top:5px; padding:5px;"></select>
-                </div>
-                <div class="chat-messages" id="chat-box"></div>
-                <div class="chat-footer">
-                    <input type="text" id="chat-input" placeholder="پیغام ولیکئ...">
-                    <button class="btn-send" onclick="sendChatMessage()">لیږل</button>
-                </div>
-            </div>
-        </div>
+
+        <input
+            type="text"
+            id="reg-fullname"
+            placeholder="بشپړ نوم"
+        >
+
+        <input
+            type="text"
+            id="reg-username"
+            placeholder="Username"
+            autocomplete="username"
+        >
+
+        <input
+            type="password"
+            id="reg-password"
+            placeholder="پاسورډ"
+            autocomplete="new-password"
+        >
+
+        <button
+            class="create-account"
+            style="width:100%;margin-top:5px"
+            onclick="handleRegister()"
+        >
+            راجستر کول
+        </button>
+
     </div>
 
-    <footer>© 2026 سیدولي خان کوهستاني بوک</footer>
+</div>
 
-    <script>
-        // د کلاوډ فلیر د جنجالي برخي بیخي دایمي حل په ډیټابیس سټوریج کې
-        if(!localStorage.getItem("users_db")) {
-            localStorage.setItem("users_db", JSON.stringify([
-                {u: "ahmad", p: "123", n: "احمد خان"},
-                {u: "mahmoud", p: "123", n: "محمود خان"}
-            ]));
+
+<!-- =========================================================
+     HOME PAGE
+========================================================= -->
+
+<section id="home-view">
+
+<header class="header">
+
+    <div class="logo">
+
+        <div class="logo-icon">س</div>
+
+        <strong>
+            S BOOK
+        </strong>
+
+    </div>
+
+
+    <div class="search">
+
+        <input
+            type="search"
+            id="search-input"
+            placeholder="خلک، پوسټونه او خبرونه ولټوئ..."
+        >
+
+    </div>
+
+
+    <div class="header-icons">
+
+        <button class="icon-btn" title="لټون">
+            🔍
+        </button>
+
+        <button class="icon-btn" title="خبرتیاوې">
+            🔔
+        </button>
+
+        <button class="icon-btn" title="پیغامونه">
+            💬
+        </button>
+
+        <button
+            class="icon-btn"
+            title="وتل"
+            onclick="logout()"
+        >
+            🚪
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="layout">
+
+
+<!-- =========================================================
+     LEFT SIDEBAR
+========================================================= -->
+
+<aside class="sidebar">
+
+    <div class="mini-profile">
+
+        <img
+            id="mini-avatar"
+            class="avatar"
+            src="said.png"
+            alt="Profile"
+        >
+
+        <strong id="mini-name">
+            سیدولي خان
+        </strong>
+
+        <small>
+            زما پروفایل
+        </small>
+
+    </div>
+
+
+    <div class="menu">
+
+        <div class="menu-item active">
+            <span class="menu-icon">🏠</span>
+            <span>کور</span>
+        </div>
+
+        <div class="menu-item">
+            <span class="menu-icon">👤</span>
+            <span>پروفایل</span>
+        </div>
+
+        <div class="menu-item">
+            <span class="menu-icon">👥</span>
+            <span>ملګري</span>
+        </div>
+
+        <div class="menu-item">
+            <span class="menu-icon">💬</span>
+            <span>پیغامونه</span>
+        </div>
+
+        <div class="menu-item">
+            <span class="menu-icon">🔔</span>
+            <span>خبرتیاوې</span>
+        </div>
+
+        <div class="menu-item">
+            <span class="menu-icon">👨‍👩‍👧</span>
+            <span>ګروپونه</span>
+        </div>
+
+        <div class="menu-item">
+            <span class="menu-icon">📰</span>
+            <span>نړیوال خبرونه</span>
+        </div>
+
+        <div class="menu-item">
+            <span class="menu-icon">⭐</span>
+            <span>تعقیب شوي</span>
+        </div>
+
+        <div class="menu-item">
+            <span class="menu-icon">⚙️</span>
+            <span>تنظیمات</span>
+        </div>
+
+        <div
+            class="menu-item"
+            onclick="logout()"
+        >
+            <span class="menu-icon">🚪</span>
+            <span>وتل</span>
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN FEED
+========================================================= -->
+
+<main>
+
+
+<!-- STORIES -->
+
+<div class="stories">
+
+    <div class="story story-add">
+
+        <span>
+            ➕
+            <br>
+            ستوري اضافه کړه
+        </span>
+
+    </div>
+
+
+    <div class="story">
+
+        <img
+            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400"
+            alt=""
+        >
+
+        <div class="story-name">
+            مریم
+        </div>
+
+    </div>
+
+
+    <div class="story">
+
+        <img
+            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400"
+            alt=""
+        >
+
+        <div class="story-name">
+            احمد
+        </div>
+
+    </div>
+
+
+    <div class="story">
+
+        <img
+            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400"
+            alt=""
+        >
+
+        <div class="story-name">
+            فاطمه
+        </div>
+
+    </div>
+
+
+    <div class="story">
+
+        <img
+            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400"
+            alt=""
+        >
+
+        <div class="story-name">
+            محمد
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- CREATE POST -->
+
+<div class="create-post">
+
+    <div class="create-top">
+
+        <img
+            id="post-avatar"
+            class="avatar"
+            src="said.png"
+            alt=""
+        >
+
+        <div
+            class="create-input"
+            onclick="focusPost()"
+        >
+            څه فکر کوې، <span id="post-name">سیدولي</span>؟
+        </div>
+
+    </div>
+
+
+    <textarea
+        id="post-text"
+        placeholder="خپل پوسټ ولیکئ..."
+        style="
+            display:none;
+            width:100%;
+            margin-top:12px;
+            min-height:100px;
+            padding:12px;
+            border:1px solid #ddd;
+            border-radius:10px;
+            resize:vertical;
+            font-family:inherit;
+            font-size:15px;
+        "
+    ></textarea>
+
+
+    <div
+        id="post-submit-area"
+        style="display:none;margin-top:10px;text-align:left"
+    >
+
+        <button
+            onclick="sendPost()"
+            style="
+                background:#1877f2;
+                color:white;
+                border:0;
+                border-radius:7px;
+                padding:10px 25px;
+                font-weight:bold;
+                cursor:pointer;
+            "
+        >
+            خپرول
+        </button>
+
+    </div>
+
+
+    <div class="post-actions">
+
+        <button
+            class="post-action photo"
+            onclick="alert('د عکس Upload برخه به په بل پړاو کې د R2 Storage سره وصل شي.')"
+        >
+            📷 عکس/ویډیو
+        </button>
+
+        <button
+            class="post-action video"
+            onclick="alert('Live برخه به په راتلونکي API کې فعاله شي.')"
+        >
+            🎥 Live
+        </button>
+
+        <button
+            class="post-action feeling"
+            onclick="focusPost()"
+        >
+            😊 احساس
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- FEED -->
+
+<div id="feed-container">
+
+    <div class="empty">
+        ⏳ پوسټونه لوډ کېږي...
+    </div>
+
+</div>
+
+
+</main>
+
+
+<!-- =========================================================
+     RIGHT SIDEBAR
+========================================================= -->
+
+<aside class="rightbar">
+
+
+<div class="card">
+
+    <div class="card-title">
+        📰 نړیوال خبرونه
+    </div>
+
+    <div class="news">
+
+        <div class="source">
+            S BOOK News
+        </div>
+
+        د افغانستان او نړۍ تازه خبرونه
+
+    </div>
+
+
+    <div class="news">
+
+        <div class="source">
+            BBC Pashto
+        </div>
+
+        د نړۍ تازه مهم خبرونه
+
+    </div>
+
+
+    <div class="news">
+
+        <div class="source">
+            VOA
+        </div>
+
+        تازه نړیوال راپورونه
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-title">
+        🟢 آنلاین ملګري
+    </div>
+
+    <div class="person">
+
+        <img
+            class="avatar"
+            src="https://i.pravatar.cc/100?img=11"
+        >
+
+        <span>
+            احمد خان
+        </span>
+
+    </div>
+
+
+    <div class="person">
+
+        <img
+            class="avatar"
+            src="https://i.pravatar.cc/100?img=32"
+        >
+
+        <span>
+            مریم احمدي
+        </span>
+
+    </div>
+
+
+    <div class="person">
+
+        <img
+            class="avatar"
+            src="https://i.pravatar.cc/100?img=13"
+        >
+
+        <span>
+            محمد
+        </span>
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-title">
+        👥 وړاندیز شوي ملګري
+    </div>
+
+    <div class="person">
+
+        <img
+            class="avatar"
+            src="https://i.pravatar.cc/100?img=14"
+        >
+
+        <span>
+            عبدالله
+        </span>
+
+    </div>
+
+
+    <div class="person">
+
+        <img
+            class="avatar"
+            src="https://i.pravatar.cc/100?img=15"
+        >
+
+        <span>
+            فاطمه
+        </span>
+
+    </div>
+
+</div>
+
+
+</aside>
+
+</div>
+
+
+<!-- MOBILE NAV -->
+
+<nav class="mobile-nav">
+
+    <button>
+        🏠
+        <small>کور</small>
+    </button>
+
+    <button>
+        👥
+        <small>ملګري</small>
+    </button>
+
+    <button onclick="focusPost()">
+        ➕
+        <small>پوسټ</small>
+    </button>
+
+    <button>
+        💬
+        <small>پیغام</small>
+    </button>
+
+    <button>
+        👤
+        <small>پروفایل</small>
+    </button>
+
+</nav>
+
+
+<footer>
+    © 2026 S BOOK — سیدولي افغاني نړیواله ټولنیزه شبکه
+</footer>
+
+</section>
+
+
+<script>
+
+/* =========================================================
+   CLOUDFLARE WORKER API
+========================================================= */
+
+const API_URL =
+"https://saidwali-social-api.walizaad2.workers.dev";
+
+
+/* =========================================================
+   USER STATE
+========================================================= */
+
+let currentUser = null;
+let currentFullname = null;
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function show(elementId, message){
+
+    const el = document.getElementById(elementId);
+
+    el.textContent = message;
+    el.style.display = "block";
+}
+
+
+function hide(elementId){
+
+    const el = document.getElementById(elementId);
+
+    el.style.display = "none";
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function handleLogin(){
+
+    const username =
+        document.getElementById("login-username")
+        .value
+        .trim();
+
+    const password =
+        document.getElementById("login-password")
+        .value;
+
+    hide("login-error");
+    hide("login-success");
+
+    if(!username || !password){
+
+        show(
+            "login-error",
+            "مهرباني وکړئ username او password ولیکئ."
+        );
+
+        return;
+    }
+
+
+    document.getElementById("login-loading")
+        .style.display = "block";
+
+
+    try{
+
+        const response = await fetch(
+            API_URL + "/api/login",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+                    username:username,
+                    password:password
+                })
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if(response.ok && data.success){
+
+            currentUser = data.username;
+            currentFullname = data.fullname;
+
+
+            localStorage.setItem(
+                "sbook_username",
+                currentUser
+            );
+
+            localStorage.setItem(
+                "sbook_fullname",
+                currentFullname
+            );
+
+
+            showHome();
+
+        }else{
+
+            show(
+                "login-error",
+                data.error || "نوم یا پاسورډ غلط دی!"
+            );
+
         }
-        if(!localStorage.getItem("posts_db")) localStorage.setItem("posts_db", JSON.stringify([]));
-        if(!localStorage.getItem("msgs_db")) localStorage.setItem("msgs_db", JSON.stringify([]));
 
-        let currentUser = null;
-        let currentFullname = null;
+    }catch(error){
 
-        function openModal() { document.getElementById("register-modal").style.display = "flex"; }
+        console.error(error);
+
+        show(
+            "login-error",
+            "Cloudflare Worker ته اتصال ونه شو. د API URL او Worker حالت وګورئ."
+        );
+
+    }finally{
+
+        document.getElementById("login-loading")
+            .style.display = "none";
+
+    }
+
+}
+
+
+/* =========================================================
+   REGISTER
+========================================================= */
+
+async function handleRegister(){
+
+    const fullname =
+        document.getElementById("reg-fullname")
+        .value
+        .trim();
+
+    const username =
+        document.getElementById("reg-username")
+        .value
+        .trim();
+
+    const password =
+        document.getElementById("reg-password")
+        .value;
+
+
+    hide("register-error");
+    hide("register-success");
+
+
+    if(!fullname || !username || !password){
+
+        show(
+            "register-error",
+            "ټول معلومات بشپړ ولیکئ."
+        );
+
+        return;
+    }
+
+
+    if(password.length < 3){
+
+        show(
+            "register-error",
+            "پاسورډ لږ تر لږه ۳ توري ولري."
+        );
+
+        return;
+    }
+
+
+    document.getElementById("register-loading")
+        .style.display = "block";
+
+
+    try{
+
+        const response = await fetch(
+            API_URL + "/api/register",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+                    fullname:fullname,
+                    username:username,
+                    password:password
+                })
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if(response.ok && data.success){
+
+            show(
+                "register-success",
+                "اکاونټ په بریالیتوب جوړ شو. اوس Login وکړئ."
+            );
+
+
+            document.getElementById("reg-fullname")
+                .value="";
+
+            document.getElementById("reg-username")
+                .value="";
+
+            document.getElementById("reg-password")
+                .value="";
+
+
+        }else{
+
+            show(
+                "register-error",
+                data.error || "اکاونټ جوړ نه شو."
+            );
+
+        }
+
+
+    }catch(error){
+
+        console.error(error);
+
+        show(
+            "register-error",
+            "Cloudflare Worker سره اتصال ونه شو."
+        );
+
+    }finally{
+
+        document.getElementById("register-loading")
+            .style.display = "none";
+
+    }
+
+}
+
+
+/* =========================================================
+   SHOW HOME
+========================================================= */
+
+function showHome(){
+
+    document.getElementById("auth-view")
+        .style.display="none";
+
+    document.getElementById("register-modal")
+        .style.display="none";
+
+    document.getElementById("home-view")
+        .style.display="block";
+
+
+    document.getElementById("mini-name")
+        .textContent=currentFullname;
+
+    document.getElementById("post-name")
+        .textContent=currentFullname;
+
+
+    loadPosts();
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function logout(){
+
+    localStorage.removeItem("sbook_username");
+    localStorage.removeItem("sbook_fullname");
+
+    currentUser=null;
+    currentFullname=null;
+
+    document.getElementById("home-view")
+        .style.display="none";
+
+    document.getElementById("auth-view")
+        .style.display="flex";
+
+}
+
+
+/* =========================================================
+   REGISTER MODAL
+========================================================= */
+
+function openRegister(){
+
+    document.getElementById("register-modal")
+        .style.display="flex";
+
+}
+
+
+function closeRegister(){
+
+    document.getElementById("register-modal")
+        .style.display="none";
+
+}
+
+
+/* =========================================================
+   CREATE POST
+========================================================= */
+
+function focusPost(){
+
+    const textarea =
+        document.getElementById("post-text");
+
+    const area =
+        document.getElementById("post-submit-area");
+
+
+    textarea.style.display="block";
+    area.style.display="block";
+
+    textarea.focus();
+
+}
+
+
+/* =========================================================
+   SEND POST
+========================================================= */
+
+async function sendPost(){
+
+    const textarea =
+        document.getElementById("post-text");
+
+    const content =
+        textarea.value.trim();
+
+
+    if(!content){
+
+        alert("مهرباني وکړئ پوسټ ولیکئ.");
+
+        return;
+    }
+
+
+    if(!currentUser){
+
+        alert("لومړی Login وکړئ.");
+
+        return;
+    }
+
+
+    try{
+
+        const response = await fetch(
+            API_URL + "/api/posts",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+
+                    username:currentUser,
+
+                    content:content
+
+                })
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if(response.ok && data.success){
+
+            textarea.value="";
+
+            textarea.style.display="none";
+
+            document.getElementById("post-submit-area")
+                .style.display="none";
+
+
+            loadPosts();
+
+        }else{
+
+            alert(
+                data.error ||
+                "پوسټ خپور نه شو."
+            );
+
+        }
+
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "پوسټ کولو پر مهال Cloudflare API سره ستونزه راغله."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   LOAD POSTS
+========================================================= */
+
+async function loadPosts(){
+
+    const container =
+        document.getElementById("feed-container");
+
+
+    container.innerHTML =
+        '<div class="empty">⏳ پوسټونه لوډ کېږي...</div>';
+
+
+    try{
+
+        const response =
+            await fetch(
+                API_URL + "/api/posts"
+            );
+
+
+        const posts =
+            await response.json();
+
+
+        if(!Array.isArray(posts)){
+
+            container.innerHTML =
+                '<div class="empty">پوسټونه ترلاسه نه شول.</div>';
+
+            return;
+        }
+
+
+        if(posts.length===0){
+
+            container.innerHTML =
+                '<div class="empty">تر اوسه هېڅ پوسټ نشته. لومړی پوسټ ته ښه راغلاست! 🎉</div>';
+
+            return;
+        }
+
+
+        container.innerHTML="";
+
+
+        posts.forEach(post=>{
+
+            const article =
+                document.createElement("article");
+
+            article.className="post";
+
+
+            const safeUsername =
+                escapeHTML(post.username || "User");
+
+            const safeContent =
+                escapeHTML(post.content || "");
+
+
+            article.innerHTML=`
+
+                <div class="post-header">
+
+                    <img
+                        class="avatar"
+                        src="said.png"
+                        alt=""
+                    >
+
+                    <div class="post-info">
+
+                        <strong>
+                            ${safeUsername}
+                        </strong>
+
+                        <small>
+                            🌍 عامه · ${safeDate(post.created_at)}
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="post-text">
+                    ${safeContent}
+                </div>
+
+
+                <div class="post-stats">
+
+                    <span>
+                        ❤️ 0 خوښونې
+                    </span>
+
+                    <span>
+                        💬 0 تبصرې · ↗ 0 شریکونې
+                    </span>
+
+                </div>
+
+
+                <div class="post-buttons">
+
+                    <button
+                        onclick="alert('Like API به په راتلونکي پړاو کې فعاله شي.')"
+                    >
+                        ❤️ خوښول
+                    </button>
+
+                    <button
+                        onclick="alert('Comment API به په راتلونکي پړاو کې فعاله شي.')"
+                    >
+                        💬 تبصره
+                    </button>
+
+                    <button
+                        onclick="alert('Share API به په راتلونکي پړاو کې فعاله شي.')"
+                    >
+                        ↗ شریکول
+                    </button>
+
+                    <button>
+                        ⋯ نور
+                    </button>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(article);
+
+        });
+
+
+    }catch(error){
+
+        console.error(error);
+
+        container.innerHTML=`
+
+            <div class="empty">
+
+                ❌ د پوسټونو ترلاسه کولو پر مهال
+                د Cloudflare API سره ستونزه راغله.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   SECURITY: ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(value)
+
+        .replaceAll("&","&amp;")
+
+        .replaceAll("<","&lt;")
+
+        .replaceAll(">","&gt;")
+
+        .replaceAll('"',"&quot;")
+
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function safeDate(date){
+
+    if(!date) return "اوس";
+
+    try{
+
+        return new Date(date)
+            .toLocaleString("ps-AF");
+
+    }catch{
+
+        return date;
+
+    }
+
+}
+
+
+/* =========================================================
+   AUTO LOGIN FROM LOCAL STORAGE
+========================================================= */
+
+function restoreLogin(){
+
+    const username =
+        localStorage.getItem("sbook_username");
+
+    const fullname =
+        localStorage.getItem("sbook_fullname");
+
+
+    if(username && fullname){
+
+        currentUser=username;
+        currentFullname=fullname;
+
+        showHome();
+
+    }
+
+}
+
+
+/* =========================================================
+   ENTER KEY LOGIN
+========================================================= */
+
+document.getElementById("login-password")
+    .addEventListener(
+        "keydown",
+        function(event){
+
+            if(event.key==="Enter"){
+
+                handleLogin();
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   START
+========================================================= */
+
+restoreLogin();
+
+</script>
+
+</body>
+</html>
+```
