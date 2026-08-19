@@ -3,59 +3,363 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<!-- دا لاندې لاین د کلاوډ فلیر او ورکر لپاره د پیوستون پوره او خلاص لاسرسی تضمینوي -->
+<meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; connect-src *;">
 <title>سیدولي خان کوهستاني بوک</title>
 <style>
-*{ box-sizing:border-box; margin:0; padding:0; }
-body{ font-family:Arial,Helvetica,sans-serif; background:#f0f2f5; color:#1c1e21; }
-button,input,textarea,select{ font-family:inherit; }
-button{ cursor:pointer; }
-.hidden{ display:none!important; }
-#auth-view{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:30px 15px; }
-.auth-container{ width:100%; max-width:1050px; display:flex; align-items:center; justify-content:center; gap:60px; }
-.auth-left{ flex:1; max-width:520px; text-align:right; }
-.auth-logo{ width:180px; height:180px; object-fit:cover; border-radius:20px; border:4px solid white; box-shadow:0 4px 18px rgba(0,0,0,.18); margin-bottom:15px; }
-.auth-left h1{ color:#1877f2; font-size:48px; font-weight:900; margin-bottom:10px; }
-.auth-left p{ font-size:25px; font-weight:bold; line-height:1.5; }
-.auth-right{ width:400px; max-width:100%; }
-.login-card{ background:white; padding:20px; border-radius:10px; box-shadow:0 3px 12px rgba(0,0,0,.15); }
-.login-card input, .modal-content input{ width:100%; padding:15px; border:1px solid #dddfe2; border-radius:7px; margin-bottom:12px; font-size:16px; outline:none; text-align:right; }
-.login-card input:focus, .modal-content input:focus{ border-color:#1877f2; box-shadow:0 0 0 2px #e7f3ff; }
-.btn-login{ width:100%; background:#1877f2; color:white; border:0; border-radius:7px; padding:13px; font-size:20px; font-weight:bold; }
-.btn-login:hover{ background:#166fe5; }
-.divider{ border-bottom:1px solid #dadde1; margin:20px 0; }
-.btn-create{ display:block; margin:auto; background:#42b72a; color:white; border:0; border-radius:7px; padding:13px 20px; font-size:17px; font-weight:bold; }
-.error{ color:#d93025; background:#fff0f0; border-radius:6px; padding:8px; text-align:center; margin-bottom:10px; display:none; font-weight:bold; }
-.modal{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; z-index:9999; padding:15px; }
-.modal.show{ display:flex; }
-.modal-content{ background:white; width:100%; max-width:450px; border-radius:10px; padding:22px; position:relative; box-shadow:0 10px 35px rgba(0,0,0,.25); text-align:right; }
-.close{ position:absolute; left:15px; top:10px; font-size:30px; color:#606770; cursor:pointer; }
-#main-view{ display:none; min-height:100vh; flex-direction:column; }
-.topbar{ height:64px; background:#fff; border-bottom:1px solid #dddfe2; box-shadow:0 1px 4px rgba(0,0,0,.1); display:flex; align-items:center; justify-content:space-between; padding:0 20px; position:sticky; top:0; z-index:1000; }
-.brand{ color:#1877f2; font-size:25px; font-weight:900; }
-.top-user{ display:flex; align-items:center; gap:10px; }
-.top-user img{ width:40px; height:40px; border-radius:50%; object-fit:cover; }
-.logout{ background:#f02849; color:white; border:0; padding:8px 15px; border-radius:6px; font-weight:bold; }
-.container{ max-width:1200px; margin:20px auto; padding:0 15px; width:100%; }
-.grid{ display:grid; grid-template-columns:250px minmax(300px,650px) 280px; gap:20px; }
-.sidebar, .rightbar{ background:#fff; border:1px solid #dddfe2; border-radius:10px; padding:15px; height:max-content; }
-.sidebar button{ width:100%; border:0; background:white; padding:12px; text-align:right; border-radius:7px; margin-bottom:5px; font-weight:bold; font-size:15px; }
-.sidebar button:hover{ background:#f0f2f5; }
-.card{ background:#fff; border:1px solid #dddfe2; border-radius:10px; padding:15px; margin-bottom:15px; text-align:right; }
-.post-input{ width:100%; min-height:90px; border:1px solid #dddfe2; border-radius:8px; padding:12px; resize:vertical; font-size:16px; outline:none; text-align:right; }
-.post-actions{ display:flex; justify-content:space-between; margin-top:10px; gap:10px; }
-.post-actions select{ padding:8px; border:1px solid #dddfe2; border-radius:6px; }
-.post-btn{ background:#1877f2; color:white; border:0; border-radius:6px; padding:9px 22px; font-weight:bold; }
-.story-row{ display:flex; gap:10px; overflow-x:auto; padding-bottom:5px; margin-bottom:15px; }
-.story{ min-width:90px; height:120px; border-radius:10px; background:#1877f2; color:white; padding:8px; display:flex; align-items:flex-end; font-weight:bold; font-size:12px; }
-.post-card{ background:#fff; border:1px solid #dddfe2; border-radius:10px; padding:15px; margin-bottom:15px; box-shadow:0 1px 2px rgba(0,0,0,.05); text-align:right; border-left: 4px solid #1877f2; }
-.post-header{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
-.avatar{ width:45px; height:45px; border-radius:50%; object-fit:cover; background:#ddd; }
-.post-name{ font-weight:bold; }
-.post-username{ color:#65676b; font-size:13px; }
-.post-content{ white-space:pre-wrap; font-size:16px; line-height:1.7; margin-bottom:12px; }
-.post-stats{ display:flex; justify-content:space-between; color:#65676b; font-size:13px; padding-bottom:8px; border-bottom:1px solid #eee; direction:ltr; }
-.post-buttons{ display:flex; margin-top:5px; }
-.post-buttons button{ flex:1; border:0; background:white; padding:9px; font-weight:bold; color:#65676b; border-radius:6px; }
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f0f2f5;
+    color:#1c1e21;
+}
+button,input,textarea,select{
+    font-family:inherit;
+}
+button{
+    cursor:pointer;
+}
+.hidden{
+    display:none!important;
+}
+
+/* ================= LOGIN ================= */
+#auth-view{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px 15px;
+}
+.auth-container{
+    width:100%;
+    max-width:1050px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:60px;
+}
+.auth-left{
+    flex:1;
+    max-width:520px;
+    text-align:right;
+}
+.auth-logo{
+    width:180px;
+    height:180px;
+    object-fit:cover;
+    border-radius:20px;
+    border:4px solid white;
+    box-shadow:0 4px 18px rgba(0,0,0,.18);
+    margin-bottom:15px;
+}
+.auth-left h1{
+    color:#1877f2;
+    font-size:48px;
+    font-weight:900;
+    margin-bottom:10px;
+}
+.auth-left p{
+    font-size:25px;
+    font-weight:bold;
+    line-height:1.5;
+}
+.auth-right{
+    width:400px;
+    max-width:100%;
+}
+.login-card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 3px 12px rgba(0,0,0,.15);
+}
+.login-card input,
+.modal-content input{
+    width:100%;
+    padding:15px;
+    border:1px solid #dddfe2;
+    border-radius:7px;
+    margin-bottom:12px;
+    font-size:16px;
+    outline:none;
+    text-align:right;
+}
+.login-card input:focus,
+.modal-content input:focus{
+    border-color:#1877f2;
+    box-shadow:0 0 0 2px #e7f3ff;
+}
+.btn-login{
+    width:100%;
+    background:#1877f2;
+    color:white;
+    border:0;
+    border-radius:7px;
+    padding:13px;
+    font-size:20px;
+    font-weight:bold;
+}
+.btn-login:hover{
+    background:#166fe5;
+}
+.divider{
+    border-bottom:1px solid #dadde1;
+    margin:20px 0;
+}
+.btn-create{
+    display:block;
+    margin:auto;
+    background:#42b72a;
+    color:white;
+    border:0;
+    border-radius:7px;
+    padding:13px 20px;
+    font-size:17px;
+    font-weight:bold;
+}
+.btn-create:hover{
+    background:#36a420;
+}
+.error{
+    color:#d93025;
+    background:#fff0f0;
+    border-radius:6px;
+    padding:8px;
+    text-align:center;
+    margin-bottom:10px;
+    display:none;
+    font-weight:bold;
+}
+
+/* ================= MODAL ================= */
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    padding:15px;
+}
+.modal.show{
+    display:flex;
+}
+.modal-content{
+    background:white;
+    width:100%;
+    max-width:450px;
+    border-radius:10px;
+    padding:22px;
+    position:relative;
+    box-shadow:0 10px 35px rgba(0,0,0,.25);
+    text-align:right;
+}
+.close{
+    position:absolute;
+    left:15px;
+    top:10px;
+    font-size:30px;
+    color:#606770;
+    cursor:pointer;
+}
+.modal h2{
+    font-size:28px;
+    margin-bottom:5px;
+}
+.modal p{
+    color:#606770;
+    margin-bottom:18px;
+}
+
+/* ================= APP VIEW ================= */
+#main-view{
+    display:none;
+    min-height:100vh;
+    flex-direction:column;
+}
+.topbar{
+    height:64px;
+    background:#fff;
+    border-bottom:1px solid #dddfe2;
+    box-shadow:0 1px 4px rgba(0,0,0,.1);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 20px;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+.brand{
+    color:#1877f2;
+    font-size:25px;
+    font-weight:900;
+}
+.top-user{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.top-user img{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+}
+.logout{
+    background:#f02849;
+    color:white;
+    border:0;
+    padding:8px 15px;
+    border-radius:6px;
+    font-weight:bold;
+}
+.container{
+    max-width:1200px;
+    margin:20px auto;
+    padding:0 15px;
+    width:100%;
+}
+.grid{
+    display:grid;
+    grid-template-columns:250px minmax(300px,650px) 280px;
+    gap:20px;
+}
+
+/* SIDEBAR */
+.sidebar, .rightbar{
+    background:#fff;
+    border:1px solid #dddfe2;
+    border-radius:10px;
+    padding:15px;
+    height:max-content;
+}
+.sidebar button{
+    width:100%;
+    border:0;
+    background:white;
+    padding:12px;
+    text-align:right;
+    border-radius:7px;
+    margin-bottom:5px;
+    font-weight:bold;
+    font-size:15px;
+}
+.sidebar button:hover{
+    background:#f0f2f5;
+}
+
+/* CREATE POST */
+.card{
+    background:#fff;
+    border:1px solid #dddfe2;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:15px;
+    box-shadow:0 1px 2px rgba(0,0,0,.05);
+    text-align:right;
+}
+.post-input{
+    width:100%;
+    min-height:90px;
+    border:1px solid #dddfe2;
+    border-radius:8px;
+    padding:12px;
+    resize:vertical;
+    font-size:16px;
+    outline:none;
+    text-align:right;
+}
+.post-actions{
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
+    gap:10px;
+}
+.post-actions select{
+    padding:8px;
+    border:1px solid #dddfe2;
+    border-radius:6px;
+}
+.post-btn{
+    background:#1877f2;
+    color:white;
+    border:0;
+    border-radius:6px;
+    padding:9px 22px;
+    font-weight:bold;
+}
+
+/* POSTS */
+.post-card{
+    background:#fff;
+    border:1px solid #dddfe2;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:15px;
+    box-shadow:0 1px 2px rgba(0,0,0,.05);
+    text-align:right;
+    border-left: 4px solid #1877f2;
+}
+.post-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+}
+.avatar{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#ddd;
+}
+.post-name{
+    font-weight:bold;
+}
+.post-username{
+    color:#65676b;
+    font-size:13px;
+}
+.post-content{
+    white-space:pre-wrap;
+    font-size:16px;
+    line-height:1.7;
+    margin-bottom:12px;
+}
+.post-stats{
+    display:flex;
+    justify-content:space-between;
+    color:#65676b;
+    font-size:13px;
+    padding-bottom:8px;
+    border-bottom:1px solid #eee;
+    direction:ltr;
+}
+.post-buttons{
+    display:flex;
+    margin-top:5px;
+}
+.post-buttons button{
+    flex:1;
+    border:0;
+    background:white;
+    padding:9px;
+    font-weight:bold;
+    color:#65676b;
+    border-radius:6px;
+}
+.post-buttons button:hover{
+    background:#f0f2f5;
+}
+
+/* CHAT MESSENGER */
 .chat-header{ border-bottom:1px solid #dadde1; padding-bottom:10px; margin-bottom:10px; font-weight:bold; font-size:16px; text-align:right; }
 .chat-messages{ flex:1; background:#f0f2f5; border-radius:6px; padding:10px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; height:220px; }
 .msg{ padding:8px 12px; border-radius:18px; max-width:80%; font-size:14px; width:fit-content; }
@@ -63,17 +367,21 @@ button{ cursor:pointer; }
 .msg.you{ background:#e4e6eb; color:black; align-self:flex-end; }
 .chat-footer{ display:flex; gap:5px; margin-top:10px; }
 .chat-footer input{ padding:8px; margin:0; font-size:14px; width:100%; border:1px solid #dddfe2; border-radius:4px; text-align:right; }
+
 .online-title{ font-weight:bold; margin-bottom:12px; text-align:right; margin-top:15px; }
 .online-user{ padding:8px 0; border-bottom:1px solid #eee; text-align:right; font-size:14px; color:#050505; }
-.search-box{ display:flex; gap:5px; margin-bottom:15px; }
-.search-box input{ width:100%; padding:10px; border:1px solid #dddfe2; border-radius:6px; text-align:right; }
-.search-box button{ background:#1877f2; color:white; border:0; padding:0 12px; border-radius:6px; font-weight:bold; }
-@media(max-width:900px){ .grid{ grid-template-columns:1fr; } .sidebar, .rightbar{ display:none; } }
+
+@media(max-width:900px){
+    .grid{ grid-template-columns:1fr; }
+    .sidebar, .rightbar{ display:none; }
+    .auth-container{ flex-direction:column; gap:25px; text-align:center; }
+}
 footer{ text-align:center; color:#65676b; padding:25px; font-size:13px; }
 </style>
 </head>
 <body>
 
+<!-- ================= LOGIN VIEW ================= -->
 <section id="auth-view">
     <div class="auth-container">
         <div class="auth-left">
@@ -94,6 +402,7 @@ footer{ text-align:center; color:#65676b; padding:25px; font-size:13px; }
     </div>
 </section>
 
+<!-- ================= REGISTER MODAL ================= -->
 <div id="register-modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
@@ -121,27 +430,3 @@ footer{ text-align:center; color:#65676b; padding:25px; font-size:13px; }
             <div class="sidebar">
                 <button onclick="loadFeed()">🏠 نیوز فیډ (Home)</button>
                 <button>👥 ملګري (Friends)</button>
-                <button>💬 پیغامونه (Messages)</button>
-                <button>⚙️ تنظیمات (Settings)</button>
-            </div>
-            <div class="feed-side">
-                <div class="story-row">
-                    <div class="story">سیدولي خان</div>
-                    <div class="story">احمد خان</div>
-                    <div class="story">محمود خان</div>
-                </div>
-                <div class="card">
-                    <textarea id="post-text" class="post-input" placeholder="څه فکر کوئ؟ دلته یې ولیکئ..."></textarea>
-                    <div class="post-actions">
-                        <select><option>🌐 عامه (Public)</option></select>
-                        <button class="post-btn" onclick="submitPost()">پوسټ کړئ</button>
-                    </div>
-                </div>
-                <div id="feed-container">
-                    <p style="text-align:center; color:#65676b;">د فیډ معلومات لوډېږي...</p>
-                </div>
-            </div>
-            <div class="rightbar">
-                <div class="chat-side">
-                    <div class="chat-header">عمومي مسنجر چټ 💬</div>
-                    <div class="chat-messages" id="chat-box">
