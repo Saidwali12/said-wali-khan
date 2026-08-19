@@ -134,7 +134,7 @@ button{
     font-weight:bold;
 }
 
-/* ================= REGISTER MODAL (FIXED VIEW) ================= */
+/* ================= REGISTER MODAL ================= */
 .modal{
     display:none; 
     position:fixed;
@@ -447,12 +447,12 @@ button{
 </head>
 <body>
 
-<!-- د ننوتلو صفحه (Sign In) کټ مټ د فېسبوک په سټایل -->
+<!-- د ننوتلو صفحه -->
 <div id="auth-view">
     <div class="auth-container">
         <div class="auth-left">
             <h1>افغان بوک</h1>
-            <p>د سیدولي خان کوهستاني پرمختللی سیستم؛ احمد او محمود دلته د کلاوډ فلیر ډېټابېس په ذریعه مېسجونه او پوسټونه کوي.</p>
+            <p>د سیدولي خان کوهستاني سیسټم؛ احمد او محمود دلته د کلاوډ فلیر ډېټابېس په ذریعه مېسجونه او پوسټونه کوي.</p>
         </div>
         <div class="auth-card">
             <div class="error" id="auth-error"></div>
@@ -467,7 +467,7 @@ button{
     </div>
 </div>
 
-<!-- د نوي حساب جوړولو (Create Account) ماډل خلاصېدونکی فارم -->
+<!-- د نوي حساب جوړولو ماډل -->
 <div class="modal" id="register-modal">
     <div class="modal-box">
         <span class="close" onclick="toggleModal(false)">&times;</span>
@@ -507,3 +507,5 @@ button{
                     <div class="card post-create">
                         <textarea id="post-text" placeholder="څه په فکر کې لرئ؟"></textarea>
                         <button class="btn-post" onclick="createPost()">خپرول (Post)</button>
+                    </div>
+                    <div id="posts-container">
