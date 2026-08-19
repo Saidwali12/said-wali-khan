@@ -39,7 +39,7 @@ button{ cursor:pointer; }
     <div class="auth-container">
         <div class="auth-left">
             <h1>افغان بوک</h1>
-            <p>د سیدولي خان کوهستاني پرمختللی بوک؛ احمد او محمود دلته ستاسو له حقیقتي ډېټابېس سره وصلېږي.</p>
+            <p>د سیدولي خان کوهستاني سیسټم؛ احمد او محمود دلته د کلاوډ فلیر ډېټابېس په ذریعه مېسجونه او پوسټونه کوي.</p>
         </div>
         <div class="auth-card">
             <input type="text" id="login-username" class="input" placeholder="کارن نوم (Username)">
@@ -112,7 +112,7 @@ async function handleRegister() {
         body: JSON.stringify({ username: u, email: e, password: p })
     });
     const data = await res.json();
-    if(data.userId) { alert("حساب جوړ شو! اوس لاګین شئ."); toggleModal(false); } else { alert(data.message); }
+    if(data.success) { alert("حساب جوړ شو! اوس لاګین شئ."); toggleModal(false); } else { alert(data.message); }
 }
 
 async function handleLogin() {
@@ -149,15 +149,15 @@ async function createPost() {
     await fetch(`${API_BASE}/api/data/posts`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({ content: txt, user_id: user.id, privacy: "public", status: "published" })
+        body: JSON.stringify({ content: txt, user_id: user.id, privacy: "public" })
     });
     document.getElementById("post-text").value = "";
     loadPosts();
 }
 
 async function loadPosts() {
-    const r = await fetch(`${API_BASE}/api/data/posts`);
-    const d = await r.json();
+    const response = await fetch(`${API_BASE}/api/data/posts`);
+    const d = await response.json();
     const c = document.getElementById("posts-container");
     if(d.data) {
         c.innerHTML = "";
@@ -171,7 +171,7 @@ async function sendMessage() {
     await fetch(`${API_BASE}/api/data/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({ conversation_id: 1, sender_id: user.id, content: msg, message_type: "text" })
+        body: JSON.stringify({ conversation_id: 1, sender_id: user.id, content: msg })
     });
     document.getElementById("chat-input").value = "";
     loadChatMessages();
@@ -179,8 +179,8 @@ async function sendMessage() {
 
 async function loadChatMessages() {
     if (!token) return;
-    const r = await fetch(`${API_BASE}/api/data/messages`);
-    const d = await r.json();
+    const response = await fetch(`${API_BASE}/api/data/messages`);
+    const d = await response.json();
     const box = document.getElementById("chat-messages");
     if(d.data) {
         box.innerHTML = "";
