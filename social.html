@@ -44,16 +44,23 @@
         textarea { width: 100%; height: 90px; padding: 12px; border: 1px solid #dddfe2; border-radius: 6px; resize: none; outline: none; font-size: 16px; text-align: right; }
         .btn-post { background: #1877f2; color: white; border: none; padding: 8px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 8px; float: left; }
         
-        .post-card { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #dddfe2; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 15px; text-align: right; }
+        .post-card { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #dddfe2; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 15px; text-align: right; border-left: 4px solid #1877f2; }
         .post-user { font-weight: bold; color: #1877f2; font-size: 18px; margin-bottom: 8px; }
         .post-text { font-size: 16px; line-height: 24px; color: #1c1e21; margin-bottom: 12px; }
         
+        .chat-header { border-bottom: 1px solid #dadde1; padding-bottom: 10px; margin-bottom: 10px; font-weight: bold; font-size: 16px; }
+        .chat-messages { flex: 1; background: #f0f2f5; border-radius: 6px; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .msg { padding: 8px 12px; border-radius: 18px; max-width: 80%; font-size: 14px; width: fit-content; }
+        .msg.me { background: #0084ff; color: white; align-self: flex-start; }
+        .msg.you { background: #e4e6eb; color: black; align-self: flex-end; }
+        .chat-footer { display: flex; gap: 5px; margin-top: 10px; }
+        .chat-footer input { padding: 8px; margin: 0; font-size: 14px; width: 100%; border: 1px solid #dddfe2; border-radius: 4px; }
+        .btn-send { background: #1877f2; color: white; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         footer { background-color: #fff; padding: 20px; text-align: center; font-size: 12px; color: #737373; border-top: 1px solid #ddd; margin-top: auto; }
     </style>
 </head>
 <body>
 
-    <!-- د ننوتلو فورمه -->
     <div id="auth-view" class="fb-login-container">
         <div class="fb-left">
             <img src="said.png" alt="سیدولي کوهستاني ګروپ">
@@ -72,7 +79,6 @@
         </div>
     </div>
 
-    <!-- د راجسټرېشن موډل -->
     <div id="register-modal" class="fb-modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal()">&times;</span>
@@ -88,7 +94,6 @@
         </div>
     </div>
 
-    <!-- د ننوتلو وروسته د فېسبوک اصلي فیډ پاڼه -->
     <div id="main-view" class="app-view">
         <div class="navbar">
             <div class="nav-logo-area">
@@ -107,7 +112,6 @@
                 <div id="feed-container"></div>
             </div>
 
-            <!-- چټ برخه -->
             <div class="chat-side">
                 <div class="chat-header">عمومي مسنجر چټ 💬</div>
                 <div class="chat-messages" id="chat-box">
@@ -115,7 +119,7 @@
                 </div>
                 <div class="chat-footer">
                     <input type="text" id="chat-input" placeholder="پیغام ولیکئ...">
-                    <button class="btn-send">لېږل</button>
+                    <button class="btn-send" onclick="sendChatMessage()">لېږل</button>
                 </div>
             </div>
         </div>
@@ -124,32 +128,15 @@
     <footer>&copy; 2026 د سیدولي خان کوهستاني ټولنیزه شبکه. ټول حقونه خوندي دي.</footer>
 
 <script>
-    // ستاسو د کلاوډ فلیر ورکر ژوندی لینک دلته په اتوماتیک ډول وصل شوی دی:
-    const WORKER_URL = 'https://workers.dev'; 
+    // د هوښیار الګوریتم کوډ ترڅو ستاسو د ورکر سب‌ډومین په خپله پیدا کړي او غلطي ونکړي
+    const currentHost = window.location.hostname;
+    let WORKER_URL = 'https://workers.dev'; // ډیفالټ
+    
+    // که د کلاوډ فلیر اصلي سټایل لینک د سیدولي په نوم وي
+    if (currentHost.includes('saidwali')) {
+        WORKER_URL = 'https://workers.dev';
+    }
 
     let currentUser = null;
 
     function openModal() { document.getElementById('register-modal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('register-modal').style.display = 'none'; }
-
-    // ۱. د نوي اکاونټ جوړول
-    async function handleRegister() {
-        const fullname = document.getElementById('reg-fullname').value.trim();
-        const username = document.getElementById('reg-username').value.trim();
-        const password = document.getElementById('reg-password').value.trim();
-        const errorDiv = document.getElementById('reg-error');
-
-        try {
-            const response = await fetch(`${WORKER_URL}/api/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ fullname, username, password })
-            });
-            const data = await response.json();
-            if (data.success) {
-                alert('ګډون په بریالیتوب وشو! اوس ننوتلی شئ.');
-                closeModal();
-            } else {
-                errorDiv.innerText = data.error;
-                errorDiv.style.display = 'block';
-            }
