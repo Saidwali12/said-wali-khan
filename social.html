@@ -447,7 +447,6 @@ button{
 </head>
 <body>
 
-<!-- د ننوتلو صفحه (Sign In) کټ مټ د فېسبوک په سټایل -->
 <div id="auth-view">
     <div class="auth-container">
         <div class="auth-left">
@@ -467,7 +466,6 @@ button{
     </div>
 </div>
 
-<!-- د نوي حساب جوړولو (Create Account) ماډل خلاصېدونکی فارم -->
 <div class="modal" id="register-modal">
     <div class="modal-box">
         <span class="close" onclick="toggleModal(false)">&times;</span>
@@ -480,7 +478,6 @@ button{
     </div>
 </div>
 
-<!-- د ننووتلو وروسته منځپانګه -->
 <div id="main-view">
     <div class="navbar">
         <div class="nav-logo"><h2>افغان بوک سسټم</h2></div>
@@ -507,4 +504,7 @@ button{
                     <div class="card post-create">
                         <textarea id="post-text" placeholder="څه په فکر کې لرئ؟"></textarea>
                         <button class="btn-post" onclick="createPost()">خپرول (Post)</button>
+                    </div>
+                    <div id="posts-container">
+                        <div class="loading">د پوسټونو راکښته کول...</div>
                     </div>
