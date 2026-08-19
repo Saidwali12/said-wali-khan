@@ -27,34 +27,9 @@ button{
     display:none!important;
 }
 
-/* ================= د ورکر د لینک ټاکلو بکس ================= */
-#setup-banner {
-    background: #fff3cd;
-    color: #856404;
-    padding: 15px;
-    text-align: center;
-    font-weight: bold;
-    border-bottom: 1px solid #ffeeba;
-}
-#setup-banner input {
-    padding: 8px 15px;
-    width: 300px;
-    border: 1px solid #ccd0d5;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-#setup-banner button {
-    background: #1877f2;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
 /* ================= LOGIN & FACEBOOK STYLE FIRST PAGE ================= */
 #auth-view{
-    min-height:90vh;
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -159,9 +134,9 @@ button{
     font-weight:bold;
 }
 
-/* ================= REGISTER MODAL ================= */
+/* ================= REGISTER MODAL (FIXED VIEW) ================= */
 .modal{
-    display:none;
+    display:none; 
     position:fixed;
     inset:0;
     background:rgba(255, 255, 255, 0.9);
@@ -472,19 +447,12 @@ button{
 </head>
 <body>
 
-<!-- د ورکر لینک تنظیمولو اتومات بکس -->
-<div id="setup-banner">
-    🔗 د کلاوډ فلیر ورکر ادرس داخل کړئ:
-    <input type="text" id="worker-url-input" placeholder="https://workers.dev">
-    <button onclick="saveWorkerUrl()">نښلول (Connect)</button>
-</div>
-
-<!-- د ننوتلو صفحه (Sign In) -->
+<!-- د ننوتلو صفحه (Sign In) کټ مټ د فېسبوک په سټایل -->
 <div id="auth-view">
     <div class="auth-container">
         <div class="auth-left">
             <h1>افغان بوک</h1>
-            <p>د سیدولي خان کوهستاني ټولنیزه شبکه؛ احمد او محمود دلته په حقیقتي ډېټابېس کې سره وصلېږي.</p>
+            <p>د سیدولي خان کوهستاني پرمختللی سیستم؛ احمد او محمود دلته د کلاوډ فلیر ډېټابېس په ذریعه مېسجونه او پوسټونه کوي.</p>
         </div>
         <div class="auth-card">
             <div class="error" id="auth-error"></div>
@@ -523,3 +491,19 @@ button{
             <button class="fb-tab-btn" onclick="switchTab('market-tab', this)">🛍️ مارکېټ</button>
         </div>
         <div class="nav-user">
+            <span class="user-name" id="current-user-display">کارن</span>
+            <button class="btn-logout" onclick="handleLogout()">وتل</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="grid">
+            <div>
+                <div class="fb-stories-bar" id="stories-container-list">
+                    <div class="fb-story-card" style="background: #1877f2; color: white;" onclick="createStory()">+ نوې سټوري</div>
+                </div>
+
+                <div id="feed-tab" class="app-section active">
+                    <div class="card post-create">
+                        <textarea id="post-text" placeholder="څه په فکر کې لرئ؟"></textarea>
+                        <button class="btn-post" onclick="createPost()">خپرول (Post)</button>
