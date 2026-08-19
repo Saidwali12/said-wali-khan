@@ -61,6 +61,7 @@
 </head>
 <body>
 
+    <!-- د ننوتلو فورمه -->
     <div id="auth-view" class="fb-login-container">
         <div class="fb-left">
             <img src="said.png" alt="سیدولي کوهستاني ګروپ">
@@ -79,6 +80,7 @@
         </div>
     </div>
 
+    <!-- د راجسټرېشن موډل -->
     <div id="register-modal" class="fb-modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal()">&times;</span>
@@ -94,6 +96,7 @@
         </div>
     </div>
 
+    <!-- د ننوتلو وروسته د فېسبوک اصلي فیډ پاڼه -->
     <div id="main-view" class="app-view">
         <div class="navbar">
             <div class="nav-logo-area">
@@ -112,6 +115,7 @@
                 <div id="feed-container"></div>
             </div>
 
+            <!-- چټ برخه -->
             <div class="chat-side">
                 <div class="chat-header">عمومي مسنجر چټ 💬</div>
                 <div class="chat-messages" id="chat-box">
@@ -128,15 +132,11 @@
     <footer>&copy; 2026 د سیدولي خان کوهستاني ټولنیزه شبکه. ټول حقونه خوندي دي.</footer>
 
 <script>
-    // د هوښیار الګوریتم کوډ ترڅو ستاسو د ورکر سب‌ډومین په خپله پیدا کړي او غلطي ونکړي
-    const currentHost = window.location.hostname;
-    let WORKER_URL = 'https://workers.dev'; // ډیفالټ
-    
-    // که د کلاوډ فلیر اصلي سټایل لینک د سیدولي په نوم وي
-    if (currentHost.includes('saidwali')) {
-        WORKER_URL = 'https://workers.dev';
-    }
+    // ستاسو د کلاوډ فلیر ورکر ژوندی لینک کټ مټ ستاسو د ډشبورډ له مخې تنظیم شوی دی:
+    const WORKER_URL = 'https://workers.dev'; 
 
     let currentUser = null;
 
     function openModal() { document.getElementById('register-modal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('register-modal').style.display = 'none'; }
+
