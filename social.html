@@ -1,90 +1,2479 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ps" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>سیدولي افغاني نړیواله ټولنیزه شبکه</title>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f0f2f5;color:#1c1e21}button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius:8px;padding:10px 14px;background:#1877f2;color:#fff}.danger{background:#e41e3f}.muted{color:#65676b}.hidden{display:none!important}.app{max-width:1100px;margin:auto}.top{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid #ddd;padding:10px}.brand{font-size:22px;font-weight:bold;color:#1877f2}.nav{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.nav button{background:#e4e6eb;color:#111}.nav button.active{background:#1877f2;color:#fff}.grid{display:grid;grid-template-columns:260px 1fr;gap:16px;margin:16px}.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px #0002}.avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#ddd}.row{display:flex;align-items:center;gap:10px}.grow{flex:1}.feed textarea{width:100%;min-height:80px;border:1px solid #ddd;border-radius:10px;padding:10px;resize:vertical}.post{padding-top:12px;border-top:1px solid #eee;margin-top:12px}.post img,.media{max-width:100%;border-radius:10px;margin-top:10px}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.actions button{background:#e4e6eb;color:#111}.actions button.on{background:#1877f2;color:#fff}.story{display:inline-flex;flex-direction:column;align-items:center;width:90px}.story img{width:65px;height:65px;border-radius:50%;object-fit:cover;border:3px solid #1877f2}.stories{display:flex;overflow:auto;gap:10px}.login{max-width:420px;margin:8vh auto}.form{display:grid;gap:10px}.form input,.form textarea,.form select{width:100%;padding:11px;border:1px solid #ccd0d5;border-radius:8px}.toast{position:fixed;bottom:20px;left:20px;background:#222;color:#fff;padding:12px 18px;border-radius:8px;z-index:20}.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:10}.modal>.card{width:min(600px,92vw);max-height:90vh;overflow:auto}.list{display:grid;gap:8px}.item{padding:10px;background:#f5f6f7;border-radius:8px}.side button{width:100%;margin-bottom:7px;background:#fff;color:#111;text-align:right}.status{font-size:12px}.online{color:#16a34a}.offline{color:#777}@media(max-width:750px){.grid{grid-template-columns:1fr;margin:8px}.side{display:none}.top{padding:8px}.brand{font-size:18px}}
-</style>
-</head>
-<body>
-<div id="root"></div><div id="toast" class="toast hidden"></div>
-<script>
-/* ================= API CONFIG ================= */
-const API_BASE = localStorage.getItem('saidwali_api') || 'https://saidwali-social-api.walizaad2.workers.dev';
-let token=localStorage.getItem('saidwali_token')||'';
-let me=null;
-const $=s=>document.querySelector(s);
-const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-function toast(x){$('#toast').textContent=x;$('#toast').classList.remove('hidden');setTimeout(()=>$('#toast').classList.add('hidden'),3000)}
-async function api(path,opt={}){const h={'Content-Type':'application/json',...(opt.headers||{})};if(token)h.Authorization='Bearer '+token;const r=await fetch(API_BASE+path,{...opt,headers:h});let d={};try{d=await r.json()}catch{}if(!r.ok){if(r.status===401){token='';localStorage.removeItem('saidwali_token');render()}throw Error(d.error||'API error')}return d}
-async function post(path,data){return api(path,{method:'POST',body:JSON.stringify(data)})}
-async function put(path,data){return api(path,{method:'PUT',body:JSON.stringify(data)})}
-async function del(path,data){return api(path,{method:'DELETE',body:JSON.stringify(data)})}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سیدولي خان کوهستاني بوک</title>
 
-/* ================= AUTH ================= */
-function render(){document.body.innerHTML=token?appHTML():authHTML();if(token)loadMe();}
-function authHTML(){return `<div class="login card"><h1 class="brand">سیدولي افغاني نړیواله ټولنیزه شبکه</h1><div id="authBox">${loginForm()}</div></div>`}
-function loginForm(){return `<h2>ننوتل</h2><form class="form" onsubmit="login(event)"><input id="identifier" placeholder="Username / Email / Phone" required><input id="password" type="password" placeholder="Password" required><button>ننوتل</button></form><p>حساب نه لرئ؟ <button onclick="$('#authBox').innerHTML=registerForm()">ثبت نام</button></p>`}
-function registerForm(){return `<h2>نوی حساب</h2><form class="form" onsubmit="register(event)"><input id="full_name" placeholder="بشپړ نوم"><input id="username" placeholder="Username" required><input id="email" type="email" placeholder="Email"><input id="phone" placeholder="Phone"><input id="password" type="password" placeholder="Password (8+)" required><button>حساب جوړول</button></form><p><button onclick="$('#authBox').innerHTML=loginForm()">بېرته ننوتل</button></p>`}
-async function login(e){e.preventDefault();try{const d=await post('/api/auth/login',{identifier:$('#identifier').value,password:$('#password').value});token=d.token;localStorage.setItem('saidwali_token',token);render()}catch(x){toast(x.message)}}
-async function register(e){e.preventDefault();try{const d=await post('/api/auth/register',{full_name:$('#full_name').value,username:$('#username').value,email:$('#email').value||null,phone:$('#phone').value||null,password:$('#password').value});token=d.token;localStorage.setItem('saidwali_token',token);render()}catch(x){toast(x.message)}}
-async function logout(){try{await post('/api/auth/logout',{})}catch{}token='';localStorage.removeItem('saidwali_token');render()}
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f0f2f5;
+    color:#1c1e21;
+    min-height:100vh;
+}
+
+button{
+    cursor:pointer;
+}
+
+.hidden{
+    display:none!important;
+}
+
+/* ================= LOGIN ================= */
+
+#auth-view{
+    min-height:calc(100vh - 60px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px 15px;
+}
+
+.auth-container{
+    width:100%;
+    max-width:1000px;
+    display:flex;
+    gap:50px;
+    align-items:center;
+    justify-content:center;
+}
+
+.auth-left{
+    flex:1;
+    max-width:500px;
+}
+
+.auth-left img{
+    width:180px;
+    height:180px;
+    object-fit:cover;
+    border-radius:20px;
+    border:4px solid white;
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
+    margin-bottom:15px;
+}
+
+.auth-left h1{
+    color:#1877f2;
+    font-size:50px;
+    font-weight:900;
+    margin-bottom:10px;
+}
+
+.auth-left p{
+    font-size:24px;
+    font-weight:bold;
+    line-height:1.6;
+}
+
+.auth-card{
+    width:100%;
+    max-width:400px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 4px 15px rgba(0,0,0,.12);
+}
+
+.input{
+    width:100%;
+    padding:14px;
+    margin-bottom:12px;
+    border:1px solid #dddfe2;
+    border-radius:7px;
+    font-size:16px;
+    outline:none;
+}
+
+.input:focus{
+    border-color:#1877f2;
+    box-shadow:0 0 0 2px #e7f3ff;
+}
+
+.btn-login{
+    width:100%;
+    border:0;
+    padding:13px;
+    border-radius:7px;
+    background:#1877f2;
+    color:white;
+    font-size:19px;
+    font-weight:bold;
+}
+
+.btn-login:hover{
+    background:#166fe5;
+}
+
+.btn-register{
+    border:0;
+    padding:12px 20px;
+    border-radius:7px;
+    background:#42b72a;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+}
+
+.btn-register:hover{
+    background:#36a420;
+}
+
+.divider{
+    height:1px;
+    background:#dadde1;
+    margin:20px 0;
+}
+
+.error{
+    display:none;
+    color:#d93025;
+    background:#fff1f0;
+    border:1px solid #ffd2cf;
+    padding:10px;
+    border-radius:6px;
+    margin-bottom:12px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.success{
+    display:none;
+    color:#188038;
+    background:#e6f4ea;
+    border:1px solid #b7dfc1;
+    padding:10px;
+    border-radius:6px;
+    margin-bottom:12px;
+    text-align:center;
+    font-weight:bold;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:1000;
+    justify-content:center;
+    align-items:center;
+    padding:15px;
+}
+
+.modal-box{
+    width:100%;
+    max-width:430px;
+    background:white;
+    border-radius:10px;
+    padding:22px;
+    position:relative;
+    box-shadow:0 10px 40px rgba(0,0,0,.25);
+}
+
+.close{
+    position:absolute;
+    left:15px;
+    top:10px;
+    font-size:28px;
+    color:#666;
+    cursor:pointer;
+}
+
+.modal-box h2{
+    font-size:28px;
+    margin-bottom:5px;
+}
+
+.modal-box p{
+    color:#666;
+    margin-bottom:20px;
+}
 
 /* ================= APP ================= */
-function appHTML(){return `<header class="top"><div class="app"><span class="brand">سیدولي شبکه</span><div class="nav"><button onclick="show('home')">کور</button><button onclick="show('profile')">پروفایل</button><button onclick="show('friends')">ملګري</button><button onclick="show('messages')">پیغامونه</button><button onclick="show('notifications')">خبرتیاوې</button><button onclick="show('search')">لټون</button><button onclick="show('pages')">پاڼې</button><button onclick="show('groups')">ګروپونه</button><button onclick="show('events')">پېښې</button><button onclick="show('marketplace')">بازار</button><button onclick="show('settings')">تنظیمات</button><button onclick="logout()" class="danger">وتل</button></div></div></header><main id="view" class="app"></main>`}
-async function loadMe(){try{const d=await api('/api/me');me=d.user;show('home')}catch(x){toast(x.message)}}
-async function show(page){const v=$('#view');v.innerHTML='<div class="card">Loading...</div>';try{if(page==='home')await home(v);else if(page==='profile')await profile(v,me.id);else if(page==='friends')await friends(v);else if(page==='messages')await messages(v);else if(page==='notifications')await notifications(v);else if(page==='search')searchView(v);else if(page==='pages')await pages(v);else if(page==='groups')await groups(v);else if(page==='events')await events(v);else if(page==='marketplace')await marketplace(v);else if(page==='settings')await settings(v)}catch(x){v.innerHTML=`<div class="card">${esc(x.message)}</div>`}}
 
-/* ================= HOME / STORIES / POSTS ================= */
-async function home(v){const [s,p]=await Promise.all([api('/api/stories'),api('/api/posts')]);v.innerHTML=`<div class="grid"><aside class="side"><div class="card"><b>${esc(me.full_name||me.username)}</b><p class="muted">@${esc(me.username)}</p><button onclick="show('profile')">زما پروفایل</button><button onclick="show('friends')">ملګري</button><button onclick="show('messages')">پیغامونه</button></div></aside><section class="feed"><div class="card"><h3>Stories</h3><div class="stories">${(s.stories||[]).map(x=>`<div class="story"><img src="${esc(x.media_url||x.profile_photo||'')}" onerror="this.style.visibility='hidden'"><small>${esc(x.username||x.full_name||'کارن')}</small></div>`).join('')}</div><hr><form onsubmit="createStory(event)" class="form"><select id="story_type"><option value="text">متن</option><option value="image">عکس</option><option value="video">ویډیو</option></select><input id="story_media" placeholder="Media URL"><input id="story_content" placeholder="Story متن"><button>Story جوړول</button></form></div><div class="card"><h3>نوی پوسټ</h3><form onsubmit="createPost(event)" class="form"><textarea id="post_content" placeholder="څه فکر کوئ؟"></textarea><select id="post_privacy"><option>public</option><option>friends</option><option>private</option></select><input id="post_location" placeholder="Location"><input id="post_feeling" placeholder="Feeling"><input id="post_media" placeholder="Media URL (اختیاري)"><button>پوسټ خپرول</button></form></div><div id="posts">${(p.posts||[]).map(postHTML).join('')}</div></section></div>`}
-function postHTML(p){return `<article class="card post" id="post-${p.id}"><div class="row"><img class="avatar" src="${esc(p.profile_photo||'')}" onerror="this.style.visibility='hidden'"><div><b>${esc(p.full_name||p.username)}</b><div class="muted">@${esc(p.username)} · ${esc(p.created_at)}</div></div></div><p>${esc(p.content)}</p>${p.media_url?`<img class="media" src="${esc(p.media_url)}">`:''}<div class="muted">❤️ ${p.reactions_count||0} · 💬 ${p.comments_count||0} · ↗ ${p.shares_count||0}</div><div class="actions"><button class="${p.reacted?'on':''}" onclick="react(${p.id},'like')">❤️ Like</button><button onclick="comment(${p.id})">💬 Comment</button><button onclick="save(${p.id})">🔖 Save</button>${Number(p.user_id)===Number(me.id)?`<button class="danger" onclick="deletePost(${p.id})">Delete</button>`:''}</div></article>`}
-async function createPost(e){e.preventDefault();try{const media=$('#post_media').value.trim();await post('/api/posts',{content:$('#post_content').value,privacy:$('#post_privacy').value,location:$('#post_location').value,feeling:$('#post_feeling').value,media:media?[{media_type:'image',media_url:media}]:[]});toast('پوسټ جوړ شو');show('home')}catch(x){toast(x.message)}}
-async function deletePost(id){if(!confirm('پوسټ حذف شي؟'))return;try{await del('/api/posts/'+id);show('home')}catch(x){toast(x.message)}}
-async function react(id,type){try{await post('/api/reactions',{post_id:id,reaction_type:type});show('home')}catch(x){toast(x.message)}}
-async function comment(id){const c=prompt('تبصره ولیکئ');if(!c)return;try{await post('/api/comments',{post_id:id,content:c});show('home')}catch(x){toast(x.message)}}
-async function save(id){try{await post('/api/saved-posts',{post_id:id});toast('Save شو')}catch(x){toast(x.message)}}
-async function createStory(e){e.preventDefault();try{await post('/api/stories',{story_type:$('#story_type').value,media_url:$('#story_media').value,content:$('#story_content').value,privacy:'friends',expires_at:new Date(Date.now()+86400000).toISOString()});toast('Story جوړ شو');show('home')}catch(x){toast(x.message)}}
+#main-view{
+    display:none;
+}
 
-/* ================= PROFILE ================= */
-async function profile(v,id){const d=await api('/api/profile?user_id='+id);const p=d.profile;v.innerHTML=`<div class="card"><div style="height:180px;background:#ddd url('${esc(p.cover_photo||'')}') center/cover;border-radius:10px"></div><div class="row" style="margin-top:-30px;padding:10px"><img class="avatar" style="width:80px;height:80px;border:4px solid white" src="${esc(p.profile_photo||'')}" onerror="this.style.visibility='hidden'"><div><h2>${esc(p.full_name)}</h2><div>@${esc(p.username)} ${p.is_verified?'✓':''}</div></div></div></div><div class="card"><h3>پروفایل سمول</h3><form class="form" onsubmit="updateProfile(event)"><input id="pf_full_name" value="${esc(p.full_name)}" placeholder="Full name"><textarea id="pf_bio">${esc(p.bio)}</textarea><input id="pf_profile_photo" value="${esc(p.profile_photo)}" placeholder="Profile photo URL"><input id="pf_cover_photo" value="${esc(p.cover_photo)}" placeholder="Cover photo URL"><input id="pf_location" value="${esc(p.location)}" placeholder="Location"><input id="pf_website" value="${esc(p.website)}" placeholder="Website"><input id="pf_work" value="${esc(p.work)}" placeholder="Work"><input id="pf_education" value="${esc(p.education)}" placeholder="Education"><input id="pf_birthday" value="${esc(p.birthday)}" placeholder="Birthday"><input id="pf_gender" value="${esc(p.gender)}" placeholder="Gender"><button>ذخیره</button></form></div>`}
-async function updateProfile(e){e.preventDefault();try{await put('/api/profile',{full_name:$('#pf_full_name').value,bio:$('#pf_bio').value,profile_photo:$('#pf_profile_photo').value,cover_photo:$('#pf_cover_photo').value,location:$('#pf_location').value,website:$('#pf_website').value,work:$('#pf_work').value,education:$('#pf_education').value,birthday:$('#pf_birthday').value,gender:$('#pf_gender').value});toast('پروفایل تازه شو');show('profile')}catch(x){toast(x.message)}}
+.navbar{
+    background:white;
+    border-bottom:1px solid #dddfe2;
+    padding:10px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
 
-/* ================= FRIENDS / FOLLOW ================= */
-async function friends(v){const d=await api('/api/friends');const r=await api('/api/friend-requests');v.innerHTML=`<div class="card"><h2>ملګري</h2><div class="list">${(d.friends||[]).map(x=>`<div class="item row"><span class="grow"><b>${esc(x.full_name||x.username)}</b> @${esc(x.username)}</span></div>`).join('')||'<span>ملګري نشته</span>'}</div></div><div class="card"><h2>Friend Requests</h2><div class="list">${(r.requests||r.received||[]).map(x=>`<div class="item row"><span class="grow">${esc(x.full_name||x.username||x.sender_username)}</span><button onclick="respond(${x.id},'accepted')">قبول</button><button class="danger" onclick="respond(${x.id},'rejected')">رد</button></div>`).join('')||'<span>درخواست نشته</span>'}</div><hr><form class="form" onsubmit="sendFriend(event)"><input id="friend_id" type="number" placeholder="د کارن ID"><button>Friend Request واستوئه</button></form></div>`}
-async function sendFriend(e){e.preventDefault();try{await post('/api/friend-requests',{receiver_id:Number($('#friend_id').value)});toast('درخواست واستول شو')}catch(x){toast(x.message)}}
-async function respond(id,status){try{await post('/api/friend-requests/respond',{request_id:id,status});show('friends')}catch(x){toast(x.message)}}
+.nav-logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
 
-/* ================= MESSAGES ================= */
-async function messages(v){const d=await api('/api/conversations');v.innerHTML=`<div class="card"><h2>پیغامونه</h2><div class="list">${(d.conversations||[]).map(c=>`<div class="item" onclick="openConversation(${c.id})"><b>${esc(c.title||'Conversation #'+c.id)}</b><div class="muted">${esc(c.updated_at||'')}</div></div>`).join('')||'Conversation نشته'}</div><hr><form class="form" onsubmit="newConversation(event)"><input id="conv_title" placeholder="Conversation title"><input id="conv_user" type="number" placeholder="د بل کارن ID"><button>Conversation جوړول</button></form></div><div id="chat"></div>`}
-async function newConversation(e){e.preventDefault();try{await post('/api/conversations',{title:$('#conv_title').value,user_id:Number($('#conv_user').value)});show('messages')}catch(x){toast(x.message)}}
-async function openConversation(id){const d=await api('/api/messages?conversation_id='+id);$('#chat').innerHTML=`<div class="card"><h3>Chat #${id}</h3><div class="list">${(d.messages||[]).map(m=>`<div class="item"><b>${esc(m.sender_id==me.id?'زه':'کارن')}</b>: ${esc(m.content)}</div>`).join('')}</div><form class="form" onsubmit="sendMsg(event,${id})"><input id="msg" placeholder="پیغام"><button>استول</button></form></div>`}
-async function sendMsg(e,id){e.preventDefault();try{await post('/api/messages',{conversation_id:id,content:$('#msg').value,message_type:'text'});openConversation(id)}catch(x){toast(x.message)}}
+.nav-logo img{
+    width:45px;
+    height:45px;
+    object-fit:cover;
+    border-radius:50%;
+    border:2px solid #1877f2;
+}
 
-/* ================= NOTIFICATIONS ================= */
-async function notifications(v){const d=await api('/api/notifications');v.innerHTML=`<div class="card"><h2>خبرتیاوې</h2><button onclick="readNotifications()">ټولې لوستل شوې</button><div class="list" style="margin-top:10px">${(d.notifications||[]).map(n=>`<div class="item"><b>${esc(n.title||n.type)}</b><div>${esc(n.message)}</div><small>${esc(n.created_at)}</small></div>`).join('')||'خبرتیا نشته'}</div></div>`}
-async function readNotifications(){try{await post('/api/notifications/read',{});show('notifications')}catch(x){toast(x.message)}}
+.nav-logo h2{
+    color:#1877f2;
+    font-size:21px;
+}
 
-/* ================= SEARCH ================= */
-function searchView(v){v.innerHTML=`<div class="card"><h2>لټون</h2><form class="form" onsubmit="doSearch(event)"><input id="q" placeholder="Users, posts, groups, pages..."><select id="search_type"><option value="all">all</option><option value="users">users</option><option value="posts">posts</option><option value="groups">groups</option><option value="pages">pages</option><option value="hashtags">hashtags</option></select><button>لټون</button></form></div><div id="results"></div>`}
-async function doSearch(e){e.preventDefault();try{const d=await api('/api/search?q='+encodeURIComponent($('#q').value)+'&type='+encodeURIComponent($('#search_type').value));$('#results').innerHTML='<div class="card"><pre style="white-space:pre-wrap">'+esc(JSON.stringify(d,null,2))+'</pre></div>'}catch(x){toast(x.message)}}
+.nav-user{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
 
-/* ================= PAGES / GROUPS / EVENTS / MARKETPLACE ================= */
-async function pages(v){const d=await api('/api/pages');v.innerHTML=`<div class="card"><h2>پاڼې</h2><div class="list">${(d.pages||[]).map(x=>`<div class="item"><b>${esc(x.name)}</b> @${esc(x.username)}<div>${esc(x.description)}</div></div>`).join('')||'پاڼه نشته'}</div><hr><form class="form" onsubmit="createPage(event)"><input id="page_name" placeholder="Name" required><input id="page_username" placeholder="Username" required><textarea id="page_description" placeholder="Description"></textarea><input id="page_category" placeholder="Category"><button>پاڼه جوړول</button></form></div>`}
-async function createPage(e){e.preventDefault();try{await post('/api/pages',{name:$('#page_name').value,username:$('#page_username').value,description:$('#page_description').value,category:$('#page_category').value});show('pages')}catch(x){toast(x.message)}}
-async function groups(v){const d=await api('/api/groups');v.innerHTML=`<div class="card"><h2>ګروپونه</h2><div class="list">${(d.groups||[]).map(x=>`<div class="item"><b>${esc(x.name)}</b><div>${esc(x.description)}</div></div>`).join('')||'ګروپ نشته'}</div><hr><form class="form" onsubmit="createGroup(event)"><input id="group_name" placeholder="Name" required><textarea id="group_description" placeholder="Description"></textarea><select id="group_privacy"><option>public</option><option>private</option></select><input id="group_category" placeholder="Category"><button>ګروپ جوړول</button></form></div>`}
-async function createGroup(e){e.preventDefault();try{await post('/api/groups',{name:$('#group_name').value,description:$('#group_description').value,privacy:$('#group_privacy').value,category:$('#group_category').value});show('groups')}catch(x){toast(x.message)}}
-async function events(v){const d=await api('/api/events');v.innerHTML=`<div class="card"><h2>پېښې</h2><div class="list">${(d.events||[]).map(x=>`<div class="item"><b>${esc(x.title)}</b><div>${esc(x.location)} · ${esc(x.start_at)}</div><p>${esc(x.description)}</p></div>`).join('')||'پېښه نشته'}</div><hr><form class="form" onsubmit="createEvent(event)"><input id="event_title" placeholder="Title" required><textarea id="event_description" placeholder="Description"></textarea><input id="event_location" placeholder="Location"><input id="event_start" type="datetime-local" required><input id="event_end" type="datetime-local"><select id="event_privacy"><option>public</option><option>private</option></select><button>پېښه جوړول</button></form></div>`}
-async function createEvent(e){e.preventDefault();try{await post('/api/events',{title:$('#event_title').value,description:$('#event_description').value,location:$('#event_location').value,start_at:new Date($('#event_start').value).toISOString(),end_at:$('#event_end').value?new Date($('#event_end').value).toISOString():null,privacy:$('#event_privacy').value});show('events')}catch(x){toast(x.message)}}
-async function marketplace(v){const d=await api('/api/marketplace');v.innerHTML=`<div class="card"><h2>Marketplace</h2><div class="list">${(d.products||d.items||[]).map(x=>`<div class="item"><b>${esc(x.title)}</b> — ${esc(x.price)} ${esc(x.currency||'AFN')}<p>${esc(x.description)}</p><small>${esc(x.location)}</small></div>`).join('')||'اعلان نشته'}</div><hr><form class="form" onsubmit="createMarket(event)"><input id="mp_title" placeholder="Title" required><textarea id="mp_description" placeholder="Description"></textarea><input id="mp_price" type="number" step="0.01" placeholder="Price" required><input id="mp_currency" value="AFN"><input id="mp_location" placeholder="Location"><button>اعلان جوړول</button></form></div>`}
-async function createMarket(e){e.preventDefault();try{await post('/api/marketplace',{title:$('#mp_title').value,description:$('#mp_description').value,price:Number($('#mp_price').value),currency:$('#mp_currency').value,location:$('#mp_location').value});show('marketplace')}catch(x){toast(x.message)}}
+.user-name{
+    font-weight:bold;
+}
 
-/* ================= SETTINGS ================= */
-async function settings(v){const d=await api('/api/settings');const s=d.settings||{};v.innerHTML=`<div class="card"><h2>تنظیمات</h2><form class="form" onsubmit="updateSettings(event)"><select id="set_language"><option value="ps">Pashto</option><option value="fa">Dari</option><option value="en">English</option></select><select id="set_theme"><option>light</option><option>dark</option></select><label><input id="set_notifications" type="checkbox" ${s.notifications_enabled?'checked':''}> Notifications</label><label><input id="set_email" type="checkbox" ${s.email_notifications?'checked':''}> Email notifications</label><button>ذخیره</button></form><hr><label>API URL<input value="${esc(API_BASE)}" readonly></label></div>`}
-async function updateSettings(e){e.preventDefault();try{await put('/api/settings',{language:$('#set_language').value,theme:$('#set_theme').value,notifications_enabled:$('#set_notifications').checked?1:0,email_notifications:$('#set_email').checked?1:0});toast('تنظیمات ذخیره شول')}catch(x){toast(x.message)}}
+.btn-logout{
+    border:0;
+    background:#f02849;
+    color:white;
+    padding:8px 14px;
+    border-radius:6px;
+    font-weight:bold;
+}
 
-/* ================= START ================= */
-render();
+.container{
+    width:100%;
+    max-width:1100px;
+    margin:20px auto;
+    padding:0 15px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:20px;
+}
+
+/* ================= POST CREATOR ================= */
+
+.card{
+    background:white;
+    border:1px solid #dddfe2;
+    border-radius:10px;
+    box-shadow:0 2px 5px rgba(0,0,0,.06);
+}
+
+.post-create{
+    padding:15px;
+    margin-bottom:15px;
+}
+
+.post-create textarea{
+    width:100%;
+    min-height:100px;
+    resize:none;
+    border:1px solid #dddfe2;
+    border-radius:8px;
+    padding:12px;
+    font-size:16px;
+    outline:none;
+}
+
+.post-create textarea:focus{
+    border-color:#1877f2;
+}
+
+.post-options{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+
+.post-options input{
+    flex:1;
+    padding:9px;
+    border:1px solid #dddfe2;
+    border-radius:6px;
+}
+
+.btn-post{
+    background:#1877f2;
+    color:white;
+    border:0;
+    padding:10px 25px;
+    border-radius:7px;
+    font-weight:bold;
+}
+
+/* ================= POSTS ================= */
+
+.post{
+    padding:18px;
+    margin-bottom:15px;
+}
+
+.post-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.avatar{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#ddd;
+}
+
+.post-user{
+    font-weight:bold;
+    font-size:17px;
+}
+
+.post-date{
+    color:#65676b;
+    font-size:12px;
+    margin-top:3px;
+}
+
+.post-content{
+    font-size:17px;
+    line-height:1.7;
+    margin-bottom:15px;
+    white-space:pre-wrap;
+}
+
+.post-stats{
+    display:flex;
+    justify-content:space-between;
+    color:#65676b;
+    font-size:14px;
+    padding-bottom:10px;
+    border-bottom:1px solid #eee;
+}
+
+.post-actions{
+    display:flex;
+    gap:5px;
+    margin-top:8px;
+}
+
+.post-actions button{
+    flex:1;
+    border:0;
+    background:white;
+    padding:10px;
+    border-radius:6px;
+    font-weight:bold;
+    color:#65676b;
+}
+
+.post-actions button:hover{
+    background:#f0f2f5;
+}
+
+.post-actions .liked{
+    color:#1877f2;
+}
+
+/* ================= COMMENTS ================= */
+
+.comments{
+    margin-top:10px;
+}
+
+.comment{
+    display:flex;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.comment-body{
+    background:#f0f2f5;
+    padding:7px 12px;
+    border-radius:15px;
+    max-width:85%;
+}
+
+.comment-name{
+    font-weight:bold;
+    font-size:13px;
+}
+
+.comment-text{
+    font-size:14px;
+}
+
+.comment-form{
+    display:flex;
+    gap:5px;
+    margin-top:8px;
+}
+
+.comment-form input{
+    flex:1;
+    border:1px solid #dddfe2;
+    border-radius:18px;
+    padding:9px 13px;
+}
+
+.comment-form button{
+    border:0;
+    background:#1877f2;
+    color:white;
+    border-radius:18px;
+    padding:0 15px;
+}
+
+/* ================= USERS ================= */
+
+.side-card{
+    padding:15px;
+    margin-bottom:15px;
+}
+
+.side-title{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:12px;
+}
+
+.user-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px;
+    border-radius:7px;
+    cursor:pointer;
+}
+
+.user-item:hover{
+    background:#f0f2f5;
+}
+
+.user-item-info{
+    flex:1;
+}
+
+.online{
+    color:#31a24c;
+    font-size:12px;
+}
+
+/* ================= CHAT ================= */
+
+.chat-card{
+    padding:15px;
+    position:sticky;
+    top:75px;
+}
+
+.chat-select{
+    width:100%;
+    padding:9px;
+    border:1px solid #dddfe2;
+    border-radius:6px;
+    margin-bottom:10px;
+}
+
+.chat-box{
+    height:350px;
+    background:#f0f2f5;
+    border-radius:8px;
+    padding:10px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.message{
+    max-width:80%;
+    padding:8px 12px;
+    border-radius:17px;
+    line-height:1.5;
+    word-break:break-word;
+}
+
+.message.mine{
+    background:#1877f2;
+    color:white;
+    align-self:flex-start;
+}
+
+.message.theirs{
+    background:#e4e6eb;
+    color:#111;
+    align-self:flex-end;
+}
+
+.chat-form{
+    display:flex;
+    gap:5px;
+    margin-top:8px;
+}
+
+.chat-form input{
+    flex:1;
+    padding:10px;
+    border:1px solid #dddfe2;
+    border-radius:18px;
+}
+
+.chat-form button{
+    border:0;
+    background:#1877f2;
+    color:white;
+    border-radius:18px;
+    padding:0 15px;
+}
+
+/* ================= LOADING ================= */
+
+.loading{
+    text-align:center;
+    padding:30px;
+    color:#65676b;
+}
+
+.empty{
+    text-align:center;
+    padding:30px;
+    color:#65676b;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+    text-align:center;
+    color:#777;
+    padding:20px;
+    font-size:13px;
+    margin-top:30px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:800px){
+
+    .auth-container{
+        flex-direction:column;
+        gap:20px;
+        text-align:center;
+    }
+
+    .auth-left h1{
+        font-size:38px;
+    }
+
+    .auth-left p{
+        font-size:19px;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .chat-card{
+        position:static;
+    }
+
+    .navbar{
+        padding:8px 10px;
+    }
+
+    .nav-logo h2{
+        font-size:16px;
+    }
+
+    .user-name{
+        display:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ======================================================
+     LOGIN / REGISTER
+====================================================== -->
+
+<section id="auth-view">
+
+    <div class="auth-container">
+
+        <div class="auth-left">
+
+            <img src="said.png" alt="سیدولي خان کوهستاني">
+
+            <h1>saidwali</h1>
+
+            <p>
+                پخیر راغلئ د سیدولي خان کوهستاني
+                ټولنیزې شبکې ته 🌐
+            </p>
+
+        </div>
+
+        <div class="auth-card">
+
+            <div id="login-error" class="error"></div>
+            <div id="login-success" class="success"></div>
+
+            <input
+                class="input"
+                id="login-username"
+                type="text"
+                placeholder="Username"
+                autocomplete="username"
+            >
+
+            <input
+                class="input"
+                id="login-password"
+                type="password"
+                placeholder="Password"
+                autocomplete="current-password"
+            >
+
+            <button
+                class="btn-login"
+                onclick="handleLogin()"
+            >
+                ننوتل
+            </button>
+
+            <div class="divider"></div>
+
+            <div style="text-align:center">
+
+                <button
+                    class="btn-register"
+                    onclick="openRegister()"
+                >
+                    نوی اکاونټ جوړول
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     REGISTER MODAL
+====================================================== -->
+
+<div id="register-modal" class="modal">
+
+    <div class="modal-box">
+
+        <span
+            class="close"
+            onclick="closeRegister()"
+        >
+            ×
+        </span>
+
+        <h2>نوی اکاونټ جوړ کړئ</h2>
+
+        <p>
+            خپل معلومات ولیکئ او په ټولنیزه شبکه کې ګډون وکړئ.
+        </p>
+
+        <div id="register-error" class="error"></div>
+        <div id="register-success" class="success"></div>
+
+        <input
+            class="input"
+            id="register-fullname"
+            type="text"
+            placeholder="بشپړ نوم"
+        >
+
+        <input
+            class="input"
+            id="register-username"
+            type="text"
+            placeholder="Username"
+        >
+
+        <input
+            class="input"
+            id="register-password"
+            type="password"
+            placeholder="Password"
+        >
+
+        <button
+            class="btn-register"
+            style="width:100%"
+            onclick="handleRegister()"
+        >
+            راجستر کول
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     MAIN APP
+====================================================== -->
+
+<section id="main-view">
+
+    <nav class="navbar">
+
+        <div class="nav-logo">
+
+            <img
+                src="said.png"
+                alt="لوګو"
+            >
+
+            <h2>
+                سیدولي خان کوهستاني بوک
+            </h2>
+
+        </div>
+
+        <div class="nav-user">
+
+            <span
+                id="user-display"
+                class="user-name"
+            >
+            </span>
+
+            <button
+                class="btn-logout"
+                onclick="logoutUser()"
+            >
+                وتل
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <div class="container">
+
+        <div class="grid">
+
+            <!-- ================= FEED ================= -->
+
+            <main>
+
+                <div class="card post-create">
+
+                    <textarea
+                        id="post-content"
+                        placeholder="څه نوي لرئ؟ دلته یې ولیکئ..."
+                    ></textarea>
+
+                    <div class="post-options">
+
+                        <input
+                            id="post-location"
+                            type="text"
+                            placeholder="ځای (اختیاري)"
+                        >
+
+                        <input
+                            id="post-feeling"
+                            type="text"
+                            placeholder="احساس (اختیاري)"
+                        >
+
+                        <button
+                            class="btn-post"
+                            onclick="createPost()"
+                        >
+                            خپرول
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="feed-container"
+                >
+                    <div class="loading">
+                        پوسټونه لوستل کېږي...
+                    </div>
+                </div>
+
+            </main>
+
+
+            <!-- ================= SIDEBAR ================= -->
+
+            <aside>
+
+                <div class="card side-card">
+
+                    <div class="side-title">
+                        👥 کاروونکي
+                    </div>
+
+                    <div id="users-container">
+
+                        <div class="loading">
+                            کاروونکي لوستل کېږي...
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= CHAT ================= -->
+
+                <div class="card chat-card">
+
+                    <div class="side-title">
+                        💬 Messenger
+                    </div>
+
+                    <select
+                        id="chat-target"
+                        class="chat-select"
+                        onchange="openConversation()"
+                    >
+                        <option value="">
+                            یو کاروونکی انتخاب کړئ
+                        </option>
+                    </select>
+
+                    <div
+                        id="chat-box"
+                        class="chat-box"
+                    >
+                        <div class="empty">
+                            د Chat لپاره یو کاروونکی انتخاب کړئ
+                        </div>
+                    </div>
+
+                    <div class="chat-form">
+
+                        <input
+                            id="chat-input"
+                            type="text"
+                            placeholder="پیغام ولیکئ..."
+                            onkeydown="if(event.key==='Enter') sendMessage()"
+                        >
+
+                        <button onclick="sendMessage()">
+                            لیږل
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+    © 2026 سیدولي خان کوهستاني بوک — Cloudflare Workers + D1 + GitHub
+</footer>
+
+
+<script>
+
+/* ======================================================
+   API CONFIG
+====================================================== */
+
+const API_URL =
+"https://saidwali-social-api.walizaad2.workers.dev";
+
+
+/* ======================================================
+   GLOBAL VARIABLES
+====================================================== */
+
+let currentUser = null;
+let currentConversationId = null;
+
+
+/* ======================================================
+   API REQUEST
+====================================================== */
+
+async function apiRequest(
+    endpoint,
+    method = "GET",
+    data = null
+){
+
+    const token =
+        localStorage.getItem("saidwali_token");
+
+    const headers = {
+        "Content-Type":"application/json"
+    };
+
+    if(token){
+
+        headers["Authorization"] =
+            "Bearer " + token;
+
+    }
+
+    const options = {
+        method,
+        headers
+    };
+
+    if(data !== null){
+
+        options.body =
+            JSON.stringify(data);
+
+    }
+
+    const response =
+        await fetch(
+            API_URL + endpoint,
+            options
+        );
+
+    let result;
+
+    try{
+
+        result =
+            await response.json();
+
+    }catch{
+
+        result = {
+            success:false,
+            message:"Server JSON ونه راکړ"
+        };
+
+    }
+
+    if(response.status === 401){
+
+        localStorage.removeItem(
+            "saidwali_token"
+        );
+
+        localStorage.removeItem(
+            "saidwali_user"
+        );
+
+    }
+
+    return result;
+}
+
+
+/* ======================================================
+   MESSAGE HELPERS
+====================================================== */
+
+function showError(id,message){
+
+    const el =
+        document.getElementById(id);
+
+    if(!el) return;
+
+    el.textContent = message;
+    el.style.display = "block";
+
+}
+
+function hideError(id){
+
+    const el =
+        document.getElementById(id);
+
+    if(el){
+
+        el.style.display = "none";
+
+    }
+
+}
+
+function showSuccess(id,message){
+
+    const el =
+        document.getElementById(id);
+
+    if(!el) return;
+
+    el.textContent = message;
+    el.style.display = "block";
+
+}
+
+
+/* ======================================================
+   REGISTER MODAL
+====================================================== */
+
+function openRegister(){
+
+    document.getElementById(
+        "register-modal"
+    ).style.display = "flex";
+
+}
+
+function closeRegister(){
+
+    document.getElementById(
+        "register-modal"
+    ).style.display = "none";
+
+    hideError("register-error");
+
+}
+
+
+/* ======================================================
+   REGISTER
+====================================================== */
+
+async function handleRegister(){
+
+    hideError("register-error");
+
+    const fullname =
+        document
+        .getElementById("register-fullname")
+        .value.trim();
+
+    const username =
+        document
+        .getElementById("register-username")
+        .value.trim();
+
+    const password =
+        document
+        .getElementById("register-password")
+        .value;
+
+    if(!fullname){
+
+        showError(
+            "register-error",
+            "بشپړ نوم ولیکئ"
+        );
+
+        return;
+
+    }
+
+    if(!username){
+
+        showError(
+            "register-error",
+            "Username ولیکئ"
+        );
+
+        return;
+
+    }
+
+    if(!password){
+
+        showError(
+            "register-error",
+            "Password ولیکئ"
+        );
+
+        return;
+
+    }
+
+    if(password.length < 6){
+
+        showError(
+            "register-error",
+            "Password باید لږ تر لږه 6 توري وي"
+        );
+
+        return;
+
+    }
+
+    try{
+
+        const result =
+            await apiRequest(
+                "/register",
+                "POST",
+                {
+                    fullname,
+                    username,
+                    password
+                }
+            );
+
+        if(!result.success){
+
+            showError(
+                "register-error",
+                result.message ||
+                "ثبت نام ناکام شو"
+            );
+
+            return;
+
+        }
+
+        showSuccess(
+            "register-success",
+            result.message ||
+            "اکاونټ جوړ شو"
+        );
+
+        document
+        .getElementById(
+            "register-fullname"
+        ).value = "";
+
+        document
+        .getElementById(
+            "register-username"
+        ).value = "";
+
+        document
+        .getElementById(
+            "register-password"
+        ).value = "";
+
+        setTimeout(
+            closeRegister,
+            1200
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showError(
+            "register-error",
+            "له Server سره اړیکه ونه شوه"
+        );
+
+    }
+
+}
+
+
+/* ======================================================
+   LOGIN
+====================================================== */
+
+async function handleLogin(){
+
+    hideError("login-error");
+    hideError("login-success");
+
+    const username =
+        document
+        .getElementById("login-username")
+        .value.trim();
+
+    const password =
+        document
+        .getElementById("login-password")
+        .value;
+
+    if(!username || !password){
+
+        showError(
+            "login-error",
+            "Username او Password ولیکئ"
+        );
+
+        return;
+
+    }
+
+    try{
+
+        const result =
+            await apiRequest(
+                "/login",
+                "POST",
+                {
+                    username,
+                    password
+                }
+            );
+
+        if(!result.success){
+
+            showError(
+                "login-error",
+                result.message ||
+                "Login ناکام شو"
+            );
+
+            return;
+
+        }
+
+        localStorage.setItem(
+            "saidwali_token",
+            result.token
+        );
+
+        localStorage.setItem(
+            "saidwali_user",
+            JSON.stringify(result.user)
+        );
+
+        currentUser =
+            result.user;
+
+        showMainApp();
+
+    }catch(error){
+
+        console.error(error);
+
+        showError(
+            "login-error",
+            "له Server سره اړیکه ونه شوه"
+        );
+
+    }
+
+}
+
+
+/* ======================================================
+   LOAD CURRENT USER
+====================================================== */
+
+async function loadCurrentUser(){
+
+    const token =
+        localStorage.getItem(
+            "saidwali_token"
+        );
+
+    if(!token){
+
+        return null;
+
+    }
+
+    try{
+
+        const result =
+            await apiRequest("/me");
+
+        if(result.success){
+
+            currentUser =
+                result.user;
+
+            localStorage.setItem(
+                "saidwali_user",
+                JSON.stringify(
+                    result.user
+                )
+            );
+
+            return result.user;
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+    localStorage.removeItem(
+        "saidwali_token"
+    );
+
+    localStorage.removeItem(
+        "saidwali_user"
+    );
+
+    return null;
+}
+
+
+/* ======================================================
+   SHOW MAIN APP
+====================================================== */
+
+async function showMainApp(){
+
+    document.getElementById(
+        "auth-view"
+    ).style.display = "none";
+
+    document.getElementById(
+        "main-view"
+    ).style.display = "block";
+
+    if(currentUser){
+
+        const name =
+            currentUser.full_name ||
+            currentUser.username;
+
+        document.getElementById(
+            "user-display"
+        ).textContent =
+            name;
+
+    }
+
+    await loadUsers();
+    await loadPosts();
+
+}
+
+
+/* ======================================================
+   LOGOUT
+====================================================== */
+
+async function logoutUser(){
+
+    try{
+
+        await apiRequest(
+            "/logout",
+            "POST"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+    localStorage.removeItem(
+        "saidwali_token"
+    );
+
+    localStorage.removeItem(
+        "saidwali_user"
+    );
+
+    currentUser = null;
+
+    currentConversationId = null;
+
+    location.reload();
+
+}
+
+
+/* ======================================================
+   LOAD USERS
+====================================================== */
+
+async function loadUsers(){
+
+    const container =
+        document.getElementById(
+            "users-container"
+        );
+
+    try{
+
+        const result =
+            await apiRequest("/users");
+
+        if(!result.success){
+
+            container.innerHTML =
+                `<div class="empty">
+                    ${escapeHTML(
+                        result.message ||
+                        "کاروونکي ونه لوستل شول"
+                    )}
+                </div>`;
+
+            return;
+
+        }
+
+        const users =
+            result.users || [];
+
+        const select =
+            document.getElementById(
+                "chat-target"
+            );
+
+        select.innerHTML =
+            `<option value="">
+                یو کاروونکی انتخاب کړئ
+            </option>`;
+
+        if(!users.length){
+
+            container.innerHTML =
+                `<div class="empty">
+                    تر اوسه نور کاروونکي نشته
+                </div>`;
+
+            return;
+
+        }
+
+        let html = "";
+
+        users.forEach(user => {
+
+            const name =
+                user.full_name ||
+                user.username;
+
+            const photo =
+                user.profile_photo ||
+                "said.png";
+
+            html += `
+
+                <div
+                    class="user-item"
+                    onclick="selectChatUser(${user.id})"
+                >
+
+                    <img
+                        class="avatar"
+                        src="${escapeAttr(photo)}"
+                        onerror="this.src='said.png'"
+                    >
+
+                    <div class="user-item-info">
+
+                        <div>
+                            ${escapeHTML(name)}
+                        </div>
+
+                        <small>
+                            @${escapeHTML(
+                                user.username
+                            )}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            `;
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                user.id;
+
+            option.textContent =
+                name +
+                " @" +
+                user.username;
+
+            select.appendChild(option);
+
+        });
+
+        container.innerHTML =
+            html;
+
+    }catch(error){
+
+        console.error(error);
+
+        container.innerHTML =
+            `<div class="empty">
+                د کاروونکو د لوستلو ستونزه
+            </div>`;
+
+    }
+
+}
+
+
+/* ======================================================
+   SELECT CHAT USER
+====================================================== */
+
+function selectChatUser(userId){
+
+    const select =
+        document.getElementById(
+            "chat-target"
+        );
+
+    select.value =
+        userId;
+
+    openConversation();
+
+}
+
+
+/* ======================================================
+   CREATE / OPEN CONVERSATION
+====================================================== */
+
+async function openConversation(){
+
+    const targetId =
+        Number(
+            document.getElementById(
+                "chat-target"
+            ).value
+        );
+
+    if(!targetId){
+
+        currentConversationId = null;
+
+        document.getElementById(
+            "chat-box"
+        ).innerHTML =
+            `<div class="empty">
+                د Chat لپاره یو کاروونکی انتخاب کړئ
+            </div>`;
+
+        return;
+
+    }
+
+    try{
+
+        const result =
+            await apiRequest(
+                "/conversations",
+                "POST",
+                {
+                    user_id:targetId
+                }
+            );
+
+        if(!result.success){
+
+            alert(
+                result.message ||
+                "Conversation جوړ نه شو"
+            );
+
+            return;
+
+        }
+
+        currentConversationId =
+            result.conversation_id;
+
+        await loadMessages();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "د Chat ستونزه پیدا شوه"
+        );
+
+    }
+
+}
+
+
+/* ======================================================
+   LOAD MESSAGES
+====================================================== */
+
+async function loadMessages(){
+
+    if(!currentConversationId){
+
+        return;
+
+    }
+
+    const box =
+        document.getElementById(
+            "chat-box"
+        );
+
+    try{
+
+        const result =
+            await apiRequest(
+                "/messages?conversation_id=" +
+                encodeURIComponent(
+                    currentConversationId
+                )
+            );
+
+        if(!result.success){
+
+            box.innerHTML =
+                `<div class="empty">
+                    ${escapeHTML(
+                        result.message ||
+                        "پیغامونه ونه لوستل شول"
+                    )}
+                </div>`;
+
+            return;
+
+        }
+
+        const messages =
+            result.messages || [];
+
+        if(!messages.length){
+
+            box.innerHTML =
+                `<div class="empty">
+                    تر اوسه پیغام نشته
+                </div>`;
+
+            return;
+
+        }
+
+        box.innerHTML =
+            messages.map(message => {
+
+                const mine =
+                    Number(
+                        message.sender_id
+                    ) === Number(
+                        currentUser.id
+                    );
+
+                return `
+
+                    <div
+                        class="message ${
+                            mine
+                            ? "mine"
+                            : "theirs"
+                        }"
+                    >
+                        ${escapeHTML(
+                            message.content || ""
+                        )}
+                    </div>
+
+                `;
+
+            }).join("");
+
+        box.scrollTop =
+            box.scrollHeight;
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* ======================================================
+   SEND MESSAGE
+====================================================== */
+
+async function sendMessage(){
+
+    if(!currentConversationId){
+
+        alert(
+            "لومړی یو کاروونکی انتخاب کړئ"
+        );
+
+        return;
+
+    }
+
+    const input =
+        document.getElementById(
+            "chat-input"
+        );
+
+    const content =
+        input.value.trim();
+
+    if(!content){
+
+        return;
+
+    }
+
+    input.disabled = true;
+
+    try{
+
+        const result =
+            await apiRequest(
+                "/messages",
+                "POST",
+                {
+                    conversation_id:
+                        currentConversationId,
+
+                    content
+                }
+            );
+
+        if(!result.success){
+
+            alert(
+                result.message ||
+                "پیغام ونه لېږل شو"
+            );
+
+            return;
+
+        }
+
+        input.value = "";
+
+        await loadMessages();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Server سره اړیکه ونه شوه"
+        );
+
+    }finally{
+
+        input.disabled = false;
+
+        input.focus();
+
+    }
+
+}
+
+
+/* ======================================================
+   CREATE POST
+====================================================== */
+
+async function createPost(){
+
+    const content =
+        document
+        .getElementById(
+            "post-content"
+        )
+        .value.trim();
+
+    const location =
+        document
+        .getElementById(
+            "post-location"
+        )
+        .value.trim();
+
+    const feeling =
+        document
+        .getElementById(
+            "post-feeling"
+        )
+        .value.trim();
+
+    if(!content){
+
+        alert(
+            "د پوسټ متن ولیکئ"
+        );
+
+        return;
+
+    }
+
+    try{
+
+        const result =
+            await apiRequest(
+                "/posts",
+                "POST",
+                {
+                    content,
+                    location,
+                    feeling,
+                    privacy:"public"
+                }
+            );
+
+        if(!result.success){
+
+            alert(
+                result.message ||
+                "پوسټ جوړ نه شو"
+            );
+
+            return;
+
+        }
+
+        document
+        .getElementById(
+            "post-content"
+        ).value = "";
+
+        document
+        .getElementById(
+            "post-location"
+        ).value = "";
+
+        document
+        .getElementById(
+            "post-feeling"
+        ).value = "";
+
+        await loadPosts();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "پوسټ جوړولو کې ستونزه پیدا شوه"
+        );
+
+    }
+
+}
+
+
+/* ======================================================
+   LOAD POSTS
+====================================================== */
+
+async function loadPosts(){
+
+    const container =
+        document.getElementById(
+            "feed-container"
+        );
+
+    container.innerHTML =
+        `<div class="loading">
+            پوسټونه لوستل کېږي...
+        </div>`;
+
+    try{
+
+        const result =
+            await apiRequest(
+                "/posts"
+            );
+
+        if(!result.success){
+
+            container.innerHTML =
+                `<div class="card empty">
+                    ${escapeHTML(
+                        result.message ||
+                        "پوسټونه ونه لوستل شول"
+                    )}
+                </div>`;
+
+            return;
+
+        }
+
+        const posts =
+            result.posts || [];
+
+        if(!posts.length){
+
+            container.innerHTML =
+                `<div class="card empty">
+                    تر اوسه هېڅ پوسټ نشته.
+                    لومړی پوسټ ته یې جوړ کړئ.
+                </div>`;
+
+            return;
+
+        }
+
+        container.innerHTML =
+            posts.map(renderPost).join("");
+
+    }catch(error){
+
+        console.error(error);
+
+        container.innerHTML =
+            `<div class="card empty">
+                د پوسټونو لوستلو ستونزه پیدا شوه.
+            </div>`;
+
+    }
+
+}
+
+
+/* ======================================================
+   RENDER POST
+====================================================== */
+
+function renderPost(post){
+
+    const name =
+        post.full_name ||
+        post.username ||
+        "کاروونکی";
+
+    const photo =
+        post.profile_photo ||
+        "said.png";
+
+    const liked =
+        Number(post.liked) === 1 ||
+        post.liked === true;
+
+    const date =
+        formatDate(
+            post.created_at
+        );
+
+    return `
+
+        <article
+            class="card post"
+            id="post-${post.id}"
+        >
+
+            <div class="post-header">
+
+                <img
+                    class="avatar"
+                    src="${escapeAttr(photo)}"
+                    onerror="this.src='said.png'"
+                >
+
+                <div>
+
+                    <div class="post-user">
+                        ${escapeHTML(name)}
+                    </div>
+
+                    <div class="post-date">
+                        @${escapeHTML(
+                            post.username || ""
+                        )}
+                        ·
+                        ${escapeHTML(date)}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="post-content">
+                ${escapeHTML(
+                    post.content || ""
+                )}
+            </div>
+
+            ${
+                post.location
+                ?
+                `<div style="color:#65676b;margin-bottom:8px">
+                    📍 ${escapeHTML(
+                        post.location
+                    )}
+                </div>`
+                :
+                ""
+            }
+
+            ${
+                post.feeling
+                ?
+                `<div style="color:#65676b;margin-bottom:8px">
+                    😊 ${escapeHTML(
+                        post.feeling
+                    )}
+                </div>`
+                :
+                ""
+            }
+
+            <div class="post-stats">
+
+                <span>
+                    👍
+                    ${Number(
+                        post.likes_count || 0
+                    )}
+                </span>
+
+                <span>
+                    💬
+                    ${Number(
+                        post.comments_count || 0
+                    )}
+                </span>
+
+            </div>
+
+            <div class="post-actions">
+
+                <button
+                    class="${liked ? "liked" : ""}"
+                    onclick="toggleLike(${post.id})"
+                >
+                    ${liked ? "👍 Liked" : "👍 Like"}
+                </button>
+
+                <button
+                    onclick="toggleComments(${post.id})"
+                >
+                    💬 Comments
+                </button>
+
+            </div>
+
+            <div
+                id="comments-${post.id}"
+                class="comments"
+                style="display:none"
+            ></div>
+
+        </article>
+
+    `;
+
+}
+
+
+/* ======================================================
+   LIKE
+====================================================== */
+
+async function toggleLike(postId){
+
+    try{
+
+        const result =
+            await apiRequest(
+                `/posts/${postId}/like`,
+                "POST"
+            );
+
+        if(!result.success){
+
+            alert(
+                result.message ||
+                "Like ستونزه"
+            );
+
+            return;
+
+        }
+
+        await loadPosts();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Like کولو کې ستونزه"
+        );
+
+    }
+
+}
+
+
+/* ======================================================
+   COMMENTS TOGGLE
+====================================================== */
+
+async function toggleComments(postId){
+
+    const box =
+        document.getElementById(
+            `comments-${postId}`
+        );
+
+    if(box.style.display === "none"){
+
+        box.style.display =
+            "block";
+
+        await loadComments(postId);
+
+    }else{
+
+        box.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* ======================================================
+   LOAD COMMENTS
+====================================================== */
+
+async function loadComments(postId){
+
+    const box =
+        document.getElementById(
+            `comments-${postId}`
+        );
+
+    box.innerHTML =
+        `<div class="loading">
+            Comments لوستل کېږي...
+        </div>`;
+
+    try{
+
+        const result =
+            await apiRequest(
+                `/posts/${postId}/comments`
+            );
+
+        if(!result.success){
+
+            box.innerHTML =
+                `<div class="empty">
+                    ${escapeHTML(
+                        result.message ||
+                        "Comments ونه لوستل شول"
+                    )}
+                </div>`;
+
+            return;
+
+        }
+
+        const comments =
+            result.comments || [];
+
+        let html = "";
+
+        comments.forEach(comment => {
+
+            html += `
+
+                <div class="comment">
+
+                    <img
+                        class="avatar"
+                        src="${
+                            escapeAttr(
+                                comment.profile_photo ||
+                                "said.png"
+                            )
+                        }"
+                        onerror="this.src='said.png'"
+                    >
+
+                    <div class="comment-body">
+
+                        <div class="comment-name">
+                            ${escapeHTML(
+                                comment.full_name ||
+                                comment.username ||
+                                ""
+                            )}
+                        </div>
+
+                        <div class="comment-text">
+                            ${escapeHTML(
+                                comment.content || ""
+                            )}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        });
+
+        html += `
+
+            <div class="comment-form">
+
+                <input
+                    id="comment-input-${postId}"
+                    type="text"
+                    placeholder="Comment ولیکئ..."
+                    onkeydown="
+                        if(event.key==='Enter')
+                        addComment(${postId})
+                    "
+                >
+
+                <button
+                    onclick="addComment(${postId})"
+                >
+                    لیږل
+                </button>
+
+            </div>
+
+        `;
+
+        box.innerHTML =
+            html;
+
+    }catch(error){
+
+        console.error(error);
+
+        box.innerHTML =
+            `<div class="empty">
+                د Comments ستونزه
+            </div>`;
+
+    }
+
+}
+
+
+/* ======================================================
+   ADD COMMENT
+====================================================== */
+
+async function addComment(postId){
+
+    const input =
+        document.getElementById(
+            `comment-input-${postId}`
+        );
+
+    if(!input){
+
+        return;
+
+    }
+
+    const content =
+        input.value.trim();
+
+    if(!content){
+
+        return;
+
+    }
+
+    try{
+
+        const result =
+            await apiRequest(
+                `/posts/${postId}/comments`,
+                "POST",
+                {
+                    content
+                }
+            );
+
+        if(!result.success){
+
+            alert(
+                result.message ||
+                "Comment ونه لېږل شو"
+            );
+
+            return;
+
+        }
+
+        input.value = "";
+
+        await loadComments(
+            postId
+        );
+
+        await loadPosts();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Comment کولو کې ستونزه"
+        );
+
+    }
+
+}
+
+
+/* ======================================================
+   ESCAPE HTML
+====================================================== */
+
+function escapeHTML(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+function escapeAttr(value){
+
+    return escapeHTML(value);
+
+}
+
+
+/* ======================================================
+   DATE
+====================================================== */
+
+function formatDate(value){
+
+    if(!value){
+
+        return "";
+
+    }
+
+    try{
+
+        return new Date(
+            value
+        ).toLocaleString(
+            "ps-AF",
+            {
+                dateStyle:"medium",
+                timeStyle:"short"
+            }
+        );
+
+    }catch{
+
+        return value;
+
+    }
+
+}
+
+
+/* ======================================================
+   START APPLICATION
+====================================================== */
+
+async function startApp(){
+
+    const user =
+        await loadCurrentUser();
+
+    if(user){
+
+        showMainApp();
+
+    }else{
+
+        document.getElementById(
+            "auth-view"
+        ).style.display = "flex";
+
+        document.getElementById(
+            "main-view"
+        ).style.display = "none";
+
+    }
+
+}
+
+
+/* ======================================================
+   START
+====================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    startApp
+);
+
+
+/* ======================================================
+   CLOSE MODAL WHEN CLICK OUTSIDE
+====================================================== */
+
+document
+.getElementById(
+    "register-modal"
+)
+.addEventListener(
+    "click",
+    function(event){
+
+        if(event.target === this){
+
+            closeRegister();
+
+        }
+
+    }
+);
+
 </script>
+
 </body>
 </html>
