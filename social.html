@@ -30761,16 +30761,15 @@ async function loadProfilePosts(
 
 
   if (!container) return;
+const result =
+  await apiRequest(
+    "/feed",
+    {
+      method: "GET"
+    }
+  );
 
-
-  const result =
-    await apiRequest(
-      `/feed?user_id=${Number(userId)}`,
-      {
-        method:"GET"
-      }
-    );
-
+console.log("FEED RESPONSE:", result);
 
   if (
     !result ||
