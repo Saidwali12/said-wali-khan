@@ -48595,6 +48595,334 @@ window.testWorkerConnection =
 console.log(
   "Saidwali Social Network - Part 38 ready"
 );
+/* =====================================================
+   SAIDWALI LOGIN + REGISTER
+   ===================================================== */
 
+const API_BASE =
+  "https://saidwali-social-api.walizaad2.workers.dev";
+
+let sessionToken =
+  localStorage.getItem("saidwali_session_token") || "";
+
+
+/* API */
+
+async function apiRequest(endpoint, options = {}) {
+
+  try {
+
+    const headers = {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    };
+
+    if (sessionToken) {
+      headers["Authorization"] =
+        "Bearer " + sessionToken;
+    }
+
+    const response = await fetch(
+      API_BASE + endpoint,
+      {
+        ...options,
+        headers
+      }
+    );
+
+    const data = await response.json();
+
+    return data;
+
+  } catch (error) {
+
+    console.error(error);
+
+    return {
+      success: false,
+      message: "له Worker سره اړیکه ونه شوه."
+    };
+
+  }
+}
+
+
+/* REGISTER PAGE */
+
+function showRegisterForm() {
+
+  document
+    .getElementById("loginBox")
+    ?.classList.add("hidden");
+
+  document
+    .getElementById("registerBox")
+    ?.classList.remove("hidden");
+
+}
+
+
+/* LOGIN PAGE */
+
+function showLoginForm() {
+
+  document
+    .getElementById("registerBox")
+    ?.classList.add("hidden");
+
+  document
+    .getElementById("loginBox")
+    ?.classList.remove("hidden");
+
+}
+
+
+/* REGISTER */
+
+async function registerUser() {
+
+  const fullName =
+    document
+      .getElementById("registerFullName")
+      ?.value
+      .trim();
+
+  const username =
+    document
+      .getElementById("registerUsername")
+      ?.value
+      .trim();
+
+  const email =
+    document
+      .getElementById("registerEmail")
+      ?.value
+      .trim();
+
+  const password =
+    document
+      .getElementById("registerPassword")
+      ?.value;
+
+
+  if (!fullName ||
+      !username ||
+      !email ||
+      !password) {
+
+    alert("ټول معلومات ډک کړه.");
+
+    return;
+  }
+
+
+  const result =
+    await apiRequest(
+      "/register",
+      {
+        method: "POST",
+
+        body: JSON.stringify({
+
+          full_name: fullName,
+
+          username: username,
+
+          email: email,
+
+          password: password
+
+        })
+
+      }
+    );
+
+
+  if (!result.success) {
+
+    alert(
+      result.message ||
+      "حساب جوړ نه شو."
+    );
+
+    return;
+  }
+
+
+  sessionToken =
+    result.token || "";
+
+  localStorage.setItem(
+    "saidwali_session_token",
+    sessionToken
+  );
+
+
+  alert(
+    result.message ||
+    "حساب جوړ شو."
+  );
+
+
+  await startApplication();
+
+}
+
+
+/* LOGIN */
+
+async function loginUser() {
+
+  const identifier =
+    document
+      .getElementById("loginIdentifier")
+      ?.value
+      .trim();
+
+  const password =
+    document
+      .getElementById("loginPassword")
+      ?.value;
+
+
+  if (!identifier || !password) {
+
+    alert(
+      "Username/Email او Password ولیکه."
+    );
+
+    return;
+  }
+
+
+  const result =
+    await apiRequest(
+      "/login",
+      {
+        method: "POST",
+
+        body: JSON.stringify({
+
+          username: identifier,
+
+          email: identifier,
+
+          password: password
+
+        })
+
+      }
+    );
+
+
+  if (!result.success) {
+
+    alert(
+      result.message ||
+      "Login ناکام شو."
+    );
+
+    return;
+  }
+
+
+  sessionToken =
+    result.token ||
+    result.session_token ||
+    result.sessionToken ||
+    result.data?.token ||
+    "";
+
+
+  if (!sessionToken) {
+
+    alert(
+      "Login وشو، خو Token پیدا نه شو."
+    );
+
+    return;
+  }
+
+
+  localStorage.setItem(
+    "saidwali_session_token",
+    sessionToken
+  );
+
+
+  await startApplication();
+
+}
+
+
+/* START */
+
+async function startApplication() {
+
+  const authPage =
+    document.getElementById("authPage");
+
+  const app =
+    document.getElementById("app");
+
+
+  if (authPage) {
+
+    authPage.classList.add("hidden");
+
+  }
+
+
+  if (app) {
+
+    app.classList.remove("hidden");
+
+  }
+
+}
+
+
+/* AUTO LOGIN */
+
+async function checkExistingSession() {
+
+  if (!sessionToken) {
+
+    return;
+
+  }
+
+
+  const result =
+    await apiRequest("/me");
+
+
+  if (result.success) {
+
+    await startApplication();
+
+  } else {
+
+    sessionToken = "";
+
+    localStorage.removeItem(
+      "saidwali_session_token"
+    );
+
+  }
+
+}
+
+
+/* PAGE LOAD */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+    checkExistingSession();
+
+  }
+);
 </script>
 
