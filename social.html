@@ -8428,13 +8428,13 @@ async function loadUserPosts(
   `;
 
 
-  const result =
-    await apiRequest(
-      `/feed?user_id=${userId}`,
-      {
-        method:"GET"
-      }
-    );
+const result =
+  await apiRequest(
+    "/feed",
+    {
+      method: "GET"
+    }
+  );
 
 console.log("FEED RESPONSE:", result);
   if (!result.success) {
