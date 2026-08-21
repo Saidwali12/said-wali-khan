@@ -47624,10 +47624,10 @@ async function performLogin(
     result.token
   ) {
 
-    localStorage.setItem(
-      "saidwali_token",
-      result.token
-    );
+localStorage.setItem(
+  "saidwali_session_token",
+  result.token
+);
 
   }
 
@@ -47637,7 +47637,7 @@ async function performLogin(
   ) {
 
     localStorage.setItem(
-      "saidwali_token",
+    "saidwali_session_token",
       result.session_token
     );
 
