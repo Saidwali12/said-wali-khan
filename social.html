@@ -48002,7 +48002,10 @@ document.addEventListener(
   "DOMContentLoaded",
   async function() {
 
-    const token =
+      const token =
+  localStorage.getItem(
+    "saidwali_session_token"
+  ) ||
       localStorage.getItem(
         "saidwali_token"
       ) ||
