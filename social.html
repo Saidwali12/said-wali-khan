@@ -1864,13 +1864,12 @@ function escapeHTML(value) {
       return;
     }
 
-
-    const fullName =
-      currentUser.full_name ||
-      currentUser.name ||
-      currentUser.username ||
-      "کارن";
-
+const fullName =
+  currentUser.full_name ||
+  currentUser.profile?.full_name ||
+  currentUser.name ||
+  currentUser.username ||
+  "کارن";
 
     /*
       Sidebar name
