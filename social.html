@@ -48625,12 +48625,7 @@ console.log(
 const API_BASE =
   "https://saidwali-social-api.walizaad2.workers.dev";
 
-let sessionToken =
-  localStorage.getItem(
-    "saidwali_session_token"
-  ) || "";
 
-let currentUser = null;
 /* API */
 
 async function apiRequest(endpoint, options = {}) {
