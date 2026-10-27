@@ -1,58 +1,33 @@
+
 <!DOCTYPE html>
 <html lang="ps" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>تازه خبرونه</title>
+<title>تازه خبرونه | سیدولي خان</title>
 
 <style>
-.topbar{
-background:#0d47a1;
-color:white;
-padding:10px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-flex-wrap:wrap;
-}
-
-.back-btn{
-background:#ff9800;
-color:white;
-text-decoration:none;
-padding:8px 15px;
-border-radius:6px;
-font-size:14px;
-font-weight:bold;
-}
-
-.back-btn:hover{
-opacity:.9;
-}
-
-.breaking-news{
-font-size:14px;
-font-weight:bold;
-overflow:hidden;
-white-space:nowrap;
-max-width:80%;
-}
-
-#breakingText{
-display:inline-block;
-animation:moveText 20s linear infinite;
-}
-
-@keyframes moveText{
-0%{transform:translateX(100%);}
-100%{transform:translateX(-100%);}
-}
+*{box-sizing:border-box}
 
 body{
-font-family:tahoma;
+font-family:Tahoma,Arial,sans-serif;
 background:#f5f5f5;
 margin:0;
 padding:0;
+}
+
+.back-btn{
+display:inline-block;
+margin:10px;
+background:#ff9800;
+color:white;
+text-decoration:none;
+padding:9px 16px;
+border-radius:6px;
+font-size:14px;
+font-weight:bold;
+border:0;
+cursor:pointer;
 }
 
 .header{
@@ -62,111 +37,267 @@ padding:15px;
 text-align:center;
 }
 
+.header h2{
+margin:5px 0;
+}
+
 .ticker{
 background:#ff9800;
 color:white;
-padding:10px;
+padding:12px 0;
 font-weight:bold;
 overflow:hidden;
 white-space:nowrap;
+direction:ltr;
 }
+
+
+#tickerText{
+display:inline-block;
+white-space:nowrap;
+padding-right:100%;
+animation:moveText 100s linear infinite;
+}
+
+@keyframes moveText{
+0%{transform:translateX(0)}
+100%{transform:translateX(100%)}
+}
+
 
 .news{
 max-width:1000px;
 margin:auto;
-padding:20px;
+padding:15px;
 }
 
 .item{
 background:white;
 padding:15px;
-margin-bottom:10px;
+margin-bottom:12px;
 border-radius:10px;
 box-shadow:0 2px 5px rgba(0,0,0,.1);
+border-right:4px solid #0d47a1;
 }
 
 .item a{
 text-decoration:none;
 font-weight:bold;
 color:#0d47a1;
+line-height:1.9;
 }
+
+.item a:hover{
+color:#e65100;
+}
+
+.source{
+font-size:12px;
+color:#666;
+margin-top:8px;
+}
+
+.status{
+background:#fff3cd;
+color:#664d03;
+padding:12px;
+border-radius:8px;
+margin-bottom:12px;
+line-height:1.9;
+}
+
+.footer{
+text-align:center;
+padding:15px;
+color:#666;
+font-size:12px;
+}
+
 </style>
 </head>
 
 <body>
+
 <button class="back-btn" onclick="history.back()">⬅ شاتګ</button>
+
 <div class="header">
 <h2>📰 تازه خبرونه</h2>
+<p>د افغانستان او نړۍ د خبرونو مرکز</p>
 </div>
 
-<div class="ticker" id="ticker">
-خبرونه پورته کېږي...
+<div class="ticker">
+<span id="tickerText">
+📰 تازه خبرونه | 🌍 په نړۍ کې روانې چارې | 📡 حقیقي خبرونه
+</span>
 </div>
 
 <div class="news" id="news">
-خبرونه پورته کېږي...
+<div class="status">د خبرونو سرچینې کتل کېږي، مهرباني وکړئ انتظار وکړئ...</div>
+</div>
+
+<div class="footer">
+تازه خبرونه — د معلوماتو مرکز
 </div>
 
 <script>
-
 const feeds = [
-
-"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/pashto/rss.xml",
-
-"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/urdu/rss.xml",
-
-"https://api.rss2json.com/v1/api.json?rss_url=https://www.voadeewanews.com/api/zrqiteeuqm",
-
-"https://api.rss2json.com/v1/api.json?rss_url=https://www.aljazeera.com/xml/rss/all.xml"
-
+{
+name:"بي‌بي‌سي پښتو",
+url:"https://feeds.bbci.co.uk/pashto/rss.xml"
+},
+{
+name:"بي‌بي‌سي اردو",
+url:"https://feeds.bbci.co.uk/urdu/rss.xml"
+},
+{
+name:"TV9",
+url:"https://www.tv9hindi.com/feed"
+},
+{
+name:"امریکا غږ ډیوه",
+url:"https://www.voadeewanews.com/api/zrqiteeuqm"
+},
+{
+name:"الجزیره نړیوال خبرونه",
+url:"https://www.aljazeera.com/xml/rss/all.xml"
+}
 ];
 
-async function loadNews(){
+const headlinePrefix =
+"📰 تازه خبرونه | 🌍 په نړۍ کې روانې چارې | 📡 حقیقي خبرونه";
 
-let html="";
-let ticker=[];
+function safeText(value){
+return String(value || "").replace(/[&<>"']/g,function(ch){
+return {
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+}[ch];
+});
+}
 
-for(let feed of feeds){
-
+function safeURL(value){
 try{
+const u=new URL(value);
+if(u.protocol==="https:" || u.protocol==="http:"){
+return u.href;
+}
+}catch(e){}
+return "";
+}
 
-let r=await fetch(feed);
-let d=await r.json();
+async function getFeed(feed){
+const proxyURL="https://proxy.cors.dev/"+feed.url;
 
-if(d.items){
-
-d.items.slice(0,5).forEach(n=>{
-
-ticker.push(n.title);
-
-html += `
-<div class="item">
-<a href="${n.link}" target="_blank">
-${n.title}
-</a>
-</div>
-`;
-
+const response=await fetch(proxyURL,{
+method:"GET",
+credentials:"omit"
 });
 
+if(!response.ok){
+throw new Error("HTTP "+response.status);
 }
 
-}catch(e){}
+const xmlText=await response.text();
 
+const xml=new DOMParser().parseFromString(
+xmlText,
+"application/xml"
+);
+
+if(xml.querySelector("parsererror")){
+throw new Error("د خبرونو فایل لوستل کېدای نه شي");
 }
 
-if(html!=""){
-document.getElementById("news").innerHTML=html;
-document.getElementById("ticker").innerHTML=
-ticker.join(" | ");
+const nodes=Array.from(xml.querySelectorAll("item, entry"));
+
+const items=nodes.map(node=>{
+const titleNode=node.querySelector("title");
+const linkNode=node.querySelector("link");
+
+let link="";
+
+if(linkNode){
+link=linkNode.getAttribute("href") ||
+linkNode.textContent || "";
 }
 
+return {
+title:titleNode ? titleNode.textContent.trim() : "",
+link:link.trim()
+};
+}).filter(item=>item.title).slice(0,5);
+
+if(!items.length){
+throw new Error("خبرونه ونه موندل شول");
+}
+
+return {
+name:feed.name,
+items:items
+};
+}
+
+async function loadNews(){
+const newsBox=document.getElementById("news");
+const tickerBox=document.getElementById("tickerText");
+
+newsBox.innerHTML=
+'<div class="status">خبرونه تازه کېږي، لږ انتظار وکړئ...</div>';
+
+const results=await Promise.allSettled(
+feeds.map(feed=>getFeed(feed))
+);
+
+let html="";
+let headlines=[];
+let errors=[];
+
+results.forEach((result,index)=>{
+if(result.status==="fulfilled"){
+const feedData=result.value;
+
+feedData.items.forEach(item=>{
+headlines.push(item.title);
+
+const link=safeURL(item.link);
+const title=safeText(item.title);
+
+html+=`
+<div class="item">
+${link
+? `<a href="${safeText(link)}" target="_blank" rel="noopener noreferrer">${title}</a>`
+: `<strong>${title}</strong>`
+}
+<div class="source">${safeText(feedData.name)}</div>
+</div>
+`;
+});
+}else{
+errors.push(feeds[index].name);
+}
+});
+
+if(html){
+newsBox.innerHTML=html;
+
+tickerBox.textContent=
+headlinePrefix+"  |  "+headlines.join("  |  ");
+}else{
+newsBox.innerHTML=
+'<div class="status">اوس مهال خبرونه ترلاسه نه شول. د انټرنېټ یا د خبرونو د سرچینو اړیکه وګورئ؛ پاڼه به بیا هڅه وکړي.<br>ناکامې سرچینې: '+
+safeText(errors.join("، "))+
+'</div>';
+
+tickerBox.textContent=headlinePrefix;
+}
 }
 
 loadNews();
 
-setInterval(loadNews,3600000);
-
+setInterval(loadNews,60*60*1000);
 </script>
 
 </body>
