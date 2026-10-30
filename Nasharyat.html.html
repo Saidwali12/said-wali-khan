@@ -1,0 +1,544 @@
+﻿
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اعلانونه او تبلیغات</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Tahoma,Arial,sans-serif;
+    background:#f2f6fc;
+    color:#243247;
+    line-height:1.9;
+}
+
+.topbar{
+    background:#102b50;
+    color:white;
+    padding:14px 5%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.back-btn{
+    background:#ff9800;
+    color:white;
+    border:none;
+    padding:9px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:bold;
+}
+
+.back-btn:hover{
+    background:#e68900;
+}
+
+.languages{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+}
+
+.languages button{
+    background:white;
+    color:#102b50;
+    border:1px solid #ddd;
+    border-radius:7px;
+    padding:7px 13px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.languages button.active{
+    background:#ff9800;
+    color:white;
+    border-color:#ff9800;
+}
+
+.hero{
+    background:linear-gradient(120deg,#073b75,#087e9b,#12a58b);
+    color:white;
+    text-align:center;
+    padding:65px 18px 55px;
+}
+
+.hero h1{
+    font-size:34px;
+    margin-bottom:12px;
+}
+
+.hero p{
+    max-width:800px;
+    margin:auto;
+    font-size:18px;
+}
+
+.moving-bar{
+    background:#ffedc2;
+    color:#754500;
+    padding:11px 0;
+    overflow:hidden;
+    white-space:nowrap;
+    font-weight:bold;
+}
+
+.moving-text{
+    display:inline-block;
+    padding-left:100%;
+    animation:moveText 24s linear infinite;
+}
+
+@keyframes moveText{
+    from{transform:translateX(0);}
+    to{transform:translateX(100%);}
+}
+
+@media(prefers-reduced-motion:reduce){
+    .moving-text{
+        animation:none;
+        padding:0 15px;
+        white-space:normal;
+    }
+}
+
+.container{
+    max-width:1150px;
+    width:92%;
+    margin:35px auto;
+}
+
+.section-title{
+    text-align:center;
+    color:#103c70;
+    font-size:27px;
+    margin-bottom:10px;
+}
+
+.section-intro{
+    text-align:center;
+    color:#65748a;
+    margin-bottom:30px;
+}
+
+.ads-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(245px,1fr));
+    gap:22px;
+}
+
+.ad-card{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 5px 18px rgba(0,0,0,.08);
+    transition:.3s;
+    border:1px solid #e7edf5;
+}
+
+.ad-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 10px 25px rgba(0,0,0,.13);
+}
+
+.ad-banner{
+    height:145px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:60px;
+}
+
+.education{background:linear-gradient(135deg,#174ea6,#29a6d8);}
+.ngo{background:linear-gradient(135deg,#087e62,#48bd87);}
+.business{background:linear-gradient(135deg,#673ab7,#a66be0);}
+.jobs{background:linear-gradient(135deg,#c65b13,#f5a623);}
+.technology{background:linear-gradient(135deg,#263b69,#5578bd);}
+.services{background:linear-gradient(135deg,#087d91,#27b7c1);}
+
+.ad-content{
+    padding:18px;
+    text-align:center;
+}
+
+.ad-content h3{
+    color:#123e70;
+    margin-bottom:8px;
+    font-size:20px;
+}
+
+.ad-content p{
+    color:#64748b;
+    font-size:14px;
+}
+
+.info-section{
+    background:white;
+    padding:30px 22px;
+    margin-top:35px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 5px 18px rgba(0,0,0,.06);
+}
+
+.info-section h2{
+    color:#103c70;
+    margin-bottom:12px;
+}
+
+.contact-box{
+    background:linear-gradient(135deg,#073b75,#087e9b);
+    color:white;
+    text-align:center;
+    padding:35px 20px;
+    border-radius:16px;
+    margin-top:30px;
+}
+
+.contact-box h2{
+    margin-bottom:12px;
+}
+
+.contact-box p{
+    max-width:750px;
+    margin:0 auto 15px;
+}
+
+.email-address{
+    display:inline-block;
+    direction:ltr;
+    background:white;
+    color:#073b75;
+    font-size:21px;
+    font-weight:bold;
+    padding:10px 20px;
+    border-radius:9px;
+    margin:8px 0 17px;
+    text-decoration:none;
+}
+
+.email-address:hover{
+    background:#ffedc2;
+}
+
+.email-btn{
+    display:block;
+    width:fit-content;
+    margin:0 auto;
+    background:#ff9800;
+    color:white;
+    padding:11px 25px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.email-btn:hover{
+    background:#e68900;
+}
+
+.footer{
+    background:#102b50;
+    color:white;
+    text-align:center;
+    padding:18px;
+    margin-top:40px;
+    font-size:14px;
+}
+
+@media(max-width:600px){
+    .hero h1{font-size:25px;}
+    .hero p{font-size:15px;}
+    .section-title{font-size:23px;}
+    .email-address{font-size:17px;}
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <button class="back-btn" onclick="goBack()" data-i18n="back">
+        ← بېرته تګ
+    </button>
+
+    <div class="languages">
+        <button class="active" onclick="changeLanguage('ps',this)">پښتو</button>
+        <button onclick="changeLanguage('fa',this)">دری</button>
+        <button onclick="changeLanguage('en',this)">English</button>
+    </div>
+
+</header>
+
+<section class="hero">
+    <h1 data-i18n="title">اعلانونه او تبلیغات</h1>
+    <p data-i18n="subtitle">
+        د خپلو خدماتو، شرکتونو، مؤسسو، تعلیمي پروګرامونو او سوداګریزو فعالیتونو د معرفي کولو لپاره زموږ له ویب‌سایټ څخه ګټه واخلئ.
+    </p>
+</section>
+
+<div class="moving-bar">
+    <div class="moving-text" data-i18n="moving">
+        خپل شرکت، مؤسسه، خدمات او محصولات زرګونو انلاین لیدونکو ته معرفي کړئ ـ د اعلان خپرولو لپاره لومړی زموږ ایمیل ته پیغام واستوئ.
+    </div>
+</div>
+
+<main class="container">
+
+    <h2 class="section-title" data-i18n="examples">
+        د اعلانونو بېلګې
+    </h2>
+
+    <p class="section-intro" data-i18n="intro">
+        لاندې د هغو اعلانونو بېلګې دي چې زموږ په ویب‌سایټ کې خپرېدای شي.
+    </p>
+
+    <div class="ads-grid">
+
+        <article class="ad-card">
+            <div class="ad-banner education">🎓</div>
+            <div class="ad-content">
+                <h3 data-i18n="education">تعلیمي اعلانونه</h3>
+                <p data-i18n="educationDesc">
+                    د ښوونځیو، پوهنتونونو، کورسونو او تعلیمي مرکزونو اعلانونه.
+                </p>
+            </div>
+        </article>
+
+        <article class="ad-card">
+            <div class="ad-banner ngo">🤝</div>
+            <div class="ad-content">
+                <h3 data-i18n="ngo">مؤسسې او خیریه بنسټونه</h3>
+                <p data-i18n="ngoDesc">
+                    د مؤسسو پروژې، عامه پوهاوی او ټولنیز فعالیتونه.
+                </p>
+            </div>
+        </article>
+
+        <article class="ad-card">
+            <div class="ad-banner business">🏢</div>
+            <div class="ad-content">
+                <h3 data-i18n="business">سوداګریز اعلانونه</h3>
+                <p data-i18n="businessDesc">
+                    د شرکتونو، دوکانونو، محصولاتو او سوداګریزو خدماتو اعلانونه.
+                </p>
+            </div>
+        </article>
+
+        <article class="ad-card">
+            <div class="ad-banner jobs">💼</div>
+            <div class="ad-content">
+                <h3 data-i18n="jobs">د کار او دندو اعلانونه</h3>
+                <p data-i18n="jobsDesc">
+                    د استخدام، کاري فرصتونو او مسلکي پروګرامونو اعلانونه.
+                </p>
+            </div>
+        </article>
+
+        <article class="ad-card">
+            <div class="ad-banner technology">💻</div>
+            <div class="ad-content">
+                <h3 data-i18n="technology">ټکنالوژي او انلاین خدمات</h3>
+                <p data-i18n="technologyDesc">
+                    د ټکنالوژۍ، سافټویر او ډیجیټلي خدماتو معرفي کول.
+                </p>
+            </div>
+        </article>
+
+        <article class="ad-card">
+            <div class="ad-banner services">📢</div>
+            <div class="ad-content">
+                <h3 data-i18n="services">نور خدمات او اعلانونه</h3>
+                <p data-i18n="servicesDesc">
+                    د بېلابېلو قانوني او ګټورو خدماتو او پروګرامونو اعلانونه.
+                </p>
+            </div>
+        </article>
+
+    </div>
+
+    <section class="info-section">
+        <h2 data-i18n="howTitle">څنګه اعلان خپور کړئ؟</h2>
+        <p data-i18n="howText">
+            که غواړئ د خپل شرکت، مؤسسې، محصول، خدماتو یا پروګرام اعلان زموږ په ویب‌سایټ کې خپور کړئ، لومړی زموږ برېښنالیک ته پیغام واستوئ. په پیغام کې د اعلان موضوع او خپل د اړیکې معلومات ولیکئ. زموږ ټیم به د اعلان د شرایطو، بیې او خپرولو د څرنګوالي په اړه ځواب درکړي.
+        </p>
+    </section>
+
+    <section class="contact-box">
+
+        <h2 data-i18n="contactTitle">
+            غواړئ خپل اعلان خپور کړئ؟
+        </h2>
+
+        <p data-i18n="contactText">
+            د اعلان خپرولو لپاره مهرباني وکړئ لومړی زموږ ایمیل ته پیغام واستوئ، څو د اعلان د شرایطو، بیې او خپرولو څرنګوالي په اړه معلومات ترلاسه کړئ.
+        </p>
+
+        <!-- د ایمیل مستقیم لینک -->
+        <a class="email-address"
+           href="https://mail.google.com/mail/?view=cm&fs=1&to=walizaad2@gmail.com"
+           target="_blank"
+           rel="noopener noreferrer">
+            walizaad2@gmail.com
+        </a>
+
+        <!-- د ایمیل لېږلو تڼۍ -->
+        <a class="email-btn"
+           href="https://mail.google.com/mail/?view=cm&fs=1&to=walizaad2@gmail.com"
+           target="_blank"
+           rel="noopener noreferrer"
+           data-i18n="emailBtn">
+            📧 اوس ایمیل واستوئ
+        </a>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+    <span data-i18n="footer">
+        © ټول حقوق خوندي دي.
+    </span>
+</footer>
+
+<script>
+
+// د بېرته تګ تڼۍ
+function goBack(){
+    if(window.history.length > 1){
+        window.history.back();
+    }else{
+        window.location.href =
+        "https://saidwali12.github.io/said-wali-khan/";
+    }
+}
+
+// د ژبو ژباړې
+const translations = {
+
+ps:{
+back:"← بېرته تګ",
+title:"اعلانونه او تبلیغات",
+subtitle:"د خپلو خدماتو، شرکتونو، مؤسسو، تعلیمي پروګرامونو او سوداګریزو فعالیتونو د معرفي کولو لپاره زموږ له ویب‌سایټ څخه ګټه واخلئ.",
+moving:"خپل شرکت، مؤسسه، خدمات او محصولات زرګونو انلاین لیدونکو ته معرفي کړئ ـ د اعلان خپرولو لپاره لومړی زموږ ایمیل ته پیغام واستوئ.",
+examples:"د اعلانونو بېلګې",
+intro:"لاندې د هغو اعلانونو بېلګې دي چې زموږ په ویب‌سایټ کې خپرېدای شي.",
+education:"تعلیمي اعلانونه",
+educationDesc:"د ښوونځیو، پوهنتونونو، کورسونو او تعلیمي مرکزونو اعلانونه.",
+ngo:"مؤسسې او خیریه بنسټونه",
+ngoDesc:"د مؤسسو پروژې، عامه پوهاوی او ټولنیز فعالیتونه.",
+business:"سوداګریز اعلانونه",
+businessDesc:"د شرکتونو، دوکانونو، محصولاتو او سوداګریزو خدماتو اعلانونه.",
+jobs:"د کار او دندو اعلانونه",
+jobsDesc:"د استخدام، کاري فرصتونو او مسلکي پروګرامونو اعلانونه.",
+technology:"ټکنالوژي او انلاین خدمات",
+technologyDesc:"د ټکنالوژۍ، سافټویر او ډیجیټلي خدماتو معرفي کول.",
+services:"نور خدمات او اعلانونه",
+servicesDesc:"د بېلابېلو قانوني او ګټورو خدماتو او پروګرامونو اعلانونه.",
+howTitle:"څنګه اعلان خپور کړئ؟",
+howText:"که غواړئ د خپل شرکت، مؤسسې، محصول، خدماتو یا پروګرام اعلان زموږ په ویب‌سایټ کې خپور کړئ، لومړی زموږ برېښنالیک ته پیغام واستوئ. په پیغام کې د اعلان موضوع او خپل د اړیکې معلومات ولیکئ. زموږ ټیم به د اعلان د شرایطو، بیې او خپرولو د څرنګوالي په اړه ځواب درکړي.",
+contactTitle:"غواړئ خپل اعلان خپور کړئ؟",
+contactText:"د اعلان خپرولو لپاره مهرباني وکړئ لومړی زموږ ایمیل ته پیغام واستوئ، څو د اعلان د شرایطو، بیې او خپرولو څرنګوالي په اړه معلومات ترلاسه کړئ.",
+emailBtn:"📧 اوس ایمیل واستوئ",
+footer:"© ټول حقوق خوندي دي."
+},
+
+fa:{
+back:"← بازگشت",
+title:"اعلانات و تبلیغات",
+subtitle:"برای معرفی خدمات، شرکت‌ها، مؤسسات، برنامه‌های آموزشی و فعالیت‌های تجارتی خود از ویب‌سایت ما استفاده کنید.",
+moving:"شرکت، مؤسسه، خدمات و محصولات خود را به هزاران بازدیدکننده آنلاین معرفی کنید ـ برای نشر اعلان، ابتدا به ایمیل ما پیام بفرستید.",
+examples:"نمونه‌های اعلان",
+intro:"در زیر نمونه‌هایی از اعلان‌هایی را مشاهده می‌کنید که می‌توانند در ویب‌سایت ما نشر شوند.",
+education:"اعلانات آموزشی",
+educationDesc:"اعلانات مکاتب، پوهنتون‌ها، کورس‌ها و مراکز آموزشی.",
+ngo:"مؤسسات و بنیادهای خیریه",
+ngoDesc:"پروژه‌های مؤسسات، آگاهی‌دهی عامه و فعالیت‌های اجتماعی.",
+business:"اعلانات تجارتی",
+businessDesc:"اعلانات شرکت‌ها، دکان‌ها، محصولات و خدمات تجارتی.",
+jobs:"اعلانات کاری و استخدام",
+jobsDesc:"فرصت‌های استخدام، کاری و برنامه‌های مسلکی.",
+technology:"تکنالوژی و خدمات آنلاین",
+technologyDesc:"معرفی تکنالوژی، نرم‌افزارها و خدمات دیجیتلی.",
+services:"سایر خدمات و اعلانات",
+servicesDesc:"اعلانات خدمات و برنامه‌های قانونی و مفید.",
+howTitle:"چگونه اعلان نشر کنید؟",
+howText:"اگر می‌خواهید اعلان شرکت، مؤسسه، محصول، خدمات یا برنامه خود را در ویب‌سایت ما نشر کنید، ابتدا به ایمیل ما پیام بفرستید. موضوع اعلان و معلومات تماس خود را بنویسید. تیم ما در مورد شرایط، قیمت و چگونگی نشر اعلان به شما پاسخ خواهد داد.",
+contactTitle:"می‌خواهید اعلان خود را نشر کنید؟",
+contactText:"برای نشر اعلان، لطفاً ابتدا به ایمیل ما پیام بفرستید تا در مورد شرایط، قیمت و چگونگی نشر اعلان معلومات دریافت کنید.",
+emailBtn:"📧 اکنون ایمیل بفرستید",
+footer:"© تمام حقوق محفوظ است."
+},
+
+en:{
+back:"← Back",
+title:"Advertising and Promotions",
+subtitle:"Use our website to promote your services, companies, organizations, educational programs and business activities.",
+moving:"Promote your company, organization, services and products to online visitors — email us first to request an advertisement.",
+examples:"Advertisement Examples",
+intro:"Below are examples of advertisements that can be published on our website.",
+education:"Education Advertisements",
+educationDesc:"Advertisements for schools, universities, courses and educational centers.",
+ngo:"Organizations and Charities",
+ngoDesc:"Organization projects, public awareness and community activities.",
+business:"Business Advertisements",
+businessDesc:"Advertisements for companies, shops, products and business services.",
+jobs:"Jobs and Recruitment",
+jobsDesc:"Recruitment opportunities, vacancies and professional programs.",
+technology:"Technology and Online Services",
+technologyDesc:"Promotion of technology, software and digital services.",
+services:"Other Services and Advertisements",
+servicesDesc:"Advertisements for various lawful and useful services and programs.",
+howTitle:"How to Publish an Advertisement",
+howText:"If you would like to publish an advertisement for your company, organization, product, service or program on our website, please email us first. Include the subject of your advertisement and your contact details. Our team will reply with information about the requirements, prices and publication process.",
+contactTitle:"Would You Like to Advertise?",
+contactText:"To publish an advertisement, please email us first to receive information about the requirements, pricing and publication process.",
+emailBtn:"📧 Send an Email",
+footer:"© All rights reserved."
+}
+
+};
+
+// د ژبې بدلولو فعالیت
+function changeLanguage(lang,button){
+
+    document.documentElement.lang = lang;
+
+    document.documentElement.dir =
+        lang === "en" ? "ltr" : "rtl";
+
+    document.querySelectorAll("[data-i18n]").forEach(element=>{
+
+        const key = element.getAttribute("data-i18n");
+
+        if(translations[lang][key]){
+            element.textContent = translations[lang][key];
+        }
+
+    });
+
+    document.querySelectorAll(".languages button").forEach(btn=>{
+        btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+}
+
+</script>
+
+</body>
+</html>
