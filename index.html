@@ -341,6 +341,783 @@ footer {
 </header>
 
 
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>سیدولی خان کوهستانی ګروپ | رسمي ویب پاڼه</title>
+
+<meta name="description" content="د سیدولی خان کوهستاني ګروپ رسمي ویب پاڼه؛ خبرونه، وظیفې، AI، خدمات او مهم لینکونه.">
+
+<style>
+:root {
+    --navy: #071a35;
+    --navy2: #102b50;
+    --blue: #173e6c;
+    --gold: #d9ae52;
+    --gold-light: #f4d58a;
+    --white: #ffffff;
+    --bg: #f3f5f9;
+    --text: #23344c;
+    --muted: #718096;
+    --border: #e4e9f0;
+    --shadow: 0 12px 35px rgba(7,26,53,.09);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.9;
+    overflow-x: hidden;
+}
+
+/* خبرونو پټه */
+
+.top-news {
+    background: linear-gradient(90deg,#b9852f,#f0cf80,#b9852f);
+    color: #142640;
+    padding: 8px 12px;
+    font-weight: bold;
+    font-size: 14px;
+    border-bottom: 2px solid #f8df9f;
+}
+
+/* اصلي سرلیک */
+
+header {
+    background:
+        radial-gradient(circle at 15% 20%,rgba(217,174,82,.16),transparent 30%),
+        linear-gradient(125deg,#06152d,#102b50 60%,#173e6c);
+    color: white;
+    position: relative;
+    overflow: visible;
+    border-bottom: 3px solid var(--gold);
+}
+
+.header-inner {
+    max-width: 1250px;
+    margin: auto;
+    padding: 32px 20px 0;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 35px;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+.profile-photo-wrap {
+    position: relative;
+    padding: 7px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#f8e2a7,#b47d23,#f8e2a7);
+    box-shadow: 0 0 30px rgba(217,174,82,.28);
+}
+
+.profile-photo {
+    width: 150px;
+    height: 150px;
+    display: block;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--navy);
+}
+
+.profile-name {
+    color: var(--gold-light);
+    font-size: 19px;
+    margin-top: 10px;
+    letter-spacing: .5px;
+}
+
+/* متحرک نوم */
+
+.brand-area {
+    min-width: 280px;
+    text-align: center;
+}
+
+.brand-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    font-size: 31px;
+    font-weight: bold;
+    color: var(--gold-light);
+    text-shadow: 0 3px 15px rgba(217,174,82,.3);
+}
+
+.brand-title span {
+    display: inline-block;
+    opacity: 0;
+    animation: royalDrop .9s ease forwards;
+}
+
+.brand-title span:nth-child(1) { animation-delay: .15s; }
+.brand-title span:nth-child(2) { animation-delay: .65s; }
+.brand-title span:nth-child(3) { animation-delay: 1.15s; }
+.brand-title span:nth-child(4) { animation-delay: 1.65s; }
+
+@keyframes royalDrop {
+    0% {
+        opacity: 0;
+        transform: translateY(-55px);
+        filter: blur(5px);
+    }
+    70% {
+        opacity: 1;
+        transform: translateY(7px);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.brand-subtitle {
+    color: #e1e9f5;
+    font-size: 14px;
+    margin-top: 10px;
+    letter-spacing: 3px;
+}
+
+.brand-line {
+    width: 90px;
+    height: 3px;
+    margin: 13px auto;
+    border-radius: 5px;
+    background: linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+/* مینو */
+
+nav {
+    max-width: 1250px;
+    margin: 28px auto 0;
+    padding: 0 15px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropbtn {
+    background: rgba(255,255,255,.075);
+    color: white;
+    padding: 12px 19px;
+    border: 1px solid rgba(244,213,138,.35);
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.dropbtn:hover,
+.dropbtn.active {
+    background: linear-gradient(135deg,#f4d58a,#c18c32);
+    color: #10213b;
+    border-color: var(--gold-light);
+    box-shadow: 0 5px 18px rgba(217,174,82,.22);
+    transform: translateY(-3px);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 250px;
+    background: white;
+    border: 1px solid #e8d6ae;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.2);
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.dropdown-content.show {
+    display: block;
+    animation: menuIn .22s ease;
+}
+
+@keyframes menuIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-content a {
+    display: block;
+    color: var(--navy2);
+    padding: 12px 17px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #edf0f4;
+    transition: .25s;
+}
+
+.dropdown-content a:last-child {
+    border-bottom: 0;
+}
+
+.dropdown-content a:hover {
+    background: #fbf5e8;
+    color: #a87520;
+    padding-right: 24px;
+}
+
+/* عمومي جوړښت */
+
+.container {
+    max-width: 1250px;
+    margin: auto;
+    padding: 0 20px;
+}
+
+/* Hero */
+
+.hero {
+    margin: 32px auto;
+    padding: 72px 25px;
+    text-align: center;
+    color: white;
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 85% 10%,rgba(244,213,138,.19),transparent 28%),
+        radial-gradient(circle at 10% 90%,rgba(255,255,255,.09),transparent 30%),
+        linear-gradient(125deg,#071a35,#143e6d);
+    box-shadow: 0 18px 45px rgba(7,26,53,.17);
+    border: 1px solid rgba(217,174,82,.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero:after {
+    content: "";
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    border: 1px solid rgba(244,213,138,.15);
+    border-radius: 50%;
+    top: -140px;
+    left: -80px;
+    box-shadow: 0 0 0 25px rgba(244,213,138,.035),
+                0 0 0 50px rgba(244,213,138,.025);
+}
+
+.hero h1 {
+    color: var(--gold-light);
+    font-size: 42px;
+    margin-bottom: 14px;
+}
+
+.hero p {
+    max-width: 850px;
+    margin: auto;
+    color: #e3eaf5;
+    font-size: 17px;
+    line-height: 2.2;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 25px;
+    background: linear-gradient(135deg,#f5dfaa,#d3a448);
+    color: #142641;
+    padding: 12px 30px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: .3s;
+    box-shadow: 0 7px 20px rgba(0,0,0,.13);
+}
+
+.btn:hover {
+    transform: translateY(-4px);
+    background: white;
+}
+
+/* برخې */
+
+.section {
+    padding: 32px 0;
+}
+
+.section-title {
+    color: var(--navy);
+    text-align: center;
+    font-size: 27px;
+    margin-bottom: 28px;
+}
+
+.section-title:after {
+    content: "";
+    display: block;
+    width: 70px;
+    height: 4px;
+    margin: 10px auto 0;
+    border-radius: 5px;
+    background: linear-gradient(90deg,#b9852f,#f4d58a);
+}
+
+/* کارتونه */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(245px,1fr));
+    gap: 21px;
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    transition: .3s;
+}
+
+.card:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg,#bd8b36,#f0d18b);
+}
+
+.card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 18px 38px rgba(7,26,53,.13);
+    border-color: #e6cb8d;
+}
+
+.card h3 {
+    color: var(--navy2);
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.card p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 2;
+}
+
+.job-card {
+    border-right: 4px solid var(--gold);
+}
+
+/* BBC */
+
+.bbc-section {
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.bbc-heading {
+    background: linear-gradient(90deg,#800000,#b51f2a);
+    color: white;
+    padding: 13px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 21px;
+    border-right: 5px solid var(--gold);
+}
+
+#bbc-news {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 14px;
+}
+
+.news-item {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 16px;
+    transition: .25s;
+}
+
+.news-item:hover {
+    background: #fffaf0;
+    border-color: #dfc17f;
+    transform: translateY(-3px);
+}
+
+.news-item h3 {
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+.news-item a {
+    color: var(--navy2);
+    text-decoration: none;
+}
+
+.news-item a:hover {
+    color: #ad7b27;
+}
+
+.news-item p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.news-message {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 20px;
+    color: var(--muted);
+}
+
+/* اړیکې */
+
+#contact {
+    background: white;
+    margin: 35px auto;
+    padding: 30px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.contact-title {
+    color: var(--navy);
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 25px;
+}
+
+.contact-title:after {
+    content: "";
+    display: block;
+    width: 65px;
+    height: 4px;
+    background: var(--gold);
+    margin: 10px auto 0;
+    border-radius: 5px;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+    gap: 18px;
+}
+
+.contact-box {
+    background: #f7f8fb;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.contact-box h3 {
+    color: var(--navy2);
+    margin-bottom: 12px;
+}
+
+.contact-box a {
+    display: block;
+    color: #20598c;
+    text-decoration: none;
+    padding: 6px 0;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.contact-box a:hover {
+    color: #b9852f;
+}
+
+.whatsapp-link {
+    color: #16864b !important;
+}
+
+/* Footer */
+
+footer {
+    background: linear-gradient(125deg,#06152d,#102b50);
+    color: white;
+    text-align: center;
+    padding: 32px 15px;
+    margin-top: 40px;
+    border-top: 3px solid var(--gold);
+}
+
+footer p {
+    color: #e3eaf5;
+    font-size: 14px;
+    margin: 6px 0;
+}
+
+/* بېرته پورته تګ */
+
+.back-top {
+    position: fixed;
+    left: 18px;
+    bottom: 18px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#f4d58a,#bd8b36);
+    color: #10213b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: bold;
+    box-shadow: 0 5px 18px rgba(0,0,0,.2);
+    z-index: 100;
+    transition: .3s;
+}
+
+.back-top:hover {
+    transform: translateY(-5px);
+}
+
+/* موبایل */
+
+@media(max-width:768px) {
+    .header-inner {
+        padding-top: 25px;
+    }
+
+    .profile {
+        gap: 20px;
+    }
+
+    .profile-photo {
+        width: 125px;
+        height: 125px;
+    }
+
+    .brand-title {
+        font-size: 24px;
+    }
+
+    .brand-subtitle {
+        font-size: 12px;
+    }
+
+    nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 9px;
+        padding-bottom: 18px;
+    }
+
+    .dropdown {
+        width: 100%;
+    }
+
+    .dropbtn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .dropdown-content {
+        position: relative;
+        top: 0;
+        width: 100%;
+        margin-top: 5px;
+        box-shadow: none;
+    }
+
+    .hero {
+        margin: 20px 0;
+        padding: 48px 17px;
+        border-radius: 15px;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .hero p {
+        font-size: 15px;
+    }
+
+    .section-title {
+        font-size: 22px;
+    }
+
+    .bbc-section,
+    #contact {
+        padding: 18px;
+    }
+}
+
+@media(max-width:400px) {
+    .brand-title {
+        font-size: 21px;
+        gap: 4px;
+    }
+
+    .hero h1 {
+        font-size: 26px;
+    }
+}
+
+/* د حرکت د کمولو تنظیم */
+
+@media(prefers-reduced-motion: reduce) {
+    *, *:before, *:after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- خبرونو پټه -->
+
+<div class="top-news">
+<marquee>
+د سیدولی خان کوهستانی ګروپ ویب سایټ ته ښه راغلاست | نوې وظیفې ،خپرې شوې،خدمات یعنی په ټوله معنی هرڅه دلته شتون لری | AI خدمات فعال دي | مهم لینکونه موجود دي
+</marquee>
+</div>
+
+<!-- سرلیک -->
+
+<header id="top">
+
+<div class="header-inner">
+
+<div class="profile">
+
+<div>
+    <div class="profile-photo-wrap">
+        <img src="said.jpg.jpg"
+             alt="Said Wali Khan"
+             class="profile-photo">
+    </div>
+
+    <h2 class="profile-name">Said Wali Khan</h2>
+</div>
+
+<div class="brand-area">
+
+    <h1 class="brand-title">
+        <span>سیدولی</span>
+        <span>خان</span>
+        <span>کوهستاني</span>
+        <span>ګروپ</span>
+    </h1>
+
+    <div class="brand-line"></div>
+
+    <p class="brand-subtitle">ALL SERVICES WEBSITE</p>
+
+</div>
+
+</div>
+
+<!-- څلور مینوګانې -->
+
+<nav>
+
+    <div class="dropdown">
+        <button class="dropbtn"
+                aria-expanded="false"
+                onclick="toggleDropdown('menu1',this)">
+            📰 معلومات او خبرونه ▼
+        </button>
+
+        <div class="dropdown-content" id="menu1">
+            <a href="#">کورپاڼه</a>
+            <a href="./Nasharyat.html.html">نشریات، اعلانات</a>
+            <a href="newpage.html.html">معلومات مجازی</a>
+            <a href="news.html">داخلي ولسوالیو خبرونه</a>
+            <a href="Taza.html.html">تازه خبرونه اپډېټ</a>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropbtn"
+                aria-expanded="false"
+                onclick="toggleDropdown('menu2',this)">
+            💼 خدمات او فرصتونه ▼
+        </button>
+
+        <div class="dropdown-content" id="menu2">
+            <a href="jobs.html">وظیفې</a>
+            <a href="ai.html">AI مرکز</a>
+            <a href="links.html">لینکونه</a>
+            <a href="software-books.html">📚 کتابونه او سافټویرونه</a>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropbtn"
+                aria-expanded="false"
+                onclick="toggleDropdown('menu3',this)">
+            🌐 ټولنیزې پاڼې ▼
+        </button>
+
+        <div class="dropdown-content" id="menu3">
+            <a href="crket.html">کرکټ</a>
+            <a href="social.html">نوی فېسبوک</a>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropbtn"
+                aria-expanded="false"
+                onclick="toggleDropdown('menu4',this)">
+            📞 اړیکې او تماس ▼
+        </button>
+
+        <div class="dropdown-content" id="menu4">
+            <a href="contact.html">زموږ سره اړیکه</a>
+            <a href="#contact">د اړیکو معلومات</a>
+        </div>
+    </div>
+
+</nav>
+</div>
+</header>
+
+<main class="container">
+
+<!-- ښه راغلاست -->
+
 <section class="hero">
 
 <h1>ښه راغلاست</h1>
@@ -350,14 +1127,15 @@ footer {
 فایلونو، عکسونو او آنلاین خدماتو جامع مرکز.
 </p>
 
-<a href="#" class="btn">نور معلومات</a>
+<a href="#services" class="btn">نور معلومات</a>
 
 </section>
 
+<!-- چټک خدمات -->
 
-<section class="section">
+<section class="section" id="services">
 
-<h2>چټک خدمات</h2>
+<h2 class="section-title">چټک خدمات</h2>
 
 <div class="cards">
 
@@ -383,215 +1161,230 @@ Facebook, WhatsApp, Google, YouTube او نور.
 </div>
 
 </div>
-
 </section>
 
+<!-- وروستي اعلانونه -->
 
 <section class="section">
 
-<h2>وروستي اعلانونه</h2>
+<h2 class="section-title">وروستي اعلانونه</h2>
 
 <div class="cards">
 
-<div class="card">
+<div class="card job-card">
 <h3>د کمپیوټر استاد</h3>
 <p>ځای: کابل</p>
 <p>معاش: 25000 افغانۍ</p>
 </div>
 
-<div class="card">
+<div class="card job-card">
 <h3>دتحلیل اوګزارش دهی</h3>
 <p>دنورستان ولایت کامدیش ولسوالی</p>
 <p>معاش: ۱۸۰۰۰ افغانۍ</p>
 </div>
 
-<div class="card">
+<div class="card job-card">
 <h3>IT Officer</h3>
 <p>ځای: مزار شریف</p>
 <p>معاش: 40000 افغانۍ</p>
 </div>
 
 </div>
-
 </section>
 
+<!-- BBC World News -->
 
 <section class="section">
 
-<h2 style="background:#b30000;color:#fff;padding:10px;border-radius:5px;">
-📰 BBC World News
-</h2>
+<div class="bbc-section">
+
+<h2 class="bbc-heading">📰 BBC World News</h2>
 
 <div id="bbc-news">
-خبرونه لوډیږي...
+<div class="news-message">خبرونه لوډیږي...</div>
 </div>
 
-<script>
-
-const feed =
-"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml";
-
-fetch(feed)
-.then(response => response.json())
-.then(data => {
-
-let newsHTML = "";
-
-data.items.slice(0, 15).forEach(item => {
-
-newsHTML += `
-<div style="background:#fff;margin:10px 0;padding:12px;border-radius:8px;border:1px solid #ddd;">
-<h3 style="margin:0;">
-<a href="${item.link}" target="_blank" style="text-decoration:none;color:#003366;">
-${item.title}
-</a>
-</h3>
-<p style="font-size:12px;color:#777;">
-${item.pubDate}
-</p>
 </div>
-`;
+</section>
 
-});
+<!-- نور معلومات -->
 
-document.getElementById("bbc-news").innerHTML = newsHTML;
-
-})
-.catch(error => {
-document.getElementById("bbc-news").innerHTML =
-"خبرونه ترلاسه نشول";
-});
-
-</script>
-
+<section class="section">
 
 <div class="cards">
 
 <div class="card">
 <h3>AI ددوکلام اودارندو دوبو برخه کی</h3>
-<p>دکنړولایت اودضلع چترال اوبو معامله نیږدو ورځوکی حل کیدونکی ده مشرانو ګډی خبری دواړه طرفته شروع کړیدی.</p>
+<p>
+دکنړولایت اودضلع چترال اوبو معامله نیږدو ورځوکی حل کیدونکی ده مشرانو ګډی خبری دواړه طرفته شروع کړیدی.
+</p>
 </div>
 
 <div class="card">
 <h3>د انټرنیټ پراختیا</h3>
-<p>ددوکلام سیمه کی څلور مخابراتی شبکی کارکوی.سلام.افغان بیسم،روشن اواحتصالات.</p>
+<p>
+ددوکلام سیمه کی څلور مخابراتی شبکی کارکوی.سلام.افغان بیسم،روشن اواحتصالات.
+</p>
 </div>
 
 </div>
-
 </section>
 
+<!-- اړیکې -->
 
-<footer>
+<section id="contact">
 
-<p>
-© 2026 سیدولی خان کوهستانی ګروپ
-</p>
+<h2 class="contact-title">📞 اړیکه / Contact Us</h2>
 
-<p>
-Jobs | AI | News | Downloads | Gallery
-</p>
+<div class="contact-grid">
 
-</footer>
+<div class="contact-box">
+<h3>📧 ایمیل</h3>
 
-
-<!-- د اړیکو برخه -->
-
-<section id="contact" style="background:#fff;padding:20px;margin-top:20px;border-radius:10px;font-family:Arial;">
-
-<h2>📞 اړیکه / Contact Us</h2>
-
-<p>📧 ایمیل:</p>
-
-<a href="mailto:walizaad2@gmail.com?subject=Website%20Contact&body=سلام، زه ستاسو له ویب سایټ څخه تماس نیسم"
-   style="display:block;margin:5px 0;">
-   walizaad2@gmail.com
+<a href="mailto:walizaad2@gmail.com?subject=Website%20Contact&body=سلام، زه ستاسو له ویب سایټ څخه تماس نیسم">
+walizaad2@gmail.com
 </a>
 
-<a href="mailto:wali.zaad12@yahoo.com?subject=Website%20Contact&body=سلام، زه ستاسو له ویب سایټ څخه تماس نیسم"
-   style="display:block;margin:5px 0;">
-   wali.zaad12@yahoo.com
+<a href="mailto:wali.zaad12@yahoo.com?subject=Website%20Contact&body=سلام، زه ستاسو له ویب سایټ څخه تماس نیسم">
+wali.zaad12@yahoo.com
 </a>
+</div>
 
-<hr>
+<div class="contact-box">
+<h3>📱 ټیلیفون</h3>
 
-<p>📱 ټیلیفون:</p>
+<a href="tel:+93700983393">📞 0700983393</a>
+<a href="tel:+93799668428">📞 0799668428</a>
+<a href="tel:+93744459292">📞 0744459292</a>
+</div>
 
-<a href="tel:+93700983393" style="display:block;margin:5px 0;">
-📞 0700983393
-</a>
+<div class="contact-box">
+<h3>💬 WhatsApp</h3>
 
-<a href="tel:+93799668428" style="display:block;margin:5px 0;">
-📞 0799668428
-</a>
-
-<a href="tel:+93744459292" style="display:block;margin:5px 0;">
-📞 0744459292
-</a>
-
-<hr>
-
-<p>💬 WhatsApp:</p>
-
-<a href="https://wa.me/93700983393" target="_blank" style="display:block;margin:5px 0;color:green;">
+<a class="whatsapp-link" href="https://wa.me/93700983393" target="_blank" rel="noopener">
 WhatsApp 0700983393
 </a>
 
-<a href="https://wa.me/93799668428" target="_blank" style="display:block;margin:5px 0;color:green;">
+<a class="whatsapp-link" href="https://wa.me/93799668428" target="_blank" rel="noopener">
 WhatsApp 0799668428
 </a>
 
-<a href="https://wa.me/93744459292" target="_blank" style="display:block;margin:5px 0;color:green;">
+<a class="whatsapp-link" href="https://wa.me/93744459292" target="_blank" rel="noopener">
 💬 WhatsApp 0744459292
 </a>
+</div>
 
+</div>
 </section>
 
+</main>
 
-<!-- د مینو د فعالیت JavaScript -->
+<!-- Footer -->
+
+<footer>
+<p>© 2026 سیدولی خان کوهستاني ګروپ</p>
+<p>Jobs | AI | News | Downloads | Gallery</p>
+<p>ALL SERVICES WEBSITE</p>
+</footer>
+
+<a class="back-top" href="#top" aria-label="بېرته پورته">↑</a>
+
+<!-- BBC خبرونه -->
 
 <script>
+const feed =
+"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml";
 
-function toggleDropdown(id, button) {
+fetch(feed)
+.then(response => {
+    if (!response.ok) {
+        throw new Error("Network error");
+    }
+    return response.json();
+})
+.then(data => {
 
-    const menus = document.querySelectorAll('.dropdown-content');
-    const buttons = document.querySelectorAll('.dropbtn');
-    const selected = document.getElementById(id);
+    const container = document.getElementById("bbc-news");
+    container.innerHTML = "";
 
-    const wasOpen = selected.classList.contains('show');
+    if (!data.items || data.items.length === 0) {
+        container.innerHTML =
+        '<div class="news-message">اوس مهال خبرونه شتون نه لري.</div>';
+        return;
+    }
 
-    menus.forEach(function(menu) {
-        menu.classList.remove('show');
+    data.items.slice(0,15).forEach(item => {
+
+        const article = document.createElement("div");
+        article.className = "news-item";
+
+        const heading = document.createElement("h3");
+        const link = document.createElement("a");
+
+        link.href = item.link;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = item.title;
+
+        heading.appendChild(link);
+
+        const date = document.createElement("p");
+        date.textContent = item.pubDate || "";
+
+        article.appendChild(heading);
+        article.appendChild(date);
+
+        container.appendChild(article);
+
     });
 
-    buttons.forEach(function(btn) {
-        btn.classList.remove('active');
+})
+.catch(() => {
+    document.getElementById("bbc-news").innerHTML =
+    '<div class="news-message">خبرونه ترلاسه نشول. مهرباني وکړئ وروسته بیا هڅه وکړئ.</div>';
+});
+</script>
+
+<!-- د مینو فعالیت -->
+
+<script>
+function toggleDropdown(id, button) {
+
+    const menus = document.querySelectorAll(".dropdown-content");
+    const buttons = document.querySelectorAll(".dropbtn");
+    const selected = document.getElementById(id);
+
+    const wasOpen = selected.classList.contains("show");
+
+    menus.forEach(menu => menu.classList.remove("show"));
+
+    buttons.forEach(btn => {
+        btn.classList.remove("active");
+        btn.setAttribute("aria-expanded","false");
     });
 
     if (!wasOpen) {
-        selected.classList.add('show');
-        button.classList.add('active');
+        selected.classList.add("show");
+        button.classList.add("active");
+        button.setAttribute("aria-expanded","true");
     }
 }
 
-document.addEventListener('click', function(event) {
+document.addEventListener("click", function(event) {
 
-    if (!event.target.closest('.dropdown')) {
+    if (!event.target.closest(".dropdown")) {
 
-        document.querySelectorAll('.dropdown-content')
-        .forEach(function(menu) {
-            menu.classList.remove('show');
-        });
+        document.querySelectorAll(".dropdown-content")
+        .forEach(menu => menu.classList.remove("show"));
 
-        document.querySelectorAll('.dropbtn')
-        .forEach(function(btn) {
-            btn.classList.remove('active');
+        document.querySelectorAll(".dropbtn")
+        .forEach(btn => {
+            btn.classList.remove("active");
+            btn.setAttribute("aria-expanded","false");
         });
 
     }
-
 });
-
 </script>
 
 </body>
