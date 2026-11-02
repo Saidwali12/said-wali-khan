@@ -1553,6 +1553,59 @@ document.addEventListener("click", function(event) {
 })();
 </script>
 <!-- END MINI SMART CALENDAR -->
+<style>
+/* د ژبو کوچني تڼۍ: د کوچنۍ جنترۍ لاندې */
+.languages {
+  position: fixed;
+  top: 104px;
+  left: 12px;
+  z-index: 999998;
+  width: 112px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px;
+  background: #071a35;
+  border: 1px solid #d9ae52;
+  border-radius: 9px;
+  box-shadow: 0 2px 9px #0004;
+  box-sizing: border-box;
+  direction: rtl;
+}
+.languages button {
+  flex: 1 1 44px;
+  min-width: 44px;
+  padding: 4px 3px;
+  border: 1px solid #d9ae52;
+  border-radius: 5px;
+  background: #10294a;
+  color: #f4d58a;
+  font-family: Tahoma, sans-serif;
+  font-size: 10px;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.languages button:hover,
+.languages button.active {
+  background: #d9ae52;
+  color: #071a35;
+}
+@media (max-width: 480px) {
+  .languages {
+    top: 104px;
+    left: 8px;
+    width: 106px;
+    gap: 3px;
+    padding: 4px;
+  }
+  .languages button {
+    min-width: 42px;
+    font-size: 9px;
+    padding: 4px 2px;
+  }
+}
+</style>
 <div class="languages">
     <button class="active" onclick="changeLanguage('ps',this)">پښتو</button>
     <button onclick="changeLanguage('fa',this)">دری</button>
@@ -1869,5 +1922,6 @@ document.addEventListener("click", function(event) {
 })();
 </script>
 
+<script src="language.js"></script>
 </body>
 </html>

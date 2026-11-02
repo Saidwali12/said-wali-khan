@@ -1111,60 +1111,7 @@ onclick="history.back()">
 </button>
 
 
-<button
-class="translate-btn"
-onclick="toggleTranslate()">
 
-🌐 ترجمه
-
-</button>
-
-
-<div
-class="translate-menu"
-id="translateMenu">
-
-<a
-href="https://translate.google.com/?sl=ps&tl=en"
-target="_blank">
-
-پښتو ➜ English
-
-</a>
-
-<a
-href="https://translate.google.com/?sl=en&tl=ps"
-target="_blank">
-
-English ➜ پښتو
-
-</a>
-
-<a
-href="https://translate.google.com/?sl=fa&tl=ps"
-target="_blank">
-
-دري ➜ پښتو
-
-</a>
-
-<a
-href="https://translate.google.com/?sl=ps&tl=fa"
-target="_blank">
-
-پښتو ➜ دري
-
-</a>
-
-<a
-href="https://translate.google.com/"
-target="_blank">
-
-🌐 ټولې ژبې
-
-</a>
-
-</div>
 
 
 <img
@@ -3396,6 +3343,15 @@ encodeURIComponent(q);
 </script>
 
 
+
+<div id="sw-language-bar" style="position:fixed;bottom:12px;left:12px;z-index:99999;background:#071a35;border:1px solid #d9ae52;border-radius:12px;padding:6px 8px;display:flex;gap:5px;flex-wrap:wrap;box-shadow:0 3px 14px #0005">
+<button type="button" onclick="changeLanguage('ps',this)" style="padding:5px 8px;border:0;border-radius:6px">پښتو</button>
+<button type="button" onclick="changeLanguage('fa',this)" style="padding:5px 8px;border:0;border-radius:6px">دری</button>
+<button type="button" onclick="changeLanguage('en',this)" style="padding:5px 8px;border:0;border-radius:6px">English</button>
+<button type="button" onclick="changeLanguage('ur',this)" style="padding:5px 8px;border:0;border-radius:6px">اردو</button>
+<button type="button" onclick="changeLanguage('ar',this)" style="padding:5px 8px;border:0;border-radius:6px">العربية</button>
+</div>
+<script src="language.js"></script>
 </body>
 
 </html>
