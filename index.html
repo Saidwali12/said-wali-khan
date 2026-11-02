@@ -1923,5 +1923,130 @@ document.addEventListener("click", function(event) {
 </script>
 
 <script src="language.js"></script>
+
+<!-- SAIDWALI GPT ASSISTANT -->
+<style>
+#sw-gpt-prompt{position:fixed;right:16px;bottom:78px;width:min(270px,calc(100vw - 32px));padding:13px;background:#071a35;color:#f4d58a;border:2px solid #d9ae52;border-radius:13px;box-shadow:0 6px 22px #0005;z-index:100100;font: bold 14px Tahoma,sans-serif;text-align:center;direction:rtl}
+#sw-gpt-prompt p{margin:0 0 10px}
+.sw-gpt-actions{display:flex;gap:8px}
+.sw-gpt-actions button{flex:1;padding:9px 6px;border:0;border-radius:8px;font:bold 13px Tahoma,sans-serif;cursor:pointer}
+#sw-gpt-yes{background:#d9ae52;color:#071a35}
+#sw-gpt-no{background:#fff;color:#071a35}
+#sw-gpt-tab{display:none;position:fixed;right:14px;bottom:18px;z-index:100099;padding:11px 15px;border:2px solid #d9ae52;border-radius:24px;background:#071a35;color:#f4d58a;font:bold 13px Tahoma,sans-serif;cursor:pointer;box-shadow:0 4px 15px #0005}
+#sw-gpt-panel{display:none;position:fixed;right:14px;bottom:76px;width:min(360px,calc(100vw - 28px));height:min(500px,calc(100vh - 110px));z-index:100101;background:#fff;border:2px solid #d9ae52;border-radius:15px;box-shadow:0 8px 28px #0005;overflow:hidden;direction:rtl;font-family:Tahoma,sans-serif}
+#sw-gpt-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 13px;background:#071a35;color:#f4d58a;font-weight:bold}
+#sw-gpt-close{border:0;background:transparent;color:#f4d58a;font-size:22px;cursor:pointer}
+#sw-gpt-messages{height:calc(100% - 112px);overflow-y:auto;padding:12px;background:#f5f7fb;display:flex;flex-direction:column;gap:9px}
+.sw-gpt-msg{max-width:88%;padding:9px 11px;border-radius:11px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.8}
+.sw-gpt-user{align-self:flex-start;background:#dceafe;color:#102b50}
+.sw-gpt-bot{align-self:flex-end;background:#fff;border:1px solid #e5d3a7;color:#172b45}
+#sw-gpt-compose{height:58px;display:flex;gap:7px;padding:8px;border-top:1px solid #e5e7eb;background:#fff}
+#sw-gpt-input{min-width:0;flex:1;resize:none;border:1px solid #cbd5e1;border-radius:8px;padding:8px;font:13px Tahoma,sans-serif;direction:auto}
+#sw-gpt-send{border:0;border-radius:8px;padding:0 14px;background:#071a35;color:#f4d58a;font:bold 13px Tahoma,sans-serif;cursor:pointer}
+#sw-gpt-send:disabled{opacity:.55;cursor:wait}
+@media(max-width:480px){#sw-gpt-prompt{right:8px;bottom:72px}#sw-gpt-panel{right:8px;bottom:70px;width:calc(100vw - 16px);height:min(470px,calc(100vh - 90px))}#sw-gpt-tab{right:8px;bottom:12px}}
+</style>
+<div id="sw-gpt-widget">
+  <div id="sw-gpt-prompt" role="dialog" aria-label="Saidwali GPT">
+    <p>🤖 سیدولی GPT — ایا مرستې ته اړتیا لرئ؟</p>
+    <div class="sw-gpt-actions">
+      <button id="sw-gpt-yes" type="button">هو، پوښتنه لرم</button>
+      <button id="sw-gpt-no" type="button">نه، مننه</button>
+    </div>
+  </div>
+  <button id="sw-gpt-tab" type="button">🤖 سیدولی GPT</button>
+  <section id="sw-gpt-panel" aria-label="Saidwali GPT chat">
+    <div id="sw-gpt-head"><span>🤖 سیدولی GPT</span><button id="sw-gpt-close" type="button" aria-label="بندول">×</button></div>
+    <div id="sw-gpt-messages" aria-live="polite"><div class="sw-gpt-msg sw-gpt-bot">سلام! زه سیدولی GPT یم. خپله پوښتنه ولیکئ، زه به مرسته درسره وکړم.</div></div>
+    <form id="sw-gpt-compose"><textarea id="sw-gpt-input" rows="1" placeholder="خپله پوښتنه دلته ولیکئ..." required></textarea><button id="sw-gpt-send" type="submit">لېږل</button></form>
+  </section>
+</div>
+<script>
+(function(){
+  const API="https://saidwali-gpt.walizaad2.workers.dev/api/chat";
+  const prompt=document.getElementById("sw-gpt-prompt");
+  const tab=document.getElementById("sw-gpt-tab");
+  const panel=document.getElementById("sw-gpt-panel");
+  const messagesBox=document.getElementById("sw-gpt-messages");
+  const form=document.getElementById("sw-gpt-compose");
+  const input=document.getElementById("sw-gpt-input");
+  const send=document.getElementById("sw-gpt-send");
+  let history=[];
+  let active=false;
+  let busy=false;
+  let repeatTimer=null;
+
+  function addMessage(text,who){
+    const item=document.createElement("div");
+    item.className="sw-gpt-msg "+(who==="user"?"sw-gpt-user":"sw-gpt-bot");
+    item.textContent=text;
+    messagesBox.appendChild(item);
+    messagesBox.scrollTop=messagesBox.scrollHeight;
+    return item;
+  }
+  function askAgain(){
+    if(active || !prompt) return;
+    prompt.style.display="block";
+    tab.style.display="none";
+  }
+  function chooseNo(){
+    prompt.style.display="none";
+    tab.style.display="inline-block";
+    clearTimeout(repeatTimer);
+    repeatTimer=setTimeout(askAgain,20000);
+  }
+  function openChat(){
+    active=true;
+    clearTimeout(repeatTimer);
+    prompt.style.display="none";
+    tab.style.display="none";
+    panel.style.display="block";
+    input.focus();
+  }
+  document.getElementById("sw-gpt-yes").addEventListener("click",openChat);
+  document.getElementById("sw-gpt-no").addEventListener("click",chooseNo);
+  tab.addEventListener("click",openChat);
+  document.getElementById("sw-gpt-close").addEventListener("click",function(){
+    panel.style.display="none";
+    if(active) tab.style.display="inline-block";
+  });
+  form.addEventListener("submit",async function(event){
+    event.preventDefault();
+    const question=input.value.trim();
+    if(!question || busy) return;
+    busy=true;send.disabled=true;
+    addMessage(question,"user");
+    history.push({role:"user",content:question});
+    input.value="";
+    const waiting=addMessage("ستاسې پوښتنه څېړل کېږي...","assistant");
+    try{
+      const response=await fetch(API,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({messages:history,message:question})
+      });
+      const data=await response.json();
+      if(!response.ok) throw new Error(data.error || "د AI خدمت ځواب ورنه کړ.");
+      const answer=data.response || data.reply || data.answer || data.output_text ||
+        (data.result && (data.result.response || data.result.reply)) ||
+        (typeof data.output==="string" ? data.output : "") ||
+        (typeof data.message==="string" && data.message!==question ? data.message : "");
+      if(!answer) throw new Error("ځواب ترلاسه نه شو؛ د GPT سرور ځواب بڼه باید وکتل شي.");
+      waiting.textContent=answer;
+      history.push({role:"assistant",content:answer});
+      messagesBox.scrollTop=messagesBox.scrollHeight;
+    }catch(error){
+      waiting.textContent="اوس مهال له GPT سره اړیکه ټینګه نه شوه. مهرباني وکړئ لږ وروسته بیا هڅه وکړئ.";
+      console.error("Saidwali GPT:",error);
+    }finally{
+      busy=false;send.disabled=false;input.focus();
+    }
+  });
+  // د پاڼې په لومړي پرانیستلو سره پوښتنه ښکاره کېږي؛ د «نه» وروسته هر ۲۰ ثانیې بیا راګرځي.
+  askAgain();
+})();
+</script>
+<!-- END SAIDWALI GPT ASSISTANT -->
+
 </body>
 </html>
