@@ -1554,5 +1554,314 @@ document.addEventListener("click", function(event) {
 </script>
 <!-- END MINI SMART CALENDAR -->
 
+<!-- د سیدولي خان ویب‌پاڼې د مرستې بشپړ بکس -->
+
+<style>
+#sw-help-prompt {
+    position: fixed;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 155px;
+    padding: 12px;
+    background: #071a35;
+    color: #f4d58a;
+    border: 2px solid #d9ae52;
+    border-radius: 12px;
+    text-align: center;
+    font-family: Tahoma, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 99998;
+    display: none;
+    box-shadow: 0 4px 15px #0005;
+}
+
+#sw-help-panel {
+    position: fixed;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: min(320px, calc(100vw - 36px));
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 14px;
+    background: #fff;
+    color: #071a35;
+    border: 2px solid #d9ae52;
+    border-radius: 13px;
+    box-shadow: 0 5px 20px #0005;
+    font-family: Tahoma, sans-serif;
+    z-index: 99999;
+    display: none;
+    box-sizing: border-box;
+}
+
+#sw-help-panel h3 {
+    margin: 0 0 12px;
+    padding: 10px;
+    background: #071a35;
+    color: #f4d58a;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+#sw-help-message {
+    width: 100%;
+    min-height: 75px;
+    padding: 9px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    box-sizing: border-box;
+    font-family: Tahoma, sans-serif;
+    font-size: 13px;
+    direction: rtl;
+    margin-bottom: 8px;
+}
+
+.sw-help-channel {
+    display: block;
+    width: 100%;
+    padding: 7px;
+    margin-top: 5px;
+    border: 0;
+    border-radius: 7px;
+    color: white;
+    background: #071a35;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    font-family: Tahoma, sans-serif;
+}
+
+.sw-help-channel:hover {
+    background: #b68a32;
+}
+
+#sw-help-tab {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 12px 9px;
+    background: #071a35;
+    color: #f4d58a;
+    border: 2px solid #d9ae52;
+    border-right: 0;
+    border-radius: 10px 0 0 10px;
+    font-family: Tahoma, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 99997;
+    display: none;
+}
+
+#sw-help-close {
+    width: 100%;
+    padding: 8px;
+    margin-top: 9px;
+    background: #a32626;
+    color: white;
+    border: 0;
+    border-radius: 7px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+#sw-help-contact {
+    background: #9a762e;
+}
+
+@media (max-width: 480px) {
+    #sw-help-prompt {
+        right: 8px;
+        width: 140px;
+        font-size: 12px;
+    }
+
+    #sw-help-panel {
+        right: 8px;
+        width: calc(100vw - 16px);
+    }
+}
+</style>
+
+<div id="sw-help-prompt">
+    ☎ د مرستې لپاره دلته کلیک وکړئ
+</div>
+
+<button id="sw-help-tab" onclick="swOpenHelp()">
+    ☎ مرسته
+</button>
+
+<div id="sw-help-panel">
+    <h3>☎ د اړیکې او مرستې مرکز</h3>
+
+    <textarea id="sw-help-message"
+        placeholder="خپل پیغام دلته ولیکئ..."></textarea>
+
+    <button class="sw-help-channel" onclick="swWhatsApp()">
+        🟢 WhatsApp
+    </button>
+
+    <button class="sw-help-channel" onclick="swTelegram()">
+        ✈ Telegram
+    </button>
+
+    <button class="sw-help-channel" onclick="swViber()">
+        🟣 Viber
+    </button>
+
+    <button class="sw-help-channel" onclick="swImo()">
+        🔵 imo
+    </button>
+
+    <button class="sw-help-channel" onclick="swGmail()">
+        📧 Gmail
+    </button>
+
+    <button class="sw-help-channel" onclick="swYahoo()">
+        📩 Yahoo Mail
+    </button>
+
+    <a class="sw-help-channel" id="sw-help-contact"
+       href="https://saidwali12.github.io/said-wali-khan/contact.html"
+       target="_blank" rel="noopener">
+        🌐 د اړیکې پاڼه پرانیزئ
+    </a>
+
+    <button id="sw-help-close" onclick="swCloseHelp()">
+        ✖ د مرستې بکس بندول
+    </button>
+</div>
+
+<script>
+(function () {
+    const PHONE = "93744459292";
+    const EMAIL1 = "walizaad2@gmail.com";
+    const EMAIL2 = "wali.zaad12@yahoo.com";
+
+    const promptBox = document.getElementById("sw-help-prompt");
+    const panel = document.getElementById("sw-help-panel");
+    const tab = document.getElementById("sw-help-tab");
+
+    let panelOpen = false;
+    let hideTimer = null;
+
+    function showPrompt() {
+        if (panelOpen) return;
+
+        clearTimeout(hideTimer);
+        promptBox.style.display = "block";
+        tab.style.display = "none";
+
+        hideTimer = setTimeout(function () {
+            promptBox.style.display = "none";
+            tab.style.display = "block";
+        }, 3000);
+    }
+
+    // لومړی ځل سمدستي ښکاره کېږي، بیا هر ۳۰ ثانیې
+    showPrompt();
+    setInterval(showPrompt, 30000);
+
+    window.swOpenHelp = function () {
+        panelOpen = true;
+        clearTimeout(hideTimer);
+        promptBox.style.display = "none";
+        tab.style.display = "none";
+        panel.style.display = "block";
+    };
+
+    window.swCloseHelp = function () {
+        panelOpen = false;
+        panel.style.display = "none";
+        tab.style.display = "block";
+    };
+
+    function getMessage() {
+        const message = document.getElementById("sw-help-message").value.trim();
+
+        if (!message) {
+            alert("مهرباني وکړئ لومړی خپل پیغام ولیکئ.");
+            return null;
+        }
+
+        return message;
+    }
+
+    window.swWhatsApp = function () {
+        const message = getMessage();
+        if (!message) return;
+
+        window.open(
+            "https://wa.me/" + PHONE + "?text=" + encodeURIComponent(message),
+            "_blank"
+        );
+    };
+
+    window.swTelegram = function () {
+        const message = getMessage();
+        if (!message) return;
+
+        window.open(
+            "https://t.me/+" + PHONE + "?text=" + encodeURIComponent(message),
+            "_blank"
+        );
+    };
+
+    window.swViber = function () {
+        const message = getMessage();
+        if (!message) return;
+
+        window.open(
+            "viber://chat?number=%2B" + PHONE,
+            "_blank"
+        );
+    };
+
+    window.swImo = function () {
+        const message = getMessage();
+        if (!message) return;
+
+        window.open("https://imo.im/", "_blank");
+    };
+
+    window.swGmail = function () {
+        const message = getMessage();
+        if (!message) return;
+
+        const subject = "د ویب‌پاڼې له لارې د مرستې غوښتنه";
+
+        window.open(
+            "https://mail.google.com/mail/?view=cm&fs=1&to=" +
+            encodeURIComponent(EMAIL1) +
+            "&su=" + encodeURIComponent(subject) +
+            "&body=" + encodeURIComponent(message),
+            "_blank"
+        );
+    };
+
+    window.swYahoo = function () {
+        const message = getMessage();
+        if (!message) return;
+
+        const subject = "د ویب‌پاڼې له لارې د مرستې غوښتنه";
+
+        window.open(
+            "https://compose.mail.yahoo.com/?to=" +
+            encodeURIComponent(EMAIL2) +
+            "&subject=" + encodeURIComponent(subject) +
+            "&body=" + encodeURIComponent(message),
+            "_blank"
+        );
+    };
+})();
+</script>
+
 </body>
 </html>
