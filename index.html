@@ -1324,5 +1324,235 @@ document.addEventListener("click", function(event) {
 });
 </script>
 
+<!-- SMART MINI SLIDING CALENDAR -->
+<style>
+#mini-smart-calendar {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  width: 96px;
+  min-height: 65px;
+  z-index: 999999;
+  background: #071a35;
+  border: 1px solid #d9ae52;
+  border-radius: 9px;
+  padding: 7px 4px;
+  box-shadow: 0 0 10px #d9ae5280;
+  text-align: center;
+  direction: rtl;
+  font-family: Tahoma, sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+#mini-smart-calendar .mini-heading {
+  font-size: 8px;
+  color: #d9ae52;
+  margin-bottom: 5px;
+  white-space: nowrap;
+}
+
+#mini-smart-calendar .mini-type {
+  font-size: 10px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+#mini-smart-calendar .mini-date {
+  font-size: 12px;
+  font-weight: bold;
+  direction: ltr;
+  white-space: nowrap;
+  text-shadow: 0 0 7px currentColor;
+}
+
+#mini-smart-calendar .mini-clock {
+  color: #fff;
+  font-size: 9px;
+  margin-top: 5px;
+  direction: ltr;
+}
+
+#mini-smart-calendar .mini-week {
+  font-size: 8px;
+  color: #f4d58a;
+  margin-top: 3px;
+}
+
+#mini-smart-calendar .mini-close {
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  border: 0;
+  background: transparent;
+  color: #d9ae52;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#mini-smart-calendar .mini-content {
+  animation: miniSlideIn .6s ease;
+}
+
+@keyframes miniSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-35px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+#mini-calendar-open {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 999999;
+  background: #071a35;
+  color: #f4d58a;
+  border: 1px solid #d9ae52;
+  border-radius: 7px;
+  padding: 7px;
+  font-size: 10px;
+  cursor: pointer;
+}
+</style>
+
+<div id="mini-smart-calendar">
+  <button class="mini-close" id="mini-calendar-close">×</button>
+  <div class="mini-heading">✦ SMART DATE ✦</div>
+  <div class="mini-content" id="mini-content">
+    <div class="mini-type" id="mini-type">هجري شمسي</div>
+    <div class="mini-date" id="mini-date">----</div>
+    <div class="mini-week" id="mini-week"></div>
+  </div>
+  <div class="mini-clock" id="mini-clock">00:00:00</div>
+</div>
+
+<button id="mini-calendar-open">📅 نېټه</button>
+
+<script>
+(function () {
+  const box = document.getElementById('mini-smart-calendar');
+  const content = document.getElementById('mini-content');
+  const type = document.getElementById('mini-type');
+  const date = document.getElementById('mini-date');
+  const week = document.getElementById('mini-week');
+  const clock = document.getElementById('mini-clock');
+  const close = document.getElementById('mini-calendar-close');
+  const open = document.getElementById('mini-calendar-open');
+
+  const calendars = [
+    {name:'هجري شمسي', id:'persian', color:'#65d9ff'},
+    {name:'هجري قمري', id:'islamic-umalqura', color:'#66e6a5'},
+    {name:'میلادي', id:'gregory', color:'#ffbd70'}
+  ];
+
+  let current = 0;
+  let hidden = false;
+  let timer;
+
+  function updateClock() {
+    const now = new Date();
+    clock.textContent = new Intl.DateTimeFormat('en-GB', {
+      timeZone:'Asia/Kabul',
+      hour:'2-digit',
+      minute:'2-digit',
+      second:'2-digit',
+      hour12:false
+    }).format(now);
+  }
+
+  function showCalendar() {
+    const now = new Date();
+    const selected = calendars[current];
+
+    const formatter = new Intl.DateTimeFormat(
+      'en-u-nu-latn',
+      {
+        calendar:selected.id,
+        timeZone:'Asia/Kabul',
+        year:'numeric',
+        month:'2-digit',
+        day:'2-digit'
+      }
+    );
+
+    const parts = formatter.formatToParts(now);
+    const part = key =>
+      parts.find(p => p.type === key)?.value || '';
+
+    type.textContent = selected.name;
+    type.style.color = selected.color;
+
+    date.textContent =
+      part('year') + '/' +
+      part('month') + '/' +
+      part('day');
+
+    date.style.color = selected.color;
+
+    week.textContent = new Intl.DateTimeFormat('ps-AF', {
+      weekday:'long',
+      timeZone:'Asia/Kabul'
+    }).format(now);
+
+    content.style.animation = 'none';
+    void content.offsetWidth;
+    content.style.animation = 'miniSlideIn .6s ease';
+  }
+
+  function cycle() {
+    if (hidden) return;
+
+    showCalendar();
+
+    // د ۲۰ ثانیو لپاره ښکاره وي
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      if (hidden) return;
+
+      // یو ثانیه پټېږي
+      content.style.visibility = 'hidden';
+
+      setTimeout(() => {
+        if (hidden) return;
+
+        current = (current + 1) % calendars.length;
+        content.style.visibility = 'visible';
+        showCalendar();
+
+        cycle();
+      }, 1000);
+
+    }, 20000);
+  }
+
+  updateClock();
+  cycle();
+
+  setInterval(updateClock, 1000);
+
+  close.onclick = function () {
+    hidden = true;
+    clearTimeout(timer);
+    box.style.display = 'none';
+    open.style.display = 'block';
+  };
+
+  open.onclick = function () {
+    hidden = false;
+    box.style.display = 'block';
+    open.style.display = 'none';
+    cycle();
+  };
+})();
+</script>
+<!-- END MINI SMART CALENDAR -->
+
 </body>
 </html>
