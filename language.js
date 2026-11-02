@@ -68,7 +68,9 @@
     while ((node = walker.nextNode())) {
       const parent = node.parentElement;
       if (!parent || /^(SCRIPT|STYLE|TEXTAREA|INPUT|OPTION)$/i.test(parent.tagName)) continue;
-      const original = node.nodeValue;
+      if (parent.closest("#bbc-news,#sw-language-bar,.user-post,.post-content,.comment,.comments,[contenteditable='true']")) continue;
+      if (!Object.prototype.hasOwnProperty.call(node, "__swOriginal")) node.__swOriginal = node.nodeValue;
+      const original = node.__swOriginal;
       const trimmed = original.trim();
       if (!trimmed) continue;
       const item = dict[trimmed];
@@ -77,7 +79,7 @@
     document.querySelectorAll("input[placeholder],textarea[placeholder]").forEach(el => {
       if (!el.dataset.psPlaceholder) el.dataset.psPlaceholder = el.placeholder;
     });
-    document.querySelectorAll(".languages button").forEach(btn => {
+    document.querySelectorAll(".languages button, #sw-language-bar button").forEach(btn => {
       const active = btn.getAttribute("onclick") || "";
       btn.classList.toggle("active", active.includes("'" + lang + "'"));
     });
