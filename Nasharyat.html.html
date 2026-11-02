@@ -555,6 +555,14 @@ function changeLanguage(lang,button){
     if(!translations[lang]) lang = "ps";
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "en" ? "ltr" : "rtl";
+    const pageTitles = {
+        ps:"اعلانونه او تبلیغات",
+        fa:"اعلانات و تبلیغات",
+        en:"Advertising and Promotions",
+        ur:"اشتہارات اور تشہیر",
+        ar:"الإعلانات والترويج"
+    };
+    document.title = pageTitles[lang] || pageTitles.ps;
     document.querySelectorAll("[data-i18n]").forEach(element=>{
         const key = element.getAttribute("data-i18n");
         if(translations[lang][key]) element.textContent = translations[lang][key];
