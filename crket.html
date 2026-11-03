@@ -636,7 +636,8 @@ async function loadLive(){
 
   const result=await api("/live");
 
-  allMatches=Array.isArray(result)?result:(Array.isArray(result.data)?result.data:(Array.isArray(result.matches)?result.matches:[]));
+  const payload=result&&result.data!==undefined?result.data:result;
+  allMatches=Array.isArray(payload)?payload:(Array.isArray(payload.matches)?payload.matches:(Array.isArray(payload.live_matches)?payload.live_matches:(Array.isArray(result.matches)?result.matches:[])));
   allMatches.sort((x,y)=>{
    const re=/afghanistan|india|pakistan|bangladesh|sri lanka|nepal/i;
    const sx=((x.first_team||{}).full_name||"")+" "+((x.second_team||{}).full_name||"");
@@ -1179,15 +1180,7 @@ function escapeHTML(value){
    BACK
 ===================================================== */
 
-function goBack(){
-
- if(history.length>1)
- history.back();
-
- else
- location.href="index.html";
-
-}
+function goBack(){ window.location.href="index.html"; }
 
 
 /* =====================================================
@@ -1199,7 +1192,7 @@ loadLive();
 
 /* هر 30 ثانیې Live لیست تازه کړه */
 
-setInterval(loadLive,15000);
+setInterval(loadLive,30000);
 
 
 /* که یوه Live لوبه خلاصه وي، د هغې جزئیات هم
