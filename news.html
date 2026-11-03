@@ -6,257 +6,126 @@
 <title>شخصي خبرونه - Advanced</title>
 
 <style>
-body{
-margin:0;
-font-family:tahoma;
-background:#f5f5f5;
-color:#111;
-}
-.back-btn{
-position:fixed;
-top:10px;
-left:10px;
-background:#ff9800;
-color:white;
-border:none;
-padding:10px 15px;
-border-radius:8px;
-cursor:pointer;
-font-size:16px;
-z-index:9999;
-}
-
-.back-btn:hover{
-background:#e68900;
-}
-/* HEADER (دناړی ولسوالی اړوند خبرونه) */
-header{
-background:#b30000;
-color:white;
-padding:10px;
-text-align:center;
-font-weight:bold;
-}
-
-/* BREAKING BAR */
-.breaking{
-background:black;
-color:yellow;
-padding:6px;
-overflow:hidden;
-white-space:nowrap;
-}
-.breaking span{
-display:inline-block;
-padding-left:100%;
-animation:move 10s linear infinite;
-}
-@keyframes move{
-0%{transform:translateX(0)}
-100%{transform:translateX(-100%)}
-}
-
-/* MAIN */
-.container{
-max-width:900px;
-margin:auto;
-padding:10px;
-}
-
-/* FEATURED */
-.featured{
-background:white;
-border-radius:8px;
-overflow:hidden;
-margin-bottom:15px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-
-.featured img{
-width:100%;
-height:250px;
-object-fit:cover;
-}
-
-.featured h2{
-padding:10px;
-color:#b30000;
-}
-
-/* NEWS CARD */
-.news{
-background:white;
-margin-bottom:12px;
-border-radius:8px;
-overflow:hidden;
-box-shadow:0 1px 4px rgba(0,0,0,0.1);
-}
-
-.news img{
-width:100%;
-height:180px;
-object-fit:cover;
-}
-
-.news-body{
-padding:10px;
-}
-
-.title{
-font-size:18px;
-font-weight:bold;
-color:#b30000;
-}
-
-/* BUTTONS */
-.actions{
-display:flex;
-justify-content:space-between;
-margin-top:8px;
-}
-
-button{
-border:none;
-padding:6px 10px;
-cursor:pointer;
-border-radius:5px;
-}
-
-.like{
-background:#eee;
-}
-
-.comment-box{
-margin-top:8px;
-border-top:1px solid #ddd;
-padding-top:8px;
-}
-
-input{
-width:70%;
-padding:6px;
-}
-
-.add{
-background:#b30000;
-color:white;
-}
-
-.comment-list p{
-font-size:14px;
-}
-
-.delete{
-color:red;
-cursor:pointer;
-margin-right:5px;
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f3f5f8;color:#182438;line-height:1.7}
+.back-btn{position:fixed;top:10px;left:10px;background:#d9ae52;color:#071a35;border:0;padding:8px 13px;border-radius:8px;cursor:pointer;font-size:14px;z-index:9999;font-weight:bold}
+header{background:linear-gradient(120deg,#071a35,#12345a);color:#f4d58a;padding:16px 12px 12px;text-align:center;font-weight:bold;border-bottom:3px solid #d9ae52}
+header h1{margin:0;font-size:22px;font-family:"Noto Naskh Arabic",Tahoma,Arial,sans-serif}
+.breaking{background:#071a35;color:#f4d58a;padding:5px 0;overflow:hidden;white-space:nowrap;border-bottom:1px solid #d9ae52}
+.breaking span{display:inline-block;padding-right:100%;animation:newsMove 22s linear infinite;font-weight:bold}
+@keyframes newsMove{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+.container{max-width:980px;margin:auto;padding:12px}
+.section-label{display:flex;align-items:center;gap:8px;background:#102b4c;color:#f4d58a;border-right:4px solid #d9ae52;border-radius:8px;padding:7px 10px;margin:15px 0 10px;overflow:hidden;white-space:nowrap}
+.section-label span{display:inline-block;min-width:max-content;animation:labelMove 18s linear infinite;font-family:"Noto Naskh Arabic",Tahoma,Arial,sans-serif}
+@keyframes labelMove{0%{transform:translateX(0)}100%{transform:translateX(-35%)}}
+.featured,.news{display:flex;flex-direction:row;align-items:stretch;gap:0;background:#fff;border:1px solid #e0e5ec;border-radius:10px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 7px #071a3510}
+.featured img,.news img{width:34%;max-width:210px;height:125px;object-fit:cover;flex:0 0 34%}
+.featured-body,.news-body{min-width:0;flex:1;padding:9px 12px}
+.title{font-size:16px;font-weight:bold;color:#0b3158;overflow:hidden;white-space:nowrap;border-bottom:1px solid #edf0f4;padding-bottom:3px;margin-bottom:5px}
+.title span{display:inline-block;min-width:max-content;animation:headlineMove 20s linear infinite}
+@keyframes headlineMove{0%{transform:translateX(0)}100%{transform:translateX(-35%)}}
+.news p,.featured p{font-family:"Noto Naskh Arabic",Tahoma,Arial,sans-serif;font-size:13px;line-height:1.8;margin:4px 0;color:#39485b}
+.actions{display:flex;gap:7px;align-items:center;margin-top:7px}
+.actions button{border:1px solid #dce2ea;background:#f5f7fa;color:#17385b;padding:4px 9px;border-radius:16px;font-size:12px;cursor:pointer}
+.actions button:hover{background:#fff0c9;border-color:#d9ae52}
+.comment-box{margin-top:8px;border-top:1px solid #edf0f4;padding-top:7px}
+.comment-fields{display:flex;gap:5px;flex-wrap:wrap}
+.comment-fields input{min-width:0;flex:1;padding:7px;border:1px solid #d5dce5;border-radius:7px;font:12px Tahoma}
+.comment-fields button{background:#102b4c;color:#f4d58a;border:0;border-radius:7px;padding:6px 10px}
+.comment-list p{font-size:12px;margin:5px 0;padding:5px 8px;background:#f5f7fa;border-radius:6px}
+.comment-name{font-weight:bold;color:#0b3158}
+.delete{color:#b42318;cursor:pointer;margin-right:6px}
+.news-meta{font-size:10px;color:#7b8795;margin-top:3px}
+#sw-language-bar{background:#071a35!important;border-color:#d9ae52!important}
+#sw-language-bar button{background:#102b4c;color:#f4d58a;border:1px solid #d9ae52!important}
+#sw-language-bar button.active{background:#d9ae52;color:#071a35}
+@media(max-width:600px){
+ .container{padding:8px}
+ header h1{font-size:18px}
+ .featured img,.news img{width:36%;flex-basis:36%;height:112px}
+ .featured-body,.news-body{padding:7px 8px}
+ .title{font-size:14px}
+ .news p,.featured p{font-size:12px;line-height:1.65}
+ .actions button{padding:4px 7px;font-size:11px}
+ .comment-fields input{flex-basis:40%}
 }
 </style>
 </head>
 
 <body>
-<body>
 <button class="back-btn" onclick="history.back()">⬅ شاتګ</button>
-<header>
+<header><h1>شخصي خبرونه – د سیمې او نړۍ خبرونه</h1></header>
+<div class="breaking"><span>🚨 تازه خبرونه | د سیمې پرمختګونه | ښوونیز خبرونه | سیمه‌ییز کرکټ | نړیوال خبرونه</span></div>
+<main class="container">
+  <div class="section-label"><span>📌 مهم سیمه‌ییز خبرونه – تازه معلومات او راپورونه</span></div>
+  <article class="featured">
+    <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=500&q=80" alt="خبرونه">
+    <div class="featured-body">
+      <div class="title"><span>مهم خبر: د نورستان او کونړ د سرحدي سیمو تازه حال</span></div>
+      <p>د نورستان ولایت د کامدېش ولسوالۍ، چې د کونړ ولایت د ناړۍ ولسوالۍ سره سرحد لري، د ختیځ نورستان له مهمو سیمو څخه ده. د سیمې د امنیت او خلکو د وضعیت په اړه تازه معلومات دلته ولولئ.</p>
+      <div class="news-meta">سیمه‌ییز راپور | د خبرونو برخه</div>
+      <div class="actions"><button onclick="like(this)">❤️ خوښ مې شو</button><button onclick="heart(this)">💛 زړه</button></div>
+      <div class="comment-box"><div class="comment-fields"><input id="n1-name" placeholder="ستاسو نوم"><input id="n1-text" placeholder="خپل نظر ولیکئ"><button onclick="addComment('n1-list','n1-name','n1-text')">ثبت</button></div><div id="n1-list" class="comment-list"></div></div>
+    </div>
+  </article>
 
-</header>
-<header>
-📺 شخصي خبرونه - دعلاقی خبرونه
-</header>
+  <div class="section-label"><span>🏗️ انکشافي خبرونه – د بیارغونې او پرمختګ راپورونه</span></div>
+  <article class="news">
+    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=500&q=80" alt="انکشافي کارونه">
+    <div class="news-body">
+      <div class="title"><span>د دوکلام په سرحدي سیمه کې د سړک او بنسټیزو چارو پرمختګ</span></div>
+      <p>د دوکلام په سیمه کې د سړک او استنادي دېوالونو د جوړولو چارې روانې دي. د سیمې اوسېدونکي د برېښنا او نورو بنسټیزو خدمتونو د پراختیا غوښتنه کوي.</p>
+      <div class="news-meta">انکشافي راپور | د سیمې خبرونه</div>
+      <div class="actions"><button onclick="like(this)">❤️ خوښ مې شو</button><button onclick="heart(this)">💛 زړه</button></div>
+      <div class="comment-box"><div class="comment-fields"><input id="n2-name" placeholder="ستاسو نوم"><input id="n2-text" placeholder="خپل نظر ولیکئ"><button onclick="addComment('n2-list','n2-name','n2-text')">ثبت</button></div><div id="n2-list" class="comment-list"></div></div>
+    </div>
+  </article>
 
-<div class="breaking">
-<span>🚨 Breaking News: دلته تاسو تازه خبرونه لیدلی شئ او کمینټ کولی شئ ✔</span>
-</div>
+  <div class="section-label"><span>🎓 ښوونیز خبرونه – د تعلیم او زده‌کړو تازه معلومات</span></div>
+  <article class="news">
+    <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=500&q=80" alt="ښوونیز خبرونه">
+    <div class="news-body">
+      <div class="title"><span>د زده‌کړو، ښوونځیو او تعلیمي فرصتونو خبرونه</span></div>
+      <p>د ښوونځیو، زده‌کوونکو، ښوونکو، ازموینو او تعلیمي فرصتونو اړوند تازه معلومات او راپورونه په دې برخه کې خپرېږي.</p>
+      <div class="news-meta">ښوونیز راپور | د تعلیم برخه</div>
+      <div class="actions"><button onclick="like(this)">❤️ خوښ مې شو</button><button onclick="heart(this)">💛 زړه</button></div>
+      <div class="comment-box"><div class="comment-fields"><input id="n3-name" placeholder="ستاسو نوم"><input id="n3-text" placeholder="خپل نظر ولیکئ"><button onclick="addComment('n3-list','n3-name','n3-text')">ثبت</button></div><div id="n3-list" class="comment-list"></div></div>
+    </div>
+  </article>
 
-<div class="container">
-
-<!-- FEATURED -->
-<div class="featured">
-<img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c">
-<h2>مهم خبر: ددنورستان ولایت کامدیش ولسوالی چی دکنړولایت ناړی ولسوالی سره سرحدلری اودغه سیمه دشرقی نورستان په نوم یادیږی.دګوهردیش په سیمه کی پرون ۱۴۴۸/۲/۱۴ چی د۱۴۰۵/۷/۴ سره سمون خوری ددولت دمخالفونو لخوا برید شوی وو.دعینی شاهیدانو په وینا برد ګرو اکثره اولیسی خلک عوام دهدف لاندی نیولی وو.په جوابی دفاعیه بریدی کی دافغانستان سرتیرو دبریدګرو یوڅو وګړی نیولی اواوس يي جنګ ته دپای ټکی کیښودی دی.بعضی .دغه سیمه دپآکستان چترال سره لویه پله لری.اوګمان کیږی چی دغه خلک دپاکستان له لوری راغلی ووسی.خو دافغانستان هیواد اولس اوحکومت په دغه قسم چنګونو سره تل مقاومت کړیدی.او بریالی شویدی.په مجازی نړی سوشل کی اښ:اری چی برید ګريي ژوندی نیولی دی.</h2>
-</div>
-
-<!-- NEWS 1 -->
-<div class="news">
-<img src="https://images.unsplash.com/photo-1495020689067-958852a7765e">
-<div class="news-body">
-<div class="title">تعلیمی خبرونه اودروزګارخبرونه</div>
-<p>ددوکلام سرحدی کلی کی دسرک پروژه دنیکه مرغه په چټکی روانه څرنګه چی مشرانو ویلی دی چی افغانستان خزانه خزانه ده نو ددوکلام سیمه کی معادن چی ډیرقیمتی ډبری لری.معادن پیدا شویدی.اوپه دوکلام کلی کی ددولت لخوا دولتی څاه هم دخلکو لپاره دپاکو صفا اوبو توضیع کولو په موخه برابر اوکار يي جریان لری...</p>
-
-<div class="actions">
-<button class="like" onclick="like(this)">❤️ Like</button>
-</div>
-
-<div class="comment-box">
-<input id="c1" placeholder="کمینټ ولیکه">
-<button class="add" onclick="addComment('l1','c1')">ثبت</button>
-<div id="l1" class="comment-list"></div>
-</div>
-
-</div>
-</div>
-
-<!-- NEWS 2 -->
-<div class="news">
-<img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c">
-<div class="news-body">
-<div class="title">انکاشافی خبرونه دپرمختګ خبرونه</div>
-<p>دکنړولایت ناړی ولسوالی ارندو دوکلام سرحدی کلی چی دپاکستان سره ګډه پوله لری.دنیکه مرغه انکشافی کارونه لکه سرک  ادسرک استینادی دیوالونو کارونه په چټکی سره روان دی.دغه سرک دلمرخاته طرفته جوړول جریان لری چی دکنړ اسمال ولسوالی سره نښلول کیږی.دکارونو څخه مونږراځی یواودمرکزی حکومت څځه غوښتنه کوو چی زمونږ دوطن دبریښنا غمه هم وخوری مطلب دادی چی دوکلام لپاره دسولری سیستم برق اویا بله بدیله لاره وکتل شی.ترڅو خلک دژوند لومړی ضروریات ته لاس رسی ولری.</p>
-
-<div class="actions">
-<button class="like" onclick="like(this)">❤️ Like</button>
-</div>
-
-<div class="comment-box">
-<input id="c2" placeholder="کمینټ ولیکه">
-<button class="add" onclick="addComment('l2','c2')">ثبت</button>
-<div id="l2" class="comment-list"></div>
-</div>
-
-</div>
-</div>
-
-</div>
-
+  <div class="section-label"><span>🏏 سیمه‌ییز کرکټ – د لوبو او پایلو خبرونه</span></div>
+  <article class="news">
+    <img src="https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=500&q=80" alt="کرکټ">
+    <div class="news-body">
+      <div class="title"><span>د کونړ او شاوخوا سیمو د کرکټ سیالۍ او پایلې</span></div>
+      <p>د سیمه‌ییزو کرکټ سیالیو، لوبډلو، لوبغاړو، مهالوېش او پایلو تازه معلومات به په دې برخه کې خپرېږي.</p>
+      <div class="news-meta">کرکټ | سیمه‌ییزې سیالۍ</div>
+      <div class="actions"><button onclick="like(this)">❤️ خوښ مې شو</button><button onclick="heart(this)">💛 زړه</button></div>
+      <div class="comment-box"><div class="comment-fields"><input id="n4-name" placeholder="ستاسو نوم"><input id="n4-text" placeholder="خپل نظر ولیکئ"><button onclick="addComment('n4-list','n4-name','n4-text')">ثبت</button></div><div id="n4-list" class="comment-list"></div></div>
+    </div>
+  </article>
+</main>
 <script>
-
-/* LIKE */
-function like(btn){
-if(btn.style.background=="red"){
-btn.style.background="#eee";
-btn.style.color="black";
-}else{
-btn.style.background="red";
-btn.style.color="white";
+function like(btn){btn.classList.toggle("liked");btn.textContent=btn.classList.contains("liked")?"❤️ خوښ شو":"❤️ خوښ مې شو";}
+function heart(btn){btn.classList.toggle("hearted");btn.textContent=btn.classList.contains("hearted")?"💛 زړه ورکړل شو":"💛 زړه";}
+function addComment(listId,nameId,textId){
+ const name=document.getElementById(nameId).value.trim();
+ const value=document.getElementById(textId).value.trim();
+ if(!name||!value){alert("مهرباني وکړئ نوم او تبصره ولیکئ.");return;}
+ const p=document.createElement("p");
+ const strong=document.createElement("span");strong.className="comment-name";strong.textContent=name+" : ";
+ const msg=document.createElement("span");msg.textContent=value;
+ p.append(strong,msg);
+ document.getElementById(listId).appendChild(p);
+ document.getElementById(nameId).value="";document.getElementById(textId).value="";
 }
-}
-
-/* COMMENTS */
-function addComment(listId,inputId){
-let input=document.getElementById(inputId);
-let text=input.value;
-
-if(text.trim()=="") return;
-
-let div=document.getElementById(listId);
-
-let p=document.createElement("p");
-p.innerHTML="👤 "+text+" <span class='delete' onclick='this.parentElement.remove()'>✖</span>";
-
-div.appendChild(p);
-
-input.value="";
-}
-
 </script>
-
-
-<div id="sw-language-bar" style="position:fixed;bottom:12px;left:12px;z-index:99999;background:#071a35;border:1px solid #d9ae52;border-radius:12px;padding:6px 8px;display:flex;gap:5px;flex-wrap:wrap;box-shadow:0 3px 14px #0005">
-<button type="button" onclick="changeLanguage('ps',this)" style="padding:5px 8px;border:0;border-radius:6px">پښتو</button>
-<button type="button" onclick="changeLanguage('fa',this)" style="padding:5px 8px;border:0;border-radius:6px">دری</button>
-<button type="button" onclick="changeLanguage('en',this)" style="padding:5px 8px;border:0;border-radius:6px">English</button>
-<button type="button" onclick="changeLanguage('ur',this)" style="padding:5px 8px;border:0;border-radius:6px">اردو</button>
-<button type="button" onclick="changeLanguage('ar',this)" style="padding:5px 8px;border:0;border-radius:6px">العربية</button>
+<div id="sw-language-bar" style="position:fixed;bottom:12px;left:12px;z-index:99999;border:1px solid #d9ae52;border-radius:12px;padding:6px 8px;display:flex;gap:5px;flex-wrap:wrap;box-shadow:0 3px 14px #0005">
+<button type="button" onclick="changeLanguage('ps')">پښتو</button>
+<button type="button" onclick="changeLanguage('fa')">دری</button>
+<button type="button" onclick="changeLanguage('en')">English</button>
+<button type="button" onclick="changeLanguage('ur')">اردو</button>
+<button type="button" onclick="changeLanguage('ar')">العربية</button>
 </div>
 <script src="language.js"></script>
 </body>
