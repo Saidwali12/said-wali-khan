@@ -635,7 +635,13 @@ async function loadLive(){
 
   const result=await api("/live");
 
-  allMatches=result.data||[];\n  allMatches.sort((x,y)=>{const re=/afghanistan|india|pakistan|bangladesh|sri lanka|nepal/i;const sx=((x.first_team||{}).full_name||"")+" "+((x.second_team||{}).full_name||"");const sy=((y.first_team||{}).full_name||"")+" "+((y.second_team||{}).full_name||"");return (re.test(sx)?0:1)-(re.test(sy)?0:1);});
+  allMatches=Array.isArray(result)?result:(Array.isArray(result.data)?result.data:(Array.isArray(result.matches)?result.matches:[]));
+  allMatches.sort((x,y)=>{
+   const re=/afghanistan|india|pakistan|bangladesh|sri lanka|nepal/i;
+   const sx=((x.first_team||{}).full_name||"")+" "+((x.second_team||{}).full_name||"");
+   const sy=((y.first_team||{}).full_name||"")+" "+((y.second_team||{}).full_name||"");
+   return (re.test(sx)?0:1)-(re.test(sy)?0:1);
+  });((x,y)=>{const re=/afghanistan|india|pakistan|bangladesh|sri lanka|nepal/i;const sx=((x.first_team||{}).full_name||"")+" "+((x.second_team||{}).full_name||"");const sy=((y.first_team||{}).full_name||"")+" "+((y.second_team||{}).full_name||"");return (re.test(sx)?0:1)-(re.test(sy)?0:1);});
 
   renderMatches(allMatches);
 
@@ -1129,10 +1135,7 @@ function filterFormat(type,button){
  selectedFormat=type;
  document.querySelectorAll(".formatChip").forEach(x=>x.classList.remove("active"));
  button.classList.add("active");
- document.querySelectorAll(".card").forEach(card=>{
-  const f=card.dataset.format||"";
-  card.style.display=type==="all"||f.includes(type)||(type==="odi"&&f.includes("one day"))?"":"none";
- });
+ applyFilters();
 }
 
 function showAll(button){
