@@ -418,6 +418,21 @@ footer{
   left:10px;
  }
 }
+
+.photo img{animation:cricketPhotoMove 16s ease-in-out infinite alternate;transform-origin:center}
+@keyframes cricketPhotoMove{0%{transform:scale(1)}50%{transform:scale(1.12) translateX(-5px)}100%{transform:scale(1.2) translateX(5px)}}
+.matchTicker{background:#071a35;color:#f4d58a;padding:10px;margin:12px 0;border:1px solid #d9ae52;border-radius:10px;overflow:hidden;white-space:nowrap}
+.matchTicker span{display:inline-block;min-width:100%;animation:matchScroll 22s linear infinite}
+@keyframes matchScroll{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+.formatGroups{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.formatChip{border:1px solid #d9ae52;background:#071a35;color:#f4d58a;border-radius:10px;padding:10px;font-weight:bold;cursor:pointer}
+.formatChip.active{background:#d9ae52;color:#071a35}
+.matchFacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 12px}
+.matchFact{background:#f3f7f9;border-radius:8px;padding:8px;font-size:12px;line-height:1.7}
+.matchFact b{color:#163f5c}
+.fixtureBox{background:#fff;border-radius:14px;padding:16px;margin-top:22px;box-shadow:0 3px 14px #0001}
+@media(max-width:600px){.matchFacts{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 
