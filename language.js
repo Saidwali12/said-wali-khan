@@ -397,7 +397,7 @@
   });
   const langNames = {ps:"پښتو",fa:"دری",en:"English",ur:"اردو",ar:"العربية"};
   function apply(lang) {
-    if (!["ps","fa","en","ur","ar"].includes(lang)) lang = "ps";
+    if (!["ps","fa","en","ur","ar"].includes(lang)) lang = "ps";\n    window.__swActiveLanguage = lang;
     const rtl = lang !== "en";
     document.documentElement.lang = lang;
     document.documentElement.dir = rtl ? "rtl" : "ltr";
@@ -435,7 +435,7 @@
   function observeTranslations() {
     let active = "ps";
     try { active = localStorage.getItem("sw_site_language") || "ps"; } catch(e) {}
-    const observer = new MutationObserver(() => apply(active));
+    const observer = new MutationObserver(() => apply(window.__swActiveLanguage || active));
     observer.observe(document.body, {childList:true,subtree:true});
   }
   document.addEventListener("DOMContentLoaded", function() {
