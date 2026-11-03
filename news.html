@@ -106,12 +106,23 @@ header h1{margin:0;font-size:22px;font-family:"Noto Naskh Arabic",Tahoma,Arial,s
   </article>
 </main>
 <script>
-function like(btn){btn.classList.toggle("liked");btn.textContent=btn.classList.contains("liked")?"❤️ خوښ شو":"❤️ خوښ مې شو";}
-function heart(btn){btn.classList.toggle("hearted");btn.textContent=btn.classList.contains("hearted")?"💛 زړه ورکړل شو":"💛 زړه";}
+function currentNewsLanguage(){try{return localStorage.getItem("sw_site_language")||"ps";}catch(e){return "ps";}}
+function newsText(key){
+ const words={
+  like:{ps:"❤️ خوښ شو",fa:"❤️ پسند شد",en:"❤️ Liked",ur:"❤️ پسند آیا",ar:"❤️ أعجبني"},
+  liked:{ps:"❤️ خوښ مې شو",fa:"❤️ پسندیدم",en:"❤️ Like",ur:"❤️ پسند آیا",ar:"❤️ أعجبني"},
+  heart:{ps:"💛 زړه ورکړل شو",fa:"💛 قلب",en:"💛 Hearted",ur:"💛 دل دیا",ar:"💛 أضفت قلبًا"},
+  unheart:{ps:"💛 زړه",fa:"💛 قلب",en:"💛 Heart",ur:"💛 دل",ar:"💛 قلب"},
+  required:{ps:"مهرباني وکړئ نوم او تبصره ولیکئ.",fa:"لطفاً نام و دیدگاه خود را بنویسید.",en:"Please enter your name and comment.",ur:"براہ کرم اپنا نام اور تبصرہ لکھیں۔",ar:"يرجى كتابة اسمك وتعليقك."}
+ };
+ return words[key][currentNewsLanguage()]||words[key].ps;
+}
+function like(btn){btn.classList.toggle("liked");btn.textContent=btn.classList.contains("liked")?newsText("like"):newsText("liked");}
+function heart(btn){btn.classList.toggle("hearted");btn.textContent=btn.classList.contains("hearted")?newsText("heart"):newsText("unheart");}
 function addComment(listId,nameId,textId){
  const name=document.getElementById(nameId).value.trim();
  const value=document.getElementById(textId).value.trim();
- if(!name||!value){alert("مهرباني وکړئ نوم او تبصره ولیکئ.");return;}
+ if(!name||!value){alert(newsText("required"));return;}
  const p=document.createElement("p");
  const strong=document.createElement("span");strong.className="comment-name";strong.textContent=name+" : ";
  const msg=document.createElement("span");msg.textContent=value;
