@@ -1329,9 +1329,9 @@ document.addEventListener("click", function(event) {
 #mini-smart-calendar {
   position: fixed;
   top: 12px;
-  left: 12px;
-  width: 96px;
-  min-height: 65px;
+  left: 130px;
+  width: 112px;
+  min-height: 76px;
   z-index: 999999;
   background: #071a35;
   border: 1px solid #d9ae52;
@@ -1409,7 +1409,7 @@ document.addEventListener("click", function(event) {
   display: none;
   position: fixed;
   top: 12px;
-  left: 12px;
+  left: 130px;
   z-index: 999999;
   background: #071a35;
   color: #f4d58a;
@@ -1554,10 +1554,21 @@ document.addEventListener("click", function(event) {
 </script>
 <!-- END MINI SMART CALENDAR -->
 <style>
+@media (max-width: 480px) {
+  #mini-smart-calendar,
+  #mini-calendar-open {
+    top: 12px;
+    left: 118px;
+    width: 106px;
+  }
+  #mini-smart-calendar {
+    min-height: 76px;
+  }
+}
 /* د ژبو کوچني تڼۍ: د کوچنۍ جنترۍ لاندې */
 .languages {
   position: fixed;
-  top: 104px;
+  top: 12px;
   left: 12px;
   z-index: 999998;
   width: 112px;
@@ -1593,7 +1604,7 @@ document.addEventListener("click", function(event) {
 }
 @media (max-width: 480px) {
   .languages {
-    top: 104px;
+    top: 12px;
     left: 8px;
     width: 106px;
     gap: 3px;
