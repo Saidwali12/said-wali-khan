@@ -84,7 +84,7 @@
     var startX = null;
     card.addEventListener("touchstart", function (e) { startX = e.touches[0].clientX; }, {passive:true});
     card.addEventListener("touchend", function (e) {
-      if (startX !== null && startX - e.changedTouches[0].clientX > 85) dismiss();
+      if (startX !== null && e.changedTouches[0].clientX - startX > 85) dismiss();
       startX = null;
     }, {passive:true});
   }
