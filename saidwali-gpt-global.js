@@ -4,7 +4,7 @@
 
   var CHAT_URL = "https://saidwali-gpt.walizaad2.workers.dev/";
   /* انځور به د GitHub په اصلي فولډر کې د همدې نوم په وسیله واچول شي */
-  var AVATAR_URL = "https://saidwali12.github.io/said-wali-khan/saidwali-gpt-avatar.png";
+  var AVATAR_URL = "https://saidwali12.github.io/said-wali-khan/saidwali-gpt-avatar.png?v=20261103";
 
   var rawLang = (document.documentElement.lang || "ps").toLowerCase();
   var language = rawLang.indexOf("ur") === 0 ? "ur" :
@@ -16,35 +16,35 @@
     ps: {
       hint: "ایا د AI مرستې ته اړتیا لرئ؟",
       head: "Saidwali GPT — هوښیار مرستیال",
-      bye: "✓ مننه، بېرته پاڼې ته ځم",
+      bye: "↩ خدای پامان — بېرته پاڼې ته",
       open: "د GPT مرستیال پرانیستل",
       close: "بندول"
     },
     fa: {
       hint: "آیا به کمک هوش مصنوعی نیاز دارید؟",
       head: "Saidwali GPT — دستیار هوشمند",
-      bye: "✓ سپاس، بازگشت به صفحه",
+      bye: "↩ خداحافظ — بازگشت به صفحه",
       open: "باز کردن دستیار GPT",
       close: "بستن"
     },
     en: {
       hint: "Need help from AI?",
       head: "Saidwali GPT — Smart Assistant",
-      bye: "✓ Thank you, return to page",
+      bye: "↩ Goodbye — return to page",
       open: "Open GPT assistant",
       close: "Close"
     },
     ur: {
       hint: "کیا آپ کو AI کی مدد درکار ہے؟",
       head: "Saidwali GPT — ذہین معاون",
-      bye: "✓ شکریہ، صفحے پر واپس جائیں",
+      bye: "↩ خدا حافظ — صفحے پر واپس جائیں",
       open: "GPT معاون کھولیں",
       close: "بند کریں"
     },
     ar: {
       hint: "هل تحتاج إلى مساعدة الذكاء الاصطناعي؟",
       head: "Saidwali GPT — المساعد الذكي",
-      bye: "✓ شكراً، العودة إلى الصفحة",
+      bye: "↩ مع السلامة — العودة إلى الصفحة",
       open: "افتح مساعد GPT",
       close: "إغلاق"
     }
@@ -70,7 +70,9 @@
     "#swgpt-head-title{font:bold 13px/1.5 Tahoma,Arial,sans-serif;flex:1;min-width:0}",
     "#swgpt-chat-close{flex:0 0 auto;border:1px solid #d9ae52;background:transparent;color:#f4d58a;border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:22px;line-height:1}",
     "#swgpt-frame{display:block;border:0;width:100%;height:100%;flex:1;min-height:0;background:#f4f6fa}",
-    "#swgpt-goodbye{flex:0 0 auto;border:0;border-top:2px solid #d9ae52;background:linear-gradient(90deg,#f4d58a,#d9ae52);color:#071a35;padding:10px 8px;font:bold 12px Tahoma,Arial,sans-serif;cursor:pointer}",
+    "#swgpt-goodbye{align-self:center;flex:0 0 auto;width:calc(100% - 24px);margin:7px 12px 9px;border:1px solid #b68a32;border-radius:22px;background:linear-gradient(100deg,#f4d58a,#d9ae52);color:#071a35;padding:10px 8px;font:bold 12px Tahoma,Arial,sans-serif;cursor:pointer;box-shadow:0 3px 10px rgba(7,26,53,.15);transition:background .2s,color .2s,transform .2s,box-shadow .2s;animation:swgptByePulse 2.8s ease-in-out infinite}",
+    "#swgpt-goodbye:hover,#swgpt-goodbye:focus-visible{background:#071a35;color:#f4d58a;transform:translateY(-2px);box-shadow:0 6px 15px rgba(7,26,53,.25);outline:2px solid #d9ae52;outline-offset:2px}",
+    "@keyframes swgptByePulse{0%,100%{box-shadow:0 3px 10px rgba(7,26,53,.14)}50%{box-shadow:0 4px 15px rgba(217,174,82,.55)}}"
     "@media(max-width:600px){#swgpt-float{width:55px;height:55px;right:12px;bottom:14px}#swgpt-hint{right:76px;bottom:20px;max-width:calc(100vw - 100px);font-size:12px;padding:8px 10px}#swgpt-panel{right:8px;bottom:8px;width:calc(100vw - 16px);height: min(82vh,720px);min-height:300px;border-radius:13px}#swgpt-chat-head{flex-basis:52px;min-height:52px}#swgpt-avatar{width:38px;height:38px;flex-basis:38px}#swgpt-head-title{font-size:12px}#swgpt-goodbye{padding:9px 5px;font-size:12px}}",
     "@media(max-height:430px) and (max-width:900px){#swgpt-panel{height:calc(100vh - 16px);min-height:0}}",
     "@media(prefers-reduced-motion:reduce){#swgpt-hint,#swgpt-panel{transition:none}}"
@@ -249,8 +251,9 @@
 
   function init() {
     addFloatingButton();
-    showHint();
-    /* د پخوانۍ مرستې تڼۍ د وخت په حساب: هر ۳۰ ثانیې یو ۳ ثانیه‌ییز پیغام */
+    /* لومړی مرستندوی پیغام د پاڼې له پرانیستلو ۸ ثانیې وروسته */
+    window.setTimeout(showHint, 8000);
+    /* وروسته د مرستې یادونه هر ۳۰ ثانیې؛ هر پیغام ۳ ثانیې ښکاري */
     window.setInterval(showHint, 30000);
   }
 
