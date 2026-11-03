@@ -432,6 +432,12 @@
     try { localStorage.setItem("sw_site_language", lang); } catch(e) {}
   }
   window.changeLanguage = function(lang) { apply(lang); };
+  function observeTranslations() {
+    let active = "ps";
+    try { active = localStorage.getItem("sw_site_language") || "ps"; } catch(e) {}
+    const observer = new MutationObserver(() => apply(active));
+    observer.observe(document.body, {childList:true,subtree:true});
+  }
   document.addEventListener("DOMContentLoaded", function() {
     let saved = "ps";
     try { saved = localStorage.getItem("sw_site_language") || "ps"; } catch(e) {}
