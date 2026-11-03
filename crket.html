@@ -599,6 +599,7 @@ const API =
 
 let allMatches=[];
 let selectedFormat='all';
+let currentMatchId=null;
 let selectedTeam='';
 
 
@@ -815,7 +816,8 @@ function renderMatches(list){
    SCORECARD + COMMENTARY
 ===================================================== */
 
-async function openMatch(id){
+async function openMatch(id,quiet=false){
+ currentMatchId=id;
 
  const detail=document.getElementById("detail");
  const content=document.getElementById("detailContent");
@@ -828,7 +830,7 @@ async function openMatch(id){
  </div>
  `;
 
- detail.scrollIntoView({behavior:"smooth"});
+ if(!quiet) detail.scrollIntoView({behavior:"smooth"});
 
  try{
 
@@ -1195,20 +1197,12 @@ loadLive();
 setInterval(loadLive,15000);
 
 
-/* که یوه Live لوبه خلاصه وي، د هغې جزئیات هم
-   هر 15 ثانیې بیا غوښتل کېدای شي */
-
+/* د پرانیستل شوي سکورکارډ تازه کول */
 setInterval(()=>{
-
- const detail=
- document.getElementById("detail");
-
- if(
-  detail.classList.contains("show")
- ){
-  /* کاروونکی کولای شي بیا پر لوبه کلیک وکړي */
+ const detail=document.getElementById("detail");
+ if(detail && detail.classList.contains("show") && currentMatchId!==null){
+  openMatch(currentMatchId,true);
  }
-
 },15000);
 
 </script>
