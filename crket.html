@@ -599,6 +599,7 @@ const API =
 
 let allMatches=[];
 let selectedFormat='all';
+let selectedTeam='';
 
 
 /* =====================================================
@@ -641,9 +642,12 @@ async function loadLive(){
    const sx=((x.first_team||{}).full_name||"")+" "+((x.second_team||{}).full_name||"");
    const sy=((y.first_team||{}).full_name||"")+" "+((y.second_team||{}).full_name||"");
    return (re.test(sx)?0:1)-(re.test(sy)?0:1);
-  });((x,y)=>{const re=/afghanistan|india|pakistan|bangladesh|sri lanka|nepal/i;const sx=((x.first_team||{}).full_name||"")+" "+((x.second_team||{}).full_name||"");const sy=((y.first_team||{}).full_name||"")+" "+((y.second_team||{}).full_name||"");return (re.test(sx)?0:1)-(re.test(sy)?0:1);});
+  });
 
   renderMatches(allMatches);
+  applyFilters();
+  const ticker=document.getElementById("matchTickerText");
+  if(ticker) ticker.textContent=allMatches.length?allMatches.slice(0,8).map(m=>((m.first_team||{}).full_name||"")+" "+((m.first_team||{}).score||"")+" vs "+((m.second_team||{}).full_name||"")+" "+((m.second_team||{}).score||"")).join("   ✦   "):"اوس مهال د API له لارې روانه لوبه نه ده ترلاسه شوې.";
 
  }catch(error){
 
@@ -1103,60 +1107,34 @@ function commentaryHTML(result){
    FILTER
 ===================================================== */
 
-function filterTeam(team,button){
-
- document
- .querySelectorAll(".filter")
- .forEach(x=>x.classList.remove("active"));
-
- button.classList.add("active");
-
- document
- .querySelectorAll(".card")
- .forEach(card=>{
-
-  const text=card.dataset.teams||"";
-
-  card.style.display=
-  text.includes(team)
-  ?""
-  :"none";
-
+function applyFilters(){
+ document.querySelectorAll(".card").forEach(card=>{
+  const teams=card.dataset.teams||"";
+  const format=card.dataset.format||"";
+  const teamOK=!selectedTeam||teams.includes(selectedTeam);
+  const formatOK=selectedFormat==="all"||format.includes(selectedFormat)||(selectedFormat==="odi"&&(format.includes("one day")||format.includes("50")));
+  card.style.display=teamOK&&formatOK?"":"none";
  });
-
 }
-
-
-/* =====================================================
-   ALL
-===================================================== */
-
+function filterTeam(team,button){
+ selectedTeam=team;
+ document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+ button.classList.add("active");
+ applyFilters();
+}
 function filterFormat(type,button){
  selectedFormat=type;
  document.querySelectorAll(".formatChip").forEach(x=>x.classList.remove("active"));
  button.classList.add("active");
  applyFilters();
 }
-
 function showAll(button){
-
- document
- .querySelectorAll(".filter")
- .forEach(x=>x.classList.remove("active"));
-
+ selectedTeam="";
+ document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
  button.classList.add("active");
-
- document
- .querySelectorAll(".card")
- .forEach(x=>x.style.display="");
-
+ applyFilters();
 }
-
-
-/* =====================================================
-   FLAGS
-===================================================== */
-
+ 
 function flag(name){
 
  const n=String(name||"").toLowerCase();
