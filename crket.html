@@ -635,7 +635,7 @@ async function loadLive(){
 
   const result=await api("/live");
 
-  allMatches=result.data||[];
+  allMatches=result.data||[];\n  allMatches.sort((x,y)=>{const re=/afghanistan|india|pakistan|bangladesh|sri lanka|nepal/i;const sx=((x.first_team||{}).full_name||"")+" "+((x.second_team||{}).full_name||"");const sy=((y.first_team||{}).full_name||"")+" "+((y.second_team||{}).full_name||"");return (re.test(sx)?0:1)-(re.test(sy)?0:1);});
 
   renderMatches(allMatches);
 
