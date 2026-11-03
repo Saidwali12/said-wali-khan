@@ -598,6 +598,7 @@ const API =
 
 
 let allMatches=[];
+let selectedFormat='all';
 
 
 /* =====================================================
@@ -689,6 +690,7 @@ function renderMatches(list){
   card.className=
   "card "+(live?"live":"");
 
+  card.dataset.format=String(match.format||"").toLowerCase();
   card.dataset.teams=(
    (a.full_name||"")+" "+
    (b.full_name||"")
@@ -777,6 +779,20 @@ function renderMatches(list){
 
   `;
 
+  const pick=(obj,keys)=>{
+   for(const key of keys){const value=key.split(".").reduce((a,b)=>a&&a[b],obj);if(value!==undefined&&value!==null&&value!=="")return value;}
+   return "--";
+  };
+  const facts=document.createElement("div");
+  facts.className="matchFacts";
+  facts.innerHTML='<div class="matchFact">🏏 منډې: <b>'+escapeHTML(String(pick(match,["runs","score.runs","first_team.runs"])))+'</b></div>'+
+   '<div class="matchFact">❌ ویکټې: <b>'+escapeHTML(String(pick(match,["wickets","score.wickets","first_team.wickets"])))+'</b></div>'+
+   '<div class="matchFact">⏱ اورونه: <b>'+escapeHTML(String(pick(match,["overs","score.overs","first_team.overs"])))+'</b></div>'+
+   '<div class="matchFact">⚾ وروستی بال: <b>'+escapeHTML(String(pick(match,["last_ball","last_delivery","recent_ball"])))+'</b></div>'+
+   '<div class="matchFact">🏏 بیټسمین: <b>'+escapeHTML(String(pick(match,["batsman.name","batsman_name","current_batsman.name"])))+'</b></div>'+
+   '<div class="matchFact">🎯 بالر: <b>'+escapeHTML(String(pick(match,["bowler.name","bowler_name","current_bowler.name"])))+'</b></div>';
+  const status=card.querySelector(".status");
+  if(status) status.after(facts);
   box.appendChild(card);
 
  });
@@ -1109,6 +1125,16 @@ function filterTeam(team,button){
    ALL
 ===================================================== */
 
+function filterFormat(type,button){
+ selectedFormat=type;
+ document.querySelectorAll(".formatChip").forEach(x=>x.classList.remove("active"));
+ button.classList.add("active");
+ document.querySelectorAll(".card").forEach(card=>{
+  const f=card.dataset.format||"";
+  card.style.display=type==="all"||f.includes(type)||(type==="odi"&&f.includes("one day"))?"":"none";
+ });
+}
+
 function showAll(button){
 
  document
@@ -1192,7 +1218,7 @@ loadLive();
 
 /* هر 30 ثانیې Live لیست تازه کړه */
 
-setInterval(loadLive,30000);
+setInterval(loadLive,15000);
 
 
 /* که یوه Live لوبه خلاصه وي، د هغې جزئیات هم
