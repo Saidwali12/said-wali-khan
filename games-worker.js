@@ -30,9 +30,9 @@ function nextSeat(s,n){return (s+1)%n}
 function cardValue(r){return r==="A"?14:r==="K"?13:r==="Q"?12:r==="J"?11:Number(r)}
 function playCard(st,seat,card,game){
  if(st.turn!==seat)return "اوس ستاسو نوبت نه دی.";
- const hand=st.hands[seat],idx=hand.findIndex(c=>c.suit===card?.suit&&c.rank===card?.rank);if(idx<0)return "دا کارت ستاسو په لاس کې نشته.";
  if(game==="cards_hokm"&&st.phase==="trump"){if(seat!==0)return "د حکم رنګ د لومړي لوبغاړي ټاکي.";if(!["S","H","D","C"].includes(card?.suit))return "د حکم رنګ ناسم دی.";st.trump=card.suit;st.phase="playing";st.message="حکم وټاکل شو";return null}
  if(st.phase!=="playing")return "د کارت لوبه لا نه ده پیل شوې.";
+ const hand=st.hands[seat],idx=hand.findIndex(c=>c.suit===card?.suit&&c.rank===card?.rank);if(idx<0)return "دا کارت ستاسو په لاس کې نشته.";
  if(st.trick.length){const lead=st.trick[0].card.suit;if(hand.some(c=>c.suit===lead)&&card.suit!==lead)return "که د پیل شوي رنګ کارت لرئ، باید هماغه رنګ واچوئ."}
  hand.splice(idx,1);st.trick.push({seat,card});st.played.push({seat,card});
  if(st.trick.length===4){const lead=st.trick[0].card.suit;let best=st.trick[0];for(const x of st.trick.slice(1)){const a=x.card.suit===st.trump&&game==="cards_hokm"?2:x.card.suit===lead?1:0,b=best.card.suit===st.trump&&game==="cards_hokm"?2:best.card.suit===lead?1:0;if(a>b||(a===b&&cardValue(x.card.rank)>cardValue(best.card.rank)))best=x}
