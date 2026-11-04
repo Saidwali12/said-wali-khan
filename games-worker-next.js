@@ -1,5 +1,5 @@
 const ALLOWED_ORIGINS = new Set(["https://saidwali12.github.io"]);
-const VERSION = "0.6.0";
+const VERSION = "0.6.1";
 
 function corsHeaders(request) {
   const origin = request.headers.get("Origin") || "";
