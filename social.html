@@ -43702,6 +43702,16 @@ async function loadMessagesPage(
 
   main.innerHTML = `
 
+    <style>
+      .ebook-chat-grid{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:10px;margin-top:10px}
+      .ebook-chat-panel{min-width:0}
+      @media(max-width:700px){
+        .ebook-chat-grid{grid-template-columns:minmax(0,1fr);gap:8px}
+        .ebook-chat-grid #conversationList{max-height:210px!important}
+        .ebook-chat-grid #activeConversation>div{height: min(68vh,650px)!important;min-height:420px}
+      }
+    </style>
+
     <div
       style="
         max-width:1000px;
@@ -43727,16 +43737,7 @@ async function loadMessagesPage(
       </div>
 
 
-      <div
-        style="
-          display:grid;
-          grid-template-columns:
-            minmax(220px,300px)
-            1fr;
-          gap:10px;
-          margin-top:10px;
-        "
-      >
+      <div class="ebook-chat-grid">
 
         <div
           class="card"
@@ -44047,16 +44048,22 @@ function normalizeConversation(
       other.full_name ||
       other.display_name ||
       other.username ||
+      raw.other_full_name ||
+      raw.other_name ||
       raw.name ||
+      raw.other_username ||
       "کاروونکی",
 
     username:
       other.username ||
+      raw.other_username ||
       "",
 
     avatar:
       other.avatar_url ||
       other.avatar ||
+      raw.other_profile_photo ||
+      raw.other_avatar ||
       "",
 
     lastMessage:
@@ -44064,6 +44071,7 @@ function normalizeConversation(
       raw.lastMessage ||
       raw.message ||
       raw.last_message_text ||
+      raw.last_message_content ||
       "",
 
     unread:
@@ -44666,12 +44674,33 @@ function normalizeMessage(
       sender.name ||
       sender.full_name ||
       sender.username ||
+      raw.full_name ||
+      raw.username ||
       "کاروونکی",
 
     createdAt:
       raw.created_at ||
       raw.createdAt ||
-      ""
+      "",
+
+    messageType:
+      raw.message_type ||
+      raw.type ||
+      "text",
+
+    mediaUrl:
+      raw.media_url ||
+      raw.file_url ||
+      "",
+
+    attachments:
+      Array.isArray(raw.attachments) ? raw.attachments : [],
+
+    reactions:
+      Array.isArray(raw.reactions) ? raw.reactions : [],
+
+    isRead:
+      Number(raw.is_read || 0) === 1
 
   };
 
@@ -44735,18 +44764,29 @@ function renderSingleMessage(
         "
       >
 
-        <div
-          style="
-            white-space:pre-wrap;
-            word-break:break-word;
-            line-height:1.5;
-          "
-        >
-          ${escapeHTML(
-            message.content
-          )}
-        </div>
+        ${
+          message.content
+            ? `<div style="white-space:pre-wrap;word-break:break-word;line-height:1.5">${escapeHTML(message.content)}</div>`
+            : ""
+        }
 
+        ${
+          message.mediaUrl
+            ? `<a href="${safeURL(message.mediaUrl)}" target="_blank" rel="noopener" style="display:block;margin-top:7px;color:inherit">📎 ضمیمه پرانیستل</a>`
+            : ""
+        }
+
+        ${
+          message.attachments.length
+            ? message.attachments.map(file => `<a href="${safeURL(file.file_url)}" target="_blank" rel="noopener" style="display:block;margin-top:5px;color:inherit">📎 ${escapeHTML(file.file_name || "ضمیمه")}</a>`).join("")
+            : ""
+        }
+
+        ${
+          message.reactions.length
+            ? `<div style="margin-top:5px;font-size:12px">${message.reactions.map(item => escapeHTML(item.reaction_type || "👍")).join(" ")}</div>`
+            : ""
+        }
 
         ${
           message.createdAt
