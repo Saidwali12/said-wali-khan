@@ -34,7 +34,12 @@ function playCard(st,seat,card,game){
  if(st.phase!=="playing")return "د کارت لوبه لا نه ده پیل شوې.";
  const hand=st.hands[seat],idx=hand.findIndex(c=>c.suit===card?.suit&&c.rank===card?.rank);if(idx<0)return "دا کارت ستاسو په لاس کې نشته.";
  if(st.trick.length){const lead=st.trick[0].card.suit;if(hand.some(c=>c.suit===lead)&&card.suit!==lead)return "که د پیل شوي رنګ کارت لرئ، باید هماغه رنګ واچوئ."}
- hand.splice(idx,1);st.trick.push({seat,card});st.played.push({seat,card});
+ if(game==="cards_hearts"){
+  const pointsCard=x=>x.suit==="H"||(x.suit==="S"&&x.rank==="Q");
+  if(st.trick.length===0&&!st.heartsBroken&&card.suit==="H"&&hand.some(x=>x.suit!=="H"))return "تر څو زړه مات شوی نه وي، د بل رنګ کارت ولوبوئ.";
+  if((st.heartsRound||1)===1&&pointsCard(card)&&hand.some(x=>!pointsCard(x)))return "په لومړي لاس کې د زړه او د سپینو بي بي کارت مه اچوئ، مګر که نور کارتونه نه لرئ.";
+ }
+ hand.splice(idx,1);st.trick.push({seat,card});st.played.push({seat,card});if(game==="cards_hearts"&&card.suit==="H")st.heartsBroken=true;
  const playerCount=st.playerCount||4;if(st.trick.length===playerCount){const lead=st.trick[0].card.suit;let best=st.trick[0];for(const x of st.trick.slice(1)){const a=x.card.suit===st.trump&&game==="cards_hokm"?2:x.card.suit===lead?1:0,b=best.card.suit===st.trump&&game==="cards_hokm"?2:best.card.suit===lead?1:0;if(a>b||(a===b&&cardValue(x.card.rank)>cardValue(best.card.rank)))best=x}
  const winner=best.seat;if(game==="cards_hokm"&&playerCount===2)st.tricks[winner]++;else st.tricks[winner%2]++;st.leader=winner;st.turn=winner;st.trick=[];if(game==="cards_hokm"&&playerCount===2&&st.stock?.length){for(let i=0;i<2&&st.stock.length;i++)st.hands[i].push(st.stock.shift())}if(st.hands.every(h=>h.length===0)){if(game==="cards_hokm"&&playerCount===2){st.scores=st.tricks.slice()}else if(game==="cards_hokm"){st.scores[0]+=st.tricks[0];st.scores[1]+=st.tricks[1]}else{st.scores[0]+=st.played.filter(x=>x.card.suit==="H"&&x.seat%2===1).length;st.scores[1]+=st.played.filter(x=>x.card.suit==="H"&&x.seat%2===0).length}st.phase="finished";st.winner=st.scores.every(x=>x===st.scores[0])?"draw":st.scores.indexOf(Math.max(...st.scores))}else st.message="د لاس ګټونکی: لوبغاړی "+(winner+1);
  }else st.turn=nextSeat(seat,playerCount);
