@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>سیدولي افغاني نړیواله ټولنیزه شبکه</title>
+  <title>ایس‌بوک | ټولنیزه شبکه</title>
 
-  <meta name="description" content="سیدولي افغاني نړیواله ټولنیزه شبکه">
+  <meta name="description" content="ایس‌بوک — د ملګرو، پوسټونو او اړیکو ټولنیزه شبکه">
   <meta name="theme-color" content="#0d47a1">
 
   <style>
@@ -507,6 +507,96 @@
 
     }
 
+  
+    /* =====================================================
+       E-BOOK SOCIAL UI REFRESH — DESKTOP + MOBILE
+       Additive styling; existing API and feature logic kept.
+       ===================================================== */
+    :root {
+      --ebook-blue:#1877f2;
+      --ebook-blue-dark:#0866ff;
+      --ebook-bg:#f0f2f5;
+      --ebook-card:#ffffff;
+      --ebook-text:#1c1e21;
+      --ebook-muted:#65676b;
+      --ebook-border:#e4e6eb;
+    }
+    body { background:var(--ebook-bg); color:var(--ebook-text); }
+    .top-header {
+      background:#fff; color:var(--ebook-text); height:64px;
+      padding:0 max(16px,calc((100vw - 1450px)/2));
+      gap:18px; box-shadow:0 1px 2px rgba(0,0,0,.12);
+      border-bottom:1px solid var(--ebook-border);
+    }
+    .brand { color:var(--ebook-blue); font-size:27px; font-weight:800; letter-spacing:-.5px; }
+    .search-input { background:#f0f2f5; min-height:42px; }
+    .header-actions { gap:8px; }
+    .header-button {
+      min-width:42px; min-height:40px; border-radius:10px;
+      background:#f0f2f5; color:#3a3b3c; font-size:17px;
+    }
+    .header-button:hover { background:#e4e6eb; }
+    .ebook-desktop-nav {
+      display:flex; align-items:center; justify-content:center;
+      gap:8px; flex:1; height:100%;
+    }
+    .ebook-nav-btn {
+      border:0; background:transparent; color:#65676b; cursor:pointer;
+      min-width:76px; height:52px; border-radius:9px; font-size:20px;
+      border-bottom:3px solid transparent;
+    }
+    .ebook-nav-btn:hover { background:#f0f2f5; }
+    .ebook-nav-btn.active { color:var(--ebook-blue); border-bottom-color:var(--ebook-blue); }
+    .main-container { max-width:1450px; margin:20px auto; padding:0 18px 28px; }
+    .main-grid { grid-template-columns:minmax(210px,270px) minmax(0,680px) minmax(220px,300px); gap:20px; }
+    .sidebar-card,.card {
+      border:1px solid rgba(0,0,0,.06); border-radius:12px;
+      box-shadow:0 1px 2px rgba(0,0,0,.08);
+    }
+    .sidebar-item { font-size:15px; font-weight:600; padding:12px 10px; }
+    .sidebar-item:hover { background:#f0f2f5; }
+    .ebook-mobile-nav { display:none; }
+    #mainContent { min-width:0; }
+    .card { margin-bottom:16px; }
+    @media (max-width:1000px) {
+      .main-grid { grid-template-columns:210px minmax(0,1fr); }
+      .ebook-desktop-nav { gap:2px; }
+      .ebook-nav-btn { min-width:58px; }
+    }
+    @media (max-width:720px) {
+      .top-header {
+        position:sticky; top:0; height:auto; min-height:58px;
+        flex-wrap:wrap; padding:8px 10px; gap:8px;
+      }
+      .brand { font-size:22px; }
+      .search-container { order:3; flex-basis:100%; max-width:none; }
+      .header-actions { margin-right:auto; }
+      .header-actions .header-button { min-width:38px; padding:7px 9px; }
+      .ebook-desktop-nav { display:none; }
+      .main-container { margin:10px auto; padding:0 8px 82px; }
+      .main-grid { grid-template-columns:minmax(0,1fr); gap:8px; }
+      .left-sidebar,.right-sidebar { display:none !important; }
+      .ebook-mobile-nav {
+        display:grid; grid-template-columns:repeat(5,minmax(0,1fr));
+        position:fixed; z-index:5000; bottom:0; left:0; right:0;
+        padding:6px 4px max(6px,env(safe-area-inset-bottom));
+        background:#fff; border-top:1px solid #dddfe2;
+        box-shadow:0 -2px 12px rgba(0,0,0,.08);
+      }
+      .ebook-mobile-nav button {
+        border:0; background:transparent; color:#65676b;
+        min-height:48px; border-radius:8px; display:flex;
+        flex-direction:column; align-items:center; justify-content:center;
+        gap:2px; font-size:11px; font-weight:600; cursor:pointer;
+      }
+      .ebook-mobile-nav button span:first-child { font-size:20px; line-height:22px; }
+      .ebook-mobile-nav button:active,.ebook-mobile-nav button:hover {
+        color:var(--ebook-blue); background:#f0f2f5;
+      }
+      #authPage { padding:14px; }
+      .auth-card { padding:20px; }
+    }
+
   </style>
 </head>
 <body>
@@ -522,11 +612,11 @@
       <div class="auth-logo">
 
         <h1>
-          سیدولي شبکه
+          ایس‌بوک
         </h1>
 
         <p>
-          سیدولي افغاني نړیواله ټولنیزه شبکه
+          له ملګرو سره د اړیکو نوې نړۍ
         </p>
 
       </div>
@@ -712,9 +802,7 @@
 
     <header class="top-header">
 
-      <div class="brand">
-        سیدولي شبکه
-      </div>
+      <div class="brand" aria-label="ایس‌بوک">ایس‌بوک</div>
 
       <div class="search-container">
 
@@ -727,6 +815,14 @@
         >
 
       </div>
+
+      <nav class="ebook-desktop-nav" aria-label="اصلي لارښود">
+        <button class="ebook-nav-btn active" onclick="showFeedPage()" title="کور">⌂</button>
+        <button class="ebook-nav-btn" onclick="loadFriendsPage()" title="ملګري">♧</button>
+        <button class="ebook-nav-btn" onclick="loadMessagesPage()" title="پیغامونه">✉</button>
+        <button class="ebook-nav-btn" onclick="loadNotificationsPage()" title="خبرتیاوې">♧</button>
+        <button class="ebook-nav-btn" onclick="loadProfile()" title="پروفایل">◎</button>
+      </nav>
 
       <div class="header-actions">
 
@@ -764,6 +860,13 @@
 
     </header>
 
+    <nav class="ebook-mobile-nav" aria-label="د موبایل لارښود">
+      <button onclick="showFeedPage()"><span>⌂</span><span>کور</span></button>
+      <button onclick="loadFriendsPage()"><span>♧</span><span>ملګري</span></button>
+      <button onclick="loadMessagesPage()"><span>✉</span><span>پیغامونه</span></button>
+      <button onclick="loadNotificationsPage()"><span>♧</span><span>خبرتیاوې</span></button>
+      <button onclick="loadProfile()"><span>◎</span><span>پروفایل</span></button>
+    </nav>
 
     <main class="main-container">
 
@@ -946,7 +1049,7 @@
           <div class="sidebar-card">
 
             <h3 class="card-title">
-              سیدولي شبکه
+              ایس‌بوک
             </h3>
 
             <p class="muted">
