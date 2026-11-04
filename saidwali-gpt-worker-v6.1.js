@@ -616,7 +616,7 @@ export default {
           ];
           result = await env.AI.run(VISION_MODEL, {
             messages: visionMessages,
-            image: image.slice(image.indexOf(",") + 1),
+            image: image,
             max_completion_tokens: 900,
             reasoning_effort: "low",
             temperature: 0.4
