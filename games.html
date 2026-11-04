@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101b35">
+<title>د لوبو مرکز | سیدولي خان کوهستاني ګروپ</title>
+<style>
+:root{--navy:#101b35;--blue:#173f73;--gold:#e0b85d;--cream:#fff7e5;--bg:#f2f5fa;--text:#1c2b43}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#eaf0f9,#f8f9fc);color:var(--text);line-height:1.8}
+header{background:radial-gradient(circle at 15% 15%,#345b8c 0,transparent 34%),linear-gradient(125deg,#0a1429,#173f73);color:white;padding:26px 16px 34px;text-align:center;border-bottom:4px solid var(--gold)}
+header h1{margin:0;color:#ffe3a1;font-size:clamp(25px,5vw,39px)}
+header p{margin:8px auto 0;max-width:760px;color:#e8eef8}
+.wrap{max-width:1100px;margin:28px auto;padding:0 16px}
+.intro{text-align:center;margin:0 auto 25px}
+.intro h2{color:var(--navy);margin:0 0 7px;font-size:26px}
+.intro p{color:#61718a;margin:0}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.game{background:#fff;border:1px solid #e0e6ef;border-radius:19px;overflow:hidden;box-shadow:0 12px 30px #152c4b12;display:flex;flex-direction:column;transition:.25s}
+.game:hover{transform:translateY(-5px);box-shadow:0 18px 38px #152c4b20}
+.art{height:170px;display:flex;align-items:center;justify-content:center;font-size:76px;background:linear-gradient(135deg,#10264a,#24558c);position:relative;overflow:hidden}
+.art:before,.art:after{content:"";position:absolute;border:1px solid #ffffff25;border-radius:50%;width:210px;height:210px}
+.art:after{width:270px;height:270px}
+.art span{position:relative;z-index:1;filter:drop-shadow(0 8px 8px #0006)}
+.game:nth-child(2) .art{background:linear-gradient(135deg,#542b37,#a64d50)}
+.game:nth-child(3) .art{background:linear-gradient(135deg,#202c36,#596b78)}
+.info{padding:19px;display:flex;flex-direction:column;flex:1}
+.info h3{margin:0 0 7px;color:#142b4d;font-size:21px}
+.info p{margin:0 0 15px;color:#637189;font-size:14px;flex:1}
+.tag{display:inline-block;align-self:flex-start;background:#fff3d5;color:#815c18;border:1px solid #f0d99f;border-radius:20px;padding:3px 11px;font-size:12px;font-weight:bold;margin-bottom:12px}
+.status{border:0;border-radius:10px;padding:11px 15px;background:#e9edf3;color:#586579;font-weight:bold;font-family:inherit;cursor:not-allowed}
+.note{margin:24px 0 0;background:#fff;border-right:4px solid var(--gold);padding:15px 17px;border-radius:10px;color:#52627a;font-size:14px}
+.back{display:inline-block;margin:25px 0 5px;text-decoration:none;background:var(--navy);color:#fff;padding:10px 20px;border-radius:10px;font-weight:bold}
+footer{text-align:center;color:#718096;padding:22px 12px;font-size:13px}
+@media(max-width:560px){.wrap{margin-top:20px}.art{height:145px}.game{border-radius:15px}}
+</style>
+</head>
+<body>
+<header>
+<h1>🎮 د لوبو مرکز</h1>
+<p>د فکر، سیالۍ او ملګرتیا لپاره د آنلاین لوبو ځانګړې برخه</p>
+</header>
+<main class="wrap">
+<section class="intro">
+<h2>خپله خوښه لوبه انتخاب کړئ</h2>
+<p>درې لوبې به په یوه ګډ مرکز کې تنظیمې شي؛ هره لوبه به خپل اصول او ځانګړی ډیزاین ولري.</p>
+</section>
+<section class="games" aria-label="د لوبو انتخاب">
+<article class="game">
+<div class="art" aria-hidden="true"><span>🎲</span></div>
+<div class="info">
+<span class="tag">۱ تر ۴ لوبغاړي</span>
+<h3>لډو (LUDO)</h3>
+<p>د کلاسیک لډو لوبه؛ له کمپیوټر سره، دوه کسیزه مقابله او څلور کسیزه دوه په دوه لوبه.</p>
+<button class="status" type="button" disabled>د جوړېدو په حال کې</button>
+</div>
+</article>
+<article class="game">
+<div class="art" aria-hidden="true"><span>🃏</span></div>
+<div class="info">
+<span class="tag">د ۵۲ کارتونو لوبه</span>
+<h3>د کارتونو لوبه — حکم او زړه</h3>
+<p>د حکم او زړه انتخابونه، د دودیزو قوانینو مطابق د کارتونو وېش، نوبتونه او امتیازونه.</p>
+<button class="status" type="button" disabled>د جوړېدو په حال کې</button>
+</div>
+</article>
+<article class="game">
+<div class="art" aria-hidden="true"><span>⚫⚪</span></div>
+<div class="info">
+<span class="tag">۲ لوبغاړي</span>
+<h3>الکرک (Alquerque)</h3>
+<p>د تور او سپین کاڼو لرونکې دودیزه لوبه؛ د حرکت او د مقابل لوري د مهرې نیولو اصول.</p>
+<button class="status" type="button" disabled>د جوړېدو په حال کې</button>
+</div>
+</article>
+</section>
+<div class="note">یادونه: دا د لوبو مرکز لومړنۍ پاڼه ده. د آنلاین لوبو خونې، د نوم او ټیلیفون ثبت، ژوندی پیغام، غږیز چټ او د لوبې خوندي کول به په راتلونکو پړاوونو کې د جلا لوبو سرورونو سره فعالېږي.</div>
+<a class="back" href="./index.html">← بېرته اصلي پاڼې ته</a>
+</main>
+<footer>© 2026 سیدولي خان کوهستاني ګروپ — د لوبو مرکز</footer>
+</body>
+</html>
