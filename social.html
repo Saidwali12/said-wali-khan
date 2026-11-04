@@ -875,6 +875,104 @@
       .auth-form-panel .auth-card { padding:20px 15px; }
     }
 
+  
+    /* E-BOOK SAIDWALI — FACEBOOK BLUE FINISH */
+    :root {
+      --ebook-blue:#1877f2;
+      --ebook-blue-dark:#0866ff;
+    }
+    #authPage {
+      background:#f0f2f5;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    }
+    .auth-form-panel {
+      background:#f0f2f5;
+    }
+    .auth-form-brand { color:#1877f2; }
+    .auth-form-brand span { color:#1c1e21; }
+    .auth-form-panel .auth-card {
+      border-color:#e4e6eb;
+      box-shadow:0 8px 28px rgba(0,0,0,.10);
+    }
+    .auth-card h2 { color:#1c1e21; }
+    .auth-card-subtitle { color:#65676b; }
+    .auth-form-panel .form-group label { color:#1c1e21; }
+    .auth-form-panel .form-control:focus {
+      border-color:#1877f2;
+      box-shadow:0 0 0 3px rgba(24,119,242,.13);
+    }
+    .auth-form-panel .auth-button {
+      background:#1877f2;
+    }
+    .auth-form-panel .auth-button:hover { background:#0866ff; }
+    .auth-create-button { background:#42b72a; }
+    .auth-create-button:hover { background:#36a420; }
+    .auth-form-panel .auth-secondary {
+      color:#0866ff;
+      background:#e7f3ff;
+    }
+    .auth-hero {
+      background:
+        radial-gradient(circle at 50% 35%,rgba(255,255,255,.16),transparent 45%),
+        linear-gradient(145deg,#1877f2 0%,#0866ff 55%,#0755c9 100%);
+    }
+    .auth-hero-kicker { color:#e7f3ff; }
+    .auth-founder-photo {
+      width:clamp(190px,22vw,290px);
+      height:clamp(220px,27vw,340px);
+      object-fit:contain;
+      object-position:center;
+      border-radius:18px;
+      border:5px solid rgba(255,255,255,.96);
+      padding:5px;
+      background:#fff;
+      box-shadow:0 12px 36px rgba(0,25,80,.28);
+    }
+    .auth-photo-fallback {
+      width:clamp(190px,22vw,290px);
+      height:clamp(220px,27vw,340px);
+      border-radius:18px;
+      background:#fff;
+      color:#1877f2;
+    }
+    .auth-hero-caption { color:#e7f3ff; }
+    .auth-hero-line { background:#fff; }
+    .auth-hero-note { color:rgba(255,255,255,.9); }
+    @media (max-width:850px) and (min-width:681px) {
+      .auth-founder-photo,.auth-photo-fallback {
+        width:clamp(170px,21vw,230px);
+        height:clamp(210px,27vw,285px);
+      }
+      .auth-hero-content { max-width:100%; }
+      .welcome-title { font-size:clamp(25px,3.2vw,38px); }
+    }
+    @media (max-width:680px) {
+      #authPage { background:#f0f2f5; }
+      .auth-hero {
+        min-height:390px;
+        padding:24px 12px 28px;
+      }
+      .auth-founder-photo,.auth-photo-fallback {
+        width:min(54vw,190px);
+        height:205px;
+        margin-bottom:15px;
+        border-radius:16px;
+      }
+      .welcome-title { font-size:clamp(24px,7vw,34px); }
+      .auth-form-panel { background:#f0f2f5; }
+      .auth-form-panel .auth-card {
+        width:100%;
+        max-width:480px;
+      }
+    }
+    @media (max-width:380px) {
+      .auth-hero { min-height:365px; }
+      .auth-founder-photo,.auth-photo-fallback {
+        width:150px;
+        height:175px;
+      }
+    }
+
   </style>
 </head>
 <body>
