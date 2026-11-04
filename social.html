@@ -597,6 +597,284 @@
       .auth-card { padding:20px; }
     }
 
+  
+    /* =====================================================
+       E-BOOK SAIDWALI — WELCOME / AUTH PAGE
+       Login and registration logic and IDs are preserved.
+       ===================================================== */
+    #authPage {
+      min-height:100vh;
+      min-height:100svh;
+      display:grid;
+      grid-template-columns:minmax(340px,1fr) minmax(340px,1fr);
+      align-items:stretch;
+      gap:0;
+      padding:0;
+      overflow:hidden;
+      direction:ltr;
+      background:linear-gradient(135deg,#075b35 0%,#087f49 48%,#10a45e 100%);
+    }
+    .auth-form-panel {
+      grid-column:1;
+      grid-row:1;
+      direction:rtl;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      padding:38px clamp(18px,4vw,64px);
+      background:#f5f7f6;
+      min-width:0;
+    }
+    .auth-form-brand {
+      direction:ltr;
+      color:#087f49;
+      font-size:25px;
+      font-weight:900;
+      letter-spacing:1px;
+      margin-bottom:22px;
+      text-align:center;
+    }
+    .auth-form-brand span { color:#173d2b; }
+    .auth-form-panel .auth-card {
+      width:100%;
+      max-width:440px;
+      padding:30px;
+      border:1px solid #e1e9e4;
+      border-radius:18px;
+      background:#fff;
+      box-shadow:0 16px 45px rgba(0,45,24,.12);
+    }
+    .auth-card h2 {
+      color:#173d2b;
+      font-size:23px;
+      text-align:center;
+      margin-bottom:7px;
+    }
+    .auth-card-subtitle {
+      color:#718078;
+      text-align:center;
+      font-size:13px;
+      margin-bottom:23px;
+    }
+    .auth-form-panel .form-group { margin-bottom:16px; }
+    .auth-form-panel .form-group label {
+      color:#34483c;
+      font-size:13px;
+      margin-bottom:7px;
+    }
+    .auth-form-panel .form-control {
+      min-height:48px;
+      border:1px solid #d8e2dc;
+      border-radius:10px;
+      padding:12px 14px;
+      font-size:15px;
+      background:#fbfdfb;
+    }
+    .auth-form-panel .form-control:focus {
+      border-color:#0b9655;
+      box-shadow:0 0 0 3px rgba(11,150,85,.12);
+    }
+    .auth-form-panel .auth-button {
+      min-height:48px;
+      border-radius:10px;
+      background:#087f49;
+      font-size:16px;
+      font-weight:800;
+      margin-top:7px;
+    }
+    .auth-form-panel .auth-button:hover { background:#06683c; }
+    .auth-divider {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      color:#98a39c;
+      font-size:11px;
+      margin:18px 0 12px;
+    }
+    .auth-divider:before,.auth-divider:after {
+      content:"";
+      height:1px;
+      flex:1;
+      background:#e6ece8;
+    }
+    .auth-create-button {
+      width:100%;
+      min-height:46px;
+      border:0;
+      border-radius:10px;
+      color:#fff;
+      background:#229b58;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .auth-create-button:hover { background:#187d46; }
+    .auth-form-panel .auth-secondary {
+      min-height:44px;
+      border-radius:10px;
+      background:#eaf2ed;
+      color:#17643c;
+      font-weight:700;
+    }
+    .auth-footer {
+      color:#819087;
+      font-size:11px;
+      margin-top:20px;
+      text-align:center;
+      direction:ltr;
+    }
+    .auth-hero {
+      grid-column:2;
+      grid-row:1;
+      min-width:0;
+      min-height:100%;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      padding:38px 24px;
+      color:#fff;
+      background:
+        radial-gradient(circle at 50% 40%,rgba(255,255,255,.13),transparent 43%),
+        linear-gradient(145deg,#087f49,#075b35);
+    }
+    .auth-hero:before,.auth-hero:after {
+      content:"";
+      position:absolute;
+      width:310px;
+      height:310px;
+      border:1px solid rgba(255,255,255,.13);
+      border-radius:50%;
+      pointer-events:none;
+    }
+    .auth-hero:before { top:-155px; right:-110px; }
+    .auth-hero:after { bottom:-190px; left:-120px; width:390px; height:390px; }
+    .auth-hero-content {
+      position:relative;
+      z-index:1;
+      width:100%;
+      max-width:570px;
+      text-align:center;
+      direction:ltr;
+    }
+    .auth-hero-kicker {
+      color:#c9f3d9;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:3px;
+      margin-bottom:20px;
+    }
+    .auth-founder-photo {
+      display:block;
+      width:clamp(150px,18vw,230px);
+      height:clamp(150px,18vw,230px);
+      margin:0 auto 25px;
+      border-radius:50%;
+      object-fit:cover;
+      object-position:center;
+      border:6px solid rgba(255,255,255,.9);
+      box-shadow:0 14px 40px rgba(0,0,0,.25),0 0 0 12px rgba(255,255,255,.08);
+      background:#e4eee8;
+    }
+    .auth-photo-fallback {
+      display:none;
+      width:clamp(150px,18vw,230px);
+      height:clamp(150px,18vw,230px);
+      margin:0 auto 25px;
+      place-items:center;
+      border-radius:50%;
+      border:6px solid rgba(255,255,255,.9);
+      background:#e4eee8;
+      color:#087f49;
+      font-size:54px;
+      font-weight:900;
+    }
+    .welcome-title {
+      color:#fff;
+      font-size:clamp(27px,3.5vw,49px);
+      font-weight:950;
+      line-height:1.5;
+      letter-spacing:1px;
+      text-shadow:0 5px 18px rgba(0,0,0,.2);
+      margin:0 auto;
+    }
+    .welcome-line { white-space:nowrap; }
+    .welcome-title span {
+      display:inline-block;
+      opacity:0;
+      transform:scale(.15) translateY(18px);
+      animation:welcomeLetterZoom .72s cubic-bezier(.2,.8,.2,1) forwards;
+      animation-delay:calc(var(--i) * .075s);
+    }
+    @keyframes welcomeLetterZoom {
+      0% { opacity:0; transform:scale(.15) translateY(18px); }
+      65% { opacity:1; transform:scale(1.22) translateY(-3px); }
+      100% { opacity:1; transform:scale(1) translateY(0); }
+    }
+    .auth-hero-caption {
+      margin-top:18px;
+      color:#d6f7e2;
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:3px;
+    }
+    .auth-hero-line {
+      width:76px;
+      height:3px;
+      border-radius:4px;
+      margin:23px auto 15px;
+      background:#b5edca;
+    }
+    .auth-hero-note { color:rgba(255,255,255,.82); font-size:14px; }
+    @media (max-width:850px) {
+      #authPage { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+      .auth-form-panel { padding:26px 18px; }
+      .auth-form-panel .auth-card { padding:24px 20px; }
+      .auth-hero { padding:25px 14px; }
+      .auth-hero-kicker { letter-spacing:2px; }
+      .auth-hero-caption { letter-spacing:1.5px; }
+    }
+    @media (max-width:680px) {
+      #authPage {
+        display:flex;
+        flex-direction:column;
+        min-height:100vh;
+        min-height:100svh;
+        overflow:visible;
+      }
+      .auth-hero {
+        order:0;
+        min-height:360px;
+        padding:28px 14px 30px;
+        flex:0 0 auto;
+      }
+      .auth-founder-photo,.auth-photo-fallback {
+        width:132px;
+        height:132px;
+        margin-bottom:15px;
+      }
+      .auth-hero-kicker { font-size:10px; margin-bottom:13px; }
+      .welcome-title { font-size:clamp(25px,7vw,34px); line-height:1.4; }
+      .auth-hero-caption { margin-top:12px; font-size:10px; }
+      .auth-hero-line { margin:14px auto 10px; }
+      .auth-hero-note { font-size:12px; }
+      .auth-form-panel {
+        order:1;
+        padding:24px 14px 30px;
+      }
+      .auth-form-brand { margin-bottom:16px; font-size:22px; }
+      .auth-form-panel .auth-card { max-width:480px; padding:23px 18px; }
+      .auth-footer { margin-top:14px; }
+    }
+    @media (max-width:380px) {
+      .auth-hero { min-height:325px; }
+      .auth-founder-photo,.auth-photo-fallback { width:112px; height:112px; }
+      .welcome-title { font-size:24px; }
+      .auth-form-panel .auth-card { padding:20px 15px; }
+    }
+
   </style>
 </head>
 <body>
@@ -606,189 +884,84 @@
        ========================= -->
 
   <section id="authPage">
+  <div class="auth-form-panel">
+    <div class="auth-form-brand">E-BOOK <span>SAIDWALI</span></div>
 
-    <div class="auth-container">
+    <div id="loginBox" class="auth-card">
+      <h2>Sign in to E-Book</h2>
+      <p class="auth-card-subtitle">بېرته خپل حساب ته ننوځه</p>
 
-      <div class="auth-logo">
-
-        <h1>
-          ایس‌بوک
-        </h1>
-
-        <p>
-          له ملګرو سره د اړیکو نوې نړۍ
-        </p>
-
+      <div class="form-group">
+        <label for="loginIdentifier">Username یا Email</label>
+        <input id="loginIdentifier" class="form-control" type="text"
+          placeholder="Username یا Email" autocomplete="username">
       </div>
 
-      <!-- LOGIN -->
-
-      <div id="loginBox" class="auth-card">
-
-        <h2>
-          ننوتل
-        </h2>
-
-        <div class="form-group">
-
-          <label>
-            Username یا Email
-          </label>
-
-          <input
-            id="loginIdentifier"
-            class="form-control"
-            type="text"
-            placeholder="Username یا Email"
-            autocomplete="username"
-          >
-
-        </div>
-
-        <div class="form-group">
-
-          <label>
-            Password
-          </label>
-
-          <input
-            id="loginPassword"
-            class="form-control"
-            type="password"
-            placeholder="Password"
-            autocomplete="current-password"
-          >
-
-        </div>
-
-        <button
-          id="loginButton"
-          class="auth-button"
-          type="button"
-          onclick="loginUser()"
-        >
-          ننوتل
-        </button>
-
-        <button
-          class="auth-secondary"
-          type="button"
-          onclick="showRegisterForm()"
-        >
-          نوی حساب جوړول
-        </button>
-
-        <div
-          id="loginMessage"
-          class="auth-message hidden"
-        ></div>
-
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" class="form-control" type="password"
+          placeholder="Password" autocomplete="current-password">
       </div>
 
-
-      <!-- REGISTER -->
-
-      <div
-        id="registerBox"
-        class="auth-card hidden"
-      >
-
-        <h2>
-          نوی حساب جوړول
-        </h2>
-
-        <div class="form-group">
-
-          <label>
-            بشپړ نوم
-          </label>
-
-          <input
-            id="registerFullName"
-            class="form-control"
-            type="text"
-            placeholder="بشپړ نوم"
-          >
-
-        </div>
-
-        <div class="form-group">
-
-          <label>
-            Username
-          </label>
-
-          <input
-            id="registerUsername"
-            class="form-control"
-            type="text"
-            placeholder="username"
-          >
-
-          <small class="muted">
-            یوازې English letters، numbers، .، _ او -
-          </small>
-
-        </div>
-
-        <div class="form-group">
-
-          <label>
-            Email
-          </label>
-
-          <input
-            id="registerEmail"
-            class="form-control"
-            type="email"
-            placeholder="example@email.com"
-          >
-
-        </div>
-
-        <div class="form-group">
-
-          <label>
-            Password
-          </label>
-
-          <input
-            id="registerPassword"
-            class="form-control"
-            type="password"
-            placeholder="Password"
-            autocomplete="new-password"
-          >
-
-        </div>
-
-        <button
-          id="registerButton"
-          class="auth-button"
-          type="button"
-          onclick="registerUser()"
-        >
-          ثبت نام
-        </button>
-
-        <button
-          class="auth-secondary"
-          type="button"
-          onclick="showLoginForm()"
-        >
-          بېرته Login ته
-        </button>
-
-        <div
-          id="registerMessage"
-          class="auth-message hidden"
-        ></div>
-
-      </div>
-
+      <button id="loginButton" class="auth-button" type="button" onclick="loginUser()">Log In</button>
+      <div class="auth-divider"><span>OR</span></div>
+      <button class="auth-create-button" type="button" onclick="showRegisterForm()">Create New Account</button>
+      <div id="loginMessage" class="auth-message hidden"></div>
     </div>
 
-  </section>
+    <div id="registerBox" class="auth-card hidden">
+      <h2>Create your account</h2>
+      <p class="auth-card-subtitle">د ایس‌بوک له ټولنې سره یوځای شه</p>
+
+      <div class="form-group">
+        <label for="registerFullName">بشپړ نوم</label>
+        <input id="registerFullName" class="form-control" type="text" placeholder="بشپړ نوم" autocomplete="name">
+      </div>
+
+      <div class="form-group">
+        <label for="registerUsername">Username</label>
+        <input id="registerUsername" class="form-control" type="text" placeholder="username" autocomplete="username">
+        <small class="muted">یوازې English letters، numbers، .، _ او -</small>
+      </div>
+
+      <div class="form-group">
+        <label for="registerEmail">Email</label>
+        <input id="registerEmail" class="form-control" type="email" placeholder="example@email.com" autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label for="registerPassword">Password</label>
+        <input id="registerPassword" class="form-control" type="password" placeholder="Password" autocomplete="new-password">
+      </div>
+
+      <button id="registerButton" class="auth-button" type="button" onclick="registerUser()">Create Account</button>
+      <button class="auth-secondary" type="button" onclick="showLoginForm()">Back to Log In</button>
+      <div id="registerMessage" class="auth-message hidden"></div>
+    </div>
+
+    <div class="auth-footer">© 2026 E-Book Saidwali</div>
+  </div>
+
+  <aside class="auth-hero" aria-label="Welcome to E-Book Saidwali">
+    <div class="auth-hero-glow"></div>
+    <div class="auth-hero-content">
+      <div class="auth-hero-kicker">SAIDWALI SOCIAL NETWORK</div>
+      <img class="auth-founder-photo"
+        src="https://saidwali12.github.io/said-wali-khan/said.png"
+        alt="Saidwali"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='grid';">
+      <div class="auth-photo-fallback" aria-hidden="true">SW</div>
+      <h1 class="welcome-title" aria-label="WELCOME TO E-BOOK SAIDWALI">
+        <div class="welcome-line"><span style="--i:0" aria-hidden="true">W</span><span style="--i:1" aria-hidden="true">E</span><span style="--i:2" aria-hidden="true">L</span><span style="--i:3" aria-hidden="true">C</span><span style="--i:4" aria-hidden="true">O</span><span style="--i:5" aria-hidden="true">M</span><span style="--i:6" aria-hidden="true">E</span></div>
+<div class="welcome-line"><span style="--i:8" aria-hidden="true">T</span><span style="--i:9" aria-hidden="true">O</span><span style="--i:10" aria-hidden="true">&nbsp;</span><span style="--i:11" aria-hidden="true">E</span><span style="--i:12" aria-hidden="true">-</span><span style="--i:13" aria-hidden="true">B</span><span style="--i:14" aria-hidden="true">O</span><span style="--i:15" aria-hidden="true">O</span><span style="--i:16" aria-hidden="true">K</span></div>
+<div class="welcome-line"><span style="--i:17" aria-hidden="true">S</span><span style="--i:18" aria-hidden="true">A</span><span style="--i:19" aria-hidden="true">I</span><span style="--i:20" aria-hidden="true">D</span><span style="--i:21" aria-hidden="true">W</span><span style="--i:22" aria-hidden="true">A</span><span style="--i:23" aria-hidden="true">L</span><span style="--i:24" aria-hidden="true">I</span></div>
+      </h1>
+      <p class="auth-hero-caption">CONNECT · SHARE · MAKE FRIENDS</p>
+      <div class="auth-hero-line"></div>
+      <p class="auth-hero-note">A new place to connect with the world.</p>
+    </div>
+  </aside>
+</section>
 
 
   <!-- =========================
