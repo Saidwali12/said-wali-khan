@@ -1,5 +1,5 @@
 const ALLOWED_ORIGINS = new Set(["https://saidwali12.github.io"]);
-const VERSION = "0.4.0";
+const VERSION = "0.5.0";
 
 function corsHeaders(request) {
   const origin = request.headers.get("Origin") || "";
@@ -65,7 +65,7 @@ export default {async fetch(request,env){
  if(origin&&!ALLOWED_ORIGINS.has(origin))return new Response("Origin not allowed",{status:403});
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:corsHeaders(request)});
  try{
- if(path==="/"||path==="/health")return reply(request,{ok:true,service:"Online Game Center API",version:VERSION,database:"D1 configured",engines:["alquerque","cards_hokm","cards_hearts","ludo-basic"],realtime:"polling",voice:"not configured"});
+ if(path==="/"||path==="/health")return reply(request,{ok:true,service:"Online Game Center API",version:VERSION,database:"D1 configured",engines:["alquerque","cards_hokm","cards_hearts","ludo-basic"],realtime:"polling",voice:"WebRTC signaling; STUN only"});
  if(path==="/api/register"&&request.method==="POST"){const b=await readJson(request),name=String(b?.name||"").trim().replace(/\s+/g," ").slice(0,40),phone=String(b?.phone||"").trim().replace(/[^\d+]/g,"").slice(0,20);if(name.length<2||phone.replace(/\D/g,"").length<7)return fail(request,"مهرباني وکړئ سم نوم او د ټیلیفون شمېره ولیکئ.");const t=token(),r=await env.DB.prepare("INSERT INTO game_players(display_name,phone,token_hash) VALUES(?,?,?)").bind(name,phone,await hashToken(t)).run();return reply(request,{ok:true,player:{id:r.meta.last_row_id,name},token:t},201)}
  const p=await currentPlayer(request,env);if(!p)return fail(request,"لومړی نوم‌لیکنه وکړئ یا معتبر سیشن وکاروئ.",401);
  if(path==="/api/me"&&request.method==="GET")return reply(request,{ok:true,player:{id:p.id,name:p.display_name}});
