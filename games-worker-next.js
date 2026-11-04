@@ -48,7 +48,9 @@ function playCard(st,seat,card,game){
 function ludoAction(st,seat,action,n){
  const p=st.players[seat];if(!p)return "لوبغاړی ناسم دی.";
  if(action.type==="roll"){if(st.turn!==seat||st.rolled)return "اوس د تاس نوبت نه دی.";st.dice=1+(crypto.getRandomValues(new Uint32Array(1))[0]%6);st.rolled=true;return null}
- if(action.type==="move"){if(st.turn!==seat||!st.rolled)return "لومړی خپل نوبت کې تاس واچوئ.";const k=Number(action.token);if(!Number.isInteger(k)||k<0||k>3)return "مهره ناسم انتخاب ده.";const pos=p.tokens[k];if(pos===-1&&st.dice!==6)return "د مهرې د وتلو لپاره شپږ ته اړتیا ده.";if(pos>=51)return "دا مهره کور ته رسېدلې ده.";p.tokens[k]=pos===-1?0:Math.min(56,pos+st.dice);if(p.tokens[k]===56)p.finished++;st.rolled=false;const six=st.dice===6;st.turn=six?seat:nextSeat(seat,n);st.turns++;if(p.finished===4){st.winner=seat;st.finished=true}st.dice=null;return null}
+ const legal=p.tokens.map((pos,k)=>({pos,k})).filter(x=>x.pos<56&&(x.pos!==-1||st.dice===6));
+ if(action.type==="pass"){if(st.turn!==seat||!st.rolled)return "لومړی تاس واچوئ.";if(legal.length)return "تاسو د حرکت وړ مهره لرئ؛ یوه مهره حرکت کړئ.";const six=st.dice===6;st.rolled=false;st.dice=null;st.turn=six?seat:nextSeat(seat,n);st.turns=(st.turns||0)+1;return null}
+ if(action.type==="move"){if(st.turn!==seat||!st.rolled)return "لومړی خپل نوبت کې تاس واچوئ.";const k=Number(action.token);if(!Number.isInteger(k)||k<0||k>3)return "مهره ناسم انتخاب ده.";const pos=p.tokens[k];if(pos===-1&&st.dice!==6)return "د مهرې د وتلو لپاره شپږ ته اړتیا ده.";if(pos>=56)return "دا مهره کور ته رسېدلې ده.";p.tokens[k]=pos===-1?0:Math.min(56,pos+st.dice);if(p.tokens[k]===56)p.finished++;st.rolled=false;const six=st.dice===6;st.turn=six?seat:nextSeat(seat,n);st.turns=(st.turns||0)+1;if(p.finished===4){st.winner=seat;st.finished=true}st.dice=null;return null}
  return "د لډو حرکت ناسم دی.";
 }
 function alquerqueAdj(i){const r=Math.floor(i/5),c=i%5,a=[];for(const [dr,dc] of [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]]){const rr=r+dr,cc=c+dc;if(rr>=0&&rr<5&&cc>=0&&cc<5){if(Math.abs(dr)+Math.abs(dc)===2&&((r+c)%2!==0))continue;a.push(rr*5+cc)}}return a}
