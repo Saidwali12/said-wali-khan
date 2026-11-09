@@ -1,0 +1,25 @@
+{
+  "updatedAt": "2026-11-09",
+  "policy": "Only verified email-application vacancies for Kunar or Nuristan are listed. Portal-only vacancies are excluded.",
+  "jobs": [
+    {
+      "id": "drc-general-support-enumerator-nuristan-20261113",
+      "title": "General Support (Enumerator)",
+      "organization": "Danish Refugee Council (DRC)",
+      "location": [
+        "نورستان"
+      ],
+      "dutyStation": "Nuristan",
+      "employmentType": "د اعلان له مخې",
+      "requirements": "د دندې بشپړ شرایط د اصلي اعلان په لینک کې وګورئ.",
+      "postedDate": "2026-11-09",
+      "expiryDate": "2026-11-13",
+      "email": "vacancies@drc.ngo",
+      "subject": "Application for General Support (Enumerator) - Nuristan",
+      "sourceName": "WazifaHa",
+      "sourceUrl": "https://wazifaha.com/jobs/general-support-enumerator",
+      "applicationMode": "email",
+      "verified": true
+    }
+  ]
+}
