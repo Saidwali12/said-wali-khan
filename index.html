@@ -1222,7 +1222,7 @@ document.addEventListener("click", function(event) {
   <div class="mini-clock" id="mini-clock">00:00:00</div>
 </div>
 
-<button id="mini-calendar-open">📅 نېټه</button>
+<button id="mini-calendar-open" type="button">📅 جنتري</button>
 
 <script>
 (function () {
@@ -1242,7 +1242,7 @@ document.addEventListener("click", function(event) {
   ];
 
   let current = 0;
-  let hidden = false;
+  let hidden = true;
   let timer;
 
   function updateClock() {
@@ -1299,31 +1299,30 @@ document.addEventListener("click", function(event) {
     if (hidden) return;
 
     showCalendar();
-
-    // هره نېټه ۳ ثانیې ښکاري، بیا بله نېټه راځي
     clearTimeout(timer);
 
+    // هره کلیزه ۳ ثانیې ښکاري؛ له درې واړو وروسته بېرته کوچنۍ تڼۍ پاتې کېږي.
     timer = setTimeout(() => {
       if (hidden) return;
 
-      // د ژبو د مینو په شان: جنتري ۳ ثانیې ښکاري، بیا لنډه پټېږي
-      // او د بلې کلیزې له نېټې سره بېرته راښکاره کېږي.
-      box.style.display = 'none';
-      open.style.display = 'block';
+      current++;
+      if (current >= calendars.length) {
+        hidden = true;
+        box.style.display = 'none';
+        open.style.display = 'block';
+        current = 0;
+        return;
+      }
 
-      setTimeout(() => {
-        if (hidden) return;
-        current = (current + 1) % calendars.length;
-        box.style.display = 'block';
-        open.style.display = 'none';
-        showCalendar();
-        cycle();
-      }, 350);
+      showCalendar();
+      cycle();
     }, 3000);
   }
 
+  // د پاڼې په پرانیستلو کې یوازې د جنتري کوچنۍ تڼۍ ښکاري.
+  box.style.display = 'none';
+  open.style.display = 'block';
   updateClock();
-  cycle();
 
   setInterval(updateClock, 1000);
 
@@ -1332,14 +1331,15 @@ document.addEventListener("click", function(event) {
     clearTimeout(timer);
     box.style.display = 'none';
     open.style.display = 'block';
+    current = 0;
   };
 
   open.onclick = function () {
     hidden = false;
     clearTimeout(timer);
+    current = 0;
     box.style.display = 'block';
     open.style.display = 'none';
-    showCalendar();
     cycle();
   };
 })();
