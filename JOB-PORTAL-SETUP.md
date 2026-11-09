@@ -28,3 +28,6 @@ The Worker uses Gmail API OAuth2; it does not store a Gmail password. In Google 
 - The first deployment is not complete until D1, R2, Gmail OAuth secrets, and Cron are configured and the health endpoint confirms all bindings.
 - Cron checks the current GitHub jobs-feed every 15 minutes. It sends an email when a vacancy is first seen or its relevant details change. It cannot discover vacancies that have not been added to jobs-feed.json.
 - This version sends applicant registration details and uploaded files to the admin Gmail. Do not share the admin token or OAuth secrets.
+
+## Applicant opt-out
+Every vacancy email includes a unique unsubscribe link. Opening it disables further vacancy emails for that registration. A person can register again later if they choose.
