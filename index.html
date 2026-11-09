@@ -1301,33 +1301,53 @@ document.addEventListener("click", function(event) {
     showCalendar();
     clearTimeout(timer);
 
-    // جنتري د کاروونکي تر تړلو پورې خلاصه پاتې کېږي؛ نېټې هر ۳ ثانیې بدلېږي.
+    // د پرانیستې جنتري نېټه هرې ۲ ثانیې وروسته بدلېږي.
     timer = setTimeout(() => {
       if (hidden) return;
       current = (current + 1) % calendars.length;
       cycle();
-    }, 3000);
+    }, 2000);
   }
 
-  // په پیل کې یوازې د جنتري مینو تڼۍ ښکاري.
-  box.style.display = 'none';
-  open.style.display = 'block';
-  open.textContent = '📅 جنتري';
+  // د پاڼې په پیل کې درې واړه کلیزې په نوبت، هره یوه ۲ ثانیې ښکاري.
+  box.style.display = 'block';
+  open.style.display = 'none';
+  open.textContent = '📅';
+  hidden = false;
+  current = 0;
   updateClock();
+  showCalendar();
 
+  function showIntroCalendars() {
+    timer = setTimeout(() => {
+      current++;
+      if (current < calendars.length) {
+        showCalendar();
+        showIntroCalendars();
+      } else {
+        hidden = true;
+        box.style.display = 'none';
+        open.style.display = 'block';
+        current = 0;
+      }
+    }, 2000);
+  }
+
+  showIntroCalendars();
   setInterval(updateClock, 1000);
 
   function hideCalendar() {
     hidden = true;
     clearTimeout(timer);
     box.style.display = 'none';
-    open.textContent = '📅 جنتري';
+    open.style.display = 'block';
+    open.textContent = '📅';
     current = 0;
   }
 
   close.onclick = hideCalendar;
 
-  // لومړی کلیک جنتري پرانیزي؛ دوهم کلیک یې بېرته پټوي.
+  // د جنتري نښه تل هماغه وي: لومړی کلیک پرانیزي، دوهم یې پټوي.
   open.onclick = function () {
     if (!hidden) {
       hideCalendar();
@@ -1338,7 +1358,8 @@ document.addEventListener("click", function(event) {
     clearTimeout(timer);
     current = 0;
     box.style.display = 'block';
-    open.textContent = '✕ پټول';
+    open.style.display = 'block';
+    open.textContent = '📅';
     cycle();
   };
 })();
