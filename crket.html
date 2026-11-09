@@ -748,13 +748,9 @@ let selectedTeam='';
 ===================================================== */
 
 async function api(path){
-
- const response=await fetch(API+path,{cache:"no-store"});
-
- if(!response.ok){
-  throw new Error("API Error "+response.status);
- }
-
+ const freshPath=path+(path.includes("?")?"&":"?")+"_refresh="+Date.now();
+ const response=await fetch(API+freshPath,{cache:"no-store",headers:{"Cache-Control":"no-cache"}});
+ if(!response.ok)throw new Error("API Error "+response.status);
  return await response.json();
 }
 
@@ -765,15 +761,53 @@ async function api(path){
 
 let liveFetchBusy=false;
 let liveLastSuccess=0;
+
+function normalizeLiveMatch(m){
+ if(!m||typeof m!=="object")return null;
+ const teams=Array.isArray(m.teams)?m.teams:[];
+ const innings=Array.isArray(m.innings)?m.innings:[];
+ const current=innings.length?innings[innings.length-1]:{};
+ const first=m.first_team||m.team1||m.home_team||teams[0]||{};
+ const second=m.second_team||m.team2||m.away_team||teams[1]||{};
+ const name=t=>t.full_name||t.name||t.team_name||t.country||"";
+ const scoreFor=t=>{
+  if(t.score!==undefined&&t.score!==null&&t.score!=="")return String(t.score);
+  const inn=innings.filter(x=>String(x.team||"").toLowerCase()===name(t).toLowerCase()).slice(-1)[0];
+  return inn?String(inn.runs??0)+"/"+String(inn.wickets??0)+" ("+String(inn.overs??"0")+" ov)":"--";
+ };
+ const batting=m.batting_team?.full_name||m.batting_team?.name||m.batting_team||m.batting||current.team||"";
+ const id=m.match_id??m.id??m.match??m.slug??"";
+ return {
+  ...m,match_id:id,
+  first_team:{...first,full_name:name(first)||"Team 1",score:scoreFor(first)},
+  second_team:{...second,full_name:name(second)||"Team 2",score:scoreFor(second)},
+  format:m.format||m.match_type||"CRICKET",
+  state:m.state||m.status||"scheduled",
+  status:m.status||m.status_detail||m.short_status||"",
+  status_detail:m.status_detail||m.short_status||m.status||"",
+  venue:m.venue||m.ground||"",
+  series_name:m.series_name||m.competition||m.series||"",
+  batting_team:batting,
+  runs:m.runs??current.runs,wickets:m.wickets??current.wickets,
+  overs:m.overs??current.overs,run_rate:m.run_rate??m.current_run_rate,
+  batsman:m.batsman||m.striker||current.striker||current.batter,
+  bowler:m.bowler||current.bowler
+ };
+}
+function extractLiveRows(result){
+ const candidates=[result?.data?.results,result?.data?.matches,result?.data?.live_matches,result?.results,result?.matches,result?.live_matches,result?.data,result];
+ return candidates.find(Array.isArray)||[];
+}
 async function loadLive(){
  const box=document.getElementById("matches");
  if(liveFetchBusy)return;
  liveFetchBusy=true;
  try{
   const result=await api("/live");
-  const payload=result&&result.data!==undefined?result.data:result;
-  const rows=Array.isArray(payload)?payload:(Array.isArray(payload.matches)?payload.matches:(Array.isArray(payload.live_matches)?payload.live_matches:(Array.isArray(result.matches)?result.matches:[])));
-  const getTeams=m=>String((((m||{}).first_team||{}).full_name||"")+" "+(((m||{}).second_team||{}).full_name||""));
+  const rawRows=extractLiveRows(result);
+  const rows=rawRows.map(normalizeLiveMatch).filter(Boolean);
+  if(!rows.length&&allMatches.length)throw new Error("API دا ځل تش لېست راکړ؛ پخوانۍ لوبې ساتل شوې دي.");
+  const getTeams=m=>String(m.first_team.full_name+" "+m.second_team.full_name);
   rows.sort((x,y)=>{
    const re=/afghanistan|india|pakistan|bangladesh|sri lanka|nepal/i;
    return (re.test(getTeams(x))?0:1)-(re.test(getTeams(y))?0:1);
@@ -793,10 +827,8 @@ async function loadLive(){
   }
  }catch(error){
   const ticker=document.getElementById("matchTickerText");
-  if(ticker)ticker.textContent="د API تازه معلوماتو سره لنډمهاله ستونزه؛ پخواني معلومات ساتل شوي. "+new Date().toLocaleTimeString();
-  if(!allMatches||!allMatches.length){
-   box.innerHTML='<div class="error">❌ Live معلومات ترلاسه نه شول.<br><br>'+escapeHTML(error.message)+'</div>';
-  }
+  if(ticker)ticker.textContent="د API تازه معلوماتو سره ستونزه؛ پخواني معلومات ساتل شوي. "+new Date().toLocaleTimeString();
+  if(!allMatches||!allMatches.length)box.innerHTML='<div class="error">❌ Live معلومات ترلاسه نه شول.<br><br>'+escapeHTML(error.message)+'</div>';
  }finally{liveFetchBusy=false;}
 }
 
