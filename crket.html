@@ -942,7 +942,7 @@ function renderMatches(list){
 
   <button
   class="view"
-  onclick="openMatch(${Number(match.match_id)})">
+  onclick="openMatch('${escapeHTML(String(match.match_id||""))}')">
 
   📊 بشپړ Live معلومات
 
@@ -1486,8 +1486,7 @@ async function loadCricketApiNews(){
   const response=await fetch("https://saidwali-cricket.walizaad2.workers.dev/live",{cache:"no-store"});
   if(!response.ok)throw new Error("API "+response.status);
   const result=await response.json();
-  const payload=result&&result.data!==undefined?result.data:result;
-  const matches=Array.isArray(payload)?payload:(payload.matches||payload.live_matches||result.matches||[]);
+  const matches=extractLiveRows(result).map(normalizeLiveMatch).filter(Boolean);
   if(!Array.isArray(matches)||!matches.length){
    box.innerHTML='<div class="cricket-api-item">اوس مهال API کومه روانه لوبه نه ده راګرځولې.</div>';
    if(status)status.textContent="API ځواب ورکړ؛ خو اوس د ژوندۍ لوبې معلومات نه لري.";
