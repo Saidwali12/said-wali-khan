@@ -1349,7 +1349,7 @@ async function loadCricketNews(){
    const data=await response.json();
    if(data.status==="ok"&&Array.isArray(data.items)){
     data.items.slice(0,feed.name.startsWith("Google News")?14:10).forEach(item=>{
-     if(item.title&&item.link)items.push({title:item.title,link:item.link,source:feed.name,date:item.pubDate});
+     if(item.title&&item.link)items.push({title:item.title,link:item.link,source:item.author||feed.name,date:item.pubDate});
     });
    }
   }catch(error){}
@@ -1384,7 +1384,7 @@ async function translateCricketNews(lang){
  const run=++cricketTranslationRun;
  const links=Array.from(document.querySelectorAll("#cricketAutoNews .rail-news"));
  if(!links.length)return;
- const targets=links.slice(0,40);
+ const targets=links;
  const targetCode={ps:"ps",fa:"fa",en:"en",ur:"ur",ar:"ar"}[lang]||"ps";
  let index=0;
  async function worker(){
