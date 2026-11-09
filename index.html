@@ -46,9 +46,9 @@ body {
 .top-news {
     background: linear-gradient(90deg,#b9852f,#f0cf80,#b9852f);
     color: #142640;
-    padding: 8px 12px;
+    padding: 3px 10px;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
     border-bottom: 2px solid #f8df9f;
 }
 
@@ -67,14 +67,14 @@ header {
 .header-inner {
     max-width: 1250px;
     margin: auto;
-    padding: 32px 20px 0;
+    padding: 18px 20px 0;
 }
 
 .profile {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 35px;
+    gap: 22px;
     flex-wrap: wrap;
     text-align: center;
 }
@@ -106,7 +106,7 @@ header {
 /* متحرک نوم */
 
 .brand-area {
-    min-width: 280px;
+    min-width: 220px;
     text-align: center;
 }
 
@@ -115,8 +115,8 @@ header {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 7px;
-    font-size: 31px;
+    gap: 5px;
+    font-size: 24px;
     font-weight: bold;
     color: var(--gold-light);
     text-shadow: 0 3px 15px rgba(217,174,82,.3);
@@ -152,9 +152,9 @@ header {
 
 .brand-subtitle {
     color: #e1e9f5;
-    font-size: 14px;
-    margin-top: 10px;
-    letter-spacing: 3px;
+    font-size: 12px;
+    margin-top: 6px;
+    letter-spacing: 2px;
 }
 
 .brand-line {
@@ -570,11 +570,11 @@ footer p {
 
 @media(max-width:768px) {
     .header-inner {
-        padding-top: 25px;
+        padding-top: 14px;
     }
 
     .profile {
-        gap: 20px;
+        gap: 12px;
     }
 
     .profile-photo {
@@ -583,11 +583,14 @@ footer p {
     }
 
     .brand-title {
-        font-size: 24px;
+        font-size: 19px;
+        gap: 3px;
     }
 
     .brand-subtitle {
-        font-size: 12px;
+        font-size: 10px;
+        margin-top: 4px;
+        letter-spacing: 1px;
     }
 
     nav {
@@ -640,8 +643,8 @@ footer p {
 
 @media(max-width:400px) {
     .brand-title {
-        font-size: 21px;
-        gap: 4px;
+        font-size: 17px;
+        gap: 3px;
     }
 
     .hero h1 {
@@ -680,7 +683,8 @@ footer p {
 .wellcome-zoom {
     text-align: center;
     direction: ltr;
-    font-size: 65px;
+    font-size: 34px;
+    line-height: 1.15;
     font-weight: bold;
 }
 
@@ -715,9 +719,10 @@ footer p {
 
 .welcome-subtitle {
     text-align:center;
-    font-size:20px;
+    font-size:12px;
+    line-height:1.4;
     color:white;
-    margin-top:8px;
+    margin-top:2px;
 }
 </style>
 
@@ -1113,8 +1118,8 @@ document.addEventListener("click", function(event) {
 <style>
 #mini-smart-calendar {
   position: fixed;
-  top: 180px;
-  left: 130px;
+  top: 285px;
+  left: 12px;
   width: 112px;
   min-height: 76px;
   z-index: 999999;
@@ -1193,8 +1198,8 @@ document.addEventListener("click", function(event) {
 #mini-calendar-open {
   display: none;
   position: fixed;
-  top: 180px;
-  left: 130px;
+  top: 285px;
+  left: 12px;
   z-index: 999999;
   background: #071a35;
   color: #f4d58a;
@@ -1295,26 +1300,20 @@ document.addEventListener("click", function(event) {
 
     showCalendar();
 
-    // د ۲۰ ثانیو لپاره ښکاره وي
+    // هره نېټه ۳ ثانیې ښکاري، بیا بله نېټه راځي
     clearTimeout(timer);
 
     timer = setTimeout(() => {
       if (hidden) return;
-
-      // یو ثانیه پټېږي
       content.style.visibility = 'hidden';
-
       setTimeout(() => {
         if (hidden) return;
-
         current = (current + 1) % calendars.length;
         content.style.visibility = 'visible';
         showCalendar();
-
         cycle();
-      }, 1000);
-
-    }, 20000);
+      }, 350);
+    }, 3000);
   }
 
   updateClock();
@@ -1342,19 +1341,19 @@ document.addEventListener("click", function(event) {
 @media (max-width: 480px) {
   #mini-smart-calendar,
   #mini-calendar-open {
-    top: 180px;
-    left: 118px;
+    top: 285px;
+    left: 8px;
     width: 106px;
   }
   #mini-smart-calendar {
-    min-height: 76px;
+    min-height: 70px;
   }
 }
-/* د ژبو کوچني تڼۍ: د کوچنۍ جنترۍ لاندې */
+/* د ژبو کوچني تڼۍ: د جنتري پورته */
 .languages {
   position: fixed;
   top: 180px;
-  left: 12px;
+  left: 8px;
   z-index: 999998;
   width: 112px;
   display: flex;
@@ -1401,14 +1400,55 @@ document.addEventListener("click", function(event) {
     padding: 4px 2px;
   }
 }
+.languages {
+  transition: width .25s ease, padding .25s ease;
+}
+.languages.sw-language-collapsed {
+  width: auto;
+  min-width: 48px;
+  padding: 4px;
+  overflow: hidden;
+}
+.languages.sw-language-collapsed button:not(.sw-language-toggle) {
+  display: none;
+}
+.languages .sw-language-toggle {
+  display: none;
+  flex: 1 1 100%;
+  min-width: 44px;
+  padding: 5px 6px;
+  font-size: 10px;
+}
+.languages.sw-language-collapsed .sw-language-toggle {
+  display: block;
+}
 </style>
-<div class="languages">
+<div class="languages" id="site-language-menu">
+    <button class="sw-language-toggle" type="button" onclick="this.parentElement.classList.remove('sw-language-collapsed')">🌐 ژبې</button>
     <button class="active" onclick="changeLanguage('ps',this)">پښتو</button>
     <button onclick="changeLanguage('fa',this)">دری</button>
     <button onclick="changeLanguage('en',this)">English</button>
     <button onclick="changeLanguage('ur',this)">اردو</button>
     <button onclick="changeLanguage('ar',this)">العربية</button>
 </div>
+<script>
+(function(){
+  const menu=document.getElementById('site-language-menu');
+  if(!menu) return;
+  let collapseTimer;
+  function collapseLater(){
+    clearTimeout(collapseTimer);
+    collapseTimer=setTimeout(function(){
+      menu.classList.add('sw-language-collapsed');
+    },3000);
+  }
+  menu.addEventListener('click',function(e){
+    if(e.target.classList.contains('sw-language-toggle')) return;
+    if(e.target.closest('button')) collapseLater();
+  });
+  collapseLater();
+})();
+</script>
 <!-- د سیدولي خان ویب‌پاڼې د مرستې بشپړ بکس -->
 
 <style>
