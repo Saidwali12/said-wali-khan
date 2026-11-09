@@ -763,52 +763,42 @@ async function api(path){
    LIVE
 ===================================================== */
 
+let liveFetchBusy=false;
+let liveLastSuccess=0;
 async function loadLive(){
-
  const box=document.getElementById("matches");
-
- box.innerHTML=`
- <div class="loading">
- ⏳ د Live لوبو معلومات تازه کېږي...
- </div>
- `;
-
+ if(liveFetchBusy)return;
+ liveFetchBusy=true;
  try{
-
   const result=await api("/live");
-
   const payload=result&&result.data!==undefined?result.data:result;
-  allMatches=Array.isArray(payload)?payload:(Array.isArray(payload.matches)?payload.matches:(Array.isArray(payload.live_matches)?payload.live_matches:(Array.isArray(result.matches)?result.matches:[])));
-  allMatches.sort((x,y)=>{
+  const rows=Array.isArray(payload)?payload:(Array.isArray(payload.matches)?payload.matches:(Array.isArray(payload.live_matches)?payload.live_matches:(Array.isArray(result.matches)?result.matches:[])));
+  const getTeams=m=>String((((m||{}).first_team||{}).full_name||"")+" "+(((m||{}).second_team||{}).full_name||""));
+  rows.sort((x,y)=>{
    const re=/afghanistan|india|pakistan|bangladesh|sri lanka|nepal/i;
-   const sx=((x.first_team||{}).full_name||"")+" "+((x.second_team||{}).full_name||"");
-   const sy=((y.first_team||{}).full_name||"")+" "+((y.second_team||{}).full_name||"");
-   return (re.test(sx)?0:1)-(re.test(sy)?0:1);
+   return (re.test(getTeams(x))?0:1)-(re.test(getTeams(y))?0:1);
   });
-
+  allMatches=rows;
   renderMatches(allMatches);
   applyFilters();
+  liveLastSuccess=Date.now();
   const ticker=document.getElementById("matchTickerText");
-  if(ticker) ticker.textContent=allMatches.length?allMatches.slice(0,8).map(m=>((m.first_team||{}).full_name||"")+" "+((m.first_team||{}).score||"")+" vs "+((m.second_team||{}).full_name||"")+" "+((m.second_team||{}).score||"")).join("   ✦   "):"اوس مهال د API له لارې روانه لوبه نه ده ترلاسه شوې.";
-
+  const liveCount=allMatches.filter(m=>/live|progress|in.?play|innings|stumps/i.test(String(m.state||m.status||m.status_detail||""))).length;
+  if(ticker){
+   const summary=allMatches.slice(0,10).map(m=>{
+    const a=m.first_team||{},b=m.second_team||{};
+    return (a.full_name||"Team 1")+" "+(a.score||"--")+" vs "+(b.full_name||"Team 2")+" "+(b.score||"--");
+   }).join("   ✦   ");
+   ticker.textContent=(summary||"اوس مهال د API له لارې د لوبې معلومات نه دي ترلاسه شوي.")+"   |   LIVE: "+liveCount+"   |   تازه: "+new Date().toLocaleTimeString();
+  }
  }catch(error){
-
-  box.innerHTML=`
-  <div class="error">
-  ❌ Live معلومات ترلاسه نه شول.
-  <br><br>
-  ${escapeHTML(error.message)}
-  </div>
-  `;
-
- }
-
+  const ticker=document.getElementById("matchTickerText");
+  if(ticker)ticker.textContent="د API تازه معلوماتو سره لنډمهاله ستونزه؛ پخواني معلومات ساتل شوي. "+new Date().toLocaleTimeString();
+  if(!allMatches||!allMatches.length){
+   box.innerHTML='<div class="error">❌ Live معلومات ترلاسه نه شول.<br><br>'+escapeHTML(error.message)+'</div>';
+  }
+ }finally{liveFetchBusy=false;}
 }
-
-
-/* =====================================================
-   MATCHES
-===================================================== */
 
 function renderMatches(list){
 
@@ -832,10 +822,7 @@ function renderMatches(list){
   const a=match.first_team||{};
   const b=match.second_team||{};
 
-  const live=
-  String(match.state||"")
-  .toLowerCase()
-  .includes("progress");
+  const live=/live|progress|in.?play|innings|stumps/i.test(String(match.state||match.status||match.status_detail||match.short_status||""));
 
   const card=document.createElement("div");
 
@@ -1483,7 +1470,7 @@ async function loadCricketApiNews(){
  }catch(error){if(status)status.textContent="د کرکټ API سره اړیکه ونه شوه: "+error.message;}
 }
 loadCricketApiNews();
-setInterval(loadCricketApiNews,15000);
+setInterval(loadCricketApiNews,10000);
 
 /* =====================================================
    START
@@ -1494,7 +1481,7 @@ loadLive();
 
 /* هر 30 ثانیې Live لیست تازه کړه */
 
-setInterval(loadLive,15000);
+setInterval(loadLive,10000);
 
 
 /* د پرانیستل شوي سکورکارډ تازه کول */
