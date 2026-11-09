@@ -16,6 +16,7 @@ const b64 = (bytes) => {
   return btoa(binary);
 };
 const b64url = (bytes) => b64(bytes).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+const wrap76 = (value) => value.match(/.{1,76}/g)?.join("\\r\\n") || "";
 const sha = async (value) => b64url(await crypto.subtle.digest("SHA-256", enc.encode(value)));
 const clean = (v, n = 180) => String(v || "").trim().slice(0, n);
 const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -53,7 +54,7 @@ async function sendGmail(env, to, subject, body, attachments = []) {
     "Content-Type: text/plain; charset=UTF-8",
     "Content-Transfer-Encoding: base64",
     "",
-    b64(enc.encode(body))
+    wrap76(b64(enc.encode(body)))
   ];
   for (const file of attachments) {
     lines.push(
@@ -62,7 +63,7 @@ async function sendGmail(env, to, subject, body, attachments = []) {
       "Content-Disposition: attachment; filename=\"" + file.name.replace(/["\r\n]/g, "") + "\"",
       "Content-Transfer-Encoding: base64",
       "",
-      b64(file.bytes)
+      wrap76(b64(file.bytes))
     );
   }
   lines.push("--" + boundary + "--", "");
@@ -128,15 +129,16 @@ async function register(request, env) {
   const existing = await env.DB.prepare("SELECT id FROM applicants WHERE email = ? AND active = 1").bind(email).first();
   if (existing) return json({ ok: false, error: "دا ایمیل مخکې ثبت شوی دی. که معلومات بدلول غواړئ، له مدیر سره اړیکه ونیسئ." }, 409);
   const id = crypto.randomUUID();
+  const unsubscribeToken = crypto.randomUUID() + crypto.randomUUID();
   const now = new Date().toISOString();
   let photo = null, cv = null;
   try {
     photo = await saveUpload(env.FILES, form.get("photo"), "applicants/" + id, 5 * 1024 * 1024, ["image/jpeg", "image/png", "image/webp"]);
     cv = await saveUpload(env.FILES, form.get("cv"), "applicants/" + id, 10 * 1024 * 1024, ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]);
     await env.DB.prepare(`INSERT INTO applicants
-      (id, full_name, father_name, education, phone, email, province, consent, photo_key, photo_name, photo_type, cv_key, cv_name, cv_type, created_at, active)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, 1)`)
-      .bind(id, full_name, father_name, education, phone, email, province,
+      (id, full_name, father_name, education, phone, email, province, consent, unsubscribe_token, photo_key, photo_name, photo_type, cv_key, cv_name, cv_type, created_at, active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, 1)`)
+      .bind(id, full_name, father_name, education, phone, email, province, unsubscribeToken,
         photo?.key || null, photo?.name || null, photo?.contentType || null,
         cv?.key || null, cv?.name || null, cv?.contentType || null, now).run();
   } catch (e) {
@@ -151,6 +153,13 @@ async function register(request, env) {
   return json({ ok: true, message: emailSent
     ? "ثبت‌نام بریالی شو. ستا معلومات خوندي شول."
     : "ثبت‌نام خوندي شو، خو مدیر ته د ایمیل خبرتیا ونه لېږل شوه؛ تخنیکي تنظیم ته اړتیا ده." }, 201);
+}
+async function unsubscribe(url, env) {
+  const token = url.searchParams.get("token") || "";
+  if (token.length < 30) return text("د خبرتیا لینک ناسم دی.", 400);
+  const result = await env.DB.prepare("UPDATE applicants SET active = 0, consent = 0 WHERE unsubscribe_token = ? AND active = 1").bind(token).run();
+  if (!result.meta?.changes) return text("دا لینک مخکې کارول شوی یا ناسم دی.", 404);
+  return text("ستاسو د دندو ایمیل خبرتیاوې بندې شوې. مننه.");
 }
 async function adminApplicants(request, env) {
   if (!isAdmin(request, env)) return json({ ok: false, error: "اجازه نشته." }, 401);
@@ -182,15 +191,17 @@ async function sendJobAlerts(env) {
     const expiry = new Date(job.expiryDate + "T23:59:59Z");
     if (expiry < now) continue;
     const places = Array.isArray(job.location) ? job.location : [];
-    const target = places.some(x => x === "کنړ" || x === "کونړ") ? "kunar" : places.includes("نورستان") ? "nuristan" : null;
-    if (!target) continue;
+    const targets = [];
+    if (places.some(x => x === "کنړ" || x === "کونړ")) targets.push("kunar");
+    if (places.includes("نورستان")) targets.push("nuristan");
+    if (!targets.length) continue;
     const hash = await sha(JSON.stringify({
       title: job.title, organization: job.organization, location: job.location,
       postedDate: job.postedDate, expiryDate: job.expiryDate,
       requirements: job.requirements, sourceUrl: job.sourceUrl, email: job.email
     }));
     for (const person of people || []) {
-      if (person.province !== "both" && person.province !== target) continue;
+      if (person.province !== "both" && !targets.includes(person.province)) continue;
       const prior = await env.DB.prepare("SELECT content_hash FROM sent_notifications WHERE applicant_id = ? AND job_id = ?").bind(person.id, job.id).first();
       if (prior?.content_hash === hash) continue;
       const body = [
@@ -209,10 +220,11 @@ async function sendJobAlerts(env) {
         "",
         "د دندو پاڼه: https://saidwali12.github.io/said-wali-khan/jobs.html",
         "",
-        "تاسو دا خبرتیا د خپل ثبت‌نام او ورکړل شوې اجازې له مخې ترلاسه کوئ. د خبرتیاوو د بندولو لپاره له پاڼې د مدیر سره اړیکه ونیسئ."
+        "تاسو دا خبرتیا د خپل ثبت‌نام او ورکړل شوې اجازې له مخې ترلاسه کوئ.",
+        "د خبرتیاوو د بندولو لپاره دا لینک خلاص کړئ: https://saidwali-jobs-api.walizaad2.workers.dev/api/unsubscribe?token=" + person.unsubscribe_token
       ].join("\n");
       try {
-        await sendGmail(env, person.email, "د نوې دندې خبرتیا: " + job.title + " - " + target, body);
+        await sendGmail(env, person.email, "د نوې دندې خبرتیا: " + job.title + " - " + targets.join(" / "), body);
         await env.DB.prepare("INSERT INTO sent_notifications (applicant_id, job_id, content_hash, sent_at) VALUES (?, ?, ?, ?) ON CONFLICT(applicant_id, job_id) DO UPDATE SET content_hash = excluded.content_hash, sent_at = excluded.sent_at")
           .bind(person.id, job.id, hash, new Date().toISOString()).run();
         sent++;
@@ -228,6 +240,7 @@ export default {
     if (url.pathname === "/health") return json({ ok: true, service: "Saidwali Jobs API", version: "1.0.0", database: !!env.DB, fileStorage: !!env.FILES, gmailConfigured: !!(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_REFRESH_TOKEN) });
     try {
       if (url.pathname === "/api/register" && request.method === "POST") return await register(request, env);
+      if (url.pathname === "/api/unsubscribe" && request.method === "GET") return await unsubscribe(url, env);
       if (url.pathname === "/api/admin/applicants" && request.method === "GET") return await adminApplicants(request, env);
       if (url.pathname === "/api/admin/file" && request.method === "GET") return await adminFile(request, env, url);
       return json({ ok: false, error: "دا لاره ونه موندل شوه." }, 404);
