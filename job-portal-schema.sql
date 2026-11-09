@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS applicants (
   email TEXT NOT NULL COLLATE NOCASE,
   province TEXT NOT NULL CHECK (province IN ('kunar','nuristan','both')),
   consent INTEGER NOT NULL DEFAULT 0 CHECK (consent IN (0,1)),
+  unsubscribe_token TEXT NOT NULL UNIQUE,
   photo_key TEXT,
   photo_name TEXT,
   photo_type TEXT,
