@@ -412,7 +412,7 @@
     while ((node = walker.nextNode())) {
       const parent = node.parentElement;
       if (!parent || /^(SCRIPT|STYLE|TEXTAREA|INPUT|OPTION)$/i.test(parent.tagName)) continue;
-      if (parent.closest("#bbc-news,#sw-language-bar,.user-post,.post-content,.comment,.comments,.post-card,.messages-layout,[contenteditable='true']")) continue;
+      if (parent.closest("#sw-language-bar,.user-post,.post-content,.comment,.comments,.post-card,.messages-layout,[contenteditable='true']")) continue;
       if (!Object.prototype.hasOwnProperty.call(node, "__swOriginal")) node.__swOriginal = node.nodeValue;
       const original = node.__swOriginal;
       const trimmed = original.trim();
@@ -439,10 +439,13 @@
     const observer = new MutationObserver(() => apply(window.__swActiveLanguage || active));
     observer.observe(document.body, {childList:true,subtree:true});
   }
-  document.addEventListener("DOMContentLoaded", function() {
-    let saved = "ps";
-    try { saved = localStorage.getItem("sw_site_language") || "ps"; } catch(e) {}
-    apply(saved);
+  function startLanguageSystem() {
+    apply("ps");
     observeTranslations();
-  });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startLanguageSystem, { once: true });
+  } else {
+    startLanguageSystem();
+  }
 })();
