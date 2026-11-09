@@ -2027,20 +2027,9 @@ document.addEventListener("click", function(event) {
  renderKeys();
 
  async function loadRates(){
-  status.textContent='د اسعارو نرخونه ترلاسه کېږي...';
-  try{
-   const response=await fetch('https://open.er-api.com/v6/latest/USD',{cache:'no-store'});
-   if(!response.ok)throw Error('network');
-   const data=await response.json();
-   if(data.result!=='success'||!data.rates||!data.rates.AFN||!data.rates.PKR)throw Error('rates');
-   rates=data.rates;rateDate=data.time_last_update_utc||data.time_last_update||'';
-   status.textContent='وروستی نرخ: '+rateDate+' | سرچینه: ExchangeRate-API';
-   convertCurrency();
-  }catch(e){
-   status.textContent='نرخونه ترلاسه نه شول؛ انټرنېټ وګورئ او بیا هڅه وکړئ.';
-   big.textContent='نرخونه نشته';
-  }
+  status.textContent='د افغانستان د اسعارو جدول د سرچینې له اصلي پاڼې څخه ښکاري؛ د نړیوالو عمومي نرخونو API نه کارول کېږي.';
  }
+
  function convertCurrency(){
   const value=Number(amount.value);
   if(!rates){output.value='...';return}
