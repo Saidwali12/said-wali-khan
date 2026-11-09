@@ -1343,7 +1343,7 @@ function escapeHTML(value){
    BACK
 ===================================================== */
 
-function goBack(){ window.location.href="index.html"; }
+function goBack(){ window.location.href="https://saidwali12.github.io/said-wali-khan/"; }
 
 
 
@@ -1366,15 +1366,25 @@ function openCricketTV(name,url){
  const frame=document.getElementById("cricketTVFrame");
  const title=document.getElementById("cricketTVTitle");
  const external=document.getElementById("cricketTVExternal");
- title.textContent="📺 اوسنی چینل: "+name;
+ const hint=screen.querySelector(".tvHint");
+ title.textContent="📺 چینل: "+name;
  external.href=url;
- frame.src=url;
+ frame.src="about:blank";
  screen.classList.add("open");
- document.getElementById("cricketChannelMenu").classList.remove("show");
- document.querySelector(".cricket-channel-nav .dropbtn").classList.remove("active");
+ if(hint)hint.textContent="د چینل رسمي پاڼه په نوي ټب کې پرانیستل کېږي. که نوې کړکۍ بنده وي، پورته ژېړ لینک کېکاږئ. د ویډیو خپرونه د چینل د خپرونې حقونو او ستاسو د هېواد له مخې بدلېږي.";
+ const menu=document.getElementById("cricketChannelMenu");
+ if(menu)menu.classList.remove("show");
+ const button=document.querySelector(".cricket-channel-nav .dropbtn");
+ if(button){button.classList.remove("active");button.setAttribute("aria-expanded","false");}
  screen.scrollIntoView({behavior:"smooth",block:"start"});
+ window.open(url,"_blank","noopener,noreferrer");
 }
-function fullscreenCricketTV(){\n const screen=document.getElementById("cricketTVScreen");\n if(screen.requestFullscreen)screen.requestFullscreen().catch(()=>{});\n}\nfunction closeCricketTV(){
+
+function fullscreenCricketTV(){
+ const screen=document.getElementById("cricketTVScreen");
+ if(screen.requestFullscreen)screen.requestFullscreen().catch(()=>{});
+}
+function closeCricketTV(){
  const screen=document.getElementById("cricketTVScreen");
  document.getElementById("cricketTVFrame").src="about:blank";
  screen.classList.remove("open");
