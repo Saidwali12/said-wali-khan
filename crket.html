@@ -1333,28 +1333,37 @@ async function loadCricketNews(){
  const status=document.getElementById("cricketNewsStatus");
  if(!list)return;
  const feeds=[
-  {name:"BBC افغانستان کرکټ",url:"https://feeds.bbci.co.uk/sport/cricket/teams/afghanistan/rss.xml"},
-  {name:"ESPNcricinfo",url:"https://www.espncricinfo.com/rss/content/story/feeds/0.xml"}
+  {name:"ESPNcricinfo نړیوال",url:"https://www.espncricinfo.com/rss/content/story/feeds/0.xml"},
+  {name:"Wisden نړیوال",url:"https://www.wisden.com/feed"},
+  {name:"BBC نړیوال کرکټ",url:"https://feeds.bbci.co.uk/sport/cricket/rss.xml"},
+  {name:"BBC افغانستان کرکټ",url:"https://feeds.bbci.co.uk/sport/cricket/teams/afghanistan/rss.xml"}
  ];
  let items=[];
- for(const feed of feeds){
+ await Promise.all(feeds.map(async feed=>{
   try{
    const endpoint="https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(feed.url);
    const response=await fetch(endpoint,{cache:"no-store"});
-   if(!response.ok)continue;
+   if(!response.ok)return;
    const data=await response.json();
    if(data.status==="ok"&&Array.isArray(data.items)){
-    data.items.slice(0,7).forEach(item=>items.push({title:item.title,link:item.link,source:feed.name,date:item.pubDate}));
+    data.items.slice(0,12).forEach(item=>items.push({title:item.title,link:item.link,source:feed.name,date:item.pubDate}));
    }
   }catch(error){}
- }
+ }));
  if(items.length){
   items.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
-  const html=items.slice(0,14).map(item=>'<a class="rail-news" href="'+escapeHTML(item.link)+'" target="_blank" rel="noopener">🏏 '+escapeHTML(item.title)+'<small>'+escapeHTML(item.source)+' • '+escapeHTML(item.date?new Date(item.date).toLocaleString():"تازه خبر")+'</small></a>').join("");
+  const seen=new Set();
+  items=items.filter(item=>{
+   const key=String(item.title||"").trim().toLowerCase();
+   if(!key||seen.has(key)||!/^https?:\/\//i.test(item.link||""))return false;
+   seen.add(key);return true;
+  });
+  const html=items.slice(0,30).map(item=>'<a class="rail-news" href="'+escapeHTML(item.link)+'" target="_blank" rel="noopener">🏏 '+escapeHTML(item.title)+'<small>'+escapeHTML(item.source)+' • '+escapeHTML(item.date?new Date(item.date).toLocaleString():"تازه خبر")+'</small></a>').join("");
   list.innerHTML=html+html;
-  if(status)status.textContent="خبرونه د RSS له لارې تازه کېږي؛ هر ۱۰ دقیقې بیا کتل کېږي.";
+  list.style.animationDuration=Math.max(45,items.length*4)+"s";
+  if(status)status.textContent="له نړیوالو سرچینو "+items.length+" تازه خبرونه؛ وروستی تازه کول: "+new Date().toLocaleTimeString()+"؛ هر ۵ دقیقې بیا کتل کېږي.";
  }else if(status){
-  status.textContent="اتومات خبرونه اوس ونه ترلاسه شول؛ رسمي ICC او ACB لینکونه لاندې فعال دي.";
+  status.textContent="اتومات خبرونه اوس ونه ترلاسه شول؛ لاندې د ICC او ACB رسمي لینکونه فعال دي.";
  }
 }
 
@@ -1362,7 +1371,7 @@ const railList=document.querySelector(".news-scroll-list");
 if(railList && !railList.dataset.looped){railList.innerHTML+=railList.innerHTML;railList.dataset.looped="1";}
 
 loadCricketNews();
-setInterval(loadCricketNews,600000);
+setInterval(loadCricketNews,300000);
 
 /* =====================================================
    START
