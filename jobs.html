@@ -78,7 +78,7 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
  <div class="reg-panel">
   <button class="reg-close" type="button" onclick="closeApplicantForm()">✕ تړل</button>
   <h2 id="regTitle">د کار غوښتونکو ثبت‌نام</h2>
-  <p class="reg-help">ټول اړین معلومات په سمه توګه ولیکئ. عکس او CV اختیاري دي، خو د غوښتنلیک لپاره یې پورته کول ګټور دي.</p>
+  <p class="reg-help">ټول اړین معلومات په سمه توګه ولیکئ. عکس او CV دواړه اړین دي؛ فایلونه تر ۸ MB پورې پورته کړئ.</p>
   <form id="applicantForm" enctype="multipart/form-data">
    <div class="reg-grid">
     <div class="reg-field"><label for="appFullName">نوم *</label><input id="appFullName" name="full_name" required maxlength="100" autocomplete="name"></div>
@@ -88,9 +88,9 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
     <div class="reg-field"><label for="appEmail">ایمیل ادرس *</label><input id="appEmail" name="email" type="email" required maxlength="160" autocomplete="email" placeholder="example@gmail.com"></div>
     <div class="reg-field"><label for="appProvince">د کوم ولایت لپاره دنده غواړئ؟ *</label><select id="appProvince" name="province" required><option value="">ولایت وټاکئ</option><option value="kunar">کونړ</option><option value="nuristan">نورستان</option><option value="both">دواړه ولایتونه</option></select></div>
    </div>
-   <div class="reg-field"><label for="appPhoto">عکس (JPG/PNG/WebP، تر ۵ MB)</label><input id="appPhoto" name="photo" type="file" accept="image/jpeg,image/png,image/webp"></div>
-   <div class="reg-field"><label for="appCv">CV / خلص سوانح (PDF/DOC/DOCX، تر ۱۰ MB)</label><input id="appCv" name="cv" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
-   <label class="reg-consent"><input type="checkbox" name="consent" value="yes" required><span>زه اجازه ورکوم چې زما نوم، د اړیکې معلومات او ټاکل شوی ولایت د کارموندنې لپاره خوندي شي، او د خپل ټاکلي ولایت د نویو یا تازه شوو دندو خبرتیاوې زما ایمیل ته راولېږل شي. زه هر وخت د خبرتیاوو د بندولو غوښتنه کولای شم. *</span></label>
+   <div class="reg-field"><label for="appPhoto">عکس (JPG/PNG/WebP، تر ۸ MB) *</label><input id="appPhoto" name="photo" type="file" accept="image/jpeg,image/png,image/webp" required></div>
+   <div class="reg-field"><label for="appCv">CV / خلص سوانح (PDF/DOC/DOCX، تر ۸ MB) *</label><input id="appCv" name="cv" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required></div>
+   <label class="reg-consent"><input type="checkbox" name="email_consent" value="yes" required><span>زه اجازه ورکوم چې زما نوم، د اړیکې معلومات او ټاکل شوی ولایت د کارموندنې لپاره خوندي شي، او د خپل ټاکلي ولایت د نویو یا تازه شوو دندو خبرتیاوې زما ایمیل ته راولېږل شي. زه هر وخت د خبرتیاوو د بندولو غوښتنه کولای شم. *</span></label>
    <button class="reg-submit" id="regSubmit" type="submit">ثبت‌نام بشپړ کړئ</button>
    <div class="reg-status" id="regStatus" role="status"></div>
   </form>
@@ -165,7 +165,7 @@ setInterval(loadJobs,30*60*1000);
 
 <script>
 const JOBS_API = "https://saidwali-jobs-api.walizaad2.workers.dev";
-async function checkApplicantService(){const btn=document.getElementById("registrationOpenBtn"),note=document.getElementById("registrationServiceNote");try{const r=await fetch(JOBS_API+"/health",{cache:"no-store"});const d=await r.json();if(r.ok&&d.ok&&d.database&&d.fileStorage&&d.gmailConfigured){btn.disabled=false;btn.textContent="📝 د کار غوښتونکو ثبت‌نام";note.textContent="خپل معلومات ثبت کړئ او د خپل ټاکلي ولایت د نویو دندو خبرتیاوې په ایمیل ترلاسه کړئ.";}else{btn.disabled=true;btn.textContent="📝 د ثبت‌نام سیستم د فعالېدو په تمه";}}catch(e){btn.disabled=true;btn.textContent="📝 د ثبت‌نام سیستم د فعالېدو په تمه";}}
+async function checkApplicantService(){const btn=document.getElementById("registrationOpenBtn"),note=document.getElementById("registrationServiceNote");try{const r=await fetch(JOBS_API+"/health",{cache:"no-store"});const d=await r.json();if(r.ok&&d.success&&d.database&&d.googleStorageConfigured){btn.disabled=false;btn.textContent="📝 د کار غوښتونکو ثبت‌نام";note.textContent="خپل معلومات ثبت کړئ او د خپل ټاکلي ولایت د نویو دندو خبرتیاوې په ایمیل ترلاسه کړئ.";}else{btn.disabled=true;btn.textContent="📝 د ثبت‌نام سیستم د فعالېدو په تمه";}}catch(e){btn.disabled=true;btn.textContent="📝 د ثبت‌نام سیستم د فعالېدو په تمه";}}
 checkApplicantService();
 function openApplicantForm(){if(document.getElementById("registrationOpenBtn").disabled)return;document.getElementById("applicantModal").classList.add("open");document.body.style.overflow="hidden";}
 function closeApplicantForm(){document.getElementById("applicantModal").classList.remove("open");document.body.style.overflow="";}
@@ -175,13 +175,13 @@ document.getElementById("applicantForm").addEventListener("submit",async functio
  e.preventDefault();
  const form=this,btn=document.getElementById("regSubmit"),status=document.getElementById("regStatus");
  const photo=document.getElementById("appPhoto").files[0],cv=document.getElementById("appCv").files[0];
- if(photo&&photo.size>5*1024*1024){showRegStatus("عکس باید تر ۵ MB کم وي.",false);return;}
- if(cv&&cv.size>10*1024*1024){showRegStatus("CV باید تر ۱۰ MB کم وي.",false);return;}
+ if(!photo||photo.size>8*1024*1024){showRegStatus("عکس پورته کړئ؛ اندازه یې باید تر ۸ MB کمه وي.",false);return;}
+ if(!cv||cv.size>8*1024*1024){showRegStatus("CV پورته کړئ؛ اندازه یې باید تر ۸ MB کمه وي.",false);return;}
  btn.disabled=true;btn.textContent="ثبت‌نام روان دی...";
  try{
-  const response=await fetch(JOBS_API+"/api/register",{method:"POST",body:new FormData(form)});
+  const response=await fetch(JOBS_API+"/register",{method:"POST",body:new FormData(form)});
   const data=await response.json();
-  if(!response.ok||!data.ok)throw new Error(data.error||"ثبت‌نام بریالی نه شو.");
+  if(!response.ok||!data.success)throw new Error(data.error||"ثبت‌نام بریالی نه شو.");
   showRegStatus(data.message,true);form.reset();
  }catch(err){showRegStatus(err.message||"له سرور سره اړیکه ټینګه نه شوه. وروسته بیا هڅه وکړئ.",false);}
  finally{btn.disabled=false;btn.textContent="ثبت‌نام بشپړ کړئ";}
