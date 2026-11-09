@@ -85,4 +85,5 @@ if(r.game_type.startsWith("cards_")){board.style.display="block";const me=Math.m
 async function refreshChat(){if(!roomCode)return;try{const d=await api("/api/rooms/"+roomCode+"/messages?after="+lastChat);for(const m of d.messages){const p=document.createElement("p");p.textContent=m.display_name+": "+m.message;$("chat").appendChild(p);lastChat=Math.max(lastChat,m.id)}$("chat").scrollTop=$("chat").scrollHeight}catch{}}
 $("sendChat").onclick=async()=>{const message=$("chatInput").value.trim();if(!message)return;try{await api("/api/rooms/"+roomCode+"/messages","POST",{message});$("chatInput").value="";refreshChat()}catch(e){note(e.message)}};
 if(auth){$("accountMsg").textContent="په دې وسیله کې پخوانی سیشن شته؛ که کار ونه کړي، بیا نوم‌لیکنه وکړئ."}
-</script></body></html>
+</script><script src="language.js?v=20261109-2"></script>
+</body></html>
