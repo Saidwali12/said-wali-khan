@@ -1305,11 +1305,17 @@ document.addEventListener("click", function(event) {
 
     timer = setTimeout(() => {
       if (hidden) return;
-      content.style.visibility = 'hidden';
+
+      // د ژبو د مینو په شان: جنتري ۳ ثانیې ښکاري، بیا لنډه پټېږي
+      // او د بلې کلیزې له نېټې سره بېرته راښکاره کېږي.
+      box.style.display = 'none';
+      open.style.display = 'block';
+
       setTimeout(() => {
         if (hidden) return;
         current = (current + 1) % calendars.length;
-        content.style.visibility = 'visible';
+        box.style.display = 'block';
+        open.style.display = 'none';
         showCalendar();
         cycle();
       }, 350);
@@ -1330,8 +1336,10 @@ document.addEventListener("click", function(event) {
 
   open.onclick = function () {
     hidden = false;
+    clearTimeout(timer);
     box.style.display = 'block';
     open.style.display = 'none';
+    showCalendar();
     cycle();
   };
 })();
