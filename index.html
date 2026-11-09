@@ -1118,7 +1118,7 @@ document.addEventListener("click", function(event) {
 <style>
 #mini-smart-calendar {
   position: fixed;
-  top: 285px;
+  top: 320px;
   left: 12px;
   width: 112px;
   min-height: 76px;
@@ -1196,7 +1196,7 @@ document.addEventListener("click", function(event) {
 }
 
 #mini-calendar-open {
-  display: none;
+  display: block;
   position: fixed;
   top: 285px;
   left: 12px;
@@ -1301,45 +1301,44 @@ document.addEventListener("click", function(event) {
     showCalendar();
     clearTimeout(timer);
 
-    // هره کلیزه ۳ ثانیې ښکاري؛ له درې واړو وروسته بېرته کوچنۍ تڼۍ پاتې کېږي.
+    // جنتري د کاروونکي تر تړلو پورې خلاصه پاتې کېږي؛ نېټې هر ۳ ثانیې بدلېږي.
     timer = setTimeout(() => {
       if (hidden) return;
-
-      current++;
-      if (current >= calendars.length) {
-        hidden = true;
-        box.style.display = 'none';
-        open.style.display = 'block';
-        current = 0;
-        return;
-      }
-
-      showCalendar();
+      current = (current + 1) % calendars.length;
       cycle();
     }, 3000);
   }
 
-  // د پاڼې په پرانیستلو کې یوازې د جنتري کوچنۍ تڼۍ ښکاري.
+  // په پیل کې یوازې د جنتري مینو تڼۍ ښکاري.
   box.style.display = 'none';
   open.style.display = 'block';
+  open.textContent = '📅 جنتري';
   updateClock();
 
   setInterval(updateClock, 1000);
 
-  close.onclick = function () {
+  function hideCalendar() {
     hidden = true;
     clearTimeout(timer);
     box.style.display = 'none';
-    open.style.display = 'block';
+    open.textContent = '📅 جنتري';
     current = 0;
-  };
+  }
 
+  close.onclick = hideCalendar;
+
+  // لومړی کلیک جنتري پرانیزي؛ دوهم کلیک یې بېرته پټوي.
   open.onclick = function () {
+    if (!hidden) {
+      hideCalendar();
+      return;
+    }
+
     hidden = false;
     clearTimeout(timer);
     current = 0;
     box.style.display = 'block';
-    open.style.display = 'none';
+    open.textContent = '✕ پټول';
     cycle();
   };
 })();
@@ -1347,13 +1346,13 @@ document.addEventListener("click", function(event) {
 <!-- END MINI SMART CALENDAR -->
 <style>
 @media (max-width: 480px) {
-  #mini-smart-calendar,
   #mini-calendar-open {
     top: 285px;
     left: 8px;
     width: 106px;
   }
   #mini-smart-calendar {
+    top: 320px;
     min-height: 70px;
   }
 }
