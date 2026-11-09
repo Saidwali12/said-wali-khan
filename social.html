@@ -49398,6 +49398,65 @@ document.addEventListener(
 @media(max-width:720px){ #swStories { padding:12px; } #swStories .sw-story { flex-basis:96px; height:145px; } }
 @media(prefers-reduced-motion:reduce){ #swNewsTrack { animation:none; } }
 </style>
+<style id="saidwali-mobile-facebook-layout">
+/* موبایل: د پوسټونو پراخه برخه + په چپ اړخ کې کوچني خبرونه */
+@media (max-width:720px) {
+  .main-container { width:100%; max-width:100%; margin:8px 0; padding:0 5px 84px; }
+  .main-grid {
+    direction:ltr;
+    display:grid;
+    grid-template-columns:108px minmax(0,1fr);
+    gap:7px;
+    align-items:start;
+  }
+  .left-sidebar {
+    display:block !important;
+    min-width:0;
+    width:108px;
+    direction:rtl;
+    position:sticky;
+    top:112px;
+  }
+  .left-sidebar > :not(#swNewsCard) { display:none !important; }
+  #mainContent { min-width:0; width:100%; direction:rtl; }
+  .right-sidebar { display:none !important; }
+  #swNewsCard {
+    display:block !important;
+    width:108px;
+    max-width:108px;
+    padding:7px 6px;
+    margin:0;
+    border-radius:9px;
+    box-shadow:0 1px 3px rgba(0,0,0,.12);
+    overflow:hidden;
+  }
+  #swNewsCard .card-title { font-size:12px; line-height:1.5; margin-bottom:3px; }
+  #swNewsCard > .muted { font-size:9px; line-height:1.4; }
+  #swNewsCard .sw-news-tabs { display:flex; gap:3px; margin:6px 0; }
+  #swNewsCard .sw-news-tab { flex:1; min-width:0; padding:4px 2px; font-size:9px; border-radius:5px; }
+  #swNewsViewport { height:230px; border-radius:6px; }
+  .sw-news-item { padding:7px 5px; font-size:10px; line-height:1.45; }
+  .sw-news-item.sw-news-with-image { min-height:0; display:block; padding:6px 4px; }
+  .sw-news-thumb { display:block; width:100%; height:58px; margin-bottom:4px; border-radius:5px; }
+  .sw-news-copy { width:100%; }
+  .sw-news-title { font-size:10px; line-height:1.45; }
+  .sw-news-source { font-size:8px; margin-bottom:2px; }
+  .sw-news-note { font-size:9px; line-height:1.4; margin-top:5px; }
+  #swStories { padding:9px; margin-bottom:9px; }
+  #swStories .sw-story { flex-basis:76px; height:112px; }
+  #swStories .sw-story-label { font-size:10px; }
+  #swStories .card-title { font-size:15px; }
+  #feedPage .card { padding:11px; margin-bottom:10px; border-radius:10px; }
+  .ebook-mobile-nav { grid-template-columns:repeat(5,minmax(0,1fr)); }
+}
+@media (max-width:360px) {
+  .main-grid { grid-template-columns:94px minmax(0,1fr); gap:5px; }
+  .left-sidebar { width:94px; }
+  #swNewsCard { width:94px; max-width:94px; padding:6px 5px; }
+  #swNewsViewport { height:205px; }
+  .sw-news-thumb { height:48px; }
+}
+</style>
 <script>
 /* SAIDWALI_STORIES_NEWS_V1 — د سټوریو محلي مخکتنه او د BBC خبرونو عمودي ټیکر */
 (function(){
@@ -49475,7 +49534,7 @@ document.addEventListener(
     if(story){const item=stories[Number(story.dataset.storyIndex)];if(!item)return;viewer();const media=document.getElementById("swStoryMedia");media.innerHTML="";const node=document.createElement(item.type==="video"?"video":"img");node.src=item.url;if(item.type==="video"){node.controls=true;node.autoplay=true;}media.appendChild(node);document.getElementById("swStoryViewer").classList.add("open");return;}
     if(e.target.closest("#swStoryViewer button")||e.target.id==="swStoryViewer"){document.getElementById("swStoryViewer")?.classList.remove("open");}
   });
-  function placeNews(){const card=document.getElementById("swNewsCard");const side=document.querySelector(".right-sidebar");const center=document.getElementById("mainContent");if(!card||!side||!center)return;if(window.matchMedia("(max-width:1000px)").matches){const feed=document.getElementById("feedPage");if(card.parentElement!==center)center.insertBefore(card,feed||center.firstChild);}else if(card.parentElement!==side){side.insertBefore(card,side.firstChild);}}
+  function placeNews(){const card=document.getElementById("swNewsCard");const side=document.querySelector(".right-sidebar");const center=document.getElementById("mainContent");const left=document.querySelector(".left-sidebar");if(!card||!side||!center||!left)return;const width=window.innerWidth;if(width<=720){if(card.parentElement!==left)left.insertBefore(card,left.firstChild);}else if(width<=1000){const feed=document.getElementById("feedPage");if(card.parentElement!==center)center.insertBefore(card,feed||center.firstChild);}else if(card.parentElement!==side){side.insertBefore(card,side.firstChild);}}
   function init(){addStories();addNews();placeNews();}
   window.addEventListener("resize",placeNews);
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
