@@ -3,570 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="description" content="د کونړ او نورستان لپاره د تایید شوو ایمیل غوښتنلیکونو دندو اعلانونه">
 <title>سیدولي خان جاب پورټل</title>
-
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:tahoma;
-}
-
-body{
-background:#eef3f9;
-}
-
-/* HEADER */
-
-header{
-background:#0d47a1;
-color:white;
-text-align:center;
-padding:15px;
-font-size:24px;
-font-weight:bold;
-position:sticky;
-top:0;
-z-index:1000;
-}
-.language-box{
-text-align:center;
-padding:10px;
-background:white;
-}
-
-.language-box select{
-padding:8px;
-border-radius:6px;
-font-size:14px;
-border:1px solid #ccc;
-}
-/* BACK BUTTON */
-
-.back-btn{
-position:fixed;
-top:15px;
-left:15px;
-background:#ff9800;
-color:white;
-padding:10px 15px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-size:16px;
-z-index:9999;
-}
-
-.back-btn:hover{
-background:#e68900;
-}
-
-/* MOVING NEWS */
-
-.top-news{
-background:#ff9800;
-color:white;
-padding:10px;
-font-weight:bold;
-font-size:17px;
-}
-
-.top-news marquee{
-direction:left;
-}
-
-/* SEARCH */
-
-.search-box{
-padding:15px;
-text-align:center;
-background:white;
-box-shadow:0 2px 5px rgba(0,0,0,.1);
-}
-
-.search-box select{
-padding:10px;
-width:250px;
-border:1px solid #ccc;
-border-radius:8px;
-font-size:16px;
-}
-/* NEW JOB */
-
-.new-job{
-border:2px solid #4caf50;
-background:#f1fff1;
-position:relative;
-}
-
-.new-badge{
-color:#0a8f08;
-font-weight:bold;
-font-size:14px;
-display:block;
-margin-bottom:5px;
-}
-
-.new-star{
-color:#00c853;
-font-size:18px;
-margin-left:5px;
-}
-
-.old-star{
-color:#9e9e9e;
-font-size:18px;
-margin-left:5px;
-}
-/* JOB SECTION */
-
-.jobs-container{
-padding:8px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:8px;
-}
-.job-card{
-background:white;
-padding:8px;
-margin-bottom:6px;
-border-radius:8px;
-font-size:12px;
-}
-.job-card:hover{
-transform:translateY(-3px);
-}
-
-.job-title{
-font-size:14px;
-margin-bottom:4px;
-}
-
-.job-info{
-margin:2px 0;
-line-height:1.3;
-font-size:11px;
-}
-
-.apply-btn{
-display:inline-block;
-background:#28a745;
-color:white;
-padding:10px 20px;
-border-radius:8px;
-text-decoration:none;
-margin-top:10px;
-}
-
-.apply-btn{
-padding:5px 10px;
-font-size:11px;
-}
-
-.expired{
-background:#e0e0e0 !important;
-opacity:.7;
-}
-
-.disabled-btn{
-background:#888 !important;
-pointer-events:none;
-cursor:not-allowed;
-}
-
-/* COUNTDOWN */
-
-.countdown{
-margin-top:10px;
-font-weight:bold;
-color:#d32f2f;
-}
-
-/* FOOTER */
-
-footer{
-background:#0d47a1;
-color:white;
-padding:20px;
-text-align:center;
-margin-top:20px;
-}
-
-.footer-links a{
-display:block;
-background:white;
-color:#0d47a1;
-padding:10px;
-margin:10px auto;
-max-width:300px;
-border-radius:8px;
-text-decoration:none;
-font-weight:bold;
-}
-
-.footer-links a:hover{
-background:#ff9800;
-color:white;
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-header{
-font-size:20px;
-padding:12px;
-}
-
-.search-box select{
-width:100%;
-}
-
-.job-title{
-font-size:18px;
-}
-
-.back-btn{
-padding:8px 12px;
-font-size:14px;
-}
-
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:tahoma,Arial,sans-serif}
+body{background:#eef3f9;color:#17243a;line-height:1.6}
+header{background:#0d47a1;color:#fff;text-align:center;padding:15px 70px;font-size:23px;font-weight:bold;position:sticky;top:0;z-index:1000;box-shadow:0 2px 8px #0002}
+.back-btn{position:fixed;top:13px;left:12px;background:#ff9800;color:#fff;padding:8px 13px;border:0;border-radius:8px;cursor:pointer;font-size:15px;z-index:9999}
+.back-btn:hover{background:#e68900}
+.top-news{background:#ff9800;color:#fff;padding:8px;font-weight:bold;font-size:15px}
+.top-news marquee{direction:left}
+.intro{background:#fff;margin:12px auto;padding:13px;border-radius:10px;max-width:1100px;text-align:center;box-shadow:0 2px 7px #0000000d}
+.intro strong{color:#0d47a1}
+.notice{background:#fff8e1;border-right:4px solid #d9ae52;padding:10px;margin:10px auto;max-width:1100px;border-radius:7px;font-size:13px}
+.search-box{padding:13px;text-align:center;background:#fff;box-shadow:0 2px 5px #00000012}
+.search-box select{padding:10px;width:min(100%,320px);border:1px solid #ccc;border-radius:8px;font-size:15px;background:#fff}
+.jobs-container{padding:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px;max-width:1200px;margin:auto}
+.job-card{background:#fff;padding:14px;border-radius:10px;border:1px solid #dce4ef;box-shadow:0 2px 8px #0000000a;display:flex;flex-direction:column;gap:5px}
+.job-card:hover{transform:translateY(-2px);box-shadow:0 5px 14px #00000012}
+.job-title{font-size:17px;font-weight:bold;color:#0d47a1;margin-bottom:3px}
+.new-badge{color:#07833c;font-size:12px;font-weight:bold}
+.job-info{font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+.job-info b{color:#253c5b}
+.apply-btn{display:inline-block;text-align:center;background:#218838;color:#fff;padding:9px 13px;border-radius:8px;text-decoration:none;margin-top:8px;font-size:14px;font-weight:bold}
+.apply-btn:hover{background:#176b2b}
+.source-link{color:#0d47a1;font-size:12px;margin-top:4px}
+.countdown{font-size:12px;color:#b3261e;font-weight:bold;margin-top:3px}
+.expired{background:#f0f0f0;border-color:#ccc;opacity:.78}
+.disabled-btn{background:#888!important;pointer-events:none}
+.empty-state{grid-column:1/-1;background:#fff;border:1px dashed #9aabc0;border-radius:10px;padding:22px;text-align:center;color:#42536b}
+.loading{grid-column:1/-1;text-align:center;padding:25px;color:#0d47a1}
+.sources{max-width:1100px;margin:8px auto 18px;padding:12px;background:#fff;border-radius:10px;text-align:center}
+.sources h3{color:#0d47a1;margin-bottom:8px}
+.footer-links{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
+.footer-links a{display:inline-block;background:#0d47a1;color:#fff;padding:8px 13px;border-radius:7px;text-decoration:none;font-weight:bold;font-size:13px}
+.footer-links a:hover{background:#ff9800}
+footer{background:#0d47a1;color:#fff;padding:17px;text-align:center;margin-top:18px}
+@media(max-width:600px){header{font-size:18px;padding:13px 65px}.job-title{font-size:17px}.jobs-container{padding:9px}.back-btn{font-size:13px;padding:7px 10px}}
 </style>
 </head>
-
 <body>
-<button class="back-btn" onclick="history.back()">⬅ شاتګ</button>
+<button class="back-btn" onclick="history.back()" type="button">⬅ شاتګ</button>
+<header>سیدولي خان جاب پورټل</header>
+<div class="top-news"><marquee behavior="scroll" direction="left" scrollamount="5">یوازې تایید شوي ایمیل غوښتنلیکونه | د ادارې اصلي ایمیل او د بست موضوع له مخکې ډکېږي | CV او اسناد خپله ضمیمه او ایمیل واستوئ</marquee></div>
 
-<header>
-سیدولي خان جاب پورټل
-</header>
-
-<div class="top-news">
-<marquee behavior="scroll" direction="left" scrollamount="6">
-د شرایطو برابر نوماندان دې خپل ثبت نام وکړي | د ثبت نام ټول معلومات په اعلان کې موجود دي | د پای نېټې وروسته ثبت نام نه منل کېږي
-</marquee>
+<section class="intro">
+<strong>د کونړ او نورستان د کار فرصتونه</strong>
+<p>دلته یوازې هغه اعلانونه خپرېږي چې د ادارې د غوښتنلیک اصلي ایمیل او د اعلان د پای نېټه یې تایید شوې وي.</p>
+</section>
+<div class="notice">
+<strong>د غوښتنلیک طریقه:</strong> د «ثبت نام د ایمیل له لارې» تڼۍ کلیک کړئ؛ ستاسې د موبایل یا کمپیوټر ایمیل اپلېکېشن به د ادارې له اصلي ایمیل او د بست له موضوع سره خلاص شي. CV او نور اسناد خپله ورسره ضمیمه او ایمیل واستوئ. دا پاڼه ستاسې اسناد نه اخلي او ستاسې پر ځای ایمیل نه استوي.
 </div>
-
+<div class="notice">
+<strong>د سرچینو په اړه:</strong> هغه بستونه چې یوازې د ویب‌پاڼې فورمې یا آنلاین پورټل له لارې غوښتنلیک مني، دلته د ایمیل غوښتنلیک په توګه نه خپرېږي. جعلي یا اټکلي ایمیل نه کارول کېږي. د معلوماتو فایل پاڼه هر ۳۰ دقیقې بیا ګوري؛ د سرچینو بشپړ اتومات راټولول لا جلا سروري اتصال ته اړتیا لري.
+</div>
 <div class="search-box">
-<select id="locationFilter" onchange="filterJobs()">
+<select id="locationFilter" aria-label="د ولایت له مخې فلټر" onchange="filterJobs()">
 <option value="all">ټولې سیمې</option>
 <option value="کنړ">کنړ</option>
 <option value="نورستان">نورستان</option>
 </select>
+<p id="jobCount" style="font-size:12px;color:#53657d;margin-top:7px">د بستونو شمېر لوستل کېږي...</p>
+</div>
+<div class="jobs-container" id="jobsContainer">
+<div class="loading">د تایید شوو بستونو معلومات لوستل کېږي...</div>
 </div>
 
-<div class="jobs-container">
-<!-- بست 1 -->
-<div class="job-card"
-data-location="کنړ"
-data-posted="2026-06-14"
-data-expiry="2026-07-30">
-<div class="job-title">مالي مدیر</div>
-<div class="new-badge">
-<span class="new-star">★</span>
-نوی
-</div>
-<div class="job-info">ډول: قراردادي</div>
-<div class="job-info">اداره: Example NGO</div>
-<div class="job-info">شرایط: د لیسانس سند او ۳ کاله تجربه</div>
-<div class="job-info">د ثبت نام نیټه: 2026-06-15</div>
-<div class="job-info">د پای نیټه: 2026-07-30</div>
-<a class="apply-btn" href="mailto:finance@example.org?subject=Application for Finance Manager Position">ثبت نام</a>
-<div class="countdown"></div>
-</div>
-
-<!-- بست 2 -->
-<div class="job-card"
-data-location="نورستان"
-data-posted="2026-06-14"
-data-expiry="2026-07-25">
-<div class="new-badge">
-<span class="new-star">★</span>
-نوی
-</div>
-<div class="job-title">اداري آمر</div>
-<div class="job-info">ډول: دایمي</div>
-<div class="job-info">اداره: Development Office</div>
-<div class="job-info">شرایط: لیسانس او ۲ کاله تجربه</div>
-<div class="job-info">د ثبت نام نیټه: 2026-06-15</div>
-<div class="job-info">د پای نیټه: 2026-07-25</div>
-<a class="apply-btn" href="mailto:admin@example.org?subject=Application for Admin Manager Position">ثبت نام</a>
-<div class="countdown"></div>
-</div>
-
-<!-- بست 3 --><div class="job-card"
-data-location="نورستان"
-data-posted="2026-06-14"
-data-expiry="2026-07-25">
-<div class="new-badge">
-<span class="new-star">★</span>
-نوی
-</div>
-<div class="job-title">د معلوماتو مدیر</div>
-<div class="job-info">ډول: قراردادي</div>
-<div class="job-info">اداره: IT Center</div>
-<div class="job-info">شرایط: کمپیوټر ساینس</div>
-<div class="job-info">د ثبت نام نیټه: 2026-06-15</div>
-<div class="job-info">د پای نیټه: 2026-08-01</div>
-<a class="apply-btn" href="mailto:it@example.org?subject=Application for IT Manager Position">ثبت نام</a>
-<div class="countdown"></div>
-</div>
-
-<!-- بست 4 -->
-<div class="job-card" data-location="نورستان" data-expiry="2026-07-15">
-<div class="new-badge">
-<span class="new-star">★</span>
-نوی
-</div>
-<div class="job-title">ښوونکی</div>
-<div class="job-info">ډول: دایمي</div>
-<div class="job-info">اداره: Education Project</div>
-<div class="job-info">شرایط: B.Ed</div>
-<div class="job-info">د ثبت نام نیټه: 2026-06-15</div>
-<div class="job-info">د پای نیټه: 2026-07-15</div>
-<a class="apply-btn" href="mailto:edu@example.org?subject=Application for Teacher Position">ثبت نام</a>
-<div class="countdown"></div>
-</div>
-
-<!-- بست 5 -->
-<div class="job-card"
-data-location="نورستان"
-data-posted="2026-06-14"
-data-expiry="2026-07-25">
-<div class="new-badge">
-<span class="new-star">★</span>
-نوی
-</div>
-<div class="job-title">نرس</div>
-<div class="job-info">ډول: قراردادي</div>
-<div class="job-info">اداره: Health Center</div>
-<div class="job-info">شرایط: نرسنګ سند</div>
-<div class="job-info">د ثبت نام نیټه: 2026-06-15</div>
-<div class="job-info">د پای نیټه: 2026-07-20</div>
-<a class="apply-btn" href="mailto:health@example.org?subject=Application for Nurse Position">ثبت نام</a>
-<div class="countdown"></div>
-</div>
-
-<!-- بست 6 -->
-<div class="job-card" data-location="نورستان" data-expiry="2026-08-10">
-<div class="new-badge">
-<span class="new-star">★</span>
-نوی
-</div>
-<div class="job-title">محاسب</div>
-<div class="job-info">ډول: دایمي</div>
-<div class="job-info">اداره: Finance Office</div>
-<div class="job-info">شرایط: BBA</div>
-<div class="job-info">د ثبت نام نیټه: 2026-06-15</div>
-<div class="job-info">د پای نیټه: 2026-08-10</div>
-<a class="apply-btn" href="mailto:account@example.org?subject=Application for Accountant Position">ثبت نام</a>
-<div class="countdown"></div>
-</div>
-
-<!-- بست 7 -->
-<div class="job-card"
-data-location="نورستان"
-data-posted="2026-06-14"
-data-expiry="2026-07-25">
-<div class="new-badge">
-<span class="new-star">★</span>
-نوی
-</div>
-<div class="job-title">پروژې همغږی کوونکی</div>
-<div class="job-info">ډول: قراردادي</div>
-<div class="job-info">اداره: NGO Project</div>
-<div class="job-info">شرایط: ۳ کاله تجربه</div>
-<a class="apply-btn" href="mailto:project@example.org?subject=Application for Project Coordinator">ثبت نام</a>
-<div class="countdown"></div>
-</div>
-
-<!-- بست 8 -->
-<div class="job-card" data-location="نورستان" data-expiry="2026-07-28">
-<div class="new-badge">
-<span class="new-star">★</span>
-نوی
-</div>
-<div class="job-title">موټر چلوونکی</div>
-<div class="job-info">ډول: دایمي</div>
-<div class="job-info">اداره: Logistics Office</div>
-<div class="job-info">شرایط: جواز</div>
-<a class="apply-btn" href="mailto:driver@example.org?subject=Application for Driver Position">ثبت نام</a>
-<div class="countdown"></div>
-</div>
-
-<!-- بست 9 -->
-<div class="job-card"
-data-location="نورستان"
-data-posted="2026-06-14"
-data-expiry="2026-07-25">
-<div class="new-badge">
-<span class="new-star">★</span>
-نوی
-</div>
-<div class="job-title">ساتونکی</div>
-<div class="job-info">ډول: قراردادي</div>
-<div class="job-info">اداره: Security Company</div>
-<div class="job-info">شرایط: تجربه</div>
-<a class="apply-btn" href="mailto:guard@example.org?subject=Application for Guard Position">ثبت نام</a>
-<div class="countdown"></div>
-</div>
-
-<!-- بست 10 -->
-<div class="job-card"
-data-location="نورستان"
-data-posted="2026-06-14"
-data-expiry="2026-07-25">
-<div class="job-title">ټولنیز کارکوونکی</div>
-<div class="job-info">ډول: قراردادي</div>
-<div class="job-info">اداره: Social Project</div>
-<div class="job-info">شرایط: لیسانس</div>
-<a class="apply-btn" href="mailto:social@example.org?subject=Application for Social Worker Position">ثبت نام</a>
-<div class="countdown"></div>
-</div>
-
-</div>
-
-<footer>
-<h3>مهم لینکونه</h3>
-
+<section class="sources">
+<h3>د دندو مهمې سرچینې</h3>
 <div class="footer-links">
-<a href="https://www.acbar.org/en/jobs" target="_blank">ACBAR Jobs</a>
-<a href="https://jobs.af/" target="_blank">Jobs.af</a>
-<a href="https://wazifagroup.com/" target="_blank">Wazifa Group</a>
+<a href="https://www.acbar.org/company/jobs" target="_blank" rel="noopener">ACBAR Jobs</a>
+<a href="https://jobs.af/" target="_blank" rel="noopener">Jobs.af</a>
+<a href="https://wazifagroup.com/jobs-listing/" target="_blank" rel="noopener">Wazifa Group</a>
 </div>
-
-<p>© 2026 Said Wali Khan Job Portal</p>
-</footer>
+<p style="font-size:12px;margin-top:9px;color:#53657d">د سرچینې اصلي اعلان د هر بست په کارت کې وګورئ.</p>
+</section>
+<footer><p>© 2026 Said Wali Khan Job Portal</p></footer>
 
 <script>
+"use strict";
+let allJobs = [];
 
-function filterJobs(){
-
-let selected =
-document.getElementById("locationFilter").value;
-
-let jobs =
-document.querySelectorAll(".job-card");
-
-jobs.forEach(job=>{
-
-if(selected==="all" ||
-job.dataset.location===selected){
-
-job.style.display="block";
-
-}else{
-
-job.style.display="none";
-
+function escapeHtml(value){
+  return String(value == null ? "" : value).replace(/[&<>"']/g, function(ch){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch];
+  });
 }
-
-});
-
+function isValidEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || ""));
 }
-
-function checkExpiry(){
-
-let today = new Date();
-
-document
-.querySelectorAll(".job-card")
-.forEach(card=>{
-
-let expiry =
-new Date(card.dataset.expiry);
-
-let btn =
-card.querySelector(".apply-btn");
-
-let countdown =
-card.querySelector(".countdown");
-
-let diff =
-expiry - today;
-
-let days =
-Math.ceil(diff / (1000*60*60*24));
-
-if(days <= 0){
-
-card.classList.add("expired");
-
-btn.classList.add("disabled-btn");
-
-btn.innerText = "ثبت نام بند شو";
-
-countdown.innerHTML =
-"د بست اعلان وخت ختم شوی دی، تاسو نشئ کولای ثبت نام وکړئ";
-
-}else{
-
-countdown.innerHTML =
-"د ثبت نام پای ته "
-+ days +
-" ورځې پاتې دي";
-
+function deadlineDate(dateText){
+  const parts = String(dateText || "").split("-").map(Number);
+  if(parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return null;
+  return new Date(parts[0], parts[1]-1, parts[2], 23, 59, 59, 999);
 }
+function formatDate(dateText){ return escapeHtml(dateText || "نه ده ښودل شوې"); }
 
-});
-
+function renderJobs(){
+  const selected = document.getElementById("locationFilter").value;
+  const container = document.getElementById("jobsContainer");
+  const visible = allJobs.filter(job => selected === "all" || (Array.isArray(job.location) && job.location.includes(selected)));
+  document.getElementById("jobCount").textContent = "ښودل شوي بستونه: " + visible.length;
+  if(!visible.length){
+    container.innerHTML = '<div class="empty-state">اوس مهال په دې سیمه کې د تایید شوي ایمیل غوښتنلیک فعال بست نشته. د نوو اعلانونو لپاره د سرچینو لینکونه وګورئ.</div>';
+    return;
+  }
+  const now = new Date();
+  container.innerHTML = visible.map(job => {
+    const deadline = deadlineDate(job.expiryDate);
+    const expired = !deadline || now > deadline;
+    const days = deadline ? Math.ceil((deadline-now)/86400000) : 0;
+    const locationText = Array.isArray(job.location) ? job.location.join("، ") : "";
+    const email = String(job.email || "").trim();
+    const subject = String(job.subject || "").trim();
+    const canApply = job.verified === true && job.applicationMode === "email" && isValidEmail(email) && subject && !expired;
+    const mailto = "mailto:" + encodeURIComponent(email) + "?subject=" + encodeURIComponent(subject);
+    const badge = job.postedDate && (now - new Date(job.postedDate+"T00:00:00")) <= 86400000 ? '<div class="new-badge">★ نوی اعلان</div>' : "";
+    return '<article class="job-card '+(expired?'expired':'')+'">' +
+      badge +
+      '<div class="job-title">'+escapeHtml(job.title)+'</div>' +
+      '<div class="job-info"><b>اداره:</b> '+escapeHtml(job.organization)+'</div>' +
+      '<div class="job-info"><b>ولایت:</b> '+escapeHtml(locationText)+'</div>' +
+      '<div class="job-info"><b>د دندې ډول:</b> '+escapeHtml(job.employmentType || "د اعلان له مخې")+'</div>' +
+      '<div class="job-info"><b>شرایط:</b> '+escapeHtml(job.requirements || "شرایط په اصلي اعلان کې وګورئ")+'</div>' +
+      '<div class="job-info"><b>د اعلان نېټه:</b> '+formatDate(job.postedDate)+'</div>' +
+      '<div class="job-info"><b>د غوښتنلیک وروستۍ نېټه:</b> '+formatDate(job.expiryDate)+'</div>' +
+      '<div class="job-info"><b>د ادارې ایمیل:</b> '+escapeHtml(email)+'</div>' +
+      (canApply ? '<a class="apply-btn" href="'+escapeHtml(mailto)+'">✉ ثبت نام د ایمیل له لارې</a>' : '<span class="apply-btn disabled-btn">د ثبت نام وخت ختم شوی یا ایمیل تایید نه دی</span>') +
+      '<div class="countdown">'+(expired ? 'د دې بست د غوښتنلیک موده ختمه شوې ده.' : 'د ثبت نام لپاره شاوخوا '+days+' ورځې پاتې دي.')+'</div>' +
+      '<a class="source-link" href="'+escapeHtml(job.sourceUrl || "#")+'" target="_blank" rel="noopener">اصلي اعلان: '+escapeHtml(job.sourceName || "سرچینه")+'</a>' +
+      '</article>';
+  }).join("");
 }
-function checkNewJobs(){
+function filterJobs(){ renderJobs(); }
 
-let now = new Date();
-
-document
-.querySelectorAll(".job-card")
-.forEach(card=>{
-
-let posted =
-new Date(card.dataset.posted);
-
-let hours =
-(now - posted)/(1000*60*60);
-
-let badge =
-card.querySelector(".new-badge");
-
-if(!badge) return;
-
-if(hours <= 24){
-
-card.classList.add("new-job");
-
-badge.innerHTML =
-'<span class="new-star">★</span> نوی';
-
-}else{
-
-card.classList.remove("new-job");
-
-badge.innerHTML =
-'<span class="old-star">★</span>';
-
+async function loadJobs(){
+  const container = document.getElementById("jobsContainer");
+  try{
+    const response = await fetch("./jobs-feed.json?v="+Date.now(), {cache:"no-store"});
+    if(!response.ok) throw new Error("feed unavailable");
+    const data = await response.json();
+    allJobs = Array.isArray(data.jobs) ? data.jobs.filter(job =>
+      job && job.verified === true && job.applicationMode === "email" &&
+      Array.isArray(job.location) && job.location.some(place => place === "کنړ" || place === "نورستان") &&
+      isValidEmail(job.email) && job.subject && job.sourceUrl && job.expiryDate
+    ) : [];
+    renderJobs();
+  }catch(error){
+    container.innerHTML = '<div class="empty-state">د بستونو معلومات اوس نه لوډېږي. لږ وروسته بیا هڅه وکړئ یا د لاندې سرچینو لینکونه خلاص کړئ.</div>';
+    document.getElementById("jobCount").textContent = "د معلوماتو د لوستلو ستونزه";
+  }
 }
-
-});
-
-}
-
-checkNewJobs();
-checkExpiry();
-
-setInterval(function(){
-
-checkNewJobs();
-checkExpiry();
-
-},60000);
-
+loadJobs();
+setInterval(loadJobs, 30 * 60 * 1000);
 </script>
-
 
 <div id="sw-language-bar" style="position:fixed;bottom:12px;left:12px;z-index:99999;background:#071a35;border:1px solid #d9ae52;border-radius:12px;padding:6px 8px;display:flex;gap:5px;flex-wrap:wrap;box-shadow:0 3px 14px #0005">
 <button type="button" onclick="changeLanguage('ps',this)" style="padding:5px 8px;border:0;border-radius:6px">پښتو</button>
@@ -575,8 +165,7 @@ checkExpiry();
 <button type="button" onclick="changeLanguage('ur',this)" style="padding:5px 8px;border:0;border-radius:6px">اردو</button>
 <button type="button" onclick="changeLanguage('ar',this)" style="padding:5px 8px;border:0;border-radius:6px">العربية</button>
 </div>
-<script src="language.js?v=20261109-2"></script></script>
-
+<script src="language.js?v=20261109-2"></script>
 <script src="saidwali-gpt-global.js"></script>
 </body>
 </html>
