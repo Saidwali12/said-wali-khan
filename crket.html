@@ -548,14 +548,14 @@ footer{
    <a href="#" onclick="event.preventDefault();openCricketTV('Sky Sports Cricket','https://www.skysports.com/watch')">🇬🇧 Sky Sports Cricket</a>
   </div>
  </div>
- <span class="channel-menu-note">د چینل په ټاکلو سره د هغه ژوندی خپرندوی پاڼه دلته پرانیستل کېږي.</span>
+ <span class="channel-menu-note">د چینل په ټاکلو سره د هغه ژوندۍ ویډیو/پلېیر په همدې صفحه کې پرانیستل کېږي.</span>
 </div>
 <section id="cricketTVScreen" class="tvScreen" aria-live="polite">
  <div class="tvScreenHead">
   <strong id="cricketTVTitle">📺 ژوندۍ خپرونه</strong>
   <div class="tvActions">
    <a id="cricketTVExternal" href="#" target="_blank" rel="noopener">که ویډیو دلته خلاصه نه شوه، دلته یې وګورئ ↗</a>
-   <button type="button" onclick="closeCricketTV()">✖ تلویزیون بندول</button>
+   <button type="button" onclick="fullscreenCricketTV()">⛶ بشپړه پرده</button>\n   <button type="button" onclick="closeCricketTV()">✖ تلویزیون بندول</button>
   </div>
  </div>
  <iframe id="cricketTVFrame" title="د کرکټ ژوندۍ تلویزیوني خپرونه" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
@@ -1322,7 +1322,7 @@ function openCricketTV(name,url){
  document.querySelector(".cricket-channel-nav .dropbtn").classList.remove("active");
  screen.scrollIntoView({behavior:"smooth",block:"start"});
 }
-function closeCricketTV(){
+function fullscreenCricketTV(){\n const screen=document.getElementById("cricketTVScreen");\n if(screen.requestFullscreen)screen.requestFullscreen().catch(()=>{});\n}\nfunction closeCricketTV(){
  const screen=document.getElementById("cricketTVScreen");
  document.getElementById("cricketTVFrame").src="about:blank";
  screen.classList.remove("open");
