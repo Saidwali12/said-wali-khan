@@ -38,6 +38,29 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 .footer-links a{display:block;background:white;color:#0d47a1;padding:10px;margin:10px auto;max-width:300px;border-radius:8px;text-decoration:none;font-weight:bold}
 .footer-links a:hover{background:#ff9800;color:white}
 @media(max-width:768px){header{font-size:20px;padding:12px}.search-box select{width:100%}.job-title{font-size:18px}.back-btn{padding:8px 12px;font-size:14px}}
+
+.registration-entry{padding:12px;text-align:center;background:#fff}
+.registration-open{background:#d9ae52;color:#071a35;border:0;border-radius:9px;padding:11px 20px;font-weight:bold;font-size:15px;cursor:pointer}
+.registration-note{font-size:11px;color:#555;margin-top:6px}
+.reg-modal{display:none;position:fixed;inset:0;background:#0009;z-index:100000;overflow:auto;padding:18px}
+.reg-modal.open{display:block}
+.reg-panel{max-width:620px;margin:24px auto;background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 35px #0005;direction:rtl}
+.reg-panel h2{color:#0d47a1;margin-bottom:8px}
+.reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.reg-field{margin:8px 0}
+.reg-field label{display:block;font-size:13px;font-weight:bold;margin-bottom:5px}
+.reg-field input,.reg-field select{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;background:#fff}
+.reg-help{font-size:11px;color:#555;line-height:1.7}
+.reg-submit{background:#0d47a1;color:#fff;border:0;border-radius:8px;padding:12px 18px;font-weight:bold;cursor:pointer;width:100%;margin-top:10px}
+.reg-close{float:left;border:0;background:#eee;border-radius:7px;padding:6px 10px;cursor:pointer}
+.reg-consent{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.7;margin-top:12px}
+.reg-consent input{margin-top:4px}
+.reg-status{margin-top:10px;padding:10px;border-radius:8px;display:none;font-size:13px;line-height:1.7}
+.reg-status.show{display:block}
+.reg-status.ok{background:#e8f5e9;color:#1b5e20}
+.reg-status.err{background:#ffebee;color:#b71c1c}
+@media(max-width:600px){.reg-grid{grid-template-columns:1fr}.reg-panel{margin:5px auto;padding:14px}.reg-modal{padding:8px}}
+
 </style>
 </head>
 <body>
@@ -46,6 +69,34 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 <div class="top-news"><marquee behavior="scroll" direction="left" scrollamount="6">د کونړ او نورستان تازه کاري فرصتونه | د ایمیل له لارې مستقیم غوښتنلیک | د پای نېټه حتمي وګورئ</marquee></div>
 <div class="intro-note"><b style="color:#0d47a1">د کونړ او نورستان د کار اعلانونه</b><br>یوازې هغه بستونه چې د ادارې اصلي ایمیل او د غوښتنلیک موضوع یې تایید شوې وي.</div>
 <div class="notice">د ثبت نام تڼۍ Gmail کې د ادارې ایمیل او د بست موضوع خلاصوي. خپل CV او اسناد ورسره ضمیمه کړئ او ایمیل خپله واستوئ. که Gmail نه کاروئ، د بل ایمیل اپلېکېشن لینک هم شته.</div>
+
+<div class="registration-entry">
+  <button class="registration-open" type="button" onclick="openApplicantForm()">📝 د کار غوښتونکو ثبت‌نام</button>
+  <div class="registration-note">خپل معلومات ثبت کړئ او د خپل ټاکلي ولایت د نویو دندو خبرتیاوې په ایمیل ترلاسه کړئ.</div>
+</div>
+<div class="reg-modal" id="applicantModal" role="dialog" aria-modal="true" aria-labelledby="regTitle">
+ <div class="reg-panel">
+  <button class="reg-close" type="button" onclick="closeApplicantForm()">✕ تړل</button>
+  <h2 id="regTitle">د کار غوښتونکو ثبت‌نام</h2>
+  <p class="reg-help">ټول اړین معلومات په سمه توګه ولیکئ. عکس او CV اختیاري دي، خو د غوښتنلیک لپاره یې پورته کول ګټور دي.</p>
+  <form id="applicantForm" enctype="multipart/form-data">
+   <div class="reg-grid">
+    <div class="reg-field"><label for="appFullName">نوم *</label><input id="appFullName" name="full_name" required maxlength="100" autocomplete="name"></div>
+    <div class="reg-field"><label for="appFatherName">د پلار نوم *</label><input id="appFatherName" name="father_name" required maxlength="100"></div>
+    <div class="reg-field"><label for="appEducation">د تحصیل درجه *</label><select id="appEducation" name="education" required><option value="">تحصیلي درجه وټاکئ</option><option>ابتدائیه</option><option>ثانویه</option><option>بکلوریا</option><option>دیپلوم</option><option>لیسانس</option><option>ماسټري</option><option>دوکتورا</option><option>نور</option></select></div>
+    <div class="reg-field"><label for="appPhone">د ټیلیفون شمېره *</label><input id="appPhone" name="phone" required maxlength="40" autocomplete="tel" placeholder="+93..."></div>
+    <div class="reg-field"><label for="appEmail">ایمیل ادرس *</label><input id="appEmail" name="email" type="email" required maxlength="160" autocomplete="email" placeholder="example@gmail.com"></div>
+    <div class="reg-field"><label for="appProvince">د کوم ولایت لپاره دنده غواړئ؟ *</label><select id="appProvince" name="province" required><option value="">ولایت وټاکئ</option><option value="kunar">کونړ</option><option value="nuristan">نورستان</option><option value="both">دواړه ولایتونه</option></select></div>
+   </div>
+   <div class="reg-field"><label for="appPhoto">عکس (JPG/PNG/WebP، تر ۵ MB)</label><input id="appPhoto" name="photo" type="file" accept="image/jpeg,image/png,image/webp"></div>
+   <div class="reg-field"><label for="appCv">CV / خلص سوانح (PDF/DOC/DOCX، تر ۱۰ MB)</label><input id="appCv" name="cv" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
+   <label class="reg-consent"><input type="checkbox" name="consent" value="yes" required><span>زه اجازه ورکوم چې زما نوم، د اړیکې معلومات او ټاکل شوی ولایت د کارموندنې لپاره خوندي شي، او د خپل ټاکلي ولایت د نویو یا تازه شوو دندو خبرتیاوې زما ایمیل ته راولېږل شي. زه هر وخت د خبرتیاوو د بندولو غوښتنه کولای شم. *</span></label>
+   <button class="reg-submit" id="regSubmit" type="submit">ثبت‌نام بشپړ کړئ</button>
+   <div class="reg-status" id="regStatus" role="status"></div>
+  </form>
+ </div>
+</div>
+
 <div class="search-box">
 <select id="locationFilter" onchange="filterJobs()">
 <option value="all">ټولې سیمې</option><option value="کنړ">کنړ</option><option value="نورستان">نورستان</option>
@@ -111,6 +162,31 @@ async function loadJobs(){
 loadJobs();
 setInterval(loadJobs,30*60*1000);
 </script>
+
+<script>
+const JOBS_API = "https://saidwali-jobs-api.walizaad2.workers.dev";
+function openApplicantForm(){document.getElementById("applicantModal").classList.add("open");document.body.style.overflow="hidden";}
+function closeApplicantForm(){document.getElementById("applicantModal").classList.remove("open");document.body.style.overflow="";}
+document.getElementById("applicantModal").addEventListener("click",function(e){if(e.target===this)closeApplicantForm();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeApplicantForm();});
+document.getElementById("applicantForm").addEventListener("submit",async function(e){
+ e.preventDefault();
+ const form=this,btn=document.getElementById("regSubmit"),status=document.getElementById("regStatus");
+ const photo=document.getElementById("appPhoto").files[0],cv=document.getElementById("appCv").files[0];
+ if(photo&&photo.size>5*1024*1024){showRegStatus("عکس باید تر ۵ MB کم وي.",false);return;}
+ if(cv&&cv.size>10*1024*1024){showRegStatus("CV باید تر ۱۰ MB کم وي.",false);return;}
+ btn.disabled=true;btn.textContent="ثبت‌نام روان دی...";
+ try{
+  const response=await fetch(JOBS_API+"/api/register",{method:"POST",body:new FormData(form)});
+  const data=await response.json();
+  if(!response.ok||!data.ok)throw new Error(data.error||"ثبت‌نام بریالی نه شو.");
+  showRegStatus(data.message,true);form.reset();
+ }catch(err){showRegStatus(err.message||"له سرور سره اړیکه ټینګه نه شوه. وروسته بیا هڅه وکړئ.",false);}
+ finally{btn.disabled=false;btn.textContent="ثبت‌نام بشپړ کړئ";}
+});
+function showRegStatus(message,ok){const el=document.getElementById("regStatus");el.textContent=message;el.className="reg-status show "+(ok?"ok":"err");}
+</script>
+
 <div id="sw-language-bar" style="position:fixed;bottom:12px;left:12px;z-index:99999;background:#071a35;border:1px solid #d9ae52;border-radius:12px;padding:6px 8px;display:flex;gap:5px;flex-wrap:wrap;box-shadow:0 3px 14px #0005">
 <button type="button" onclick="changeLanguage('ps',this)" style="padding:5px 8px;border:0;border-radius:6px">پښتو</button>
 <button type="button" onclick="changeLanguage('fa',this)" style="padding:5px 8px;border:0;border-radius:6px">دری</button>
