@@ -49362,6 +49362,118 @@ document.addEventListener(
 
 
 
+
+<style id="saidwali-social-news-stories-style">
+/* SAIDWALI_STORIES_NEWS_V1 — اضافي ډیزاین، پخوانی API نه بدلوي */
+#swStories { margin-bottom:16px; padding:14px; }
+#swStories .sw-story-row { display:flex; gap:10px; overflow-x:auto; padding:4px 2px 9px; scrollbar-width:thin; }
+#swStories .sw-story { flex:0 0 112px; height:166px; border:0; padding:0; border-radius:13px; overflow:hidden; position:relative; cursor:pointer; background:linear-gradient(145deg,#075b35,#16a765); color:white; box-shadow:0 2px 8px #0002; }
+#swStories .sw-story img,.sw-story video { width:100%; height:100%; object-fit:cover; display:block; }
+#swStories .sw-story:after { content:""; position:absolute; inset:45% 0 0; background:linear-gradient(transparent,#0009); }
+#swStories .sw-story .sw-story-label { position:absolute; z-index:1; bottom:9px; right:8px; left:8px; color:#fff; font-size:12px; font-weight:700; text-align:right; }
+#swStories .sw-story .sw-story-plus { position:absolute; z-index:2; top:9px; right:9px; width:31px; height:31px; border:3px solid white; border-radius:50%; background:#1877f2; display:grid; place-items:center; font-size:22px; }
+#swStories .sw-story.sw-add { background:#e4e6eb; color:#1c1e21; }
+#swStories .sw-story.sw-add:after { display:none; }
+#swStories .sw-story.sw-add .sw-story-label { color:#1c1e21; text-align:center; bottom:10px; }
+#swStories .sw-story.sw-add .sw-story-plus { top:auto; bottom:39px; right:calc(50% - 16px); }
+#swNewsCard { overflow:hidden; }
+#swNewsCard .sw-news-tabs { display:flex; gap:5px; flex-wrap:wrap; margin:9px 0; }
+#swNewsCard .sw-news-tab { border:0; border-radius:18px; padding:6px 10px; background:#eef2f7; color:#344054; font-size:12px; font-weight:700; }
+#swNewsCard .sw-news-tab.active { background:#1877f2; color:white; }
+#swNewsViewport { height:360px; overflow:hidden; position:relative; border-radius:9px; background:#f7f8fa; }
+#swNewsTrack { display:flex; flex-direction:column; gap:0; animation:swNewsRise 46s linear infinite; }
+#swNewsViewport:hover #swNewsTrack { animation-play-state:paused; }
+.sw-news-item { display:block; padding:11px 9px; border-bottom:1px solid #e4e6eb; color:#1c1e21; font-size:13px; line-height:1.65; }
+.sw-news-item:hover { background:#edf4ff; color:#075fc5; }
+.sw-news-source { display:block; color:#1877f2; font-size:10px; font-weight:800; margin-bottom:3px; }
+.sw-news-note { color:#65676b; font-size:11px; line-height:1.6; margin-top:8px; }
+@keyframes swNewsRise { from { transform:translateY(0); } to { transform:translateY(-50%); } }
+#swStoryViewer { position:fixed; inset:0; z-index:100000; background:#101318f2; display:none; align-items:center; justify-content:center; padding:18px; }
+#swStoryViewer.open { display:flex; }
+#swStoryViewer .sw-viewer-inner { width:min(420px,95vw); height:min(720px,88vh); position:relative; background:#20242b; border-radius:16px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+#swStoryViewer img,#swStoryViewer video { width:100%; height:100%; object-fit:contain; }
+#swStoryViewer button { position:absolute; z-index:2; top:10px; left:10px; border:0; border-radius:50%; width:38px; height:38px; color:#fff; background:#0009; font-size:22px; }
+@media(max-width:1000px){ #swNewsCard { display:none; } }
+@media(max-width:720px){ #swStories { padding:12px; } #swStories .sw-story { flex-basis:96px; height:145px; } }
+@media(prefers-reduced-motion:reduce){ #swNewsTrack { animation:none; } }
+</style>
+<script>
+/* SAIDWALI_STORIES_NEWS_V1 — د سټوریو محلي مخکتنه او د BBC خبرونو عمودي ټیکر */
+(function(){
+  const feeds = {
+    ps:{label:"BBC پښتو",url:"https://feeds.bbci.co.uk/pashto/rss.xml"},
+    fa:{label:"BBC دري",url:"https://feeds.bbci.co.uk/persian/rss.xml"},
+    ur:{label:"BBC اردو",url:"https://feeds.bbci.co.uk/urdu/rss.xml"}
+  };
+  let activeFeed="ps";
+  let stories=[];
+  function el(tag,attrs={},html=""){const n=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));n.innerHTML=html;return n;}
+  function addStories(){
+    const feed=document.getElementById("feedPage");
+    if(!feed || document.getElementById("swStories")) return;
+    const box=el("section",{id:"swStories",class:"card","aria-label":"سټوري"} ,'<div class="row space-between"><div><h3 class="card-title" style="margin:0">📖 سټوري</h3><div class="muted">د ملګرو لنډې شېبې</div></div><span class="muted">Stories</span></div><div class="sw-story-row" id="swStoryRow"></div>');
+    feed.insertBefore(box,feed.firstChild);
+    renderStories();
+  }
+  function renderStories(){
+    const row=document.getElementById("swStoryRow"); if(!row)return;
+    row.innerHTML="";
+    const add=el("button",{type:"button",class:"sw-story sw-add",id:"swAddStory"},'<span class="sw-story-plus">+</span><span class="sw-story-label">سټوري اضافه کړه</span>');
+    row.appendChild(add);
+    stories.forEach((story,i)=>{
+      const b=el("button",{type:"button",class:"sw-story","data-story-index":String(i)});
+      b.appendChild(el(story.type==="video"?"video":"img",{src:story.url, muted:"",playsinline:""}));
+      b.insertAdjacentHTML("beforeend",'<span class="sw-story-label">'+(story.name||"زما سټوري")+'</span>');
+      row.appendChild(b);
+    });
+  }
+  function addNews(){
+    const side=document.querySelector(".right-sidebar");
+    if(!side || document.getElementById("swNewsCard"))return;
+    const card=el("section",{id:"swNewsCard",class:"sidebar-card"},'<h3 class="card-title">📰 تازه نړیوال خبرونه</h3><div class="muted">BBC — خبرونه له ښکته څخه پورته حرکت کوي</div><div class="sw-news-tabs"><button class="sw-news-tab active" data-feed="ps">پښتو</button><button class="sw-news-tab" data-feed="fa">دري</button><button class="sw-news-tab" data-feed="ur">اردو</button></div><div id="swNewsViewport"><div id="swNewsTrack"><div class="sw-news-item">خبرونه لوډ کېږي…</div></div></div><div class="sw-news-note">د خبر د لوستلو لپاره پر سرلیک کلیک وکړئ. په کمپیوټر کې د خبرونو پر بکس د موږک په اېښودلو حرکت درېږي.</div>');
+    side.insertBefore(card,side.firstChild);
+    loadFeed("ps");
+  }
+  async function loadFeed(code){
+    activeFeed=code;
+    document.querySelectorAll(".sw-news-tab").forEach(b=>b.classList.toggle("active",b.dataset.feed===code));
+    const track=document.getElementById("swNewsTrack"); if(!track)return;
+    track.innerHTML='<div class="sw-news-item">⏳ خبرونه لوډ کېږي…</div>';
+    try{
+      const endpoint="https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(feeds[code].url);
+      const res=await fetch(endpoint); if(!res.ok)throw new Error("feed unavailable");
+      const data=await res.json(); const items=(data.items||[]).slice(0,14);
+      if(!items.length)throw new Error("no items");
+      const markup=items.map(item=>'<a class="sw-news-item" target="_blank" rel="noopener noreferrer" href="'+safeLink(item.link)+'"><span class="sw-news-source">'+feeds[code].label+'</span>'+safeText(item.title||"خبر")+'</a>').join("");
+      track.innerHTML=markup+markup;
+    }catch(e){
+      track.innerHTML='<div class="sw-news-item"><b>'+feeds[code].label+'</b><br>اوس مهال خبرونه نه لوډېږي. د BBC وېب‌سایټ مستقیم پرانیزئ.</div><a class="sw-news-item" target="_blank" rel="noopener noreferrer" href="'+feeds[code].url+'">د BBC '+(code==="ps"?"پښتو":code==="fa"?"دري":"اردو")+' خبرونه پرانیزئ ↗</a>';
+    }
+  }
+  function safeText(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  function safeLink(v){try{const u=new URL(v);return u.protocol==="https:"?u.href:"#";}catch(e){return "#";}}
+  function viewer(){
+    if(document.getElementById("swStoryViewer"))return;
+    document.body.appendChild(el("div",{id:"swStoryViewer"},'<div class="sw-viewer-inner"><button type="button" aria-label="بندول">×</button><div id="swStoryMedia"></div></div>'));
+  }
+  document.addEventListener("click",function(e){
+    const tab=e.target.closest(".sw-news-tab"); if(tab){loadFeed(tab.dataset.feed);return;}
+    if(e.target.closest("#swAddStory")){
+      if(!window.currentUser && !document.querySelector("[data-auth='logged-in']:not(.hidden)")){alert("د سټوري د اضافه کولو لپاره لومړی حساب ته ننوځئ.");return;}
+      const input=el("input",{type:"file",accept:"image/*,video/*"});
+      input.onchange=()=>{const file=input.files&&input.files[0];if(!file)return;if(file.size>20*1024*1024){alert("د سټوري فایل باید تر 20MB کم وي.");return;}const reader=new FileReader();reader.onload=()=>{stories.unshift({url:reader.result,type:file.type.startsWith("video/")?"video":"image",name:"زما سټوري"});renderStories();alert("سټوري په همدې پاڼه کې د لنډې مخکتنې لپاره اضافه شوه. د ټولو کاروونکو سره د خپرولو لپاره د سرور سټوري API ته اړتیا ده.");};reader.readAsDataURL(file);};
+      input.click();return;
+    }
+    const story=e.target.closest("[data-story-index]");
+    if(story){const item=stories[Number(story.dataset.storyIndex)];if(!item)return;viewer();const media=document.getElementById("swStoryMedia");media.innerHTML="";const node=document.createElement(item.type==="video"?"video":"img");node.src=item.url;if(item.type==="video"){node.controls=true;node.autoplay=true;}media.appendChild(node);document.getElementById("swStoryViewer").classList.add("open");return;}
+    if(e.target.closest("#swStoryViewer button")||e.target.id==="swStoryViewer"){document.getElementById("swStoryViewer")?.classList.remove("open");}
+  });
+  function init(){addStories();addNews();}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+  const observer=new MutationObserver(init);observer.observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 <div id="sw-language-bar" style="position:fixed;bottom:12px;left:12px;z-index:99999;background:#071a35;border:1px solid #d9ae52;border-radius:12px;padding:6px 8px;display:flex;gap:5px;flex-wrap:wrap;box-shadow:0 3px 14px #0005">
 <button type="button" onclick="changeLanguage('ps',this)" style="padding:5px 8px;border:0;border-radius:6px">پښتو</button>
 <button type="button" onclick="changeLanguage('fa',this)" style="padding:5px 8px;border:0;border-radius:6px">دری</button>
