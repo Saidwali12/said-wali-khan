@@ -594,6 +594,7 @@ footer{
 <div class="cricket-desk">
 <aside class="cricket-news-rail">
  <h2>📰 د کرکټ تازه خبرونه</h2>
+ <section class="cricket-api-news"><h3>🔴 د کرکټ API ژوندۍ پایلې او تازه پېښې</h3><div id="cricketApiNewsItems"><div class="cricket-api-item">د ژوندیو لوبو معلومات راټولېږي…</div></div><div class="cricket-api-status" id="cricketApiNewsStatus">د کرکټ API معلومات هر ۱۵ ثانیې تازه کېږي.</div></section>
  <div class="news-scroll-window"><div class="news-scroll-list" id="cricketAutoNews">
   <a class="rail-news" href="https://www.icc-cricket.com/news" target="_blank" rel="noopener">🏛️ د ICC تازه پرېکړې او نړیوال خبرونه<small>ICC رسمي خبرونه</small></a>
   <a class="rail-news" href="https://www.afghancricket.af/" target="_blank" rel="noopener">🇦🇫 د افغانستان کرکټ بورډ تازه خبرونه<small>ACB رسمي سرچینه</small></a>
@@ -1368,10 +1369,16 @@ async function loadCricketNews(){
   {name:"Wisden",url:"https://www.wisden.com/feed"},
   {name:"BBC Sport Cricket",url:"https://feeds.bbci.co.uk/sport/cricket/rss.xml"},
   {name:"The Guardian Cricket",url:"https://www.theguardian.com/sport/cricket/rss"},
-  {name:"Google News — نړیوال کرکټ",url:"https://news.google.com/rss/search?q=cricket&hl=en-US&gl=US&ceid=US:en"},
-  {name:"Google News — افغانستان",url:"https://news.google.com/rss/search?q=Afghanistan+cricket&hl=en-US&gl=US&ceid=US:en"},
-  {name:"Google News — پاکستان",url:"https://news.google.com/rss/search?q=Pakistan+cricket&hl=en-US&gl=US&ceid=US:en"},
-  {name:"Google News — هند",url:"https://news.google.com/rss/search?q=India+cricket&hl=en-US&gl=US&ceid=US:en"}
+  {name:"Cricbuzz",url:"https://news.google.com/rss/search?q=site%3Acricbuzz.com+cricket&hl=en-US&gl=US&ceid=US:en"},
+  {name:"ICC رسمي خبرونه",url:"https://news.google.com/rss/search?q=site%3Aicc-cricket.com+cricket&hl=en-US&gl=US&ceid=US:en"},
+  {name:"افغانستان کرکټ بورډ",url:"https://news.google.com/rss/search?q=site%3Aafghancricket.af+cricket&hl=en-US&gl=US&ceid=US:en"},
+  {name:"پاکستان کرکټ",url:"https://news.google.com/rss/search?q=Pakistan+cricket+board+PCB&hl=en-US&gl=US&ceid=US:en"},
+  {name:"هند کرکټ",url:"https://news.google.com/rss/search?q=India+cricket+BCCI&hl=en-US&gl=US&ceid=US:en"},
+  {name:"استرالیا او انګلستان",url:"https://news.google.com/rss/search?q=Australia+England+cricket&hl=en-US&gl=US&ceid=US:en"},
+  {name:"T20 او لیګونه",url:"https://news.google.com/rss/search?q=T20+cricket+league&hl=en-US&gl=US&ceid=US:en"},
+  {name:"ODI او Test",url:"https://news.google.com/rss/search?q=ODI+Test+cricket&hl=en-US&gl=US&ceid=US:en"},
+  {name:"ښځو کرکټ",url:"https://news.google.com/rss/search?q=women+cricket&hl=en-US&gl=US&ceid=US:en"},
+  {name:"ژوندۍ لوبې",url:"https://news.google.com/rss/search?q=live+cricket+match+today&hl=en-US&gl=US&ceid=US:en"}
  ];
  let items=[];
  await Promise.all(feeds.map(async feed=>{
@@ -1381,7 +1388,7 @@ async function loadCricketNews(){
    if(!response.ok)return;
    const data=await response.json();
    if(data.status==="ok"&&Array.isArray(data.items)){
-    data.items.slice(0,feed.name.startsWith("Google News")?14:10).forEach(item=>{
+    data.items.slice(0,feed.name.startsWith("Google News")||feed.name==="Cricbuzz"||feed.name.includes("کرکټ")||feed.name.includes("ICC")||feed.name.includes("T20")||feed.name.includes("ODI")||feed.name.includes("ښځو")||feed.name.includes("ژوندۍ")?12:10).forEach(item=>{
      if(item.title&&item.link)items.push({title:item.title,link:item.link,source:item.author||feed.name,date:item.pubDate});
     });
    }
@@ -1448,6 +1455,35 @@ if(railList && !railList.dataset.looped){railList.innerHTML+=railList.innerHTML;
 
 loadCricketNews();
 setInterval(loadCricketNews,300000);
+
+/* د موجود کرکټ API ژوندۍ لوبې د چپ خبرونو په بکس کې */
+async function loadCricketApiNews(){
+ const box=document.getElementById("cricketApiNewsItems");
+ const status=document.getElementById("cricketApiNewsStatus");
+ if(!box)return;
+ try{
+  const response=await fetch("https://saidwali-cricket.walizaad2.workers.dev/live",{cache:"no-store"});
+  if(!response.ok)throw new Error("API "+response.status);
+  const result=await response.json();
+  const payload=result&&result.data!==undefined?result.data:result;
+  const matches=Array.isArray(payload)?payload:(payload.matches||payload.live_matches||result.matches||[]);
+  if(!Array.isArray(matches)||!matches.length){
+   box.innerHTML='<div class="cricket-api-item">اوس مهال API کومه روانه لوبه نه ده راګرځولې.</div>';
+   if(status)status.textContent="API ځواب ورکړ؛ خو اوس د ژوندۍ لوبې معلومات نه لري.";
+   return;
+  }
+  box.innerHTML=matches.slice(0,8).map(m=>{
+   const a=m.first_team||{},b=m.second_team||{};
+   const title=(a.full_name||"Team 1")+" "+(a.score||"--")+" — "+(b.full_name||"Team 2")+" "+(b.score||"--");
+   const state=m.status_detail||m.short_status||m.status||m.state||"Live معلومات";
+   const id=Number(m.match_id);
+   return '<a class="cricket-api-item" href="#detail" '+(Number.isFinite(id)&&id>0?'onclick="openMatch('+id+');return false;"':'')+'><b>🏏 '+escapeHTML(title)+'</b><br>'+escapeHTML(state)+(m.venue?' • '+escapeHTML(m.venue):'')+'</a>';
+  }).join("");
+  if(status)status.textContent="له API څخه "+matches.length+" لوبې ترلاسه شوې؛ "+new Date().toLocaleTimeString()+"؛ د لوبې په نوم کلیک وکړئ چې سکورکارډ او بال په بال تبصره وګورئ.";
+ }catch(error){if(status)status.textContent="د کرکټ API سره اړیکه ونه شوه: "+error.message;}
+}
+loadCricketApiNews();
+setInterval(loadCricketApiNews,15000);
 
 /* =====================================================
    START
