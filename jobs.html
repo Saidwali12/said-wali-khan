@@ -40,7 +40,7 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 @media(max-width:768px){header{font-size:20px;padding:12px}.search-box select{width:100%}.job-title{font-size:18px}.back-btn{padding:8px 12px;font-size:14px}}
 
 .registration-entry{padding:12px;text-align:center;background:#fff}
-.registration-open{background:#d9ae52;color:#071a35;border:0;border-radius:9px;padding:11px 20px;font-weight:bold;font-size:15px;cursor:pointer}
+.registration-open{background:#d9ae52;color:#071a35;border:0;border-radius:9px;padding:11px 20px;font-weight:bold;font-size:15px;cursor:pointer}.registration-open:disabled{background:#9aa4b2;color:#fff;cursor:not-allowed}
 .registration-note{font-size:11px;color:#555;margin-top:6px}
 .reg-modal{display:none;position:fixed;inset:0;background:#0009;z-index:100000;overflow:auto;padding:18px}
 .reg-modal.open{display:block}
@@ -71,8 +71,8 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 <div class="notice">د ثبت نام تڼۍ Gmail کې د ادارې ایمیل او د بست موضوع خلاصوي. خپل CV او اسناد ورسره ضمیمه کړئ او ایمیل خپله واستوئ. که Gmail نه کاروئ، د بل ایمیل اپلېکېشن لینک هم شته.</div>
 
 <div class="registration-entry">
-  <button class="registration-open" type="button" onclick="openApplicantForm()">📝 د کار غوښتونکو ثبت‌نام</button>
-  <div class="registration-note">خپل معلومات ثبت کړئ او د خپل ټاکلي ولایت د نویو دندو خبرتیاوې په ایمیل ترلاسه کړئ.</div>
+  <button class="registration-open" type="button" onclick="openApplicantForm()" id="registrationOpenBtn" disabled>📝 د ثبت‌نام سیستم د فعالېدو په تمه</button>
+  <div class="registration-note" id="registrationServiceNote">د نوماندانو ثبت‌نام به د خوندي ډیټابېس، فایل‌ذخیرې او ایمیل تنظیماتو تر بشپړېدو وروسته فعال شي.</div>
 </div>
 <div class="reg-modal" id="applicantModal" role="dialog" aria-modal="true" aria-labelledby="regTitle">
  <div class="reg-panel">
@@ -165,7 +165,9 @@ setInterval(loadJobs,30*60*1000);
 
 <script>
 const JOBS_API = "https://saidwali-jobs-api.walizaad2.workers.dev";
-function openApplicantForm(){document.getElementById("applicantModal").classList.add("open");document.body.style.overflow="hidden";}
+async function checkApplicantService(){const btn=document.getElementById("registrationOpenBtn"),note=document.getElementById("registrationServiceNote");try{const r=await fetch(JOBS_API+"/health",{cache:"no-store"});const d=await r.json();if(r.ok&&d.ok&&d.database&&d.fileStorage&&d.gmailConfigured){btn.disabled=false;btn.textContent="📝 د کار غوښتونکو ثبت‌نام";note.textContent="خپل معلومات ثبت کړئ او د خپل ټاکلي ولایت د نویو دندو خبرتیاوې په ایمیل ترلاسه کړئ.";}else{btn.disabled=true;btn.textContent="📝 د ثبت‌نام سیستم د فعالېدو په تمه";}}catch(e){btn.disabled=true;btn.textContent="📝 د ثبت‌نام سیستم د فعالېدو په تمه";}}
+checkApplicantService();
+function openApplicantForm(){if(document.getElementById("registrationOpenBtn").disabled)return;document.getElementById("applicantModal").classList.add("open");document.body.style.overflow="hidden";}
 function closeApplicantForm(){document.getElementById("applicantModal").classList.remove("open");document.body.style.overflow="";}
 document.getElementById("applicantModal").addEventListener("click",function(e){if(e.target===this)closeApplicantForm();});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeApplicantForm();});
