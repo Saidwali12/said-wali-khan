@@ -468,6 +468,28 @@ footer{
  .tvScreen iframe{height:58vw;min-height:230px}
 }
 
+
+/* د کورپاڼې د مینو په شان د کرکټ تلویزیون مینو */
+.cricket-channel-nav{max-width:1250px;margin:18px auto 10px;padding:0 3%;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;position:relative;z-index:50}
+.cricket-channel-nav .dropdown{position:relative}
+.cricket-channel-nav .dropbtn{background:linear-gradient(135deg,#071a35,#143e6d);color:#f4d58a;padding:13px 22px;border:1px solid #d9ae52;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer;transition:.25s}
+.cricket-channel-nav .dropbtn:hover,.cricket-channel-nav .dropbtn.active{background:linear-gradient(135deg,#f4d58a,#c18c32);color:#10213b;transform:translateY(-2px)}
+.cricket-channel-nav .dropdown-content{display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:290px;max-height:65vh;overflow-y:auto;background:#fff;border:1px solid #e8d6ae;border-radius:12px;box-shadow:0 15px 40px #0003;z-index:99999}
+.cricket-channel-nav .dropdown-content.show{display:block;animation:menuIn .22s ease}
+.cricket-channel-nav .dropdown-content a{display:block;color:#102b50;padding:11px 16px;text-decoration:none;font-size:14px;font-weight:bold;border-bottom:1px solid #edf0f4}
+.cricket-channel-nav .dropdown-content a:hover{background:#fbf5e8;color:#a87520;padding-right:23px}
+.channel-menu-label{padding:10px 14px;background:#071a35;color:#f4d58a;font-weight:bold;font-size:13px}
+.channel-menu-note{font-size:12px;color:#5d6c77}
+.tvScreen{display:none;width:94%;max-width:1250px;margin:12px auto;background:#071a35;padding:14px;border:1px solid #d9ae52;border-radius:16px;color:white}
+.tvScreen.open{display:block}
+.tvScreenHead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.tvScreen iframe{width:100%;height:min(65vw,680px);min-height:280px;border:0;border-radius:10px;background:#000}
+.tvActions{display:flex;gap:8px;flex-wrap:wrap}
+.tvActions button,.tvActions a{background:#d9ae52;color:#071a35;border:0;border-radius:8px;padding:9px 13px;font-weight:bold;text-decoration:none;cursor:pointer;font-size:12px}
+.tvHint{font-size:12px;line-height:1.8;color:#d9e5f0;margin:9px 0 0}
+@keyframes menuIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){.cricket-channel-nav{margin:12px auto}.cricket-channel-nav .dropdown{width:100%}.cricket-channel-nav .dropbtn{width:100%}.cricket-channel-nav .dropdown-content{position:relative;top:0;width:100%;max-height:55vh;margin-top:5px}.tvScreen iframe{height:58vw;min-height:230px}}
+
 </style>
 </head>
 
@@ -505,27 +527,40 @@ footer{
 </header>
 
 
-<section class="tvPanel" aria-label="د کرکټ تلویزیوني چینلونه">
- <h2>📺 د افغانستان د کرکټ تلویزیوني چینلونه</h2>
- <div class="tvChannels">
-  <button class="tvChannel" onclick="openCricketTV('ATN Ariana TV','https://www.arianatelevision.com/atn-live/',true)">📺 ATN / آریانا</button>
-  <button class="tvChannel" onclick="openCricketTV('AF Sports','https://www.lyngsat.com/stream/tvchannels/af/AF-Sports.html',true)">🏏 AF Sports</button>
-  <button class="tvChannel" onclick="openCricketTV('Solh Sports','https://afghanstream.tv/',true)">⚽ Solh Sports</button>
-  <button class="tvChannel" onclick="openCricketTV('Lemar TV','https://lemar.af/',true)">📡 Lemar TV</button>
-  <button class="tvChannel" onclick="openCricketTV('RTA Sports','https://www.rta.af/',true)">🏆 RTA Sports</button>
- </div>
- <div class="tvHint">د چینل په نوم کلیک وکړئ. که د چینل وېبپاڼه د بل سایټ دننه ویډیو ښودل منع کړي، د «په نوې کړکۍ کې پرانیستل» تڼۍ وکاروئ. د خپرونې شتون او د کرکټ حقونه د هرې لوبې له مخې بدلېږي.</div>
-</section>
-<section id="cricketTVScreen" class="tvScreen">
- <div class="tvScreenHead"><strong id="cricketTVTitle">📺 تلویزیون</strong>
-  <div class="tvActions">
-   <a id="cricketTVExternal" href="#" target="_blank" rel="noopener">په نوې کړکۍ کې پرانیستل ↗</a>
-   <button type="button" onclick="closeCricketTV()">✖ بندول او پاڼې ته ستنېدل</button>
+
+<!-- د اصلي ویب‌سایټ په شان د کرکټ چینلونو مینو -->
+<div class="cricket-channel-nav">
+ <div class="dropdown">
+  <button class="dropbtn" type="button" aria-expanded="false" onclick="toggleCricketMenu('cricketChannelMenu',this)">📺 د کرکټ ژوندۍ تلویزیونونه ▼</button>
+  <div class="dropdown-content" id="cricketChannelMenu">
+   <div class="channel-menu-label">🇦🇫 د افغانستان چینلونه</div>
+   <a href="#" onclick="event.preventDefault();openCricketTV('ATN / Ariana TV','https://afghanstream.tv/channel/ariana-tv')">📺 ATN / آریانا تلویزیون</a>
+   <a href="#" onclick="event.preventDefault();openCricketTV('Lemar TV','https://afghanstream.tv/channel/lemar-tv')">📡 Lemar TV</a>
+   <a href="#" onclick="event.preventDefault();openCricketTV('Solh Sports','https://afghanstream.tv/channel/solh-sports')">🏏 Solh Sports</a>
+   <a href="#" onclick="event.preventDefault();openCricketTV('RTA','https://afghanstream.tv/channel/rta')">📺 RTA تلویزیون</a>
+   <div class="channel-menu-label">🌍 نړیوال رسمي خپرندویان</div>
+   <a href="#" onclick="event.preventDefault();openCricketTV('ICC TV','https://www.icc.tv/')">🏆 ICC TV</a>
+   <a href="#" onclick="event.preventDefault();openCricketTV('PTV Sports / Geo Super','https://www.myco.io/')">🇵🇰 PTV Sports / Geo Super (Myco)</a>
+   <a href="#" onclick="event.preventDefault();openCricketTV('Star Sports / JioHotstar','https://www.hotstar.com/')">🇮🇳 Star Sports / JioHotstar</a>
+   <a href="#" onclick="event.preventDefault();openCricketTV('CricLife Max / StarzPlay','https://www.starzplay.com/en/sports')">🌍 CricLife Max / StarzPlay</a>
+   <a href="#" onclick="event.preventDefault();openCricketTV('SuperSport Cricket','https://www.supersport.com/')">🌍 SuperSport Cricket</a>
+   <a href="#" onclick="event.preventDefault();openCricketTV('Willow TV','https://www.willow.tv/')">🇺🇸 Willow TV</a>
+   <a href="#" onclick="event.preventDefault();openCricketTV('Sky Sports Cricket','https://www.skysports.com/watch')">🇬🇧 Sky Sports Cricket</a>
   </div>
  </div>
- <iframe id="cricketTVFrame" title="د کرکټ تلویزیوني خپرونه" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+ <span class="channel-menu-note">د چینل په ټاکلو سره د هغه ژوندی خپرندوی پاڼه دلته پرانیستل کېږي.</span>
+</div>
+<section id="cricketTVScreen" class="tvScreen" aria-live="polite">
+ <div class="tvScreenHead">
+  <strong id="cricketTVTitle">📺 ژوندۍ خپرونه</strong>
+  <div class="tvActions">
+   <a id="cricketTVExternal" href="#" target="_blank" rel="noopener">که ویډیو دلته خلاصه نه شوه، دلته یې وګورئ ↗</a>
+   <button type="button" onclick="closeCricketTV()">✖ تلویزیون بندول</button>
+  </div>
+ </div>
+ <iframe id="cricketTVFrame" title="د کرکټ ژوندۍ تلویزیوني خپرونه" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
+ <p class="tvHint">یادونه: د هرې لوبې خپرونې حقونه د سیالۍ او هېواد له مخې بدلېږي. که چینل اوس کرکټ نه خپروي، د هغه عادي ژوندۍ خپرونه به ښکاره شي. ځینې رسمي وېب‌پاڼې د نورو سایټونو دننه ویډیو بندوي؛ په هغه حالت کې پورته لینک وکاروئ.</p>
 </section>
-
 <div class="livebar">
  🔴 LIVE — معلومات هر 15 ثانیې تازه کېږي
 </div>
@@ -636,20 +671,16 @@ target="_blank">
 </div>
 <aside class="cricket-news-rail">
  <h2>📰 د کرکټ تازه خبرونه</h2>
- <div class="news-scroll-window"><div class="news-scroll-list">
-  <a class="rail-news" href="https://www.icc-cricket.com/news" target="_blank" rel="noopener">🏛️ د ICC تازه پرېکړې، اعلانونه او نړیوال خبرونه<small>رسمي ICC خبرونه</small></a>
-  <a class="rail-news" href="https://www.icc-cricket.com/news/rashid-makes-t20i-history-in-afghanistan-s-epic-comeback" target="_blank" rel="noopener">⭐ راشد خان د T20I په تاریخ کې لومړی بالر شو چې ۲۰۰ ویکټې یې واخیستې<small>ICC • ۲۹ اکتوبر ۲۰۲۶</small></a>
-  <a class="rail-news" href="https://acb.af/en-US/post/afghanistan-and-zimbabwes-first-test-ends-in-a-draw-after-five-days-of-competitive-cricket" target="_blank" rel="noopener">🇦🇫 د افغانستان او زیمبابوې لومړۍ ټېسټ لوبه مساوي پای ته ورسېده؛ رحمت شاه ۱۷۳ منډې وکړې<small>ACB • ۹ نومبر ۲۰۲۶</small></a>
-  <a class="rail-news" href="https://www.afghancricket.af/" target="_blank" rel="noopener">🏏 د افغانستان کرکټ بورډ تازه خبرونه، د لوبغاړو ریکارډونه او مرکې<small>رسمي ACB وېبپاڼه</small></a>
-  <a class="rail-news" href="https://www.icc-cricket.com/rankings" target="_blank" rel="noopener">🏆 د ICC د لوبډلو او لوبغاړو تازه درجه بندي<small>ICC Rankings</small></a>
-  <a class="rail-news" href="https://www.icc-cricket.com/fixtures-results" target="_blank" rel="noopener">📅 د راتلونکو نړیوالو لوبو مهالوېش او پایلې<small>ICC Fixtures & Results</small></a>
-  <a class="rail-news" href="https://www.icc-cricket.com/news" target="_blank" rel="noopener">🌍 د نړۍ د کرکټ مهمې پېښې او نوي ریکارډونه<small>ICC News</small></a>
+ <div class="news-scroll-window"><div class="news-scroll-list" id="cricketAutoNews">
+  <a class="rail-news" href="https://www.icc-cricket.com/news" target="_blank" rel="noopener">🏛️ د ICC تازه پرېکړې او نړیوال خبرونه<small>ICC رسمي خبرونه</small></a>
+  <a class="rail-news" href="https://www.afghancricket.af/" target="_blank" rel="noopener">🇦🇫 د افغانستان کرکټ بورډ تازه خبرونه<small>ACB رسمي سرچینه</small></a>
+  <a class="rail-news" href="https://www.espncricinfo.com/" target="_blank" rel="noopener">🌍 نړیوال کرکټ، لوبغاړي او ریکارډونه<small>ESPNcricinfo</small></a>
  </div></div>
  <div class="rail-links">
   <a href="https://www.icc-cricket.com/news" target="_blank" rel="noopener">د ICC ټول خبرونه ←</a>
   <a href="https://www.afghancricket.af/" target="_blank" rel="noopener">د افغانستان کرکټ بورډ ←</a>
  </div>
- <p class="tvHint">خبرونه د رسمي سرچینو لینکونه دي؛ د خبر په سرلیک کلیک وکړئ چې بشپړ خبر ولولئ. د ژوندۍ لوبې سکور له موجود کرکټ API څخه راځي.</p>
+ <p class="tvHint" id="cricketNewsStatus">د ICC، ACB او نړیوال کرکټ تازه خبرونه راټولېږي...</p>
 </aside>
 </div>
 
@@ -1264,27 +1295,74 @@ function goBack(){ window.location.href="index.html"; }
 
 
 
-function openCricketTV(name,url,embed){
+
+function toggleCricketMenu(id,button){
+ const menu=document.getElementById(id);
+ const wasOpen=menu.classList.contains("show");
+ document.querySelectorAll(".cricket-channel-nav .dropdown-content").forEach(x=>x.classList.remove("show"));
+ document.querySelectorAll(".cricket-channel-nav .dropbtn").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-expanded","false");});
+ if(!wasOpen){menu.classList.add("show");button.classList.add("active");button.setAttribute("aria-expanded","true");}
+}
+document.addEventListener("click",function(event){
+ if(!event.target.closest(".cricket-channel-nav")){
+  document.querySelectorAll(".cricket-channel-nav .dropdown-content").forEach(x=>x.classList.remove("show"));
+  document.querySelectorAll(".cricket-channel-nav .dropbtn").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-expanded","false");});
+ }
+});
+function openCricketTV(name,url){
  const screen=document.getElementById("cricketTVScreen");
  const frame=document.getElementById("cricketTVFrame");
  const title=document.getElementById("cricketTVTitle");
  const external=document.getElementById("cricketTVExternal");
- title.textContent="📺 "+name;
+ title.textContent="📺 اوسنی چینل: "+name;
  external.href=url;
- frame.src=embed?url:"about:blank";
+ frame.src=url;
  screen.classList.add("open");
+ document.getElementById("cricketChannelMenu").classList.remove("show");
+ document.querySelector(".cricket-channel-nav .dropbtn").classList.remove("active");
  screen.scrollIntoView({behavior:"smooth",block:"start"});
 }
 function closeCricketTV(){
  const screen=document.getElementById("cricketTVScreen");
- const frame=document.getElementById("cricketTVFrame");
- frame.src="about:blank";
+ document.getElementById("cricketTVFrame").src="about:blank";
  screen.classList.remove("open");
- document.querySelector(".tvPanel").scrollIntoView({behavior:"smooth",block:"start"});
+ document.querySelector(".cricket-channel-nav").scrollIntoView({behavior:"smooth",block:"start"});
+}
+async function loadCricketNews(){
+ const list=document.getElementById("cricketAutoNews");
+ const status=document.getElementById("cricketNewsStatus");
+ if(!list)return;
+ const feeds=[
+  {name:"BBC افغانستان کرکټ",url:"https://feeds.bbci.co.uk/sport/cricket/teams/afghanistan/rss.xml"},
+  {name:"ESPNcricinfo",url:"https://www.espncricinfo.com/rss/content/story/feeds/0.xml"}
+ ];
+ let items=[];
+ for(const feed of feeds){
+  try{
+   const endpoint="https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(feed.url);
+   const response=await fetch(endpoint,{cache:"no-store"});
+   if(!response.ok)continue;
+   const data=await response.json();
+   if(data.status==="ok"&&Array.isArray(data.items)){
+    data.items.slice(0,7).forEach(item=>items.push({title:item.title,link:item.link,source:feed.name,date:item.pubDate}));
+   }
+  }catch(error){}
+ }
+ if(items.length){
+  items.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+  const html=items.slice(0,14).map(item=>'<a class="rail-news" href="'+escapeHTML(item.link)+'" target="_blank" rel="noopener">🏏 '+escapeHTML(item.title)+'<small>'+escapeHTML(item.source)+' • '+escapeHTML(item.date?new Date(item.date).toLocaleString():"تازه خبر")+'</small></a>').join("");
+  list.innerHTML=html+html;
+  if(status)status.textContent="خبرونه د RSS له لارې تازه کېږي؛ هر ۱۰ دقیقې بیا کتل کېږي.";
+ }else if(status){
+  status.textContent="اتومات خبرونه اوس ونه ترلاسه شول؛ رسمي ICC او ACB لینکونه لاندې فعال دي.";
+ }
 }
 
 const railList=document.querySelector(".news-scroll-list");
 if(railList && !railList.dataset.looped){railList.innerHTML+=railList.innerHTML;railList.dataset.looped="1";}
+
+loadCricketNews();
+setInterval(loadCricketNews,600000);
 
 /* =====================================================
    START
