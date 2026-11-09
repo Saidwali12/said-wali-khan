@@ -1283,6 +1283,9 @@ function closeCricketTV(){
  document.querySelector(".tvPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
+const railList=document.querySelector(".news-scroll-list");
+if(railList && !railList.dataset.looped){railList.innerHTML+=railList.innerHTML;railList.dataset.looped="1";}
+
 /* =====================================================
    START
 ===================================================== */
