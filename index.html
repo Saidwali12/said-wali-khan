@@ -1424,7 +1424,7 @@ document.addEventListener("click", function(event) {
 }
 </style>
 <div class="languages" id="site-language-menu">
-    <button class="sw-language-toggle" type="button" onclick="this.parentElement.classList.remove('sw-language-collapsed')">🌐 ژبې</button>
+    <button class="sw-language-toggle" type="button" onclick="this.parentElement.classList.remove('sw-language-collapsed');setTimeout(()=>this.parentElement.classList.add('sw-language-collapsed'),3000)">🌐 ژبې</button>
     <button class="active" onclick="changeLanguage('ps',this)">پښتو</button>
     <button onclick="changeLanguage('fa',this)">دری</button>
     <button onclick="changeLanguage('en',this)">English</button>
