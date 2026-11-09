@@ -1329,11 +1329,16 @@ async function loadCricketNews(){
  const list=document.getElementById("cricketAutoNews");
  const status=document.getElementById("cricketNewsStatus");
  if(!list)return;
+ /* نړیوالې رسنۍ، کرکټ ویب‌پاڼې او د Google News نړیواله ټولونه */
  const feeds=[
-  {name:"ESPNcricinfo نړیوال",url:"https://www.espncricinfo.com/rss/content/story/feeds/0.xml"},
-  {name:"Wisden نړیوال",url:"https://www.wisden.com/feed"},
-  {name:"BBC نړیوال کرکټ",url:"https://feeds.bbci.co.uk/sport/cricket/rss.xml"},
-  {name:"BBC افغانستان کرکټ",url:"https://feeds.bbci.co.uk/sport/cricket/teams/afghanistan/rss.xml"}
+  {name:"ESPNcricinfo",url:"https://www.espncricinfo.com/rss/content/story/feeds/0.xml"},
+  {name:"Wisden",url:"https://www.wisden.com/feed"},
+  {name:"BBC Sport Cricket",url:"https://feeds.bbci.co.uk/sport/cricket/rss.xml"},
+  {name:"The Guardian Cricket",url:"https://www.theguardian.com/sport/cricket/rss"},
+  {name:"Google News — نړیوال کرکټ",url:"https://news.google.com/rss/search?q=cricket&hl=en-US&gl=US&ceid=US:en"},
+  {name:"Google News — افغانستان",url:"https://news.google.com/rss/search?q=Afghanistan+cricket&hl=en-US&gl=US&ceid=US:en"},
+  {name:"Google News — پاکستان",url:"https://news.google.com/rss/search?q=Pakistan+cricket&hl=en-US&gl=US&ceid=US:en"},
+  {name:"Google News — هند",url:"https://news.google.com/rss/search?q=India+cricket&hl=en-US&gl=US&ceid=US:en"}
  ];
  let items=[];
  await Promise.all(feeds.map(async feed=>{
@@ -1343,25 +1348,33 @@ async function loadCricketNews(){
    if(!response.ok)return;
    const data=await response.json();
    if(data.status==="ok"&&Array.isArray(data.items)){
-    data.items.slice(0,12).forEach(item=>items.push({title:item.title,link:item.link,source:feed.name,date:item.pubDate}));
+    data.items.slice(0,feed.name.startsWith("Google News")?14:10).forEach(item=>{
+     if(item.title&&item.link)items.push({title:item.title,link:item.link,source:feed.name,date:item.pubDate});
+    });
    }
   }catch(error){}
  }));
  if(items.length){
+  const now=Date.now();
+  items=items.filter(item=>{
+   const published=new Date(item.date||0).getTime();
+   return !published||!Number.isFinite(published)||now-published<=10*24*60*60*1000;
+  });
   items.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
   const seen=new Set();
   items=items.filter(item=>{
-   const key=String(item.title||"").trim().toLowerCase();
+   const key=String(item.title||"").replace(/\s+/g," ").trim().toLowerCase();
    if(!key||seen.has(key)||!/^https?:\/\//i.test(item.link||""))return false;
    seen.add(key);return true;
   });
-  const html=items.slice(0,24).map(item=>'<a class="rail-news" data-original-title="'+escapeHTML(item.title)+'" href="'+escapeHTML(item.link)+'" target="_blank" rel="noopener">🏏 '+escapeHTML(item.title)+'<small>'+escapeHTML(item.source)+' • '+escapeHTML(item.date?new Date(item.date).toLocaleString():"تازه خبر")+'</small></a>').join("");
+  const visible=items.slice(0,40);
+  const html=visible.map(item=>'<a class="rail-news" data-original-title="'+escapeHTML(item.title)+'" href="'+escapeHTML(item.link)+'" target="_blank" rel="noopener">🏏 '+escapeHTML(item.title)+'<small>'+escapeHTML(item.source)+' • '+escapeHTML(item.date?new Date(item.date).toLocaleString():"تازه خبر")+'</small></a>').join("");
   list.innerHTML=html+html;
-  list.style.animationDuration=Math.max(45,items.length*4)+"s";
-  if(status)status.textContent="له نړیوالو سرچینو "+items.length+" خبرونه؛ وروستی تازه کول: "+new Date().toLocaleTimeString()+"؛ هر ۵ دقیقې بیا تازه کېږي.";
+  list.style.animationDuration=Math.max(60,visible.length*4)+"s";
+  if(status)status.textContent="له نړیوالو رسنیو او کرکټ وېب‌پاڼو "+visible.length+" تازه خبرونه راټول شول؛ وروستی تازه کول: "+new Date().toLocaleTimeString()+"؛ هر ۵ دقیقې بیا تازه کېږي.";
   translateCricketNews(window.__swActiveLanguage||"ps");
  }else if(status){
-  status.textContent="اتومات خبرونه اوس ونه ترلاسه شول؛ د ICC او ACB رسمي لینکونه لاندې فعال دي.";
+  status.textContent="اوس مهال د خبرونو اتومات سرچینې ځواب نه ورکوي؛ د ICC او ACB رسمي لینکونه لاندې فعال دي.";
  }
 }
 
@@ -1371,13 +1384,8 @@ async function translateCricketNews(lang){
  const run=++cricketTranslationRun;
  const links=Array.from(document.querySelectorAll("#cricketAutoNews .rail-news"));
  if(!links.length)return;
- const targets=links.slice(0,24);
- if(lang==="ps"){
-  targets.forEach(a=>{const t=a.dataset.originalTitle;if(t&&a.firstChild)a.firstChild.nodeValue="🏏 "+t;});
-  return;
- }
- const targetCode={fa:"fa",en:"en",ur:"ur",ar:"ar"}[lang];
- if(!targetCode)return;
+ const targets=links.slice(0,40);
+ const targetCode={ps:"ps",fa:"fa",en:"en",ur:"ur",ar:"ar"}[lang]||"ps";
  let index=0;
  async function worker(){
   while(index<targets.length){
