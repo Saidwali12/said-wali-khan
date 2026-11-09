@@ -16,7 +16,7 @@ const b64 = (bytes) => {
   return btoa(binary);
 };
 const b64url = (bytes) => b64(bytes).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-const wrap76 = (value) => value.match(/.{1,76}/g)?.join("\\r\\n") || "";
+const wrap76 = (value) => value.match(/.{1,76}/g)?.join("\r\n") || "";
 const sha = async (value) => b64url(await crypto.subtle.digest("SHA-256", enc.encode(value)));
 const clean = (v, n = 180) => String(v || "").trim().slice(0, n);
 const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
