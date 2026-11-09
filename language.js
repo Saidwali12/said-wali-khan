@@ -397,7 +397,8 @@
   });
   const langNames = {ps:"پښتو",fa:"دری",en:"English",ur:"اردو",ar:"العربية"};
   function apply(lang) {
-    if (!["ps","fa","en","ur","ar"].includes(lang)) lang = "ps";\n    window.__swActiveLanguage = lang;
+    if (!["ps","fa","en","ur","ar"].includes(lang)) lang = "ps";
+    window.__swActiveLanguage = lang;
     const rtl = lang !== "en";
     document.documentElement.lang = lang;
     document.documentElement.dir = rtl ? "rtl" : "ltr";
