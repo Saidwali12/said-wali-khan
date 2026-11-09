@@ -434,6 +434,37 @@ footer{
 @media(max-width:600px){.matchFacts{grid-template-columns:1fr 1fr}}
 
 
+
+.cricket-desk{display:grid;grid-template-columns:minmax(260px,310px) minmax(0,1fr);gap:18px;max-width:1600px;margin:14px auto;padding:0 2%;direction:ltr;align-items:start}
+.cricket-desk>.cricket-news-rail{grid-column:1;grid-row:1;width:100%;max-width:none;margin:0;position:sticky;top:12px;direction:rtl}
+.cricket-desk>main.container{grid-column:2;grid-row:1;width:100%;max-width:none;margin:0;padding:0 0 40px;direction:rtl;min-width:0}
+.cricket-api-news{margin:10px 0;padding:10px;background:#102b4b;border:1px solid #34516d;border-radius:10px}
+.cricket-api-news h3{font-size:14px;color:#f4d58a;margin:0 0 8px}
+.cricket-api-item{display:block;color:#fff;text-decoration:none;font-size:12px;line-height:1.7;padding:8px 2px;border-bottom:1px solid #ffffff22}
+.cricket-api-item b{color:#f4d58a}
+.cricket-api-status{font-size:11px;color:#c7d6e5;line-height:1.6;margin-top:7px}
+@media(max-width:850px){
+.cricket-desk{grid-template-columns:104px minmax(0,1fr);gap:7px;padding:0 5px}
+.cricket-desk>.cricket-news-rail{width:104px;padding:7px;position:sticky;top:8px}
+.cricket-desk>.cricket-news-rail h2{font-size:12px;line-height:1.5}
+.cricket-desk .news-scroll-window{height:230px}
+.cricket-desk .rail-news{font-size:10px;padding:7px 5px;line-height:1.5}
+.cricket-desk .rail-news small{font-size:9px}
+.cricket-desk>main.container{min-width:0;padding:0}
+.cricket-desk .container{width:100%;padding:0 0 30px}
+.cricket-desk .title{font-size:15px;padding:9px;margin:8px 0}
+.cricket-desk .filters{gap:4px;margin-bottom:8px}
+.cricket-desk .filter,.cricket-desk .formatChip{font-size:10px;padding:6px 7px}
+.cricket-desk .matches{grid-template-columns:minmax(0,1fr);gap:8px}
+.cricket-desk .team{padding:8px}
+.cricket-desk .score{font-size:14px}
+.cricket-api-news{padding:6px}
+.cricket-api-news h3{font-size:10px}
+.cricket-api-item{font-size:9px;padding:5px 1px}
+.cricket-api-status{font-size:8px}
+}
+@media(max-width:390px){.cricket-desk{grid-template-columns:90px minmax(0,1fr);gap:5px}.cricket-desk>.cricket-news-rail{width:90px;padding:5px}.cricket-desk .news-scroll-window{height:205px}}
+
 /* TV channels and two-column cricket desk */
 .tvPanel{width:94%;max-width:1250px;margin:18px auto;background:#071a35;border:1px solid #d9ae52;border-radius:16px;padding:16px;color:#fff}
 .tvPanel h2{margin:0 0 12px;color:#f4d58a}
@@ -560,6 +591,7 @@ footer{
  🔴 LIVE — معلومات هر 15 ثانیې تازه کېږي
 </div>
 
+<div class="cricket-desk">
 <aside class="cricket-news-rail">
  <h2>📰 د کرکټ تازه خبرونه</h2>
  <div class="news-scroll-window"><div class="news-scroll-list" id="cricketAutoNews">
@@ -682,6 +714,7 @@ target="_blank">
 </div>
 
 </main>
+</div><!-- /cricket-desk -->
 
 <footer>
 🏏 سیدولي خان کوهستاني
