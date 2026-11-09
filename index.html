@@ -1803,9 +1803,6 @@ document.addEventListener("click", function(event) {
 
 <!-- Saidwali Calculator and Currency Tools: isolated full-screen tools -->
 <style>
-#sw-tool-launchers{position:fixed;right:14px;bottom:18px;z-index:99990;display:flex;gap:8px;direction:ltr}
-#sw-tool-launchers button{width:44px;height:44px;border-radius:50%;border:1px solid #d9ae52;background:#071a35;color:#f4d58a;font-size:20px;box-shadow:0 4px 14px #0003;cursor:pointer}
-#sw-tool-launchers button:hover{background:#d9ae52;color:#071a35}
 #sw-tool-overlay{display:none;position:fixed;inset:0;z-index:2147483000;background:#f3f5f9;color:#071a35;direction:rtl;overflow-y:auto;font-family:Tahoma,Arial,sans-serif}
 #sw-tool-overlay.sw-tool-visible{display:block}
 #sw-tool-overlay *{box-sizing:border-box}
@@ -1835,8 +1832,6 @@ document.addEventListener("click", function(event) {
 #sw-currency-status{font-size:12px;color:#64748b;line-height:1.8}
 .sw-tool-note{font-size:12px;color:#64748b;line-height:1.9}
 @media(max-width:600px){
- #sw-tool-launchers{right:9px;bottom:12px;gap:6px}
- #sw-tool-launchers button{width:40px;height:40px;font-size:18px}
  .sw-tool-header{padding:10px 12px}
  .sw-tool-header strong{font-size:15px}
  .sw-tool-header button{padding:8px 10px;font-size:12px}
@@ -1852,11 +1847,6 @@ document.addEventListener("click", function(event) {
  #sw-currency-result strong{font-size:22px}
 }
 </style>
-
-<div id="sw-tool-launchers" aria-label="محاسبې">
- <button type="button" title="کالکولیټر" aria-label="کالکولیټر" onclick="swOpenUtility('calculator')">🧮</button>
- <button type="button" title="د اسعارو تبادله" aria-label="د اسعارو تبادله" onclick="swOpenUtility('currency')">💱</button>
-</div>
 
 <div id="sw-tool-overlay" role="dialog" aria-modal="true" aria-label="محاسبه او اسعار">
  <div class="sw-tool-header">
@@ -1878,30 +1868,24 @@ document.addEventListener("click", function(event) {
   </section>
 
   <section id="sw-currency-view" class="sw-tool-card" style="display:none">
-   <h2 style="font-size:20px;margin-bottom:14px;text-align:center;color:#102b50">💱 د اسعارو د تبادلې حساب</h2>
-   <div id="sw-currency-form">
-    <div class="sw-currency-field">
-     <label for="sw-currency-from">له کومې پیسې</label>
-     <select id="sw-currency-from"></select>
-     <input id="sw-currency-amount" type="number" min="0" step="any" value="1" style="margin-top:8px">
-    </div>
-    <button id="sw-currency-swap" type="button" title="د اسعارو بدلول" aria-label="د اسعارو بدلول">⇄</button>
-    <div class="sw-currency-field">
-     <label for="sw-currency-to">کومې پیسې</label>
-     <select id="sw-currency-to"></select>
-     <input id="sw-currency-output" type="text" readonly value="..." style="margin-top:8px;direction:ltr;text-align:left;background:#f8fafc">
-    </div>
+   <h2 style="font-size:20px;margin-bottom:12px;text-align:center;color:#102b50">💱 د افغانستان د اسعارو ورځني نرخونه</h2>
+   <p style="text-align:center;color:#64748b;font-size:13px;margin-bottom:14px">نرخونه د افغانیو په اساس؛ د رسمي بانک او د صرافۍ د بازار نرخونه جلا وګورئ.</p>
+   <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px">
+    <button class="sw-tool-action" type="button" onclick="document.getElementById('sw-rate-frame').src='https://sarafi.af/en/exchange-rates';document.getElementById('sw-rate-source').textContent='سرچینه: سرای شهزاده او د افغانستان د صرافۍ بازار'">د بازار نرخونه</button>
+    <button class="sw-tool-action" type="button" onclick="document.getElementById('sw-rate-frame').src='https://www.dab.gov.af/exchange-rates';document.getElementById('sw-rate-source').textContent='سرچینه: د افغانستان بانک — رسمي نرخونه'">د افغانستان بانک</button>
    </div>
-   <div id="sw-currency-result" style="margin-top:16px">
-    <span>د تبادلې پایله</span>
-    <strong id="sw-currency-big-result">د نرخونو د ترلاسه کېدو په تمه...</strong>
+   <p id="sw-rate-source" style="text-align:center;font-size:12px;color:#64748b;margin-bottom:10px">سرچینه: سرای شهزاده او د افغانستان د صرافۍ بازار</p>
+   <iframe id="sw-rate-frame" title="د افغانستان د اسعارو تازه نرخونه" src="https://sarafi.af/en/exchange-rates" loading="lazy" referrerpolicy="no-referrer" style="display:block;width:100%;height:850px;border:1px solid #e4e9f0;border-radius:12px;background:#fff"></iframe>
+   <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+    <a href="https://sarafi.af/en/exchange-rates" target="_blank" rel="noopener" class="sw-tool-action" style="text-decoration:none">د بازار نرخونه په نوې پاڼه کې</a>
+    <a href="https://www.dab.gov.af/exchange-rates" target="_blank" rel="noopener" class="sw-tool-action" style="text-decoration:none">رسمي نرخونه په نوې پاڼه کې</a>
    </div>
-   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px;flex-wrap:wrap">
-    <span id="sw-currency-status">د اسعارو نرخونه ترلاسه کېږي...</span>
-    <button class="sw-tool-action" id="sw-currency-refresh" type="button">⟳ نرخونه تازه کړه</button>
+   <p class="sw-tool-note" style="margin-top:12px">یادونه: د ډالر او یورو نرخونه عموماً د یوې پیسې لپاره وي؛ د پاکستانۍ کلدارو او د ایران د پیسو نرخونه کېدای شي د ۱۰۰۰ واحدونو په اساس ولیکل شي. د پېر او پلور ترمنځ توپیر شته. د معاملې مخکې له خپلې صرافۍ نرخ تایید کړئ.</p>
+   <div style="display:none">
+    <div id="sw-currency-form"><select id="sw-currency-from"></select><select id="sw-currency-to"></select><input id="sw-currency-amount" value="1"><input id="sw-currency-output"></div>
+    <div id="sw-currency-result"><strong id="sw-currency-big-result"></strong></div>
+    <span id="sw-currency-status"></span><button id="sw-currency-refresh" type="button"></button><button id="sw-currency-swap" type="button"></button>
    </div>
-   <p class="sw-tool-note" style="margin-top:12px">یادونه: دا نړیوال منځني/مرجع نرخونه دي، د افغانستان د صرافۍ د نغدو پېر او پلور تضمین شوی نرخ نه دی. د بازار نرخونه او د صرافۍ کمېشن توپیر لرلای شي.</p>
-   <p class="sw-tool-note">د نرخونو سرچینه: <a href="https://www.exchangerate-api.com/" target="_blank" rel="noopener">ExchangeRate-API</a>.</p>
   </section>
  </main>
 </div>
@@ -1943,8 +1927,8 @@ document.addEventListener("click", function(event) {
   document.body.style.overflow='hidden';
   if(which==='currency'){
    calcView.style.display='none';currencyView.style.display='block';title.textContent='💱 د اسعارو تبادله';
-   if(!rates)loadRates();
-   convertCurrency();
+   document.getElementById('sw-rate-frame').src='https://sarafi.af/en/exchange-rates';
+   document.getElementById('sw-rate-source').textContent='سرچینه: سرای شهزاده او د افغانستان د صرافۍ بازار';
   }else{
    currencyView.style.display='none';calcView.style.display='block';title.textContent='🧮 ساده او ساینسي کالکولیټر';
    renderKeys();document.getElementById('sw-calc-display').focus();
@@ -2076,7 +2060,7 @@ document.addEventListener("click", function(event) {
   const old=from.value;from.value=to.value;to.value=old;convertCurrency();
  });
  document.getElementById('sw-currency-refresh').addEventListener('click',loadRates);
- rateTimer=setInterval(()=>{if(overlay.classList.contains('sw-tool-visible')&&currencyView.style.display!=='none')loadRates()},3600000);
+ // د اسعارو جدول د سرچینې له اصلي پاڼې څخه ښودل کېږي؛ د سرچینې تازه کېدل په خپله منعکسېږي.
 })();
 </script>
 <!-- End Saidwali Calculator and Currency Tools -->
