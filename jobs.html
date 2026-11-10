@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="د کونړ او نورستان لپاره د تایید شوو ایمیل غوښتنلیکونو دندو اعلانونه">
+<meta name="description" content="د کونړ، نورستان، لغمان او ننګرهار لپاره د تایید شوو ایمیل غوښتنلیکونو دندو اعلانونه">
 <title>سیدولي خان جاب پورټل</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:tahoma}
@@ -66,9 +66,9 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 <body>
 <button class="back-btn" onclick="history.back()" type="button">⬅ شاتګ</button>
 <header>سیدولي خان جاب پورټل</header>
-<div class="top-news"><marquee behavior="scroll" direction="left" scrollamount="6">د کونړ او نورستان تازه کاري فرصتونه | د ایمیل له لارې مستقیم غوښتنلیک | د پای نېټه حتمي وګورئ</marquee></div>
-<div class="intro-note"><b style="color:#0d47a1">د کونړ او نورستان د کار اعلانونه</b><br>یوازې هغه بستونه چې د ادارې اصلي ایمیل او د غوښتنلیک موضوع یې تایید شوې وي.</div>
-<div class="notice">د ثبت نام تڼۍ Gmail کې د ادارې ایمیل او د بست موضوع خلاصوي. خپل CV او اسناد ورسره ضمیمه کړئ او ایمیل خپله واستوئ. که Gmail نه کاروئ، د بل ایمیل اپلېکېشن لینک هم شته.</div>
+<div class="top-news"><marquee behavior="scroll" direction="left" scrollamount="6">د کونړ، نورستان، لغمان او ننګرهار تازه کاري فرصتونه | د ایمیل له لارې مستقیم غوښتنلیک | د پای نېټه حتمي وګورئ</marquee></div>
+<div class="intro-note"><b style="color:#0d47a1">د کونړ، نورستان، لغمان او ننګرهار د کار اعلانونه</b><br>یوازې هغه بستونه چې د ادارې اصلي ایمیل او د غوښتنلیک موضوع یې تایید شوې وي.</div>
+<div class="notice">د هر بست د غوښتنلیک تڼۍ به د ادارې ایمیل، د بست موضوع او اړوند معلومات چمتو کړي. خپل CV او اسناد ورسره ضمیمه کړئ او ایمیل خپله واستوئ. د خبرتیا په ایمیل کې به د همدې بست د سیدولي خان پاڼې لینک او د اصلي اعلان لینک هم وي.</div>
 
 <div class="registration-entry">
   <button class="registration-open" type="button" onclick="openApplicantForm()" id="registrationOpenBtn" disabled>📝 د ثبت‌نام سیستم د فعالېدو په تمه</button>
@@ -86,7 +86,7 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
     <div class="reg-field"><label for="appEducation">د تحصیل درجه *</label><select id="appEducation" name="education" required><option value="">تحصیلي درجه وټاکئ</option><option>ابتدائیه</option><option>ثانویه</option><option>بکلوریا</option><option>دیپلوم</option><option>لیسانس</option><option>ماسټري</option><option>دوکتورا</option><option>نور</option></select></div>
     <div class="reg-field"><label for="appPhone">د ټیلیفون شمېره *</label><input id="appPhone" name="phone" required maxlength="40" autocomplete="tel" placeholder="+93..."></div>
     <div class="reg-field"><label for="appEmail">ایمیل ادرس *</label><input id="appEmail" name="email" type="email" required maxlength="160" autocomplete="email" placeholder="example@gmail.com"></div>
-    <div class="reg-field"><label for="appProvince">د کوم ولایت لپاره دنده غواړئ؟ *</label><select id="appProvince" name="province" required><option value="">ولایت وټاکئ</option><option value="kunar">کونړ</option><option value="nuristan">نورستان</option><option value="both">دواړه ولایتونه</option></select></div>
+    <div class="reg-field"><label for="appProvince">د کوم ولایت/ولایتونو لپاره دنده غواړئ؟ *</label><select id="appProvince" name="province" required><option value="">ولایت وټاکئ</option><option value="kunar">کونړ</option><option value="nuristan">نورستان</option><option value="laghman">لغمان</option><option value="nangarhar">ننګرهار</option><option value="all">ټول څلور ولایتونه</option></select></div>
    </div>
    <div class="reg-field"><label for="appPhoto">عکس (JPG/PNG/WebP، تر ۸ MB) *</label><input id="appPhoto" name="photo" type="file" accept="image/jpeg,image/png,image/webp" required></div>
    <div class="reg-field"><label for="appCv">CV / خلص سوانح (PDF/DOC/DOCX، تر ۸ MB) *</label><input id="appCv" name="cv" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required></div>
@@ -99,7 +99,7 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 
 <div class="search-box">
 <select id="locationFilter" onchange="filterJobs()">
-<option value="all">ټولې سیمې</option><option value="کنړ">کنړ</option><option value="نورستان">نورستان</option>
+<option value="all">ټولې سیمې</option><option value="kunar">کونړ</option><option value="nuristan">نورستان</option><option value="laghman">لغمان</option><option value="nangarhar">ننګرهار</option>
 </select>
 <p id="jobCount" style="font-size:11px;margin-top:6px;color:#555">د بستونو شمېر...</p>
 </div>
@@ -119,9 +119,20 @@ let allJobs=[];
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||""));}
 function deadline(v){const a=String(v||"").split("-").map(Number);if(a.length!==3||a.some(n=>!Number.isFinite(n)))return null;return new Date(a[0],a[1]-1,a[2],23,59,59,999);}
+function jobProvinces(j){
+ const raw=Array.isArray(j.location)?j.location.join(" "):String(j.location||"");
+ const t=[j.dutyStation||"",raw].join(" ").toLowerCase();
+ const found=[];
+ if(t.includes("kunar")||t.includes("کونړ")||t.includes("کنړ"))found.push("kunar");
+ if(t.includes("nuristan")||t.includes("نورستان"))found.push("nuristan");
+ if(t.includes("laghman")||t.includes("لغمان"))found.push("laghman");
+ if(t.includes("nangarhar")||t.includes("ننګرهار")||t.includes("ننگرهار"))found.push("nangarhar");
+ return [...new Set(found)];
+}
+const provinceNames={kunar:"کونړ",nuristan:"نورستان",laghman:"لغمان",nangarhar:"ننګرهار"};
 function renderJobs(){
  const selected=document.getElementById("locationFilter").value;
- const list=allJobs.filter(j=>selected==="all"||(Array.isArray(j.location)&&j.location.includes(selected)));
+ const list=allJobs.filter(j=>selected==="all"||jobProvinces(j).includes(selected));
  document.getElementById("jobCount").textContent="ښودل شوي بستونه: "+list.length;
  const box=document.getElementById("jobsContainer");
  if(!list.length){box.innerHTML='<div class="empty-state">اوس مهال په دې سیمه کې د تایید شوي ایمیل له لارې د ثبت نام فعال بست نشته.</div>';return;}
@@ -130,11 +141,13 @@ function renderJobs(){
   const end=deadline(j.expiryDate),expired=!end||now>end,days=end?Math.ceil((end-now)/86400000):0;
   const email=String(j.email||"").trim(),subject=String(j.subject||"").trim();
   const allowed=j.verified===true&&j.applicationMode==="email"&&validEmail(email)&&subject&&!expired;
-  const gmail="https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(email)+"&su="+encodeURIComponent(subject);
-  const mailto="mailto:"+email+"?subject="+encodeURIComponent(subject);
-  const places=Array.isArray(j.location)?j.location.join("، "):"";
+  const pageUrl=location.origin+location.pathname+"#job-"+encodeURIComponent(String(j.id||""));
+  const applyBody="سلام، زه د دې بست لپاره غوښتنلیک وړاندې کوم.\n\nد بست نوم: "+(j.title||"")+"\nد سیدولي خان د بست پاڼه: "+pageUrl+"\nاصلي اعلان: "+(j.sourceUrl||"");
+  const gmail="https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(email)+"&su="+encodeURIComponent(subject)+"&body="+encodeURIComponent(applyBody);
+  const mailto="mailto:"+email+"?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(applyBody);
+  const places=jobProvinces(j).map(p=>provinceNames[p]).join("، ");
   const fresh=j.postedDate&&(now-new Date(j.postedDate+"T00:00:00"))<=86400000;
-  return '<div class="job-card '+(expired?'expired':'')+(fresh?' new-job':'')+'">'+
+  return '<div class="job-card '+(expired?'expired':'')+(fresh?' new-job':'')+'" id="job-'+esc(j.id)+'">'+
    (fresh?'<div class="new-badge"><span class="new-star">★</span> نوی اعلان</div>':'')+
    '<div class="job-title">'+esc(j.title)+'</div>'+
    '<div class="job-info">ډول: '+esc(j.employmentType||"د اعلان له مخې")+'</div>'+
@@ -155,7 +168,7 @@ async function loadJobs(){
  try{
   const r=await fetch("./jobs-feed.json?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("feed");
   const data=await r.json();
-  allJobs=Array.isArray(data.jobs)?data.jobs.filter(j=>j&&j.verified===true&&j.applicationMode==="email"&&Array.isArray(j.location)&&j.location.some(x=>x==="کنړ"||x==="نورستان")&&validEmail(j.email)&&j.subject&&j.sourceUrl&&j.expiryDate):[];
+  allJobs=Array.isArray(data.jobs)?data.jobs.filter(j=>j&&j.verified===true&&j.applicationMode==="email"&&jobProvinces(j).length>0&&validEmail(j.email)&&j.subject&&j.sourceUrl&&j.expiryDate):[];
   renderJobs();
  }catch(e){document.getElementById("jobsContainer").innerHTML='<div class="empty-state">د بستونو معلومات اوس نه لوډېږي. لږ وروسته بیا هڅه وکړئ.</div>';document.getElementById("jobCount").textContent="د معلوماتو ستونزه";}
 }
