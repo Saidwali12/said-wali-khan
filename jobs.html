@@ -61,6 +61,27 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 .reg-status.err{background:#ffebee;color:#b71c1c}
 @media(max-width:600px){.reg-grid{grid-template-columns:1fr}.reg-panel{margin:5px auto;padding:14px}.reg-modal{padding:8px}}
 
+
+/* ACBAR-inspired job listing layout */
+.jobs-container{max-width:1120px;margin:16px auto;padding:12px;display:grid;grid-template-columns:1fr;gap:12px}
+.job-card{background:#fff;padding:18px 20px;margin:0;border:1px solid #dce3eb;border-right:5px solid #1769aa;border-radius:7px;box-shadow:0 2px 8px rgba(20,45,75,.06);font-size:14px}
+.job-card:hover{transform:none;box-shadow:0 5px 16px rgba(20,45,75,.12)}
+.job-title{font-size:19px;font-weight:700;color:#145a91;margin:0 0 9px;line-height:1.5}
+.job-info{display:block;margin:4px 0;line-height:1.7;font-size:13px;color:#455468}
+.job-meta{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0 12px}
+.job-tag{display:inline-block;background:#edf4fa;color:#31536e;border-radius:4px;padding:4px 8px;font-size:12px}
+.apply-btn{display:inline-block;background:#1769aa;color:#fff;padding:9px 16px;border-radius:5px;text-decoration:none;margin:8px 8px 0 0;font-size:13px;font-weight:700}
+.apply-btn:hover{background:#104e80}.apply-online{background:#23834b}.apply-online:hover{background:#176638}
+.mailto-btn{display:inline-block;color:#145a91;font-size:12px;margin:10px 8px 0 0}
+.countdown{display:block;margin:10px 0 0;font-weight:700;color:#9b5b00;font-size:12px}
+.new-badge{color:#168044;font-weight:700;font-size:12px;margin-bottom:7px}
+.search-box{max-width:1120px;margin:14px auto;padding:14px;text-align:right;background:#fff;border:1px solid #dce3eb;border-radius:7px}
+.search-box select{max-width:320px;width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:5px;font-size:15px}
+.reg-modal{padding:18px}.reg-panel{max-width:640px}
+.reg-status.ok{background:#e9f8ef;color:#176638;border:1px solid #a9dfbd;font-weight:700}
+.reg-status.ok:before{content:'✓';display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:50%;background:#1f9d55;color:#fff;margin-left:9px;font-size:18px}
+@media(max-width:600px){.reg-modal{padding:0;inset:0}.reg-panel{width:100%;max-width:none;min-height:100dvh;height:100dvh;margin:0;border-radius:0;padding:18px 15px 28px;overflow-y:auto}.reg-grid{grid-template-columns:1fr}.job-card{padding:15px}.job-title{font-size:17px}.search-box{margin:8px;border-radius:6px}}
+
 </style>
 </head>
 <body>
@@ -135,12 +156,17 @@ function renderJobs(){
  const list=allJobs.filter(j=>selected==="all"||jobProvinces(j).includes(selected));
  document.getElementById("jobCount").textContent="ښودل شوي بستونه: "+list.length;
  const box=document.getElementById("jobsContainer");
- if(!list.length){box.innerHTML='<div class="empty-state">اوس مهال په دې سیمه کې د تایید شوي ایمیل له لارې د ثبت نام فعال بست نشته.</div>';return;}
+ if(!list.length){box.innerHTML='<div class="empty-state">اوس مهال په دې سیمه کې تایید شوی فعال بست نشته.</div>';return;}
  const now=new Date();
  box.innerHTML=list.map(j=>{
   const end=deadline(j.expiryDate),expired=!end||now>end,days=end?Math.ceil((end-now)/86400000):0;
   const email=String(j.email||"").trim(),subject=String(j.subject||"").trim();
-  const allowed=j.verified===true&&j.applicationMode==="email"&&validEmail(email)&&subject&&!expired;
+  const mode=String(j.applicationMode||"").toLowerCase();
+  const applyUrl=String(j.applyUrl||j.applicationUrl||"").trim();
+  const safeApplyUrl=/^https:\/\//i.test(applyUrl)?applyUrl:"";
+  const emailAllowed=(mode==="email"||mode==="both")&&validEmail(email)&&subject;
+  const onlineAllowed=(mode==="online"||mode==="both")&&!!safeApplyUrl;
+  const allowed=j.verified===true&&(emailAllowed||onlineAllowed)&&!expired;
   const pageUrl=location.origin+location.pathname+"#job-"+encodeURIComponent(String(j.id||""));
   const applyBody="سلام، زه د دې بست لپاره غوښتنلیک وړاندې کوم.\n\nد بست نوم: "+(j.title||"")+"\nد سیدولي خان د بست پاڼه: "+pageUrl+"\nاصلي اعلان: "+(j.sourceUrl||"");
   const gmail="https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(email)+"&su="+encodeURIComponent(subject)+"&body="+encodeURIComponent(applyBody);
@@ -150,14 +176,12 @@ function renderJobs(){
   return '<div class="job-card '+(expired?'expired':'')+(fresh?' new-job':'')+'" id="job-'+esc(j.id)+'">'+
    (fresh?'<div class="new-badge"><span class="new-star">★</span> نوی اعلان</div>':'')+
    '<div class="job-title">'+esc(j.title)+'</div>'+
-   '<div class="job-info">ډول: '+esc(j.employmentType||"د اعلان له مخې")+'</div>'+
-   '<div class="job-info">اداره: '+esc(j.organization)+'</div>'+
-   '<div class="job-info">سیمه: '+esc(places)+'</div>'+
+   '<div class="job-meta"><span class="job-tag">'+esc(j.employmentType||"د اعلان له مخې")+'</span><span class="job-tag">'+esc(j.organization||"اداره نه ده معلومه")+'</span><span class="job-tag">'+esc(places)+'</span></div>'+
    '<div class="job-info">شرایط: '+esc(j.requirements||"په اصلي اعلان کې وګورئ")+'</div>'+
    '<div class="job-info">د اعلان نېټه: '+esc(j.postedDate||"—")+'</div>'+
    '<div class="job-info">د پای نېټه: '+esc(j.expiryDate||"—")+'</div>'+
-   '<div class="job-info">د ادارې ایمیل: '+esc(email)+'</div>'+
-   (allowed?'<a class="apply-btn" href="'+esc(gmail)+'" target="_blank" rel="noopener">✉ ثبت نام / ایمیل واستوئ</a><br><a class="mailto-btn" href="'+esc(mailto)+'">که Gmail نه کاروئ: بل ایمیل اپلېکېشن خلاص کړئ</a>':'<span class="apply-btn disabled-btn">د ثبت نام وخت ختم شوی یا ایمیل تایید نه دی</span>')+
+   (email?'<div class="job-info">د ادارې ایمیل: '+esc(email)+'</div>':'<div class="job-info">غوښتنلیک: د ادارې رسمي آنلاین فورم</div>')+
+   (allowed?((onlineAllowed?'<a class="apply-btn apply-online" href="'+esc(safeApplyUrl)+'" target="_blank" rel="noopener">↗ رسمي آنلاین غوښتنلیک</a>':'')+(emailAllowed?'<a class="apply-btn" href="'+esc(gmail)+'" target="_blank" rel="noopener">✉ د ایمیل له لارې غوښتنلیک</a><a class="mailto-btn" href="'+esc(mailto)+'">بل ایمیل اپلېکېشن</a>':'')):'<span class="apply-btn disabled-btn">د غوښتنلیک وخت ختم شوی یا لینک تایید نه دی</span>')+
    '<div class="countdown">'+(expired?'د بست د ثبت نام وخت ختم شوی دی.':'د ثبت نام لپاره '+days+' ورځې پاتې دي.')+'</div>'+
    '<div class="job-info"><a href="'+esc(j.sourceUrl||"#")+'" target="_blank" rel="noopener">اصلي اعلان: '+esc(j.sourceName||"سرچینه")+'</a></div>'+
    '</div>';
@@ -168,7 +192,7 @@ async function loadJobs(){
  try{
   const r=await fetch("./jobs-feed.json?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("feed");
   const data=await r.json();
-  allJobs=Array.isArray(data.jobs)?data.jobs.filter(j=>j&&j.verified===true&&j.applicationMode==="email"&&jobProvinces(j).length>0&&validEmail(j.email)&&j.subject&&j.sourceUrl&&j.expiryDate):[];
+  allJobs=Array.isArray(data.jobs)?data.jobs.filter(j=>j&&j.verified===true&&["email","online","both"].includes(String(j.applicationMode||"").toLowerCase())&&jobProvinces(j).length>0&&(validEmail(j.email)||/^https:\/\//i.test(String(j.applyUrl||j.applicationUrl||"")))&&j.sourceUrl&&j.expiryDate):[];
   renderJobs();
  }catch(e){document.getElementById("jobsContainer").innerHTML='<div class="empty-state">د بستونو معلومات اوس نه لوډېږي. لږ وروسته بیا هڅه وکړئ.</div>';document.getElementById("jobCount").textContent="د معلوماتو ستونزه";}
 }
@@ -195,7 +219,8 @@ document.getElementById("applicantForm").addEventListener("submit",async functio
   const response=await fetch(JOBS_API+"/register",{method:"POST",body:new FormData(form)});
   const data=await response.json();
   if(!response.ok||!data.success)throw new Error(data.error||"ثبت‌نام بریالی نه شو.");
-  showRegStatus(data.message,true);form.reset();
+  showRegStatus("✓ ثبت‌نام په بریالیتوب بشپړ شو! اوس به د دندو پاڼې ته بېرته ولاړ شئ.",true);form.reset();
+  setTimeout(()=>{closeApplicantForm();document.getElementById("jobsContainer").scrollIntoView({behavior:"smooth",block:"start"});},2600);
  }catch(err){showRegStatus(err.message||"له سرور سره اړیکه ټینګه نه شوه. وروسته بیا هڅه وکړئ.",false);}
  finally{btn.disabled=false;btn.textContent="ثبت‌نام بشپړ کړئ";}
 });
