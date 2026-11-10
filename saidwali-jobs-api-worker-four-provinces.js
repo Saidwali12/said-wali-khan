@@ -296,7 +296,7 @@ async function processJobAlerts(env) {
   `).all();
 
   for (const job of jobs) {
-    if (job.verified !== true || job.applicationMode !== "email") continue;
+    if (job.verified !== true || !["email", "online", "both"].includes(String(job.applicationMode || "").toLowerCase())) continue;
 
     const provinces = jobProvinces(job);
     if (!provinces.length || !job.id || !job.title) continue;
