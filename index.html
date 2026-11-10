@@ -1147,6 +1147,10 @@ document.addEventListener("click", function(event) {
 }
 
 #mini-smart-calendar .mini-heading {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
   font-size: 8px;
   color: #d9ae52;
   margin-bottom: 5px;
@@ -1448,8 +1452,24 @@ document.addEventListener("click", function(event) {
   padding: 4px;
   overflow: hidden;
 }
-.languages.sw-language-collapsed button:not(.sw-language-toggle) {
+.languages.sw-language-collapsed button:not(.sw-language-toggle):not(#site-language-drag-handle) {
   display: none;
+}
+#site-language-drag-handle {
+  flex: 1 1 100%;
+  min-width: 44px;
+  height: 16px;
+  padding: 0 4px !important;
+  margin: 0;
+  border: 0 !important;
+  background: transparent !important;
+  color: #d9ae52 !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .languages .sw-language-toggle {
   display: none;
@@ -1463,6 +1483,7 @@ document.addEventListener("click", function(event) {
 }
 </style>
 <div class="languages" id="site-language-menu">
+    <button id="site-language-drag-handle" type="button" aria-label="د ژبو مینو انتقال" title="د انتقال لپاره ونیسئ">⠿ انتقال</button>
     <button class="sw-language-toggle" type="button" onclick="this.parentElement.classList.remove('sw-language-collapsed');setTimeout(()=>this.parentElement.classList.add('sw-language-collapsed'),3000)">🌐 ژبې</button>
     <button class="active" onclick="changeLanguage('ps',this)">پښتو</button>
     <button onclick="changeLanguage('fa',this)">دری</button>
@@ -1486,6 +1507,75 @@ document.addEventListener("click", function(event) {
     if(e.target.closest('button')) collapseLater();
   });
   collapseLater();
+})();
+</script>
+<script>
+/* د جنتري او ژبو مینو د کاروونکي له خوا انتقال او په همدې براوزر کې د ځای ساتل */
+(function(){
+  const items = [
+    {id:'mini-smart-calendar', handle:'#mini-smart-calendar .mini-heading', key:'saidwali-position-calendar'},
+    {id:'mini-calendar-open', handle:'#mini-calendar-open', key:'saidwali-position-calendar-open'},
+    {id:'site-language-menu', handle:'#site-language-drag-handle', key:'saidwali-position-language'}
+  ];
+  function clamp(value,min,max){return Math.min(Math.max(value,min),Math.max(min,max));}
+  function applySaved(item,el){
+    try{
+      const saved=JSON.parse(localStorage.getItem(item.key)||'null');
+      if(saved&&Number.isFinite(saved.left)&&Number.isFinite(saved.top)){
+        const rect=el.getBoundingClientRect();
+        el.style.left=clamp(saved.left,0,innerWidth-rect.width)+'px';
+        el.style.top=clamp(saved.top,0,innerHeight-rect.height)+'px';
+        el.style.right='auto';el.style.bottom='auto';
+      }
+    }catch(e){}
+  }
+  items.forEach(item=>{
+    const el=document.getElementById(item.id);
+    const handle=el&&el.querySelector(item.handle);
+    if(!el||!handle)return;
+    applySaved(item,el);
+    let startX=0,startY=0,startLeft=0,startTop=0,moved=false,dragging=false;
+    handle.addEventListener('pointerdown',function(e){
+      if(e.button!==undefined&&e.button!==0)return;
+      const rect=el.getBoundingClientRect();
+      startX=e.clientX;startY=e.clientY;startLeft=rect.left;startTop=rect.top;
+      moved=false;dragging=true;
+      el.style.left=rect.left+'px';el.style.top=rect.top+'px';
+      el.style.right='auto';el.style.bottom='auto';
+      try{handle.setPointerCapture(e.pointerId)}catch(err){}
+      e.preventDefault();
+    });
+    handle.addEventListener('pointermove',function(e){
+      if(!dragging)return;
+      const dx=e.clientX-startX,dy=e.clientY-startY;
+      if(Math.abs(dx)+Math.abs(dy)>3)moved=true;
+      if(!moved)return;
+      const rect=el.getBoundingClientRect();
+      const left=clamp(startLeft+dx,0,innerWidth-rect.width);
+      const top=clamp(startTop+dy,0,innerHeight-rect.height);
+      el.style.left=left+'px';el.style.top=top+'px';
+    });
+    function finish(){
+      if(!dragging)return;
+      dragging=false;
+      if(moved){
+        const rect=el.getBoundingClientRect();
+        try{localStorage.setItem(item.key,JSON.stringify({left:rect.left,top:rect.top}))}catch(e){}
+        if(item.id==='mini-calendar-open'){
+          el.dataset.dragged='yes';
+          setTimeout(()=>delete el.dataset.dragged,250);
+        }
+      }
+    }
+    handle.addEventListener('pointerup',finish);
+    handle.addEventListener('pointercancel',finish);
+    handle.addEventListener('lostpointercapture',finish);
+    if(item.id==='mini-calendar-open'){
+      el.addEventListener('click',function(e){
+        if(el.dataset.dragged==='yes'){e.preventDefault();e.stopImmediatePropagation();delete el.dataset.dragged;}
+      },true);
+    }
+  });
 })();
 </script>
 <!-- د سیدولي خان ویب‌پاڼې د مرستې بشپړ بکس -->
