@@ -58,7 +58,7 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 .reg-status{margin-top:10px;padding:10px;border-radius:8px;display:none;font-size:13px;line-height:1.7}
 .reg-status.show{display:block}
 .reg-status.ok{background:#e8f5e9;color:#1b5e20}
-.reg-status.err{background:#ffebee;color:#b71c1c}
+.reg-status.err{background:#ffebee;color:#b71c1c;border:1px solid #efb2b8;font-weight:700}.reg-status.err:before{content:"✕";display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:50%;background:#d32f2f;color:#fff;margin-left:9px;font-size:17px}
 @media(max-width:600px){.reg-grid{grid-template-columns:1fr}.reg-panel{margin:5px auto;padding:14px}.reg-modal{padding:8px}}
 
 
@@ -224,7 +224,7 @@ document.getElementById("applicantForm").addEventListener("submit",async functio
  }catch(err){showRegStatus(err.message||"له سرور سره اړیکه ټینګه نه شوه. وروسته بیا هڅه وکړئ.",false);}
  finally{btn.disabled=false;btn.textContent="ثبت‌نام بشپړ کړئ";}
 });
-function showRegStatus(message,ok){const el=document.getElementById("regStatus");el.textContent=message;el.className="reg-status show "+(ok?"ok":"err");}
+function showRegStatus(message,ok){const el=document.getElementById("regStatus");el.textContent=String(message||"").replace(/^[✓✔✕✖❌\s]+/,"");el.className="reg-status show "+(ok?"ok":"err");el.setAttribute("role",ok?"status":"alert");}
 </script>
 
 <div id="sw-language-bar" style="position:fixed;bottom:12px;left:12px;z-index:99999;background:#071a35;border:1px solid #d9ae52;border-radius:12px;padding:6px 8px;display:flex;gap:5px;flex-wrap:wrap;box-shadow:0 3px 14px #0005">
