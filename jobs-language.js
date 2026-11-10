@@ -81,33 +81,36 @@
   const langBar = document.getElementById("sw-language-bar");
   function translateText(lang) {
     if (!langs.includes(lang)) lang = "ps";
-    document.querySelectorAll("body *").forEach(el => {
-      if (el.closest("#sw-language-bar")) return;
-      if (el.children.length === 0 && el.tagName !== "SCRIPT" && el.tagName !== "STYLE") {
-        const node = el.firstChild;
-        if (node && node.nodeType === 3) {
-          const original = node.__swOriginal !== undefined ? node.__swOriginal : (node.__jobsOriginal !== undefined ? node.__jobsOriginal : node.nodeValue);
-          if (node.__jobsOriginal === undefined) node.__jobsOriginal = original;
-          const trimmed = original.trim();
-          if (!trimmed) return;
-          let translated = T[trimmed] && T[trimmed][lang] ? T[trimmed][lang] : (lang === "ps" ? trimmed : null);
-          if (translated === null) {
-            const prefixes = ["ښودل شوي بستونه: ","شرایط: ","د اعلان نېټه: ","د پای نېټه: ","د ادارې ایمیل: ","اصلي اعلان: "];
-            const prefix = prefixes.find(p => trimmed.startsWith(p));
-            if (prefix) {
-              const suffix = trimmed.slice(prefix.length);
-              const p = T[prefix] && T[prefix][lang] !== undefined ? T[prefix][lang] : prefix;
-              const detail = T[suffix] && T[suffix][lang] ? T[suffix][lang] : suffix;
-              translated = p + detail;
-            } else if (trimmed.startsWith("د ثبت نام لپاره ") && trimmed.endsWith(" ورځې پاتې دي.")) {
-              const n = trimmed.slice("د ثبت نام لپاره ".length, -" ورځې پاتې دي.".length);
-              translated = (T["د ثبت نام لپاره "][lang] || "د ثبت نام لپاره ") + n + (T[" ورځې پاتې دي."][lang] || " ورځې پاتې دي.");
-            }
-          }
-          if (translated !== null && translated !== undefined) node.nodeValue = original.replace(trimmed, translated);
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      const parent = node.parentElement;
+      if (!parent || /^(SCRIPT|STYLE|TEXTAREA|INPUT|OPTION)$/i.test(parent.tagName) || parent.closest("#sw-language-bar,[contenteditable='true']")) continue;
+      const original = node.__swOriginal !== undefined ? node.__swOriginal : (node.__jobsOriginal !== undefined ? node.__jobsOriginal : node.nodeValue);
+      if (node.__jobsOriginal === undefined) node.__jobsOriginal = original;
+      const trimmed = original.trim();
+      if (!trimmed) continue;
+      let translated = T[trimmed] && T[trimmed][lang] !== undefined ? T[trimmed][lang] : (lang === "ps" ? trimmed : null);
+      if (translated === null) {
+        const prefixes = ["ښودل شوي بستونه: ","شرایط: ","د اعلان نېټه: ","د پای نېټه: ","د ادارې ایمیل: ","اصلي اعلان: "];
+        const prefix = prefixes.find(p => trimmed.startsWith(p));
+        if (prefix) {
+          const suffix = trimmed.slice(prefix.length);
+          const p = T[prefix] && T[prefix][lang] !== undefined ? T[prefix][lang] : prefix;
+          const detail = T[suffix] && T[suffix][lang] ? T[suffix][lang] : suffix;
+          translated = p + detail;
+        } else if (trimmed.startsWith("د ثبت نام لپاره ") && trimmed.endsWith(" ورځې پاتې دي.")) {
+          const n = trimmed.slice("د ثبت نام لپاره ".length, -" ورځې پاتې دي.".length);
+          translated = (T["د ثبت نام لپاره "][lang] || "د ثبت نام لپاره ") + n + (T[" ورځې پاتې دي."][lang] || " ورځې پاتې دي.");
+        } else if (trimmed.includes("،")) {
+          translated = trimmed.split("،").map(part => {
+            const word = part.trim();
+            return (T[word] && T[word][lang]) || word;
+          }).join(lang === "en" ? ", " : "، ");
         }
       }
-    });
+      if (translated !== null && translated !== undefined) node.nodeValue = original.replace(trimmed, translated);
+    }
     document.querySelectorAll("option").forEach(el => {
       if (el.dataset.jobsOriginal === undefined) el.dataset.jobsOriginal = el.textContent;
       const original = el.dataset.jobsOriginal.trim();
