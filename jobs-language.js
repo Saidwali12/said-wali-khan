@@ -81,6 +81,9 @@
   const langBar = document.getElementById("sw-language-bar");
   function translateText(lang) {
     if (!langs.includes(lang)) lang = "ps";
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "en" ? "ltr" : "rtl";
+    document.body.dir = lang === "en" ? "ltr" : "rtl";
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     let node;
     while ((node = walker.nextNode())) {
@@ -109,7 +112,10 @@
           }).join(lang === "en" ? ", " : "، ");
         }
       }
-      if (translated !== null && translated !== undefined) node.nodeValue = original.replace(trimmed, translated);
+      if (translated !== null && translated !== undefined) {
+        const replacement = original.replace(trimmed, translated);
+        if (node.nodeValue !== replacement) node.nodeValue = replacement;
+      }
     }
     document.querySelectorAll("option").forEach(el => {
       if (el.dataset.jobsOriginal === undefined) el.dataset.jobsOriginal = el.textContent;
@@ -120,6 +126,16 @@
       if (el.dataset.jobsPlaceholder === undefined) el.dataset.jobsPlaceholder = el.placeholder;
       const original = el.dataset.jobsPlaceholder;
       if (T[original]) el.placeholder = T[original][lang] || original;
+    });
+    document.querySelectorAll("[title],[aria-label]").forEach(el => {
+      ["title","aria-label"].forEach(attr => {
+        const original = el.getAttribute(attr);
+        if (!original) return;
+        const key = "jobs" + attr;
+        if (el.dataset[key] === undefined) el.dataset[key] = original;
+        const source = el.dataset[key];
+        if (T[source]) el.setAttribute(attr, T[source][lang] || source);
+      });
     });
     document.querySelectorAll(".reg-panel").forEach(el => { el.style.direction = lang === "en" ? "ltr" : "rtl"; });
     document.querySelectorAll(".search-box").forEach(el => { el.style.textAlign = lang === "en" ? "left" : "right"; });
@@ -140,8 +156,7 @@
     if (typeof oldChange === "function") oldChange(lang);
     translateText(lang);
     const observer = new MutationObserver(() => translateText(window.__swActiveLanguage || lang));
-    observer.observe(document.getElementById("jobsContainer"), {childList:true,subtree:true});
-    observer.observe(document.getElementById("regStatus"), {childList:true,subtree:true,characterData:true});
+    observer.observe(document.body, {childList:true,subtree:true,characterData:true});
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, {once:true});
   else start();
