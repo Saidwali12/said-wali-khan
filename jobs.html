@@ -18,6 +18,12 @@ header{background:#0d47a1;color:white;text-align:center;padding:15px;font-size:2
 .notice{background:#fff8e1;border-right:3px solid #d9ae52;padding:8px;margin:8px;border-radius:6px;font-size:12px;line-height:1.7}
 .search-box{padding:15px;text-align:center;background:white;box-shadow:0 2px 5px rgba(0,0,0,.1)}
 .search-box select{padding:10px;width:250px;border:1px solid #ccc;border-radius:8px;font-size:16px}
+/* روښانه ډیجیټلي ساعت د سیمې او بستونو د شمېر تر څنګ */
+.jobs-live-clock{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px auto 0;padding:9px 16px;width:min(100%,270px);border-radius:12px;background:#071a35;color:#fff;box-shadow:0 0 12px #00e67688,inset 0 0 10px #ffffff18;border:1px solid #00e676;transition:color .5s,border-color .5s,box-shadow .5s}
+.jobs-live-clock .clock-label{font-size:11px;font-weight:bold;opacity:.9}
+.jobs-live-clock .clock-time{font-family:Arial,sans-serif;font-size:25px;font-weight:800;letter-spacing:2px;direction:ltr;font-variant-numeric:tabular-nums;text-shadow:0 0 8px currentColor}
+.jobs-live-clock .clock-date{font-family:Arial,sans-serif;font-size:10px;opacity:.9;direction:ltr}
+@media(max-width:600px){.jobs-live-clock{width:100%;max-width:250px}.jobs-live-clock .clock-time{font-size:23px}}
 .jobs-container{padding:8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px}
 .job-card{background:white;padding:8px;margin-bottom:6px;border-radius:8px;font-size:12px;border:1px solid #e0e5ec}
 .job-card:hover{transform:translateY(-2px)}
@@ -123,6 +129,11 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 <option value="all">ټولې سیمې</option><option value="kunar">کونړ</option><option value="nuristan">نورستان</option><option value="laghman">لغمان</option><option value="nangarhar">ننګرهار</option>
 </select>
 <p id="jobCount" style="font-size:11px;margin-top:6px;color:#555">د بستونو شمېر...</p>
+<div class="jobs-live-clock" id="jobsLiveClock" aria-label="ژوندی ډیجیټلي ساعت">
+ <span class="clock-label">اوسنی وخت</span>
+ <span class="clock-time" id="jobsClockTime">--:--:--</span>
+ <span class="clock-date" id="jobsClockDate"></span>
+</div>
 </div>
 <div class="jobs-container" id="jobsContainer"><div class="empty-state">د بستونو معلومات لوستل کېږي...</div></div>
 <footer>
@@ -188,6 +199,36 @@ function renderJobs(){
  }).join("");
 }
 function filterJobs(){renderJobs();}
+/* ساعت د کابل پر وخت؛ رنګ یې د هرې نوې ۶۰ دقیقې په پیل کې بدلېږي */
+(function startJobsLiveClock(){
+ const palette=[
+  {color:"#00ff87",border:"#00e676",glow:"#00e676"},
+  {color:"#ffffff",border:"#aab4c8",glow:"#9aa8c7"},
+  {color:"#42d9ff",border:"#00bfff",glow:"#00bfff"},
+  {color:"#ffe66d",border:"#ffd600",glow:"#ffd600"},
+  {color:"#ff79c6",border:"#ff4fa3",glow:"#ff4fa3"},
+  {color:"#c6a0ff",border:"#a56bff",glow:"#a56bff"},
+  {color:"#ff9f43",border:"#ff8c00",glow:"#ff8c00"}
+ ];
+ const timeEl=document.getElementById("jobsClockTime");
+ const dateEl=document.getElementById("jobsClockDate");
+ const clock=document.getElementById("jobsLiveClock");
+ if(!timeEl||!dateEl||!clock)return;
+ function updateClock(){
+  const now=new Date();
+  const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Kabul",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(now);
+  const get=t=>parts.find(p=>p.type===t)?.value||"00";
+  timeEl.textContent=get("hour")+":"+get("minute")+":"+get("second");
+  dateEl.textContent=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Kabul",day:"2-digit",month:"short",year:"numeric"}).format(now);
+  const colorIndex=Math.floor(now.getTime()/3600000)%palette.length;
+  const c=palette[colorIndex];
+  clock.style.color=c.color;
+  clock.style.borderColor=c.border;
+  clock.style.boxShadow="0 0 14px "+c.glow+"88,inset 0 0 10px #ffffff18";
+ }
+ updateClock();
+ setInterval(updateClock,1000);
+})();
 async function loadJobs(){
  try{
   const r=await fetch("./jobs-feed.json?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("feed");
