@@ -1531,7 +1531,7 @@ document.addEventListener("click", function(event) {
   }
   items.forEach(item=>{
     const el=document.getElementById(item.id);
-    const handle=el&&el.querySelector(item.handle);
+    const handle=el&&(item.id==='mini-calendar-open'?el:el.querySelector(item.handle));
     if(!el||!handle)return;
     applySaved(item,el);
     let startX=0,startY=0,startLeft=0,startTop=0,moved=false,dragging=false;
