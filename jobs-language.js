@@ -101,7 +101,7 @@
           translated = p + detail;
         } else if (trimmed.startsWith("د ثبت نام لپاره ") && trimmed.endsWith(" ورځې پاتې دي.")) {
           const n = trimmed.slice("د ثبت نام لپاره ".length, -" ورځې پاتې دي.".length);
-          translated = (T["د ثبت نام لپاره "][lang] || "د ثبت نام لپاره ") + n + (T[" ورځې پاتې دي."][lang] || " ورځې پاتې دي.");
+          translated = (T["د ثبت نام لپاره "][lang] !== undefined ? T["د ثبت نام لپاره "][lang] : "د ثبت نام لپاره ") + n + (T[" ورځې پاتې دي."][lang] !== undefined ? T[" ورځې پاتې دي."][lang] : " ورځې پاتې دي.");
         } else if (trimmed.includes("،")) {
           translated = trimmed.split("،").map(part => {
             const word = part.trim();
