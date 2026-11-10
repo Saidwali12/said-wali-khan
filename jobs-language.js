@@ -121,6 +121,9 @@
       const original = el.dataset.jobsPlaceholder;
       if (T[original]) el.placeholder = T[original][lang] || original;
     });
+    document.querySelectorAll(".reg-panel").forEach(el => { el.style.direction = lang === "en" ? "ltr" : "rtl"; });
+    document.querySelectorAll(".search-box").forEach(el => { el.style.textAlign = lang === "en" ? "left" : "right"; });
+    document.querySelectorAll(".job-card").forEach(el => { el.style.borderRightWidth = lang === "en" ? "0" : "5px"; el.style.borderLeftWidth = lang === "en" ? "5px" : "0"; });
     if (langBar) langBar.querySelectorAll("button").forEach(b => {
       const oc = b.getAttribute("onclick") || "";
       b.style.outline = oc.includes("'" + lang + "'") ? "2px solid #d9ae52" : "none";
