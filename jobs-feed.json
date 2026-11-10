@@ -1,7 +1,28 @@
 {
-  "updatedAt": "2026-11-09",
-  "policy": "Only verified email-application vacancies for Kunar, Nuristan, Laghman or Nangarhar are listed. Portal-only vacancies are excluded.",
+  "updatedAt": "2026-11-10",
+  "policy": "Only verified active vacancies for Kunar, Nuristan, Laghman or Nangarhar are listed. Apply through the employer's official online form when available, or verified employer email.",
   "jobs": [
+    {
+      "id": "ctg-enumerator-economic-resilience-four-provinces-20261109",
+      "title": "Enumerator (Economic Resilience)",
+      "organization": "CTG Afghanistan",
+      "location": [
+        "کونړ",
+        "لغمان",
+        "ننګرهار",
+        "نورستان"
+      ],
+      "dutyStation": "Kunar, Laghman, Nangarhar, Nuristan",
+      "employmentType": "Full Time",
+      "requirements": "لږ تر لږه د لېسې یا ډیپلوم زده کړې او د اړوندې برخې یو کال تجربه؛ پښتو او دري ژبې ته بلدتیا اړینه ده. د بشپړو شرایطو لپاره اصلي اعلان وګورئ.",
+      "postedDate": "2026-11-09",
+      "expiryDate": "2026-11-22",
+      "applyUrl": "https://app.tayohr.io/jobs/detail/vac-78441-enumerator-economic-resilience-77127",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://www.acbar.org/en/jobs/details/146820/enumerator-economic-resilience",
+      "applicationMode": "online",
+      "verified": true
+    },
     {
       "id": "drc-general-support-enumerator-nuristan-20261113",
       "title": "General Support (Enumerator)",
