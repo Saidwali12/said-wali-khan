@@ -100,7 +100,7 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
   <button class="reg-close" type="button" onclick="closeApplicantForm()">✕ تړل</button>
   <h2 id="regTitle">د کار غوښتونکو ثبت‌نام</h2>
   <p class="reg-help">ټول اړین معلومات په سمه توګه ولیکئ. عکس او CV دواړه اړین دي؛ فایلونه تر ۸ MB پورې پورته کړئ.</p>
-  <form id="applicantForm" enctype="multipart/form-data">
+  <form id="applicantForm" enctype="multipart/form-data" novalidate>
    <div class="reg-grid">
     <div class="reg-field"><label for="appFullName">نوم *</label><input id="appFullName" name="full_name" required maxlength="100" autocomplete="name"></div>
     <div class="reg-field"><label for="appFatherName">د پلار نوم *</label><input id="appFatherName" name="father_name" required maxlength="100"></div>
@@ -211,6 +211,22 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape")closeApplica
 document.getElementById("applicantForm").addEventListener("submit",async function(e){
  e.preventDefault();
  const form=this,btn=document.getElementById("regSubmit"),status=document.getElementById("regStatus");
+ // ټولې لازمي خانې له سرور ته تر لېږلو مخکې وڅېړئ
+ const requiredFields=Array.from(form.querySelectorAll("[required]"));
+ for(const field of requiredFields){
+  if(!field.checkValidity()){
+   const label=field.closest(".reg-field")?.querySelector("label")?.textContent?.trim()
+    ||field.closest("label")?.querySelector("span")?.textContent?.trim()
+    ||field.name||"اړینه خانه";
+   const message=field.validity.valueMissing
+    ? "ستاسو «"+label+"» خانه نه ده ډکه شوې. مهرباني وکړئ ډکه یې کړئ."
+    : "ستاسو «"+label+"» معلومات سم نه دي. مهرباني وکړئ بیا یې وګورئ.";
+   showRegStatus(message,false);
+   field.focus();
+   field.scrollIntoView({behavior:"smooth",block:"center"});
+   return;
+  }
+ }
  const photo=document.getElementById("appPhoto").files[0],cv=document.getElementById("appCv").files[0];
  if(!photo||photo.size>8*1024*1024){showRegStatus("عکس پورته کړئ؛ اندازه یې باید تر ۸ MB کمه وي.",false);return;}
  if(!cv||cv.size>8*1024*1024){showRegStatus("CV پورته کړئ؛ اندازه یې باید تر ۸ MB کمه وي.",false);return;}
