@@ -662,6 +662,15 @@ footer p {
     }
 }
 </style>
+
+<!-- Said Wali Khan Android/PWA app setup -->
+<meta name="theme-color" content="#071a35">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Said Wali Khan">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./app-icon.svg">
+
 </head>
 
 <body>
@@ -2146,6 +2155,71 @@ document.addEventListener("click", function(event) {
 })();
 </script>
 <!-- End Saidwali Calculator and Currency Tools -->
+
+
+<!-- Said Wali Khan app install button -->
+<style>
+#saidwali-install-app {
+  position: fixed; right: 14px; bottom: 76px; z-index: 99998;
+  display: none; align-items: center; gap: 9px;
+  padding: 11px 16px; border: 1px solid #f4d58a; border-radius: 999px;
+  background: linear-gradient(135deg,#f4d58a,#d9ae52); color: #071a35;
+  font: bold 14px Tahoma,Arial,sans-serif; box-shadow: 0 8px 24px rgba(7,26,53,.25);
+  cursor: pointer;
+}
+#saidwali-install-app:focus-visible { outline: 3px solid #173e6c; outline-offset: 3px; }
+@media (max-width:480px) {
+  #saidwali-install-app { right: 10px; bottom: 72px; font-size: 13px; padding: 10px 13px; }
+}
+</style>
+<button id="saidwali-install-app" type="button" aria-label="Install Said Wali Khan app">⬇️ اپلیکیشن نصب کړئ</button>
+<script>
+(() => {
+  const installButton = document.getElementById('saidwali-install-app');
+  if (!installButton) return;
+  let installPrompt = null;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (isStandalone) return;
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    installPrompt = event;
+    installButton.style.display = 'inline-flex';
+  });
+
+  installButton.addEventListener('click', async () => {
+    if (!installPrompt) {
+      alert('د اپلیکیشن نصبولو لپاره د براوزر درې ټکي (⋮) خلاص کړئ او د Install app یا Add to Home screen انتخاب وکړئ.');
+      return;
+    }
+    installButton.disabled = true;
+    try {
+      installPrompt.prompt();
+      await installPrompt.userChoice;
+    } catch (error) {
+      console.error('App installation prompt:', error);
+    } finally {
+      installPrompt = null;
+      installButton.style.display = 'none';
+      installButton.disabled = false;
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    installButton.style.display = 'none';
+    installPrompt = null;
+  });
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch((error) => {
+      console.error('Said Wali Khan app service worker:', error);
+    });
+  });
+}
+</script>
 
 </body>
 </html>
