@@ -558,6 +558,45 @@
       node.__swAutoQueued = lang;
       autoTranslationQueue.push({node, original, trimmed, lang, cacheKey});
     }
+    // Also cover form hints, select options and accessibility text.
+    document.querySelectorAll("input[placeholder],textarea[placeholder],[title],[aria-label],[alt],option,input[type='button'],input[type='submit'],input[type='reset']").forEach(el => {
+      const attrs = ["placeholder","title","aria-label","alt","value"];
+      attrs.forEach(attr => {
+        if (!el.hasAttribute(attr) && !(attr === "value" && /^(button|submit|reset)$/i.test(el.type || ""))) return;
+        const dataKey = "swAutoOriginal" + attr.replace(/(^|-)([a-z])/g, (_, p, ch) => ch.toUpperCase());
+        const current = attr === "value" ? el.value : el.getAttribute(attr);
+        if (el.dataset[dataKey] === undefined) el.dataset[dataKey] = current || "";
+        const originalValue = el.dataset[dataKey];
+        const trimmedValue = originalValue.trim();
+        if (!trimmedValue || !/[\u0600-\u06FF]/.test(trimmedValue) || dict[trimmedValue] || trimmedValue.length > 500) return;
+        const cacheKey = lang + "|" + trimmedValue;
+        if (autoTranslationCache.has(cacheKey)) {
+          if (attr === "value") el.value = autoTranslationCache.get(cacheKey);
+          else el.setAttribute(attr, autoTranslationCache.get(cacheKey));
+          return;
+        }
+        if (el.dataset["swAutoQueued" + attr] === lang) return;
+        el.dataset["swAutoQueued" + attr] = lang;
+        autoTranslationQueue.push({lang, trimmed:trimmedValue, cacheKey, apply:(translated) => {
+          if (!el.isConnected || window.__swActiveLanguage !== lang) return;
+          if (attr === "value") el.value = translated;
+          else el.setAttribute(attr, translated);
+        }});
+      });
+    });
+    document.querySelectorAll("option").forEach(el => {
+      if (el.dataset.swOriginalText === undefined) el.dataset.swOriginalText = el.textContent;
+      const originalValue = el.dataset.swOriginalText;
+      const trimmedValue = originalValue.trim();
+      if (!trimmedValue || !/[\u0600-\u06FF]/.test(trimmedValue) || dict[trimmedValue] || trimmedValue.length > 500) return;
+      const cacheKey = lang + "|" + trimmedValue;
+      if (autoTranslationCache.has(cacheKey)) { el.textContent = autoTranslationCache.get(cacheKey); return; }
+      if (el.dataset.swAutoOptionQueued === lang) return;
+      el.dataset.swAutoOptionQueued = lang;
+      autoTranslationQueue.push({lang, trimmed:trimmedValue, cacheKey, apply:(translated) => {
+        if (el.isConnected && window.__swActiveLanguage === lang) el.textContent = translated;
+      }});
+    });
     runAutomaticTranslationWorkers();
   }
   function runAutomaticTranslationWorkers() {
@@ -570,7 +609,8 @@
           const translated = Array.isArray(data[0]) ? data[0].map(part => part[0] || "").join("") : "";
           if (!translated) return;
           autoTranslationCache.set(task.cacheKey, translated);
-          if (task.node.isConnected && window.__swActiveLanguage === task.lang) {
+          if (task.apply) task.apply(translated);
+          else if (task.node.isConnected && window.__swActiveLanguage === task.lang) {
             task.node.nodeValue = task.original.replace(task.trimmed, translated);
           }
         })
