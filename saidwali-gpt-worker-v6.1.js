@@ -221,12 +221,13 @@ function addBubble(role,text,image){
  content.appendChild(body);
  if(role==="assistant"){
   var tools=document.createElement("div");tools.className="msgtools";
-  var copy=document.createElement("button");copy.textContent="کاپي";copy.onclick=function(){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){copy.textContent="کاپي شو"}).catch(function(){})}};
-  var speak=document.createElement("button");speak.textContent="🔊 واورئ";speak.onclick=function(){speakText(text)};
+  var copy=document.createElement("button");copy.textContent="کاپي";copy.onclick=function(){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(tx.textContent).then(function(){copy.textContent="کاپي شو"}).catch(function(){})}};
+  var speak=document.createElement("button");speak.textContent="🔊 واورئ";speak.onclick=function(){speakText(tx.textContent)};
   tools.appendChild(copy);tools.appendChild(speak);content.appendChild(tools);
  }
  row.appendChild(av);row.appendChild(content);
  messagesBox.appendChild(row);$("chatArea").scrollTop=$("chatArea").scrollHeight;
+ return tx;
 }
 function renderAll(){
  messagesBox.innerHTML="";
@@ -317,11 +318,28 @@ async function send(voiceText){
    try{var results=await doSearch(text);searchContext=results.map(function(x,i){return (i+1)+". "+x.title+"\n"+x.snippet+"\n"+x.url}).join("\n\n")}
    catch(se){searchContext="د انټرنېټ لټون دا ځل بریالی نه شو. د لټون پایلې مه جوړوه او دا محدودیت روښانه کړه."}
   }
-  var payload={messages:history.slice(-14).map(function(m){return {role:m.role,content:m.content}}),language:lang.value,image:image,searchContext:searchContext};
+  var payload={messages:history.slice(-10).map(function(m){return {role:m.role,content:m.content}}),language:lang.value,image:image,searchContext:searchContext};
   var res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-  var data=await res.json();
-  if(!res.ok)throw new Error(data.error||"Server error");
-  var answer=data.answer||"ځواب ترلاسه نه شو.";
+  if(!res.ok){var errData=await res.json().catch(function(){return {}});throw new Error(errData.error||"Server error")}
+  var answer="";
+  if((res.headers.get("content-type")||"").indexOf("text/event-stream")!==-1){
+   var answerNode=addBubble("assistant","");
+   var reader=res.body.getReader(),decoder=new TextDecoder(),buffer="";
+   while(true){
+    var part=await reader.read();if(part.done)break;
+    buffer+=decoder.decode(part.value,{stream:true});
+    var lines=buffer.split(/\\r?\\n/);buffer=lines.pop()||"";
+    for(var li=0;li<lines.length;li++){
+     var line=lines[li].trim();if(!line.startsWith("data:"))continue;
+     var raw=line.slice(5).trim();if(!raw||raw==="[DONE]")continue;
+     try{var eventData=JSON.parse(raw);var piece=eventData.response||(eventData.choices&&eventData.choices[0]&&eventData.choices[0].delta&&eventData.choices[0].delta.content)||"";if(piece){answer+=piece;answerNode.textContent=answer;$("chatArea").scrollTop=$("chatArea").scrollHeight}}catch(parseError){}
+    }
+   }
+   if(!answer.trim())throw new Error("AI تش ځواب راولېږه.");
+  }else{
+   var data=await res.json();answer=data.answer||"ځواب ترلاسه نه شو.";
+   addBubble("assistant",answer);
+  }
   history.push({role:"assistant",content:answer});
   addBubble("assistant",answer);notifyReply(answer);
   if(voiceMode){voiceSpeaking=true;speakText(answer,function(){voiceSpeaking=false;if(voiceMode){setStatus("ځواب پای ته ورسېد؛ اوس خبرې وکړئ...");startVoiceRecognition()}})}
@@ -587,10 +605,10 @@ export default {
           "Never invent facts, live news, search results, citations, or actions. Use supplied search results carefully and state uncertainty. " +
           "Do not claim to deploy code, open files, or perform actions unless actually done. Prefer helpful answers over generic disclaimers."; 
         const inputMessages = Array.isArray(body.messages) ? body.messages : [];
-        const safeMessages = inputMessages.slice(-12).map(function(m) {
+        const safeMessages = inputMessages.slice(-8).map(function(m) {
           return {
             role: m.role === "assistant" ? "assistant" : "user",
-            content: cleanText(m.content, 12000)
+            content: cleanText(m.content, 8000)
           };
         }).filter(function(m) { return m.content.trim(); });
         if (!safeMessages.length) {
@@ -626,14 +644,24 @@ export default {
             temperature: 0.4
           });
         } else {
-          result = await env.AI.run(CHAT_MODEL, {
+          const stream = await env.AI.run(CHAT_MODEL, {
             messages: [
               { role: "system", content: systemPrompt },
               ...safeMessages
             ],
-            max_completion_tokens: 1100,
+            max_completion_tokens: 850,
             reasoning_effort: "low",
-            temperature: 0.45
+            temperature: 0.45,
+            stream: true
+          });
+          return new Response(stream, {
+            status: 200,
+            headers: {
+              "Content-Type": "text/event-stream; charset=utf-8",
+              "Cache-Control": "no-cache, no-transform",
+              "X-Accel-Buffering": "no",
+              ...corsHeaders(request)
+            }
           });
         }
         const answer = extractAnswer(result);
