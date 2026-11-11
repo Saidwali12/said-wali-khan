@@ -321,8 +321,9 @@ async function send(voiceText){
   var payload={messages:history.slice(-10).map(function(m){return {role:m.role,content:m.content}}),language:lang.value,image:image,searchContext:searchContext};
   var res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
   if(!res.ok){var errData=await res.json().catch(function(){return {}});throw new Error(errData.error||"Server error")}
-  var answer="";
+  var answer="",streamed=false;
   if((res.headers.get("content-type")||"").indexOf("text/event-stream")!==-1){
+   streamed=true;
    var answerNode=addBubble("assistant","");
    var reader=res.body.getReader(),decoder=new TextDecoder(),buffer="";
    while(true){
@@ -341,7 +342,7 @@ async function send(voiceText){
    addBubble("assistant",answer);
   }
   history.push({role:"assistant",content:answer});
-  addBubble("assistant",answer);notifyReply(answer);
+  if(!streamed)addBubble("assistant",answer);notifyReply(answer);
   if(voiceMode){voiceSpeaking=true;speakText(answer,function(){voiceSpeaking=false;if(voiceMode){setStatus("ځواب پای ته ورسېد؛ اوس خبرې وکړئ...");startVoiceRecognition()}})}
   var c=activeChat();if(c){c.messages=history.slice();if(c.title==="نوې خبرې"&&text)c.title=text.slice(0,35)}
   save();renderList();setStatus("");
