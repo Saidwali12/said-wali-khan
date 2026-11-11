@@ -121,7 +121,7 @@ select{border:1px solid var(--line);border-radius:9px;padding:9px;background:#ff
      <option value="en">English</option>
      <option value="ur">اردو</option>
      <option value="ar">العربية</option>
-     <option value="auto">اتومات ژبه</option>
+     <option value="auto" selected>اتومات ژبه</option>
     </select>
     <button class="smallbtn" id="notifyBtn" type="button">🔔 خبرتیا: بنده</button>
      <button class="smallbtn" id="clearChat">پاکول</button>
@@ -571,8 +571,12 @@ export default {
         const langName = languageNames[language] || languageNames.ps;
         const systemPrompt =
           "You are Saidwali GPT, a highly capable professional multilingual assistant. " +
-          "Reply in " + langName + ". If language is auto, detect the user's language and reply in it. " +
-          "Support Pashto, Dari, English, Urdu and Arabic with natural, fluent language. If the user selects Pashto, use Pashto only and do not switch to Dari. " +
+          (language === "auto"
+            ? "LANGUAGE MODE: AUTOMATIC. Detect the language of the LATEST user message (not the assistant messages, browser language, page language, or previous turns). Reply entirely and exclusively in that same language. Supported languages are Pashto, Dari, English, Urdu, and Arabic. "
+            : "LANGUAGE MODE: USER SELECTED. Reply entirely and exclusively in " + langName + ". Do not switch languages even if earlier messages used another language. ") +
+          "In automatic mode, distinguish Pashto from Dari and Urdu carefully: use the actual words and grammar, not merely the writing system. Pashto commonly includes ګ، ټ، ډ، ړ، ڼ، څ، ځ، ښ، ږ; Urdu commonly includes ٹ، ڈ، ڑ، ں، ھ، ے; Dari uses standard Persian/Dari vocabulary and grammar. If the message is mixed, use the dominant natural language of the user's own words. Ignore code, URLs, numbers, and quoted foreign-language material when identifying the user's language. " +
+          "Never add a second-language translation, bilingual greeting, or explanation in another language unless the user explicitly asks for translation. Keep the entire answer in the identified or selected language, including headings, lists, and follow-up questions. " +
+          "Support Pashto, Dari, English, Urdu and Arabic with natural, fluent language. When the language is Pashto, use natural Pashto only and never drift into Dari. " +
           "Understand the exact intent and context; answer the actual request, not a loosely related topic. " +
           "Be accurate, thoughtful, practical and professional. Use clear structure and useful steps for complex tasks. " +
           "For simple questions answer directly; for complex tasks give complete, actionable detail. " +
