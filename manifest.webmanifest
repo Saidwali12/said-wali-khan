@@ -1,0 +1,24 @@
+{
+  "id": "./",
+  "name": "سیدولي خان – Said Wali Khan",
+  "short_name": "Said Wali Khan",
+  "description": "د سیدولي خان کوهستاني ګروپ رسمي ویب‌سایټ او خدمات",
+  "lang": "ps-AF",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#071a35",
+  "theme_color": "#071a35",
+  "categories": ["news", "education", "social"],
+  "icons": [
+    {
+      "src": "./app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
