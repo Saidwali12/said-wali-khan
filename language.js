@@ -603,6 +603,7 @@
       if (!trimmed) continue;
       const item = dict[trimmed];
       if (item) node.nodeValue = original.replace(trimmed, lang === "ps" ? trimmed : (item[lang] || trimmed));
+      else node.nodeValue = original;
     }
     document.querySelectorAll("input[placeholder],textarea[placeholder]").forEach(el => {
       if (!el.dataset.psPlaceholder) el.dataset.psPlaceholder = el.placeholder;
