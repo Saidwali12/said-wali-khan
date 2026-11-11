@@ -440,7 +440,15 @@
     observer.observe(document.body, {childList:true,subtree:true});
   }
   function startLanguageSystem() {
-    apply("ps");
+    // Restore the visitor's last selected language on every page.
+    let savedLanguage = "ps";
+    try {
+      const storedLanguage = localStorage.getItem("sw_site_language");
+      if (["ps", "fa", "en", "ur", "ar"].includes(storedLanguage)) {
+        savedLanguage = storedLanguage;
+      }
+    } catch (e) {}
+    apply(savedLanguage);
     observeTranslations();
   }
   if (document.readyState === "loading") {
