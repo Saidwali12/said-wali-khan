@@ -19,11 +19,11 @@ header{background:#0d47a1;color:white;text-align:center;padding:15px;font-size:2
 .search-box{padding:15px;text-align:center;background:white;box-shadow:0 2px 5px rgba(0,0,0,.1)}
 .search-box select{padding:10px;width:250px;border:1px solid #ccc;border-radius:8px;font-size:16px}
 /* روښانه ډیجیټلي ساعت د سیمې او بستونو د شمېر تر څنګ */
-.jobs-live-clock{box-sizing:border-box;position:relative;top:-56px;margin-bottom:-56px;display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;margin-top:12px;margin-left:auto;margin-right:auto;padding:3px 8px;width:272px;max-width:calc(100% - 20px);border-radius:7px;background:#071a35;color:#fff;box-shadow:0 0 10px #00e67688,inset 0 0 8px #ffffff18;border:1px solid #00e676;transition:color .5s,border-color .5s,box-shadow .5s}
+.jobs-live-clock{box-sizing:border-box;position:fixed;top:auto;left:auto;right:18px;bottom:90px;margin:0;z-index:9998;display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;padding:3px 8px;width:272px;max-width:calc(100vw - 20px);border-radius:7px;background:#071a35;color:#fff;box-shadow:0 0 10px #00e67688,inset 0 0 8px #ffffff18;border:1px solid #00e676;transition:color .5s,border-color .5s,box-shadow .5s;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none} .jobs-live-clock.is-dragging{cursor:grabbing;box-shadow:0 5px 22px #0007,0 0 14px #00e67688}
 .jobs-live-clock .clock-label{font-size:10px;font-weight:bold;opacity:.9}
 .jobs-live-clock .clock-time{font-family:Arial,sans-serif;font-size:20px;font-weight:800;letter-spacing:1px;direction:ltr;font-variant-numeric:tabular-nums;text-shadow:0 0 8px currentColor}
 .jobs-live-clock .clock-date{font-family:Arial,sans-serif;font-size:9px;opacity:.9;direction:ltr}
-@media(max-width:600px){.jobs-live-clock{width:272px;max-width:calc(100% - 20px)}.jobs-live-clock .clock-time{font-size:19px}}
+@media(max-width:600px){.jobs-live-clock{width:272px;max-width:calc(100vw - 20px);bottom:82px;right:10px}.jobs-live-clock .clock-time{font-size:19px}}
 .jobs-container{padding:8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px}
 .job-card{background:white;padding:8px;margin-bottom:6px;border-radius:8px;font-size:12px;border:1px solid #e0e5ec}
 .job-card:hover{transform:translateY(-2px)}
@@ -214,6 +214,52 @@ function filterJobs(){renderJobs();}
  const dateEl=document.getElementById("jobsClockDate");
  const clock=document.getElementById("jobsLiveClock");
  if(!timeEl||!dateEl||!clock)return;
+ // ساعت په کمپیوټر او موبایل کې د کشولو وړ دی؛ وروستی ځای په همدې وسیله کې ساتل کېږي.
+ const positionKey="saidwaliJobsClockPosition";
+ function clampClock(left,top){
+  const maxLeft=Math.max(0,window.innerWidth-clock.offsetWidth);
+  const maxTop=Math.max(0,window.innerHeight-clock.offsetHeight);
+  return {left:Math.min(Math.max(0,left),maxLeft),top:Math.min(Math.max(0,top),maxTop)};
+ }
+ function applyClockPosition(left,top){
+  const p=clampClock(left,top);
+  clock.style.left=p.left+"px";clock.style.top=p.top+"px";
+  clock.style.right="auto";clock.style.bottom="auto";
+ }
+ try{
+  const saved=JSON.parse(localStorage.getItem(positionKey)||"null");
+  if(saved&&Number.isFinite(saved.left)&&Number.isFinite(saved.top))applyClockPosition(saved.left,saved.top);
+ }catch(e){}
+ let drag=null;
+ clock.addEventListener("pointerdown",function(e){
+  if(e.pointerType==="mouse"&&e.button!==0)return;
+  const rect=clock.getBoundingClientRect();
+  drag={x:e.clientX,y:e.clientY,left:rect.left,top:rect.top,moved:false};
+  clock.classList.add("is-dragging");
+  try{clock.setPointerCapture(e.pointerId);}catch(err){}
+  e.preventDefault();
+ });
+ clock.addEventListener("pointermove",function(e){
+  if(!drag)return;
+  const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+  if(Math.abs(dx)+Math.abs(dy)>3)drag.moved=true;
+  if(drag.moved){applyClockPosition(drag.left+dx,drag.top+dy);e.preventDefault();}
+ });
+ function finishClockDrag(){
+  if(!drag)return;
+  if(drag.moved){
+   const rect=clock.getBoundingClientRect();
+   try{localStorage.setItem(positionKey,JSON.stringify({left:rect.left,top:rect.top}));}catch(e){}
+  }
+  drag=null;clock.classList.remove("is-dragging");
+ }
+ clock.addEventListener("pointerup",finishClockDrag);
+ clock.addEventListener("pointercancel",finishClockDrag);
+ window.addEventListener("resize",function(){
+  const rect=clock.getBoundingClientRect();
+  applyClockPosition(rect.left,rect.top);
+  try{localStorage.setItem(positionKey,JSON.stringify({left:clock.getBoundingClientRect().left,top:clock.getBoundingClientRect().top}));}catch(e){}
+ });
  function updateClock(){
   const now=new Date();
   const parts=new Intl.DateTimeFormat("en-US",{timeZone:"Asia/Kabul",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}).formatToParts(now);
