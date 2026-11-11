@@ -318,7 +318,7 @@ async function send(voiceText){
    try{var results=await doSearch(text);searchContext=results.map(function(x,i){return (i+1)+". "+x.title+"\n"+x.snippet+"\n"+x.url}).join("\n\n")}
    catch(se){searchContext="د انټرنېټ لټون دا ځل بریالی نه شو. د لټون پایلې مه جوړوه او دا محدودیت روښانه کړه."}
   }
-  var payload={messages:history.slice(-10).map(function(m){return {role:m.role,content:m.content}}),language:lang.value,image:image,searchContext:searchContext};
+  var payload={messages:history.slice(-12).map(function(m){return {role:m.role,content:m.content}}),language:lang.value,image:image,searchContext:searchContext};
   var res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
   if(!res.ok){var errData=await res.json().catch(function(){return {}});throw new Error(errData.error||"Server error")}
   var answer="",streamed=false;
@@ -336,10 +336,18 @@ async function send(voiceText){
      try{var eventData=JSON.parse(raw);var piece=eventData.response||(eventData.choices&&eventData.choices[0]&&eventData.choices[0].delta&&eventData.choices[0].delta.content)||"";if(piece){answer+=piece;answerNode.textContent=answer;$("chatArea").scrollTop=$("chatArea").scrollHeight}}catch(parseError){}
     }
    }
+   if(buffer.trim()){
+    var finalLine=buffer.trim();
+    if(finalLine.startsWith("data:")){
+     var finalRaw=finalLine.slice(5).trim();
+     if(finalRaw&&finalRaw!=="[DONE]"){
+      try{var finalData=JSON.parse(finalRaw);var finalPiece=finalData.response||(finalData.choices&&finalData.choices[0]&&finalData.choices[0].delta&&finalData.choices[0].delta.content)||"";if(finalPiece){answer+=finalPiece;answerNode.textContent=answer}}catch(finalParseError){}
+     }
+    }
+   }
    if(!answer.trim())throw new Error("AI تش ځواب راولېږه.");
   }else{
-   var data=await res.json();answer=data.answer||"ځواب ترلاسه نه شو.";
-   addBubble("assistant",answer);
+   var data=await res.json();answer=data.answer||"ځواب ترلاسه نه شو."; 
   }
   history.push({role:"assistant",content:answer});
   if(!streamed)addBubble("assistant",answer);notifyReply(answer);
@@ -606,7 +614,7 @@ export default {
           "Never invent facts, live news, search results, citations, or actions. Use supplied search results carefully and state uncertainty. " +
           "Do not claim to deploy code, open files, or perform actions unless actually done. Prefer helpful answers over generic disclaimers."; 
         const inputMessages = Array.isArray(body.messages) ? body.messages : [];
-        const safeMessages = inputMessages.slice(-8).map(function(m) {
+        const safeMessages = inputMessages.slice(-12).map(function(m) {
           return {
             role: m.role === "assistant" ? "assistant" : "user",
             content: cleanText(m.content, 8000)
@@ -650,7 +658,7 @@ export default {
               { role: "system", content: systemPrompt },
               ...safeMessages
             ],
-            max_completion_tokens: 850,
+            max_completion_tokens: 1000,
             reasoning_effort: "low",
             temperature: 0.45,
             stream: true
