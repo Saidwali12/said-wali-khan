@@ -531,6 +531,54 @@
     "شخصي خبرونه – د سیمې او نړۍ خبرونه": {fa:"اخبار محلی — اخبار منطقه و جهان",en:"Local News — Regional & World News",ur:"مقامی خبریں — علاقائی اور عالمی خبریں",ar:"أخبار محلية — أخبار المنطقة والعالم"},
     "© ټول حقوق خوندي دي.": {fa:"© تمامی حقوق محفوظ است.",en:"© All rights reserved.",ur:"© جملہ حقوق محفوظ ہیں۔",ar:"© جميع الحقوق محفوظة."}
   });
+
+  // Automatic fallback for static Pashto/Dari/Arabic text not yet in the dictionary.
+  // User-generated posts, comments, messages and editable fields remain excluded.
+  const autoTranslationCache = new Map();
+  const autoTranslationQueue = [];
+  let autoTranslationWorkers = 0;
+  function queueAutomaticTranslations(lang) {
+    if (lang === "ps") return;
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      const parent = node.parentElement;
+      if (!parent || /^(SCRIPT|STYLE|TEXTAREA|INPUT)$/i.test(parent.tagName)) continue;
+      if (parent.closest("#sw-language-bar,.user-post,.post-content,.comment,.comments,.post-card,.messages-layout,[contenteditable='true']")) continue;
+      if (!Object.prototype.hasOwnProperty.call(node, "__swOriginal")) node.__swOriginal = node.nodeValue;
+      const original = node.__swOriginal;
+      const trimmed = original.trim();
+      if (!trimmed || !/[\u0600-\u06FF]/.test(trimmed) || dict[trimmed]) continue;
+      if (trimmed.length > 500 || node.__swAutoQueued === lang) continue;
+      const cacheKey = lang + "|" + trimmed;
+      if (autoTranslationCache.has(cacheKey)) {
+        node.nodeValue = original.replace(trimmed, autoTranslationCache.get(cacheKey));
+        continue;
+      }
+      node.__swAutoQueued = lang;
+      autoTranslationQueue.push({node, original, trimmed, lang, cacheKey});
+    }
+    runAutomaticTranslationWorkers();
+  }
+  function runAutomaticTranslationWorkers() {
+    while (autoTranslationWorkers < 2 && autoTranslationQueue.length) {
+      const task = autoTranslationQueue.shift();
+      autoTranslationWorkers++;
+      fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + task.lang + "&dt=t&q=" + encodeURIComponent(task.trimmed))
+        .then(response => { if (!response.ok) throw new Error("Translation unavailable"); return response.json(); })
+        .then(data => {
+          const translated = Array.isArray(data[0]) ? data[0].map(part => part[0] || "").join("") : "";
+          if (!translated) return;
+          autoTranslationCache.set(task.cacheKey, translated);
+          if (task.node.isConnected && window.__swActiveLanguage === task.lang) {
+            task.node.nodeValue = task.original.replace(task.trimmed, translated);
+          }
+        })
+        .catch(() => {})
+        .finally(() => { autoTranslationWorkers--; runAutomaticTranslationWorkers(); });
+    }
+  }
+
   const langNames = {ps:"پښتو",fa:"دری",en:"English",ur:"اردو",ar:"العربية"};
   function apply(lang) {
     if (!["ps","fa","en","ur","ar"].includes(lang)) lang = "ps";
@@ -590,6 +638,7 @@
       const active = btn.getAttribute("onclick") || "";
       btn.classList.toggle("active", active.includes("'" + lang + "'"));
     });
+    queueAutomaticTranslations(lang);
     try { localStorage.setItem("sw_site_language", lang); } catch(e) {}
   }
   window.changeLanguage = function(lang) { apply(lang); };
