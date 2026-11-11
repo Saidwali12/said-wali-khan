@@ -1222,13 +1222,16 @@ document.addEventListener("click", function(event) {
   border-radius: 7px;
   padding: 7px;
   font-size: 10px;
-  cursor: pointer;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 </style>
 
 <div id="mini-smart-calendar">
   <button class="mini-close" id="mini-calendar-close">×</button>
-  <div class="mini-heading">✦ SMART DATE ✦</div>
+  <div class="mini-heading" title="د جنتري د انتقال لپاره دا سرلیک ونیسئ">⠿ د انتقال لپاره ونیسئ ⠿</div>
   <div class="mini-content" id="mini-content">
     <div class="mini-type" id="mini-type">هجري شمسي</div>
     <div class="mini-date" id="mini-date">----</div>
