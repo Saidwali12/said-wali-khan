@@ -562,6 +562,30 @@
       const placeholderEntry = dict[originalPlaceholder];
       if (placeholderEntry) el.placeholder = lang === "ps" ? originalPlaceholder : (placeholderEntry[lang] || originalPlaceholder);
     });
+    // Translate controls and accessibility labels without changing form values or IDs.
+    document.querySelectorAll("option").forEach(el => {
+      if (el.dataset.swOriginalText === undefined) el.dataset.swOriginalText = el.textContent;
+      const original = el.dataset.swOriginalText.trim();
+      const entry = dict[original];
+      if (entry) el.textContent = lang === "ps" ? original : (entry[lang] || original);
+    });
+    document.querySelectorAll("[title],[aria-label],[alt]").forEach(el => {
+      ["title", "aria-label", "alt"].forEach(attr => {
+        const originalValue = el.getAttribute(attr);
+        if (!originalValue) return;
+        const dataKey = "swOriginal" + attr.replace(/(^|-)([a-z])/g, (_, p, ch) => ch.toUpperCase());
+        if (el.dataset[dataKey] === undefined) el.dataset[dataKey] = originalValue;
+        const original = el.dataset[dataKey].trim();
+        const entry = dict[original];
+        if (entry) el.setAttribute(attr, lang === "ps" ? original : (entry[lang] || original));
+      });
+    });
+    document.querySelectorAll("input[type='button'],input[type='submit'],input[type='reset']").forEach(el => {
+      if (el.dataset.swOriginalValue === undefined) el.dataset.swOriginalValue = el.value;
+      const original = el.dataset.swOriginalValue.trim();
+      const entry = dict[original];
+      if (entry) el.value = lang === "ps" ? original : (entry[lang] || original);
+    });
     document.querySelectorAll(".languages button, #sw-language-bar button").forEach(btn => {
       const active = btn.getAttribute("onclick") || "";
       btn.classList.toggle("active", active.includes("'" + lang + "'"));
