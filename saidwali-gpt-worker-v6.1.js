@@ -328,7 +328,7 @@ async function send(voiceText){
    while(true){
     var part=await reader.read();if(part.done)break;
     buffer+=decoder.decode(part.value,{stream:true});
-    var lines=buffer.split(/\\r?\\n/);buffer=lines.pop()||"";
+    var lines=buffer.split(/\r?\n/);buffer=lines.pop()||"";
     for(var li=0;li<lines.length;li++){
      var line=lines[li].trim();if(!line.startsWith("data:"))continue;
      var raw=line.slice(5).trim();if(!raw||raw==="[DONE]")continue;
