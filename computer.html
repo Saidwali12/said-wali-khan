@@ -12,8 +12,13 @@
 .submenu{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 18px;padding:12px;background:#fff;border:1px solid #e0e6ef;border-radius:13px;box-shadow:0 5px 16px #071a350c}
 .submenu a{display:inline-block;padding:8px 13px;border-radius:9px;background:#071a35;color:#f4d58a;text-decoration:none;font-weight:bold;font-size:14px}
 .submenu a:hover,.submenu a:focus{background:#d9ae52;color:#071a35;outline:2px solid #071a35}
+
+/* د شاته تګ لینکونه د ښکاره بټن په بڼه */
+a.back{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin:0 0 16px;padding:10px 18px;border:2px solid #d9ae52;border-radius:11px;background:linear-gradient(135deg,#071a35,#102b50);color:#f4d58a!important;font-weight:bold;text-decoration:none;box-shadow:0 4px 12px rgba(7,26,53,.18);cursor:pointer}
+a.back:hover,a.back:focus{background:linear-gradient(135deg,#f4d58a,#d9ae52);color:#071a35!important;outline:2px solid #071a35;outline-offset:2px}
+
 </style></head><body><header><h1>💻 د کمپیوټر تشخیصي مرکز</h1><div>Windows 7 · 8/8.1 · 10 · 11</div></header><main>
-<a class="back" href="./diagnostic.html">← تخنیکي مرکز ته بېرته</a>
+<a class="back" href="./diagnostic.html">⬅ شاته تګ</a>
 <nav class="submenu" aria-label="د کمپیوټر فرعي مینو"><a href="#drivers">🧩 ډرایورونه او سافټویر</a><a href="#diagnosis">🔍 د سیستم تشخیص</a><a href="#problems">🛠️ عامې ستونزې</a></nav>
 <section class="panel" id="drivers"><h2>۱. د خپل کمپیوټر ماډل وټاکئ او رسمي ډرایورونه ترلاسه کړئ</h2><label for="brand">د کمپیوټر شرکت</label><select id="brand"><option value="">شرکت وټاکئ</option><option>HP</option><option>Dell</option><option>Lenovo</option><option>ASUS</option><option>Acer</option><option>Microsoft Surface</option><option>MSI</option><option>Samsung</option><option>Other</option></select>
 <label for="model">د کمپیوټر دقیق ماډل</label><input id="model" placeholder="لکه: HP ProBook 450 G8">
@@ -90,7 +95,7 @@ function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,ch=>({"&":"&amp;"
 function findDrivers(){const brand=document.getElementById("brand").value;const model=document.getElementById("model").value.trim();const win=document.getElementById("windows").value;const arch=document.getElementById("arch").value;if(!brand||!model){document.getElementById("driverLinks").textContent="مهرباني وکړئ د کمپیوټر شرکت او دقیق ماډل ولیکئ.";return}const q=encodeURIComponent(brand+" "+model+" "+win+" "+arch+" drivers official support");let url="";const b=brand.toLowerCase();if(b==="hp")url="https://support.hp.com/drivers";else if(b==="dell")url="https://www.dell.com/support/home/en-us?app=drivers";else if(b==="lenovo")url="https://pcsupport.lenovo.com/";else if(b==="asus")url="https://www.asus.com/support/download-center/";else if(b==="acer")url="https://www.acer.com/us-en/support/drivers-and-manuals";else if(b==="microsoft surface")url="https://support.microsoft.com/surface";else if(b==="msi")url="https://www.msi.com/support/download";else if(b==="samsung")url="https://www.samsung.com/us/support/downloads/";else url="https://www.google.com/search?q="+q;document.getElementById("driverLinks").innerHTML="د لټون معلومات: "+brand+" — "+model+" — "+win+" — "+arch+"<br><a class='btn' href='"+url+"' target='_blank' rel='noopener'>د جوړوونکي رسمي ډرایور پاڼه پرانیزئ</a><p class='small'>په رسمي پاڼه کې همدا ماډل او Windows نسخه وټاکئ. د ډرایور سازګاري د جوړوونکي له خوا تایید کړئ.</p>"}
 </script>
 <!-- Universal back navigation for all Technical Center menus -->
-<a class="site-back-button" id="siteBackButton" href="./diagnostic.html" aria-label="بېرته شاتګ">⬅️ شاتګ</a>
+<a class="site-back-button" id="siteBackButton" href="./diagnostic.html" aria-label="بېرته شاتګ">⬅ شاته تګ</a>
 <script>
 (function(){
   var backButton=document.getElementById("siteBackButton");
