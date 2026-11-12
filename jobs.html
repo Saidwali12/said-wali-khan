@@ -117,7 +117,7 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
    </div>
    <div class="reg-field"><label for="appPhoto">عکس (JPG/PNG/WebP، تر ۸ MB) *</label><input id="appPhoto" name="photo" type="file" accept="image/jpeg,image/png,image/webp" required></div>
    <div class="reg-field"><label for="appCv">CV / خلص سوانح (PDF/DOC/DOCX، تر ۸ MB) *</label><input id="appCv" name="cv" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required></div>
-   <label class="reg-consent"><input type="checkbox" name="email_consent" value="yes" required><span>زه اجازه ورکوم چې زما نوم، د اړیکې معلومات او ټاکل شوی ولایت د کارموندنې لپاره خوندي شي، او د خپل ټاکلي ولایت د نویو یا تازه شوو دندو خبرتیاوې زما ایمیل ته راولېږل شي. زه هر وخت د خبرتیاوو د بندولو غوښتنه کولای شم. *</span></label>
+   <label class="reg-consent"><input type="checkbox" name="email_consent" value="yes"><span>زه غواړم د خپل ټاکلي ولایت د نویو دندو خبرتیاوې په ایمیل ترلاسه کړم. دا انتخاب اختیاري دی؛ که نښه ونه لګوم، ثبت‌نام مې بیا هم بشپړېږي. زه هر وخت خبرتیاوې بندولای شم.</span></label>
    <button class="reg-submit" id="regSubmit" type="submit">ثبت‌نام بشپړ کړئ</button>
    <div class="reg-status" id="regStatus" role="status"></div>
   </form>
@@ -171,28 +171,31 @@ function renderJobs(){
  const now=new Date();
  box.innerHTML=list.map(j=>{
   const end=deadline(j.expiryDate),expired=!end||now>end,days=end?Math.ceil((end-now)/86400000):0;
-  const email=String(j.email||"").trim(),subject=String(j.subject||"").trim();
+  const email=String(j.email||j.applicationEmail||j.contactEmail||"").trim(),subject=String(j.subject||j.emailSubject||"").trim();
   const mode=String(j.applicationMode||"").toLowerCase();
-  const applyUrl=String(j.applyUrl||j.applicationUrl||"").trim();
+  const applyUrl=String(j.applyUrl||j.applicationUrl||j.onlineApplicationUrl||"").trim();
   const safeApplyUrl=/^https:\/\//i.test(applyUrl)?applyUrl:"";
   const emailAllowed=(mode==="email"||mode==="both")&&validEmail(email)&&subject;
   const onlineAllowed=(mode==="online"||mode==="both")&&!!safeApplyUrl;
   const allowed=j.verified===true&&(emailAllowed||onlineAllowed)&&!expired;
   const pageUrl=location.origin+location.pathname+"#job-"+encodeURIComponent(String(j.id||""));
-  const applyBody="سلام، زه د دې بست لپاره غوښتنلیک وړاندې کوم.\n\nد بست نوم: "+(j.title||"")+"\nد سیدولي خان د بست پاڼه: "+pageUrl+"\nاصلي اعلان: "+(j.sourceUrl||"");
-  const gmail="https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(email)+"&su="+encodeURIComponent(subject)+"&body="+encodeURIComponent(applyBody);
-  const mailto="mailto:"+email+"?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(applyBody);
+  const applyBody="السلام علیکم، زه د دې بست لپاره غوښتنلیک وړاندې کوم.\n\nد بست نوم: "+(j.title||"")+"\nاداره: "+(j.organization||"")+"\nد بست شمېره: "+(j.vacancyNumber||j.vacancyNo||"—")+"\nولایت/ځای: "+(j.dutyStation||places||"—")+"\nد سیدولي خان د بست پاڼه: "+pageUrl+"\nاصلي اعلان: "+(j.sourceUrl||"")+"\n\nزما CV او اړین اسناد له دې ایمیل سره ضمیمه دي."
+  const mailto="mailto:"+encodeURIComponent(email)+"?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(applyBody);
   const places=jobProvinces(j).map(p=>provinceNames[p]).join("، ");
   const fresh=j.postedDate&&(now-new Date(j.postedDate+"T00:00:00"))<=86400000;
   return '<div class="job-card '+(expired?'expired':'')+(fresh?' new-job':'')+'" id="job-'+esc(j.id)+'">'+
    (fresh?'<div class="new-badge"><span class="new-star">★</span> نوی اعلان</div>':'')+
    '<div class="job-title">'+esc(j.title)+'</div>'+
    '<div class="job-meta"><span class="job-tag">'+esc(j.employmentType||"د اعلان له مخې")+'</span><span class="job-tag">'+esc(j.organization||"اداره نه ده معلومه")+'</span><span class="job-tag">'+esc(places)+'</span></div>'+
-   '<div class="job-info">شرایط: '+esc(j.requirements||"په اصلي اعلان کې وګورئ")+'</div>'+
+   '<div class="job-info">ځای/دندې مرکز: '+esc(j.dutyStation||places||"—")+'</div>'+
+   '<div class="job-info">کټګوري: '+esc(j.category||"—")+' | تابعیت: '+esc(j.nationality||"—")+' | جنسیت: '+esc(j.gender||"—")+'</div>'+
+   '<div class="job-info">معاش: '+esc(j.salary||"—")+' | د قرارداد موده: '+esc(j.contractDuration||"—")+'</div>'+
+   '<div class="job-info">د بست شمېره: '+esc(j.vacancyNumber||j.vacancyNo||"—")+' | د بستونو شمېر: '+esc(j.numberOfVacancies||j.vacancies||"—")+'</div>'+
+   '<div class="job-info">شرایط/وړتیاوې: '+esc(j.requirements||"په اصلي اعلان کې وګورئ")+'</div>'+
    '<div class="job-info">د اعلان نېټه: '+esc(j.postedDate||"—")+'</div>'+
    '<div class="job-info">د پای نېټه: '+esc(j.expiryDate||"—")+'</div>'+
    (email?'<div class="job-info">د ادارې ایمیل: '+esc(email)+'</div>':'<div class="job-info">غوښتنلیک: د ادارې رسمي آنلاین فورم</div>')+
-   (allowed?((onlineAllowed?'<a class="apply-btn apply-online" href="'+esc(safeApplyUrl)+'" target="_blank" rel="noopener">↗ رسمي آنلاین غوښتنلیک</a>':'')+(emailAllowed?'<a class="apply-btn" href="'+esc(gmail)+'" target="_blank" rel="noopener">✉ د ایمیل له لارې غوښتنلیک</a><a class="mailto-btn" href="'+esc(mailto)+'">بل ایمیل اپلېکېشن</a>':'')):'<span class="apply-btn disabled-btn">د غوښتنلیک وخت ختم شوی یا لینک تایید نه دی</span>')+
+   (allowed?((onlineAllowed?'<a class="apply-btn apply-online" href="'+esc(safeApplyUrl)+'" target="_blank" rel="noopener">↗ رسمي آنلاین غوښتنلیک</a>':'')+(emailAllowed?'<a class="apply-btn" href="'+esc(mailto)+'">✉ د خپل ایمیل اپلېکېشن له لارې غوښتنلیک</a>':'')):'<span class="apply-btn disabled-btn">د غوښتنلیک وخت ختم شوی یا لینک تایید نه دی</span>')+
    '<div class="countdown">'+(expired?'د بست د ثبت نام وخت ختم شوی دی.':'د ثبت نام لپاره '+days+' ورځې پاتې دي.')+'</div>'+
    '<div class="job-info"><a href="'+esc(j.sourceUrl||"#")+'" target="_blank" rel="noopener">اصلي اعلان: '+esc(j.sourceName||"سرچینه")+'</a></div>'+
    '</div>';
@@ -324,7 +327,8 @@ document.getElementById("applicantForm").addEventListener("submit",async functio
   const response=await fetch(JOBS_API+"/register",{method:"POST",body:new FormData(form)});
   const data=await response.json();
   if(!response.ok||!data.success)throw new Error(data.error||"ثبت‌نام بریالی نه شو.");
-  showRegStatus("مبارک دې وي! ستاسې نوم‌لیکنه په بریالیتوب بشپړه شوه. د نویو دندو خبرتیاوې به ستاسې ایمیل ته درلېږل کېږي. اوس به د دندو پاڼې ته بېرته ولاړ شئ.",true);form.reset();
+  const optedIn=!!form.querySelector('[name="email_consent"]').checked;
+  showRegStatus(optedIn?"مبارک دې وي! ستاسې ثبت‌نام بشپړ شو او د نویو دندو ایمیل خبرتیاوې مو فعاله کړې.":"مبارک دې وي! ستاسې ثبت‌نام بشپړ شو. تاسې د ایمیل خبرتیاوې نه دي فعالې کړې؛ ثبت‌نام مو بیا هم بریالی دی.",true);form.reset();
   setTimeout(()=>{closeApplicantForm();document.getElementById("jobsContainer").scrollIntoView({behavior:"smooth",block:"start"});},2600);
  }catch(err){showRegStatus(err.message||"له سرور سره اړیکه ټینګه نه شوه. وروسته بیا هڅه وکړئ.",false);}
  finally{btn.disabled=false;btn.textContent="ثبت‌نام بشپړ کړئ";}
