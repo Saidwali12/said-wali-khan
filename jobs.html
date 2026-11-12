@@ -162,6 +162,22 @@ function jobProvinces(j){
  return [...new Set(found)];
 }
 const provinceNames={kunar:"کونړ",nuristan:"نورستان",laghman:"لغمان",nangarhar:"ننګرهار"};
+function dedupeJobs(jobs){
+ const normalize=v=>String(v||"").normalize("NFKC").toLowerCase().replace(/[^\\p{L}\\p{N}]+/gu," ").trim();
+ const priority=j=>{
+  const source=String(j.sourceName||"").toLowerCase();
+  if(source.includes("acbar"))return 3;
+  if(source.includes("employer contact checked"))return 2;
+  return 1;
+ };
+ const unique=new Map();
+ for(const j of jobs){
+  const key=[normalize(j.title),normalize(j.organization),jobProvinces(j).sort().join(","),String(j.expiryDate||"")].join("|");
+  const previous=unique.get(key);
+  if(!previous||priority(j)>priority(previous))unique.set(key,j);
+ }
+ return [...unique.values()];
+}
 function renderJobs(){
  const selected=document.getElementById("locationFilter").value;
  const list=allJobs.filter(j=>selected==="all"||jobProvinces(j).includes(selected));
@@ -171,7 +187,7 @@ function renderJobs(){
  const now=new Date();
  box.innerHTML=list.map(j=>{
   const end=deadline(j.expiryDate),expired=!end||now>end,days=end?Math.ceil((end-now)/86400000):0;
-  const email=String(j.email||j.applicationEmail||j.contactEmail||"").trim(),subject=String(j.subject||j.emailSubject||"").trim();
+  const email=String(j.email||j.applyEmail||j.applicationEmail||j.contactEmail||"").trim(),subject=String(j.subject||j.emailSubject||("غوښتنلیک – "+String(j.title||"دنده")+" – "+String(j.organization||"اداره"))).trim();
   const mode=String(j.applicationMode||"").toLowerCase();
   const applyUrl=String(j.applyUrl||j.applicationUrl||j.onlineApplicationUrl||"").trim();
   const safeApplyUrl=/^https:\/\//i.test(applyUrl)?applyUrl:"";
@@ -284,7 +300,7 @@ async function loadJobs(){
  try{
   const r=await fetch("./jobs-feed.json?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("feed");
   const data=await r.json();
-  allJobs=Array.isArray(data.jobs)?data.jobs.filter(j=>j&&j.verified===true&&["email","online","both"].includes(String(j.applicationMode||"").toLowerCase())&&jobProvinces(j).length>0&&(validEmail(j.email||j.applicationEmail||j.contactEmail)||/^https:\/\//i.test(String(j.applyUrl||j.applicationUrl||j.onlineApplicationUrl||"")))&&j.sourceUrl&&j.expiryDate):[];
+  allJobs=Array.isArray(data.jobs)?dedupeJobs(data.jobs.filter(j=>j&&j.verified===true&&["email","online","both"].includes(String(j.applicationMode||"").toLowerCase())&&jobProvinces(j).length>0&&(validEmail(j.email||j.applyEmail||j.applicationEmail||j.contactEmail)||/^https:\/\//i.test(String(j.applyUrl||j.applicationUrl||j.onlineApplicationUrl||"")))&&j.sourceUrl&&j.expiryDate)):[];
   renderJobs();
  }catch(e){document.getElementById("jobsContainer").innerHTML='<div class="empty-state">د بستونو معلومات اوس نه لوډېږي. لږ وروسته بیا هڅه وکړئ.</div>';document.getElementById("jobCount").textContent="د معلوماتو ستونزه";}
 }
