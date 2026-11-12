@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ps" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#071a35">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Said Wali Khan">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="description" content="Saidwali GPT — شخصي هوښیار مرستیال">
+  <link rel="apple-touch-icon" href="../saidwali-gpt-avatar.png">
+  <link rel="icon" type="image/png" href="../saidwali-gpt-avatar.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <title>Said Wali Khan — GPT</title>
+  <style>
+    :root{color-scheme:dark;--navy:#071a35;--navy2:#102b50;--gold:#d9ae52;--gold2:#f4d58a}
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--navy);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif}
+    body{display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+    .top{height:62px;flex:0 0 62px;display:flex;align-items:center;gap:12px;padding:6px 14px;background:linear-gradient(115deg,#061329,#173e6c);border-bottom:2px solid var(--gold);box-shadow:0 5px 20px #0005;z-index:2}
+    .avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--gold2);box-shadow:0 0 15px #d9ae5260}
+    .brand{min-width:0;flex:1}
+    .brand strong{display:block;color:var(--gold2);font-size:15px;line-height:1.4}
+    .brand span{display:block;color:#dce7f7;font-size:11px;direction:ltr;text-align:right}
+    .status{width:9px;height:9px;border-radius:50%;background:#36d48a;box-shadow:0 0 10px #36d48a}
+    #chat{display:block;width:100%;height:100%;min-height:0;flex:1;border:0;background:#f4f6fa}
+    .footer{height:22px;flex:0 0 22px;text-align:center;background:#071a35;color:#d9ae52;font-size:9px;letter-spacing:.4px;padding:3px}
+    @media(min-width:700px){body{max-width:620px;margin:0 auto;border-inline:1px solid #d9ae5260}.top{height:68px;flex-basis:68px}.avatar{width:50px;height:50px}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <img class="avatar" src="../saidwali-gpt-avatar.png" alt="Saidwali GPT">
+    <div class="brand">
+      <strong>سیدولي خان — Saidwali GPT</strong>
+      <span>PERSONAL AI ASSISTANT</span>
+    </div>
+    <span class="status" aria-label="آنلاین"></span>
+  </header>
+  <iframe id="chat" title="Saidwali GPT Chat" src="https://saidwali-gpt.walizaad2.workers.dev/" allow="microphone; camera; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <div class="footer">SAID WALI KHAN • OFFICIAL AI</div>
+  <script>
+    if ("serviceWorker" in navigator && location.protocol === "https:") {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+    }
+  </script>
+</body>
+</html>
