@@ -17,8 +17,34 @@ header{
 background:#0d47a1;
 color:white;
 text-align:center;
-padding:20px;
+padding:12px 15px;
 position:relative;
+}
+.header-main{
+display:flex;direction:ltr;align-items:center;justify-content:center;
+gap:22px;max-width:850px;margin:0 auto;
+}
+.brand-content{flex:1;min-width:0;direction:rtl;text-align:center}
+.brand-content h1{font-size:clamp(20px,3vw,30px);margin:7px 0}
+.brand-content p{margin:5px 0}
+@media(max-width:600px){
+ header{padding:9px 8px}
+ .header-main{gap:8px;align-items:center}
+ .brand-content{flex:1}
+ .brand-content h1{font-size:17px;line-height:1.6}
+ .brand-content p{font-size:12px}
+ .logo{width:66px;height:66px;margin:5px auto;font-size:12px}
+ .app-install-qr{width:155px;max-width:48%;padding:6px;margin:4px 0}
+ .app-install-qr h2{font-size:12px}
+ .app-install-qr img{width:92px}
+ .app-install-qr p{font-size:11px;line-height:1.5;margin:5px 0}
+ .app-install-qr .app-download-link{font-size:11px;padding:7px;margin-top:5px}
+ .app-install-qr .install-help{display:none}
+ .back-btn{margin-bottom:5px;padding:6px 12px}
+ .container{padding:9px}
+ .card{padding:10px;margin-bottom:9px}
+ .contact-btn{padding:9px;margin:6px 0}
+ footer{padding:9px;margin-top:10px}
 }
 
 .back-btn{
@@ -130,8 +156,8 @@ margin-top:20px;
 
 /* د اپلیکیشن QR کوډ: په ټولو سکرینونو کې د منځپانګې برخه وي، نه پوښ */
 .app-install-qr{
-  position:relative;width:min(220px,90%);box-sizing:border-box;margin:8px auto 14px;
-  background:#fff;border:2px solid #d9ae52;border-radius:12px;padding:9px;
+  position:relative;flex:0 0 205px;width:205px;box-sizing:border-box;margin:4px 0;
+  background:#e8f8ed;border:2px solid #20a052;border-radius:12px;padding:8px;
   text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.14);
 }
 .app-install-qr h2{font-size:15px;color:#071a35;margin:0 0 7px}
@@ -153,22 +179,19 @@ margin-top:20px;
 ⬅ شاتګ
 </a>
 
-<div class="app-install-qr">
-<h2>📱 د Android اپلیکیشن ډاونلوډ</h2>
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&amp;data=https%3A%2F%2Fgithub.com%2FSaidwali12%2Fsaid-wali-khan%2Freleases%2Flatest%2Fdownload%2Fapp-debug.apk" alt="د سیدولي خان Android اپلیکیشن مستقیم ډاونلوډ QR کوډ">
-<p><strong>QR کوډ سکین کړئ</strong><br>په بل موبایل کې یې سکین کړئ؛ د Android اپلیکیشن د ډاونلوډ لینک به خلاص شي.</p>
-<a class="app-download-link" href="https://github.com/Saidwali12/said-wali-khan/releases/latest/download/app-debug.apk" target="_blank" rel="noopener">⬇️ د Android اپلیکیشن ډاونلوډ</a>
-<p class="install-help">له ډاونلوډ وروسته APK خلاص کړئ او د موبایل د لارښوونو له مخې یې نصب کړئ. دا نسخه یوازې د Android لپاره ده.</p>
-</div>
-
-
-
-<div class="logo">
-ستاسو لوګو
-</div>
-
+<div class="header-main">
+<div class="brand-content">
+<div class="logo">ستاسو لوګو</div>
 <h1>سیدولي خان کوهستاني ګروپ</h1>
 <p>د اړیکو او تماس پاڼه</p>
+</div>
+<div class="app-install-qr">
+<h2>📱 د Android اپلیکیشن</h2>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&amp;data=https%3A%2F%2Fgithub.com%2FSaidwali12%2Fsaid-wali-khan%2Freleases%2Flatest%2Fdownload%2Fapp-debug.apk" alt="د سیدولي خان Android اپلیکیشن مستقیم ډاونلوډ QR کوډ">
+<p><strong>QR کوډ سکین کړئ</strong><br>د اپلیکیشن ډاونلوډ لینک خلاص کړئ.</p>
+<a class="app-download-link" href="https://github.com/Saidwali12/said-wali-khan/releases/latest/download/app-debug.apk" target="_blank" rel="noopener">⬇️ اپلیکیشن ډاونلوډ</a>
+</div>
+</div>
 
 
 </header>
