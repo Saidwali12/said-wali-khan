@@ -456,7 +456,8 @@ def main() -> None:
     retained = [
         job for job in feed["jobs"]
         if not is_acbar_job(job) and not is_wazifaha_job(job)
-        and (not job.get("expiryDate") or str(job.get("expiryDate")) >= today)
+        and re.fullmatch(r"20\d{2}-\d{2}-\d{2}", str(job.get("expiryDate") or ""))
+        and str(job.get("expiryDate")) >= today
     ]
 
     candidates = []
