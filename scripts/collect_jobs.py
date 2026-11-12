@@ -278,12 +278,20 @@ def parse_wazifaha_detail(candidate: dict) -> dict | None:
     if not title:
         return None
 
-    province_text = ""
+    province_parts = []
+    stop_labels = {
+        "functional area", "education", "experience level", "years of experience",
+        "employment type", "contract type", "probation period", "gender",
+        "languages", "salary", "closing date", "country", "city"
+    }
     for i, line in enumerate(lines):
-        if line.casefold().rstrip(":") == "province" and i + 1 < len(lines):
-            province_text = lines[i + 1]
+        if line.casefold().rstrip(":") == "province":
+            for part in lines[i + 1:i + 12]:
+                if part.casefold().rstrip(":") in stop_labels:
+                    break
+                province_parts.append(part)
             break
-    provinces = provinces_in(province_text)
+    provinces = provinces_in(" ".join(province_parts))
     if not provinces:
         return None
 
@@ -452,7 +460,7 @@ def main() -> None:
         "sources": {
             "ACBAR": "active_detail_verified",
             "WazifaGroup": "discovery_only_not_yet_automated",
-            "Wazifaha": "active_employer_link_checked",
+            "Wazifaha": ("active_employer_link_checked" if wazifaha_verified else ("temporarily_unavailable" if wazifaha_errors else "no_matching_verified_jobs")),
             "Jobs.af": "discovery_only_not_yet_automated",
             "OfficialGovernment": "discovery_only_not_yet_automated",
             "UNandINGO": "discovery_only_not_yet_automated"
