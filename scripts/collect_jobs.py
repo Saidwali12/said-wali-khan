@@ -151,6 +151,14 @@ def main() -> None:
         if not job.get("expiryDate") or str(job.get("expiryDate")) >= today
     ]
     by_id = {str(job.get("id")): job for job in active_existing if job.get("id")}
+    def normalized_source(value: str) -> str:
+        value = str(value or "").strip().split("#", 1)[0].rstrip("/")
+        value = re.sub(r"^https://www\\.", "https://", value, flags=re.I)
+        return value.casefold()
+    existing_sources = {
+        normalized_source(job.get("sourceUrl"))
+        for job in active_existing if job.get("sourceUrl")
+    }
 
     collected = []
     errors = []
@@ -168,8 +176,10 @@ def main() -> None:
 
     added = 0
     for job in collected:
-        if job["id"] not in by_id:
+        source_key = normalized_source(job.get("sourceUrl"))
+        if job["id"] not in by_id and source_key not in existing_sources:
             by_id[job["id"]] = job
+            existing_sources.add(source_key)
             added += 1
 
     result_jobs = list(by_id.values())
