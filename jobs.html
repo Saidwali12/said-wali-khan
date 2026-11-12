@@ -77,7 +77,7 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 .job-meta{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0 12px}
 .job-tag{display:inline-block;background:#edf4fa;color:#31536e;border-radius:4px;padding:4px 8px;font-size:12px}
 .apply-btn{display:inline-block;background:#1769aa;color:#fff;padding:9px 16px;border-radius:5px;text-decoration:none;margin:8px 8px 0 0;font-size:13px;font-weight:700}
-.apply-btn:hover{background:#104e80}.apply-email{background:#23834b}.apply-email:hover{background:#176638}.apply-online{background:#1769aa}.apply-online:hover{background:#104e80}
+.apply-btn:hover{background:#104e80}.apply-email{background:#23834b}.apply-email:hover{background:#176638}.apply-gmail{background:#c43b32}.apply-gmail:hover{background:#982b25}.apply-online{background:#1769aa}.apply-online:hover{background:#104e80}
 .mailto-btn{display:inline-block;color:#145a91;font-size:12px;margin:10px 8px 0 0}
 .countdown{display:block;margin:10px 0 0;font-weight:700;color:#9b5b00;font-size:12px}
 .new-badge{color:#168044;font-weight:700;font-size:12px;margin-bottom:7px}
@@ -264,7 +264,7 @@ function renderJobs(){
    '<div class="job-info">د اعلان نېټه: '+esc(j.postedDate||"—")+'</div>'+
    '<div class="job-info">د پای نېټه: '+esc(j.expiryDate||"—")+'</div>'+
    (emailAllowed?'<div class="job-info">د ادارې ایمیل: <a class="job-email-address" href="'+esc(mailto)+'" title="د دې بست غوښتنلیک په خپل ایمیل اپلیکیشن کې خلاص کړئ">'+esc(email)+'</a></div>':(onlineAllowed?'<div class="job-info">غوښتنلیک: د ادارې تایید شوې آنلاین فورمه</div>':'<div class="job-info">د غوښتنلیک لاره لا نه ده تایید شوې</div>'))+
-   (expired?'<span class="apply-btn disabled-btn">د غوښتنلیک وخت ختم شوی</span>':((emailAllowed?'<a class="apply-btn apply-email" href="'+esc(mailto)+'" aria-label="د دې بست لپاره ایمیل د موضوع او معلوماتو سره چمتو کړئ">✉ د خپل ایمیل اپلیکیشن له لارې غوښتنلیک</a><a class="mailto-btn" href="'+esc(gmailCompose)+'" rel="noopener noreferrer">که ایمیل اپلیکیشن نه خلاصیږي، Gmail دلته خلاص کړئ</a>':'')+(onlineAllowed?'<a class="apply-btn apply-online" href="'+esc(safeApplyUrl)+'" target="_blank" rel="noopener noreferrer">↗ آنلاین ثبت‌نام / غوښتنلیک</a>':'')+(!emailAllowed&&!onlineAllowed?'<span class="apply-btn disabled-btn">د غوښتنلیک لاره تایید نه ده</span>':'')))+
+   (expired?'<span class="apply-btn disabled-btn">د غوښتنلیک وخت ختم شوی</span>':((emailAllowed?'<a class="apply-btn apply-email" href="'+esc(mailto)+'" aria-label="د دې بست لپاره ایمیل د موضوع او معلوماتو سره چمتو کړئ">✉ د خپل ایمیل اپلیکیشن له لارې غوښتنلیک</a><a class="apply-btn apply-gmail" href="'+esc(gmailCompose)+'" rel="noopener noreferrer">📧 د Gmail له لارې غوښتنلیک</a>':'')+(onlineAllowed?'<a class="apply-btn apply-online" href="'+esc(safeApplyUrl)+'" target="_blank" rel="noopener noreferrer">↗ آنلاین ثبت‌نام / غوښتنلیک</a>':'')+(!emailAllowed&&!onlineAllowed?'<span class="apply-btn disabled-btn">د غوښتنلیک لاره تایید نه ده</span>':'')))+
    '<div class="countdown">'+(expired?'د بست د ثبت نام وخت ختم شوی دی.':'د ثبت نام لپاره '+days+' ورځې پاتې دي.')+'</div>'+
    '<div class="job-info"><a href="'+esc(j.sourceUrl||"#")+'" target="_blank" rel="noopener">اصلي اعلان: '+esc(j.sourceName||"سرچینه")+'</a></div>'+
    '</div>';
