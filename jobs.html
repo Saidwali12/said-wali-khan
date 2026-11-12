@@ -187,7 +187,7 @@ function renderJobs(){
  const now=new Date();
  box.innerHTML=list.map(j=>{
   const end=deadline(j.expiryDate),expired=!end||now>end,days=end?Math.ceil((end-now)/86400000):0;
-  const email=String(j.email||j.applyEmail||j.applicationEmail||j.contactEmail||"").trim(),subject=String(j.subject||j.emailSubject||("غوښتنلیک – "+String(j.title||"دنده")+" – "+String(j.organization||"اداره"))).trim();
+  const email=String(j.email||j.applyEmail||j.applicationEmail||j.contactEmail||"").trim();
   const mode=String(j.applicationMode||"").toLowerCase();
   const applyUrl=String(j.applyUrl||j.applicationUrl||j.onlineApplicationUrl||"").trim();
   const safeApplyUrl=/^https:\/\//i.test(applyUrl)?applyUrl:"";
