@@ -196,6 +196,156 @@ def parse_detail(candidate: dict) -> dict | None:
     }
 
 
+
+WAZIFAHA_BASE = "https://wazifaha.com"
+WAZIFAHA_JOBS = WAZIFAHA_BASE + "/jobs?page={page}"
+
+
+def parse_flexible_date(text: str) -> str | None:
+    value = clean(text)
+    iso = parse_iso_date(value)
+    if iso:
+        return iso
+    for pattern in ("%d %B %Y", "%d %b %Y", "%B %d, %Y", "%b %d, %Y"):
+        match = re.search(r"\b\d{1,2}\s+[A-Za-z]+\s+20\d{2}\b|\b[A-Za-z]+\s+\d{1,2},?\s+20\d{2}\b", value)
+        if match:
+            try:
+                return datetime.strptime(match.group(0).replace(",", ""), pattern.replace(",", "")).date().isoformat()
+            except ValueError:
+                continue
+    return None
+
+
+def wazifaha_listing_candidates(html: str) -> list[dict]:
+    soup = BeautifulSoup(html, "html.parser")
+    found = []
+    seen = set()
+    for anchor in soup.find_all("a", href=True):
+        href = urljoin(WAZIFAHA_BASE, anchor["href"].strip())
+        parsed = urlparse(href)
+        if parsed.netloc.lower() not in {"wazifaha.com", "www.wazifaha.com"}:
+            continue
+        if not re.match(r"^/jobs/[^/]+/?$", parsed.path):
+            continue
+        title = clean(anchor.get_text(" ", strip=True))
+        if not title:
+            continue
+        node = anchor
+        card_text = ""
+        for _ in range(6):
+            if node is None:
+                break
+            candidate_text = clean(node.get_text(" ", strip=True))
+            if len(candidate_text) > len(title) and provinces_in(candidate_text):
+                card_text = candidate_text
+                break
+            node = node.parent
+        if not card_text:
+            continue
+        canonical = href.split("#", 1)[0].rstrip("/")
+        if canonical in seen:
+            continue
+        seen.add(canonical)
+        found.append({"url": canonical, "card_title": title})
+    return found
+
+
+def employer_page_confirms(url: str, title: str, reference: str) -> bool:
+    try:
+        response = SESSION.get(url, timeout=25, allow_redirects=True)
+        if response.status_code < 200 or response.status_code >= 400:
+            return False
+        if "text/html" not in response.headers.get("Content-Type", ""):
+            return False
+        haystack = (response.url + " " + response.text[:500000]).casefold()
+        if reference and reference.casefold() in haystack:
+            return True
+        words = [w.casefold() for w in re.findall(r"[A-Za-z]{4,}", title)[:6]]
+        matches = sum(1 for word in set(words) if word in haystack)
+        return matches >= 2
+    except Exception:
+        return False
+
+
+def parse_wazifaha_detail(candidate: dict) -> dict | None:
+    html = safe_get(candidate["url"])
+    soup = BeautifulSoup(html, "html.parser")
+    lines = [clean(x) for x in soup.stripped_strings if clean(x)]
+    h1 = soup.find("h1")
+    title = clean(h1.get_text(" ", strip=True)) if h1 else ""
+    if not title:
+        return None
+
+    province_text = ""
+    for i, line in enumerate(lines):
+        if line.casefold().rstrip(":") == "province" and i + 1 < len(lines):
+            province_text = lines[i + 1]
+            break
+    provinces = provinces_in(province_text)
+    if not provinces:
+        return None
+
+    deadline = None
+    for i, line in enumerate(lines):
+        if "closing date" in line.casefold():
+            deadline = parse_flexible_date(line)
+            if not deadline and i + 1 < len(lines):
+                deadline = parse_flexible_date(lines[i + 1])
+            if deadline:
+                break
+    if not deadline or deadline < date.today().isoformat():
+        return None
+
+    reference_match = re.search(r"\bVAC-\d+\b", " ".join(lines), re.I)
+    reference = reference_match.group(0).upper() if reference_match else ""
+
+    apply_url = ""
+    for link in soup.find_all("a", href=True):
+        label = clean(link.get_text(" ", strip=True)).casefold()
+        href = urljoin(candidate["url"], link["href"].strip())
+        parsed = urlparse(href)
+        if "apply" in label and parsed.scheme == "https" and parsed.netloc and not parsed.netloc.lower().endswith("wazifaha.com"):
+            apply_url = href
+            break
+    if not apply_url or not employer_page_confirms(apply_url, title, reference):
+        return None
+
+    organization = ""
+    try:
+        h1_index = next(i for i, line in enumerate(lines) if line == title)
+        for line in lines[h1_index + 1:h1_index + 5]:
+            if line and "views" not in line.casefold() and len(line) <= 180:
+                organization = line
+                break
+    except StopIteration:
+        pass
+
+    slug = urlparse(candidate["url"]).path.rstrip("/").split("/")[-1]
+    stable_id = ("wazifaha-" + reference.lower()) if reference else ("wazifaha-" + slug.lower())
+    return {
+        "id": stable_id,
+        "vacancyRef": reference or None,
+        "title": title,
+        "organization": organization or "د اصلي اعلان له مخې",
+        "location": provinces,
+        "dutyStation": ", ".join(p.title() for p in provinces),
+        "employmentType": "د اصلي اعلان له مخې",
+        "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د اصلي اعلان او د کار ورکوونکي پاڼه وګورئ.",
+        "expiryDate": deadline,
+        "applyUrl": apply_url,
+        "sourceName": "Wazifaha (employer link checked)",
+        "sourceUrl": candidate["url"],
+        "applicationMode": "online",
+        "verified": True,
+        "verificationLevel": "aggregator_detail_and_employer_page_checked",
+    }
+
+
+def is_wazifaha_job(job: dict) -> bool:
+    source = str(job.get("sourceUrl") or "").casefold()
+    return "wazifaha.com/jobs/" in source or "wazifaha.org/jobs/" in source or str(job.get("id", "")).startswith("wazifaha-")
+
+
 def is_acbar_job(job: dict) -> bool:
     source = str(job.get("sourceUrl") or "").casefold()
     return source.startswith("https://acbar.org/") or source.startswith("https://www.acbar.org/") or str(job.get("id", "")).startswith("acbar-")
@@ -214,7 +364,7 @@ def main() -> None:
     # from every source. Preserve active non-ACBAR/manual records.
     retained = [
         job for job in feed["jobs"]
-        if not is_acbar_job(job)
+        if not is_acbar_job(job) and not is_wazifaha_job(job)
         and (not job.get("expiryDate") or str(job.get("expiryDate")) >= today)
     ]
 
@@ -241,13 +391,56 @@ def main() -> None:
         except Exception as exc:
             detail_errors.append(f"{candidate['url']}: {exc}")
 
-    # Do not replace the existing feed if every detail request failed.
+    # Do not replace the existing feed if every ACBAR detail request failed.
     if not verified and detail_errors:
         raise RuntimeError("All ACBAR detail checks failed; feed was not changed: " + " | ".join(detail_errors[:8]))
 
+    # Wazifaha is a secondary discovery source. A record is accepted only if
+    # its detail page names a target province and future deadline, and its
+    # external employer application page is reachable and matches the vacancy.
+    wazifaha_verified = []
+    wazifaha_errors = []
+    wazifaha_candidates = []
+    for page in range(1, 36):
+        url = WAZIFAHA_JOBS.format(page=page)
+        try:
+            page_candidates = wazifaha_listing_candidates(safe_get(url))
+            if not page_candidates:
+                break
+            wazifaha_candidates.extend(page_candidates)
+        except Exception as exc:
+            wazifaha_errors.append(f"page {page}: {exc}")
+            break
+
+    for candidate in wazifaha_candidates:
+        try:
+            job = parse_wazifaha_detail(candidate)
+            if job:
+                wazifaha_verified.append(job)
+        except Exception as exc:
+            wazifaha_errors.append(f"{candidate['url']}: {exc}")
+
+    # Keep the feed usable if Wazifaha is temporarily unavailable; ACBAR
+    # remains the primary source and is never blocked by a secondary outage.
     by_id = {str(job.get("id")): job for job in retained if job.get("id")}
-    for job in verified:
+    known_apply_urls = {
+        str(job.get("applyUrl", "")).rstrip("/").casefold()
+        for job in list(by_id.values()) if job.get("applyUrl")
+    }
+    known_refs = {
+        str(job.get("vacancyRef", "")).casefold()
+        for job in list(by_id.values()) if job.get("vacancyRef")
+    }
+    for job in verified + wazifaha_verified:
+        apply_key = str(job.get("applyUrl", "")).rstrip("/").casefold()
+        ref_key = str(job.get("vacancyRef") or "").casefold()
+        if (apply_key and apply_key in known_apply_urls) or (ref_key and ref_key in known_refs):
+            continue
         by_id[job["id"]] = job
+        if apply_key:
+            known_apply_urls.add(apply_key)
+        if ref_key:
+            known_refs.add(ref_key)
 
     jobs = list(by_id.values())
     jobs.sort(key=lambda item: (item.get("expiryDate") or "9999-12-31", item.get("title", "")))
@@ -257,7 +450,7 @@ def main() -> None:
         "sources": {
             "ACBAR": "active_detail_verified",
             "WazifaGroup": "discovery_only_not_yet_automated",
-            "Wazifaha": "discovery_only_not_yet_automated",
+            "Wazifaha": "active_employer_link_checked",
             "Jobs.af": "discovery_only_not_yet_automated",
             "OfficialGovernment": "discovery_only_not_yet_automated",
             "UNandINGO": "discovery_only_not_yet_automated"
@@ -273,11 +466,14 @@ def main() -> None:
     FEED_PATH.write_text(json.dumps(feed, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     print(json.dumps({
-        "source": "ACBAR",
-        "listing_candidates": len(candidates),
-        "detail_verified": len(verified),
-        "detail_rejected_or_unverified": len(candidates) - len(verified),
-        "detail_errors": detail_errors[:10],
+        "sources": ["ACBAR", "Wazifaha"],
+        "acbar_listing_candidates": len(candidates),
+        "acbar_detail_verified": len(verified),
+        "acbar_detail_rejected_or_unverified": len(candidates) - len(verified),
+        "acbar_detail_errors": detail_errors[:10],
+        "wazifaha_listing_candidates": len(wazifaha_candidates),
+        "wazifaha_detail_verified": len(wazifaha_verified),
+        "wazifaha_errors": wazifaha_errors[:10],
         "expired_jobs_removed": "yes",
         "active_jobs_in_feed": len(jobs)
     }, ensure_ascii=False, indent=2))
