@@ -223,13 +223,13 @@ header {
 
 nav {
     max-width: 1250px;
-    margin: 28px auto 0;
-    padding: 0 15px 20px;
+    margin: 20px auto 0;
+    padding: 0 10px 14px;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
+    flex-wrap: nowrap;
+    gap: 6px;
 }
 
 .dropdown {
@@ -239,10 +239,12 @@ nav {
 .dropbtn {
     background: rgba(255,255,255,.075);
     color: white;
-    padding: 12px 19px;
+    padding: 8px 10px;
     border: 1px solid rgba(244,213,138,.35);
-    border-radius: 10px;
-    font-size: 15px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: nowrap;
     font-weight: bold;
     cursor: pointer;
     transition: .3s;
