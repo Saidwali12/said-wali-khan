@@ -277,6 +277,29 @@ async function sha256(value) {
     .join("");
 }
 
+function kabulToday() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kabul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(new Date());
+  const part = type => parts.find(item => item.type === type)?.value || "";
+  return part("year") + "-" + part("month") + "-" + part("day");
+}
+
+function hasValidApplicationMethod(job) {
+  const mode = String(job.applicationMode || "").toLowerCase();
+  const email = String(job.applyEmail || job.email || job.applicationEmail || "").trim();
+  const applyUrl = String(job.applyUrl || job.applicationUrl || job.onlineApplicationUrl || "").trim();
+  const validEmail = email.includes("@") && email.includes(".") && !/\\s/.test(email);
+  const validUrl = applyUrl.toLowerCase().startsWith("https://");
+  if (mode === "email") return validEmail;
+  if (mode === "online") return validUrl;
+  if (mode === "both") return validEmail || validUrl;
+  return false;
+}
+
 async function processJobAlerts(env) {
   const feedResponse = await fetch(JOBS_URL, {
     headers: { "Accept": "application/json" }
@@ -295,8 +318,14 @@ async function processJobAlerts(env) {
     WHERE active = 1 AND email_consent = 1
   `).all();
 
+  const today = kabulToday();
+
   for (const job of jobs) {
-    if (job.verified !== true || !["email", "online", "both"].includes(String(job.applicationMode || "").toLowerCase())) continue;
+    // Never alert for expired, undated, unverified, or non-actionable jobs.
+    const expiryDate = String(job.expiryDate || "");
+    const validDate = /^\\d{4}-\\d{2}-\\d{2}$/.test(expiryDate);
+    if (job.verified !== true || !validDate || expiryDate < today ||
+        !hasValidApplicationMethod(job)) continue;
 
     const provinces = jobProvinces(job);
     if (!provinces.length || !job.id || !job.title) continue;
