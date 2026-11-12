@@ -242,10 +242,15 @@ nav {
     border-bottom: 0;
 }
 
-.dropdown-content a:hover {
-    background: #fbf5e8;
-    color: #a87520;
+.dropdown-content a:hover,
+.dropdown-content a:focus,
+.dropdown-content a:focus-visible,
+.dropdown-content a:active {
+    background: linear-gradient(135deg, #f4d58a, #e4b84f);
+    color: #071a35;
     padding-right: 24px;
+    box-shadow: inset -4px 0 0 #a87520;
+    outline: none;
 }
 
 /* عمومي جوړښت */
