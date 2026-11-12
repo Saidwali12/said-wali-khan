@@ -172,13 +172,15 @@ def parse_detail(candidate: dict) -> dict | None:
     except StopIteration:
         pass
 
-    slug = urlparse(candidate["url"]).path.rstrip("/").split("/")[-1]
     job_number = re.search(r"/details/(\d+)/", urlparse(candidate["url"]).path)
     if not job_number:
         return None
+    vacancy_match = re.search(r"\b(?:VAC-\d+|[A-Z]{1,5}-\d+)\b", full_text, re.I)
+    vacancy_ref = vacancy_match.group(0).upper() if vacancy_match else ""
 
     return {
         "id": "acbar-" + job_number.group(1),
+        "vacancyRef": vacancy_ref or None,
         "title": title,
         "organization": organization or "د اصلي اعلان له مخې",
         "location": provinces,
