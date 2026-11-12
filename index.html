@@ -133,6 +133,18 @@ header {
     border-radius: 50%;
 }
 
+/* د ویکیمیډیا په ګډ عکس کې یوازې لومړی مخ ښکاره کول */
+.coin-face img.coin-single-face {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 0;
+}
+
 @keyframes afghanFaceSequence {
     0%, 22% { opacity: 1; transform: rotateY(0deg); }
     28.57%, 100% { opacity: 0; transform: rotateY(-90deg); }
@@ -802,8 +814,9 @@ footer p {
                 <img src="said.jpg.jpg" alt="Said Wali Khan" class="profile-photo">
             </div>
             <div class="coin-face coin-back">
-                <img src="https://www.hobbyofkings.eu/cdn/shop/files/Afghanistan-5-Afghanis-Coin-Mosque-KM1046-2004-2005.jpg?v=1739480866"
-                     alt="د افغانستان د ۲۰۰۴ کال پنځه افغانیو سکه">
+                <img class="coin-single-face"
+                     src="https://upload.wikimedia.org/wikipedia/commons/2/28/5_Afghani_%282004%29.jpg"
+                     alt="د افغانستان د پنځه افغانیو سیکه، یوازې یو مخ">
             </div>
             <div class="coin-face coin-third">
                 <img src="https://saidwali12.github.io/said-wali-khan/%D8%B3%D9%85%D8%A7%D8%B1%D9%BC%20AI%20%D9%85%D8%B1%D8%B3%D8%AA%DB%8C%D8%A7%D9%84%20%D9%BE%D9%87%20%D8%AA%D8%AE%D9%86%DB%8C%DA%A9%D9%8A%20%D8%B3%D9%BC%D9%88%DA%89%DB%8C%D9%88%20%DA%A9%DB%90.png?v=20261112"
