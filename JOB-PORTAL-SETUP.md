@@ -1,33 +1,59 @@
-# Saidwali Jobs Portal — setup
+# Saidwali Jobs Portal — four-province email alerts
 
-This is a separate backend for the existing GitHub Pages jobs page. It does not change the current jobs feed or application mailto flow.
+The jobs page is hosted on GitHub Pages. Applicant registration and scheduled job alerts run through the Cloudflare Worker.
 
-## Create Cloudflare resources
-1. Create a new D1 database named `saidwali-jobs-db`.
-2. Open its Console and run all SQL from `job-portal-schema.sql`.
-3. Create an R2 bucket named `saidwali-jobs-files`.
-4. Create a Worker named `saidwali-jobs-api` and paste `job-portal-worker.js`.
-5. Add bindings: D1 variable `DB` -> `saidwali-jobs-db`; R2 variable `FILES` -> `saidwali-jobs-files`.
-6. Add Worker secrets/variables:
-   - `ADMIN_EMAIL` = `walizaad2@gmail.com`
-   - `GMAIL_FROM` = `walizaad2@gmail.com`
-   - `GOOGLE_CLIENT_ID` (secret)
-   - `GOOGLE_CLIENT_SECRET` (secret)
-   - `GOOGLE_REFRESH_TOKEN` (secret)
-   - `ADMIN_TOKEN` (secret, random long value)
-7. Add a Cron Trigger: every 15 minutes. This checks the public jobs-feed.json and sends only new/changed matching vacancies to applicants who consented.
-8. Test `https://saidwali-jobs-api.walizaad2.workers.dev/health`. It should show database, fileStorage, gmailConfigured true.
+## Existing Cloudflare resources
 
-## Gmail API authorization
-The Worker uses Gmail API OAuth2; it does not store a Gmail password. In Google Cloud Console, create/select a project, enable Gmail API, configure OAuth consent, create an OAuth Client ID, and obtain a refresh token with the Gmail `https://www.googleapis.com/auth/gmail.send` scope for `walizaad2@gmail.com`. Store the client ID, client secret, and refresh token only as Worker secrets. Do not paste them into GitHub or this website. If Google marks the app as Testing, refresh tokens can expire after seven days; publish/verify the OAuth app as appropriate for durable operation.
+- Worker: `saidwali-jobs-api`
+- D1 database: `saidwali-jobs-db`
+- D1 binding on the Worker: `DB` → `saidwali-jobs-db`
+- Google Apps Script is used for file uploads to Drive and sending email.
 
-## Important
-- R2 is required for photo and CV storage. Do not make the bucket public.
-- Accepted photo: JPG/PNG/WebP up to 5 MB. CV: PDF/DOC/DOCX up to 10 MB.
-- Applicant information is private; admin endpoints require the ADMIN_TOKEN bearer header.
-- The first deployment is not complete until D1, R2, Gmail OAuth secrets, and Cron are configured and the health endpoint confirms all bindings.
-- Cron checks the current GitHub jobs-feed every 15 minutes. It sends an email when a vacancy is first seen or its relevant details change. It cannot discover vacancies that have not been added to jobs-feed.json.
-- This version sends applicant registration details and uploaded files to the admin Gmail. Do not share the admin token or OAuth secrets.
+## One-time update to the existing D1 database
 
-## Applicant opt-out
-Every vacancy email includes a unique unsubscribe link. Opening it disables further vacancy emails for that registration. A person can register again later if they choose.
+1. Open Cloudflare Dashboard → Workers & Pages → D1 → `saidwali-jobs-db` → Console.
+2. Open `job-portal-alerts-migration.sql` in this repository.
+3. Copy the complete SQL into the D1 Console and run it ONCE.
+4. This migration adds the selected-provinces field, keeps existing applicant rows, carries forward the old Kunar/Nuristan preferences, and ensures the one-alert-per-applicant/job table exists. It does not delete applicant records.
+
+For a brand-new database only, run `job-portal-schema.sql` instead of the migration.
+
+## Update the Worker
+
+1. Open Cloudflare Dashboard → Workers & Pages → `saidwali-jobs-api` → Edit code.
+2. Replace the Worker code with the complete contents of `saidwali-jobs-api-worker-four-provinces.js`.
+3. Save and Deploy.
+4. Confirm the existing D1 binding is named exactly `DB`.
+5. Confirm these Worker secrets/variables exist:
+   - `GOOGLE_APPS_SCRIPT_URL` — the deployed Apps Script web-app URL
+   - `GOOGLE_APPS_SCRIPT_TOKEN` — the matching secret token
+   - Optional: `ADMIN_EMAIL` — defaults to `walizaad2@gmail.com`
+
+The Apps Script endpoint must support the `sendEmail` and `upload` actions used by the Worker. Do not put its token in GitHub or in the public website.
+
+## Enable scheduled alerts
+
+In the Worker settings, open Triggers → Cron Triggers and add:
+
+- `*/15 * * * *` (every 15 minutes)
+
+The Worker checks the latest verified `jobs-feed.json`. It sends an alert only to active applicants who explicitly checked the email-alert consent box and whose selected province matches the vacancy.
+
+## Alert rules
+
+- A person selecting Kunar receives Kunar vacancies only; the same applies to Nuristan, Laghman and Nangarhar.
+- Selecting “all four provinces” matches all four.
+- If email alerts were not accepted, registration is still allowed but no job-alert email is sent.
+- Each applicant receives each unique job ID only once, even if the vacancy record is later updated.
+- Unsubscribe links switch off future job-alert emails.
+- Vacancies must be verified, not expired, and have a valid email or a real online application URL.
+
+## Verification
+
+Open:
+
+`https://saidwali-jobs-api.walizaad2.workers.dev/health`
+
+It should return `success: true`, `database: true`, and `googleStorageConfigured: true`.
+
+The health check does not prove that a Cron Trigger exists. Confirm the Cron Trigger separately in Worker → Triggers, then use a test registration and a test vacancy to verify end-to-end delivery. Never test by sending unsolicited email to real applicants.
