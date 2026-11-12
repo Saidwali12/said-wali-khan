@@ -232,11 +232,11 @@ function renderJobs(){
  box.innerHTML=list.map(j=>{
   const end=deadline(j.expiryDate),expired=!end||now>end,days=end?Math.ceil((end-now)/86400000):0;
   const email=String(j.email||j.applyEmail||j.applicationEmail||j.contactEmail||"").trim();
-  const mode=String(j.applicationMode||"").toLowerCase();
+  const sourceUrl=String(j.sourceUrl||"").trim();
   const applyUrl=String(j.applyUrl||j.applicationUrl||j.onlineApplicationUrl||"").trim();
-  const safeApplyUrl=/^https:\/\//i.test(applyUrl)?applyUrl:"";
-  const emailAllowed=(mode==="email"||mode==="both")&&validEmail(email);
-  const onlineAllowed=(mode==="online"||mode==="both")&&!!safeApplyUrl;
+  const safeApplyUrl=/^https:\/\//i.test(applyUrl)&&applyUrl.replace(/\/+$/,"")!==sourceUrl.replace(/\/+$/,"")?applyUrl:"";
+  const emailAllowed=validEmail(email);
+  const onlineAllowed=!!safeApplyUrl;
   const allowed=j.verified===true&&(emailAllowed||onlineAllowed)&&!expired;
   const pageUrl=location.origin+location.pathname+"#job-"+encodeURIComponent(String(j.id||""));
   const places=jobProvinces(j).map(p=>provinceNames[p]).join("، ");
@@ -258,8 +258,8 @@ function renderJobs(){
    '<div class="job-info">شرایط/وړتیاوې: '+esc(j.requirements||"په اصلي اعلان کې وګورئ")+'</div>'+
    '<div class="job-info">د اعلان نېټه: '+esc(j.postedDate||"—")+'</div>'+
    '<div class="job-info">د پای نېټه: '+esc(j.expiryDate||"—")+'</div>'+
-   (email?'<div class="job-info">د ادارې ایمیل: '+esc(email)+'</div>':'<div class="job-info">غوښتنلیک: د ادارې رسمي آنلاین فورم</div>')+
-   (allowed?((onlineAllowed?'<a class="apply-btn apply-online" href="'+esc(safeApplyUrl)+'" target="_blank" rel="noopener noreferrer">↗ آنلاین فورمه ډکه کړئ</a>':'')+(emailAllowed?'<a class="apply-btn" href="'+esc(mailto)+'">✉ د خپل ایمیل له لارې غوښتنلیک واستوئ</a><a class="mailto-btn" href="'+esc(gmailCompose)+'" target="_blank" rel="noopener noreferrer">که Gmail کاروئ: Gmail کې یې خلاص کړئ</a>':'')):'<span class="apply-btn disabled-btn">د غوښتنلیک وخت ختم شوی یا لینک تایید نه دی</span>')+
+   (emailAllowed?'<div class="job-info">د ادارې ایمیل: '+esc(email)+'</div>':(onlineAllowed?'<div class="job-info">غوښتنلیک: د ادارې تایید شوې آنلاین فورمه</div>':'<div class="job-info">د غوښتنلیک لاره لا نه ده تایید شوې</div>'))+
+   (expired?'<span class="apply-btn disabled-btn">د غوښتنلیک وخت ختم شوی</span>':((onlineAllowed?'<a class="apply-btn apply-online" href="'+esc(safeApplyUrl)+'" target="_blank" rel="noopener noreferrer">↗ آنلاین فورمه ډکه کړئ</a>':'')+(emailAllowed?'<a class="apply-btn" href="'+esc(mailto)+'">✉ د خپل ایمیل له لارې غوښتنلیک واستوئ</a><a class="mailto-btn" href="'+esc(gmailCompose)+'" target="_blank" rel="noopener noreferrer">که Gmail کاروئ: Gmail کې یې خلاص کړئ</a>':'')+(!emailAllowed&&!onlineAllowed?'<span class="apply-btn disabled-btn">د غوښتنلیک لاره تایید نه ده</span>':'')))+
    '<div class="countdown">'+(expired?'د بست د ثبت نام وخت ختم شوی دی.':'د ثبت نام لپاره '+days+' ورځې پاتې دي.')+'</div>'+
    '<div class="job-info"><a href="'+esc(j.sourceUrl||"#")+'" target="_blank" rel="noopener">اصلي اعلان: '+esc(j.sourceName||"سرچینه")+'</a></div>'+
    '</div>';
@@ -349,7 +349,14 @@ async function loadJobs(){
   const r=await fetch("./jobs-feed.json?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("feed");
   const data=await r.json();
   const todayKabul=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kabul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
-  allJobs=Array.isArray(data.jobs)?dedupeJobs(data.jobs.filter(j=>j&&j.verified===true&&/^\d{4}-\d{2}-\d{2}$/.test(String(j.expiryDate||""))&&String(j.expiryDate)>=todayKabul&&["email","online","both"].includes(String(j.applicationMode||"").toLowerCase())&&jobProvinces(j).length>0&&((["email","both"].includes(String(j.applicationMode||"").toLowerCase())&&validEmail(j.email||j.applyEmail||j.applicationEmail||j.contactEmail))||(["online","both"].includes(String(j.applicationMode||"").toLowerCase())&&/^https:\/\//i.test(String(j.applyUrl||j.applicationUrl||j.onlineApplicationUrl||""))))&&j.sourceUrl)):[];
+  allJobs=Array.isArray(data.jobs)?dedupeJobs(data.jobs.filter(j=>{
+   if(!j||j.verified!==true||!/^\d{4}-\d{2}-\d{2}$/.test(String(j.expiryDate||""))||String(j.expiryDate)<todayKabul||jobProvinces(j).length===0||!j.sourceUrl)return false;
+   const email=String(j.email||j.applyEmail||j.applicationEmail||j.contactEmail||"").trim();
+   const applyUrl=String(j.applyUrl||j.applicationUrl||j.onlineApplicationUrl||"").trim();
+   const sourceUrl=String(j.sourceUrl||"").trim();
+   const realOnline=/^https:\/\//i.test(applyUrl)&&applyUrl.replace(/\/+$/,"")!==sourceUrl.replace(/\/+$/,"");
+   return validEmail(email)||realOnline;
+  })):[];
   renderJobs();
  }catch(e){document.getElementById("jobsContainer").innerHTML='<div class="empty-state">د بستونو معلومات اوس نه لوډېږي. لږ وروسته بیا هڅه وکړئ.</div>';document.getElementById("jobCount").textContent="د معلوماتو ستونزه";}
 }
