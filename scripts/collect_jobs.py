@@ -468,6 +468,19 @@ def main() -> None:
     # Keep the feed usable if Wazifaha is temporarily unavailable; ACBAR
     # remains the primary source and is never blocked by a secondary outage.
     by_id = {str(job.get("id")): job for job in retained if job.get("id")}
+
+    def source_key(value: str) -> str:
+        value = str(value or "").strip().split("#", 1)[0].rstrip("/")
+        value = re.sub(r"^https://www\\.", "https://", value, flags=re.I)
+        return value.casefold()
+
+    # Keep old IDs for already-published source URLs so the existing
+    # applicant+job notification deduplication remains effective.
+    old_ids_by_source = {
+        source_key(job.get("sourceUrl")): str(job.get("id"))
+        for job in feed["jobs"] if job.get("sourceUrl") and job.get("id")
+    }
+
     known_apply_urls = {
         str(job.get("applyUrl", "")).rstrip("/").casefold()
         for job in list(by_id.values()) if job.get("applyUrl")
@@ -477,6 +490,9 @@ def main() -> None:
         for job in list(by_id.values()) if job.get("vacancyRef")
     }
     for job in verified + wazifaha_verified:
+        old_id = old_ids_by_source.get(source_key(job.get("sourceUrl")))
+        if old_id:
+            job["id"] = old_id
         apply_key = str(job.get("applyUrl", "")).rstrip("/").casefold()
         ref_key = str(job.get("vacancyRef") or "").casefold()
         if (apply_key and apply_key in known_apply_urls) or (ref_key and ref_key in known_refs):
