@@ -352,6 +352,43 @@ nav {
     margin-bottom: 14px;
 }
 
+/* د ښه راغلاست لاندې د خدماتو اتلس ثانیه‌ییز بدلېدونکی اعلان */
+.welcome-service {
+    width: min(780px, 100%);
+    margin: 0 auto 20px;
+    padding: 11px 16px;
+    border: 1px solid rgba(244,213,138,.65);
+    border-radius: 12px;
+    background: rgba(255,255,255,.09);
+    color: #fff;
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 16px;
+    font-weight: bold;
+}
+.welcome-service-label { color: var(--gold-light); }
+#welcomeServiceLink {
+    color: #fff;
+    text-decoration: none;
+    transition: opacity .35s ease, transform .35s ease;
+}
+#welcomeServiceLink:hover {
+    color: var(--gold-light);
+    text-decoration: underline;
+}
+#welcomeServiceLink.service-changing {
+    opacity: 0;
+    transform: translateY(7px);
+}
+.welcome-service-arrow { color: var(--gold-light); }
+@media(max-width:600px) {
+    .welcome-service { font-size: 14px; padding: 10px 9px; }
+}
+
 .hero p {
     max-width: 850px;
     margin: auto;
@@ -960,6 +997,12 @@ footer p {
 
 <h1>ښه راغلاست</h1>
 
+<div class="welcome-service" aria-live="polite" aria-atomic="true">
+    <span class="welcome-service-label">زموږ خدمت:</span>
+    <span class="welcome-service-arrow">◆</span>
+    <a id="welcomeServiceLink" href="jobs.html">دندې او کاري فرصتونه</a>
+</div>
+
 <p>
 د وظیفو، خبرونو، AI وسایلوسافت ویر، مهمو ویب سایټونو،
 فایلونو، عکسونو او آنلاین خدماتو جامع مرکز.
@@ -968,6 +1011,69 @@ footer p {
 <a href="#services" class="btn">نور معلومات</a>
 
 </section>
+
+<script>
+/* یوازې هغه خدمات چې د ویب‌پاڼې په مینو او پاڼو کې شته */
+(function () {
+    const services = [
+        { name: "دندې او کاري فرصتونه", url: "jobs.html" },
+        { name: "د Saidwali AI مرکز او هوښیار مرستیال", url: "ai.html" },
+        { name: "د کمپیوټر او Windows تخنیکي ستونزو حل", url: "computer.html" },
+        { name: "د Android او iPhone تخنیکي لارښوونې", url: "mobile.html" },
+        { name: "د پرنټرونو او ډرایورونو موندل", url: "printer-scanner.html#printer" },
+        { name: "د سکینرونو او ډرایورونو خدمات", url: "printer-scanner.html#scanner" },
+        { name: "د سافټویرونو او کتابونو برخه", url: "software-books.html" },
+        { name: "د افغانستان او نړۍ خبرونه", url: "news.html" },
+        { name: "تازه خبرونه او معلومات", url: "Taza.html.html" },
+        { name: "نشریات او اعلانونه", url: "Nasharyat.html.html" },
+        { name: "مهم او ګټور ویب‌لینکونه", url: "links.html" },
+        { name: "د Saidwali WhatsApp پیغامونه", url: "https://saidwali12.github.io/saidwali-whatsapp/" },
+        { name: "ټولنیزې پاڼې او نوی فېسبوک", url: "social.html" },
+        { name: "ژوندی کرکټ او لوبې", url: "crket.html" },
+        { name: "د لډو، حکم او الکرک لوبو مرکز", url: "games.html" },
+        { name: "د معلوماتو مجازي برخه", url: "newpage.html.html" },
+        { name: "د محاسبې ساده او ساینسي وسیله", action: "calculator" },
+        { name: "د اسعارو د تبادلې او نرخونو برخه", action: "currency" },
+        { name: "د Android اپلیکیشن ډاونلوډ", url: "https://drive.google.com/file/d/1WjKiNOhoCqSpJNg-ZApqNPWNqKYS1_0F/view?usp=sharing" }
+    ];
+
+    const link = document.getElementById("welcomeServiceLink");
+    if (!link || !services.length) return;
+
+    let index = 0;
+    function showNextService() {
+        link.classList.add("service-changing");
+        window.setTimeout(function () {
+            index = (index + 1) % services.length;
+            const service = services[index];
+            link.textContent = service.name;
+
+            if (service.action) {
+                link.href = "#";
+                link.onclick = function (event) {
+                    event.preventDefault();
+                    if (typeof window.swOpenUtility === "function") {
+                        window.swOpenUtility(service.action);
+                    }
+                };
+            } else {
+                link.onclick = null;
+                link.href = service.url;
+                if (service.url.startsWith("https://")) {
+                    link.target = "_blank";
+                    link.rel = "noopener";
+                } else {
+                    link.removeAttribute("target");
+                    link.removeAttribute("rel");
+                }
+            }
+            link.classList.remove("service-changing");
+        }, 350);
+    }
+
+    window.setInterval(showNextService, 8000);
+})();
+</script>
 
 <!-- چټک خدمات -->
 
