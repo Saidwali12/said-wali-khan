@@ -495,7 +495,7 @@ def main() -> None:
         "sources": {
             "ACBAR": "active_detail_verified",
             "WazifaGroup": "discovery_only_not_yet_automated",
-            "Wazifaha": ("active_employer_link_checked" if wazifaha_verified else ("temporarily_unavailable" if wazifaha_errors else "no_matching_verified_jobs")),
+            "Wazifaha": ("active_employer_contact_checked" if wazifaha_verified else ("temporarily_unavailable" if wazifaha_errors else "no_matching_verified_jobs")),
             "Jobs.af": "discovery_only_not_yet_automated",
             "OfficialGovernment": "discovery_only_not_yet_automated",
             "UNandINGO": "discovery_only_not_yet_automated"
