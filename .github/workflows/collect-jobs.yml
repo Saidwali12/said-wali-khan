@@ -28,7 +28,7 @@ jobs:
       - name: Install collector dependencies
         run: python -m pip install --disable-pip-version-check requests beautifulsoup4
 
-      - name: Collect verified ACBAR vacancies
+      - name: Collect and verify ACBAR and Wazifaha vacancies
         run: python scripts/collect_jobs.py
 
       - name: Publish updated jobs feed
