@@ -133,7 +133,8 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 }
 
 /* Keep job application links above the floating clock overlay */
-.apply-btn,.mailto-btn{position:relative;z-index:10001;}
+.apply-btn,.mailto-btn,.job-email-address{position:relative;z-index:10001;}
+.job-email-address{color:#0d47a1;font-weight:700;text-decoration:underline;direction:ltr;unicode-bidi:embed;display:inline-block;padding:2px 4px;}
 </style>
 </head>
 <body>
@@ -260,7 +261,7 @@ function renderJobs(){
    '<div class="job-info">شرایط/وړتیاوې: '+esc(j.requirements||"په اصلي اعلان کې وګورئ")+'</div>'+
    '<div class="job-info">د اعلان نېټه: '+esc(j.postedDate||"—")+'</div>'+
    '<div class="job-info">د پای نېټه: '+esc(j.expiryDate||"—")+'</div>'+
-   (emailAllowed?'<div class="job-info">د ادارې ایمیل: '+esc(email)+'</div>':(onlineAllowed?'<div class="job-info">غوښتنلیک: د ادارې تایید شوې آنلاین فورمه</div>':'<div class="job-info">د غوښتنلیک لاره لا نه ده تایید شوې</div>'))+
+   (emailAllowed?'<div class="job-info">د ادارې ایمیل: <a class="job-email-address" href="'+esc(mailto)+'" title="د دې بست غوښتنلیک په خپل ایمیل اپلیکیشن کې خلاص کړئ">'+esc(email)+'</a></div>':(onlineAllowed?'<div class="job-info">غوښتنلیک: د ادارې تایید شوې آنلاین فورمه</div>':'<div class="job-info">د غوښتنلیک لاره لا نه ده تایید شوې</div>'))+
    (expired?'<span class="apply-btn disabled-btn">د غوښتنلیک وخت ختم شوی</span>':((onlineAllowed?'<a class="apply-btn apply-online" href="'+esc(safeApplyUrl)+'" target="_blank" rel="noopener noreferrer">↗ آنلاین فورمه ډکه کړئ</a>':'')+(emailAllowed?'<a class="apply-btn" href="'+esc(mailto)+'">✉ د خپل ایمیل له لارې غوښتنلیک واستوئ</a><a class="mailto-btn" href="'+esc(gmailCompose)+'" target="_blank" rel="noopener noreferrer">که Gmail کاروئ: Gmail کې یې خلاص کړئ</a>':'')+(!emailAllowed&&!onlineAllowed?'<span class="apply-btn disabled-btn">د غوښتنلیک لاره تایید نه ده</span>':'')))+
    '<div class="countdown">'+(expired?'د بست د ثبت نام وخت ختم شوی دی.':'د ثبت نام لپاره '+days+' ورځې پاتې دي.')+'</div>'+
    '<div class="job-info"><a href="'+esc(j.sourceUrl||"#")+'" target="_blank" rel="noopener">اصلي اعلان: '+esc(j.sourceName||"سرچینه")+'</a></div>'+
