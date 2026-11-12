@@ -16,6 +16,11 @@ main{max-width:1050px;margin:26px auto;padding:0 15px 40px}
 a.btn{display:block;text-align:center;text-decoration:none;background:var(--navy);color:var(--light);padding:11px 14px;border-radius:10px;font-weight:bold}
 a.btn:hover{background:#173e6c}footer{text-align:center;color:#66758b;font-size:13px;padding:20px}
 .back{display:inline-block;margin-bottom:16px;color:var(--navy2);font-weight:bold}
+
+/* ثابت شاتګ تڼۍ — یوازې د تخنیکي مرکز پاڼې */
+.site-back-button{position:fixed;right:16px;bottom:16px;z-index:10000;display:inline-flex;align-items:center;gap:7px;padding:10px 17px;border:2px solid #f4d58a;border-radius:12px;background:linear-gradient(135deg,#071a35,#102b50);color:#f4d58a;font: bold 15px Tahoma,Arial,sans-serif;text-decoration:none;box-shadow:0 5px 18px rgba(7,26,53,.25);cursor:pointer;}
+.site-back-button:hover,.site-back-button:focus{background:linear-gradient(135deg,#f4d58a,#d9ae52);color:#071a35;outline:2px solid #071a35;outline-offset:2px}
+@media(max-width:600px){.site-back-button{right:12px;bottom:12px;padding:9px 14px;font-size:14px}}
 </style>
 </head>
 <body>
@@ -30,4 +35,22 @@ a.btn:hover{background:#173e6c}footer{text-align:center;color:#66758b;font-size:
 <article class="card"><div class="ico">📄</div><h2>د سکینرونو برخه</h2><p>د سکینر د شرکت او ماډل له مخې رسمي ډرایورونه او د نصبولو لارښوونې.</p><a class="btn" href="./printer-scanner.html#scanner">سکینرونه خلاص کړئ</a></article>
 </section>
 </main><footer>© Saidwali Technical Center — وړیا تخنیکي لارښوونې</footer>
+
+<!-- Universal back navigation for all Technical Center menus -->
+<a class="site-back-button" id="siteBackButton" href="./index.html" aria-label="بېرته شاتګ">⬅️ شاتګ</a>
+<script>
+(function(){
+  var backButton=document.getElementById("siteBackButton");
+  if(!backButton)return;
+  backButton.addEventListener("click",function(event){
+    var ref=document.referrer;
+    var sameSite=false;
+    try{sameSite=!!ref && new URL(ref).origin===window.location.origin;}catch(e){}
+    if(sameSite && window.history.length>1){
+      event.preventDefault();
+      window.history.back();
+    }
+  });
+})();
+</script>
 </body></html>
