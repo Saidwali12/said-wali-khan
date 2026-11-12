@@ -19,8 +19,7 @@ WHERE selected_provinces = '[]';
 CREATE INDEX IF NOT EXISTS applicants_alert_eligibility
 ON applicants(active, consent, province);
 
--- The Worker uses this key to prevent a second alert for the same
--- applicant + unique job ID. Existing records are kept if the table exists.
+-- Canonical one-time delivery ledger.
 CREATE TABLE IF NOT EXISTS sent_notifications (
   applicant_id TEXT NOT NULL,
   job_id TEXT NOT NULL,
@@ -29,3 +28,22 @@ CREATE TABLE IF NOT EXISTS sent_notifications (
   PRIMARY KEY (applicant_id, job_id),
   FOREIGN KEY (applicant_id) REFERENCES applicants(id) ON DELETE CASCADE
 );
+
+-- Preserve history written by the previous four-province Worker, so an
+-- already-notified applicant/job pair is not emailed a second time.
+CREATE TABLE IF NOT EXISTS job_notifications (
+  applicant_id TEXT NOT NULL,
+  job_id TEXT NOT NULL,
+  job_title TEXT,
+  province TEXT,
+  content_hash TEXT,
+  status TEXT,
+  sent_at TEXT
+);
+INSERT OR IGNORE INTO sent_notifications (applicant_id, job_id, content_hash, sent_at)
+SELECT old.applicant_id, old.job_id,
+       COALESCE(old.content_hash, 'legacy-notification'),
+       COALESCE(old.sent_at, CURRENT_TIMESTAMP)
+FROM job_notifications AS old
+INNER JOIN applicants AS a ON a.id = old.applicant_id
+WHERE old.status = 'sent' AND old.job_id IS NOT NULL;
