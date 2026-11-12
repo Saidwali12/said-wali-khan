@@ -163,7 +163,7 @@ function jobProvinces(j){
 }
 const provinceNames={kunar:"کونړ",nuristan:"نورستان",laghman:"لغمان",nangarhar:"ننګرهار"};
 function dedupeJobs(jobs){
- const normalize=v=>String(v||"").normalize("NFKC").toLowerCase().replace(/[^\\p{L}\\p{N}]+/gu," ").trim();
+ const normalize=v=>String(v||"").normalize("NFKC").toLowerCase().replace(/\s+/g," ").trim();
  const priority=j=>{
   const source=String(j.sourceName||"").toLowerCase();
   if(source.includes("acbar"))return 3;
