@@ -96,8 +96,6 @@ header {
     position: relative;
     width: 150px;
     height: 150px;
-    transform-style: preserve-3d;
-    animation: afghanCoinFlip 10.5s ease-in-out infinite;
 }
 
 .coin-face {
@@ -107,24 +105,17 @@ header {
     height: 100%;
     overflow: hidden;
     border-radius: 50%;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
     border: 4px solid #d9ae52;
     background: #071a35;
     box-shadow: 0 2px 9px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.12);
+    opacity: 0;
+    transform: rotateY(90deg);
+    animation: afghanFaceSequence 10.5s ease-in-out infinite;
 }
 
-.coin-front {
-    transform: translateZ(43.3px);
-}
-
-.coin-back {
-    transform: rotateY(120deg) translateZ(43.3px);
-}
-
-.coin-third {
-    transform: rotateY(240deg) translateZ(43.3px);
-}
+.coin-front { animation-delay: 0s; }
+.coin-back { animation-delay: 3.5s; }
+.coin-third { animation-delay: 7s; }
 
 .profile-photo {
     width: 100%;
@@ -142,13 +133,10 @@ header {
     border-radius: 50%;
 }
 
-@keyframes afghanCoinFlip {
-    0%, 28.57% { transform: rotateY(0deg); }
-    33.33% { transform: rotateY(-120deg); }
-    61.90% { transform: rotateY(-120deg); }
-    66.67% { transform: rotateY(-240deg); }
-    95.24% { transform: rotateY(-240deg); }
-    100% { transform: rotateY(-360deg); }
+@keyframes afghanFaceSequence {
+    0%, 4% { opacity: 0; transform: rotateY(90deg); }
+    9%, 81% { opacity: 1; transform: rotateY(0deg); }
+    86%, 100% { opacity: 0; transform: rotateY(-90deg); }
 }
 
 .profile-name {
