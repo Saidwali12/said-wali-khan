@@ -548,11 +548,12 @@ nav {
 .bbc-heading {
     background: linear-gradient(90deg,#800000,#b51f2a);
     color: white;
-    padding: 13px 18px;
+    padding: 10px 15px;
     border-radius: 10px;
-    margin-bottom: 20px;
-    font-size: 21px;
-    border-right: 5px solid var(--gold);
+    margin-bottom: 16px;
+    font-size: 18px;
+    line-height: 1.5;
+    border-right: 4px solid var(--gold);
 }
 
 #bbc-news {
@@ -591,8 +592,17 @@ nav {
 }
 
 .news-item h3 {
-    font-size: 15px;
-    line-height: 1.9;
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 14px;
+    line-height: 1.75;
+}
+.news-item-icon {
+    flex: 0 0 auto;
+    font-size: 12px;
+    line-height: 1.8;
+    opacity: .8;
 }
 
 .news-item a {
@@ -1335,14 +1345,20 @@ WhatsApp 0799668428
                 const article = document.createElement("article");
                 article.className = "news-item";
                 const heading = document.createElement("h3");
+                const icon = document.createElement("span");
+                icon.className = "news-item-icon";
+                icon.setAttribute("aria-hidden", "true");
+                icon.textContent = "📰";
                 const link = document.createElement("a");
                 link.href = item.link;
                 link.target = "_blank";
                 link.rel = "noopener noreferrer";
                 link.textContent = item.title;
+                heading.appendChild(icon);
                 heading.appendChild(link);
                 const date = document.createElement("p");
-                date.textContent = item.pubDate ? new Date(item.pubDate).toLocaleString() : "BBC World News";
+                const activeLang = document.documentElement.lang || "ps";
+                date.textContent = item.pubDate ? new Date(item.pubDate).toLocaleString(activeLang) : "BBC World News";
                 article.appendChild(heading);
                 article.appendChild(date);
                 fragment.appendChild(article);
