@@ -2,6 +2,11 @@
 <html lang="ps" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>پرنټر او سکینر مرکز | Saidwali</title>
 <style>
 :root{--n:#071a35;--n2:#102b50;--g:#d9ae52;--l:#f4d58a;--bg:#f3f5f9}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--n);line-height:1.9}header{background:linear-gradient(130deg,var(--n),var(--n2));color:#fff;text-align:center;padding:24px 14px;border-bottom:4px solid var(--g)}h1{color:var(--l);margin:0}main{max-width:850px;margin:24px auto;padding:0 14px 40px}.panel{background:#fff;border:1px solid #e0e6ef;border-radius:15px;padding:18px;margin:14px 0;box-shadow:0 7px 22px #071a3510}label{display:block;font-weight:bold;margin:10px 0 5px}input,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit}button,.btn{display:inline-block;border:0;border-radius:9px;background:var(--n);color:var(--l);padding:11px 16px;font:inherit;font-weight:bold;text-decoration:none;cursor:pointer;margin-top:10px}.result{background:#f5f7fb;border-radius:10px;padding:12px;margin-top:12px}.warning{background:#fff8e8;border:1px solid #ead39c;border-radius:10px;padding:12px}.back{color:var(--n2);font-weight:bold}
+
+/* ثابت شاتګ تڼۍ — یوازې د تخنیکي مرکز پاڼې */
+.site-back-button{position:fixed;right:16px;bottom:16px;z-index:10000;display:inline-flex;align-items:center;gap:7px;padding:10px 17px;border:2px solid #f4d58a;border-radius:12px;background:linear-gradient(135deg,#071a35,#102b50);color:#f4d58a;font: bold 15px Tahoma,Arial,sans-serif;text-decoration:none;box-shadow:0 5px 18px rgba(7,26,53,.25);cursor:pointer;}
+.site-back-button:hover,.site-back-button:focus{background:linear-gradient(135deg,#f4d58a,#d9ae52);color:#071a35;outline:2px solid #071a35;outline-offset:2px}
+@media(max-width:600px){.site-back-button{right:12px;bottom:12px;padding:9px 14px;font-size:14px}}
 </style></head><body><header><h1>🖨️ پرنټر او سکینر مرکز</h1><div>د ماډل له مخې رسمي ډرایورونه او سافټویرونه</div></header><main>
 <a class="back" href="./diagnostic.html">← تخنیکي مرکز ته بېرته</a>
 <section class="panel" id="printer"><h2>🖨️ د پرنټر ډرایور موندل</h2><label for="pbrand">د پرنټر شرکت</label><select id="pbrand"><option value="">شرکت وټاکئ</option><option>HP</option><option>Canon</option><option>Epson</option><option>Brother</option><option>Xerox</option><option>Samsung</option><option>Ricoh</option><option>Kyocera</option><option>Other</option></select><label for="pmodel">د پرنټر دقیق ماډل</label><input id="pmodel" placeholder="لکه: HP LaserJet Pro M404dn"><label for="pwin">Windows نسخه</label><select id="pwin"><option>Windows 11</option><option>Windows 10</option><option>Windows 8.1</option><option>Windows 8</option><option>Windows 7</option></select><button onclick="lookup('p')">رسمي ډرایور پیدا کړئ</button><div id="presult" class="result">د پرنټر شرکت او ماډل ولیکئ.</div></section>
@@ -9,4 +14,22 @@
 <div class="warning">د ډرایور شتون د هر ماډل او Windows نسخې له ملاتړ سره تړاو لري. له رسمي پاڼې څخه دقیق ماډل او سیستم وټاکئ؛ د نامعلومو Driver Pack پروګرامونو له نصبولو ډډه وکړئ.</div>
 </main><script>
 function lookup(prefix){const brand=document.getElementById(prefix+"brand").value;const model=document.getElementById(prefix+"model").value.trim();const win=document.getElementById(prefix+"win").value;const out=document.getElementById(prefix+"result");if(!brand||!model){out.textContent="مهرباني وکړئ شرکت او دقیق ماډل ولیکئ.";return}const b=brand.toLowerCase();let url;if(b==="hp")url="https://support.hp.com/drivers";else if(b==="canon")url="https://www.usa.canon.com/support";else if(b==="epson")url="https://epson.com/Support";else if(b==="brother")url="https://support.brother.com/";else if(b==="xerox")url="https://www.support.xerox.com/";else if(b==="samsung")url="https://www.samsung.com/us/support/downloads/";else if(b==="ricoh")url="https://www.ricoh.com/support";else if(b==="kyocera")url="https://www.kyoceradocumentsolutions.com/en/support/index.html";else if(b==="fujitsu")url="https://www.pfu.ricoh.com/global/scanners/";else url="https://www.google.com/search?q="+encodeURIComponent(brand+" "+model+" "+win+" official driver");out.innerHTML="ماډل: "+brand+" "+model+"<br>سیستم: "+win+"<br><a class='btn' href='"+url+"' target='_blank' rel='noopener'>د جوړوونکي رسمي ملاتړ او ډرایورونه</a><p>په رسمي پاڼه کې دقیق ماډل او Windows نسخه تایید کړئ.</p>"}
-</script></body></html>
+</script>
+<!-- Universal back navigation for all Technical Center menus -->
+<a class="site-back-button" id="siteBackButton" href="./diagnostic.html" aria-label="بېرته شاتګ">⬅️ شاتګ</a>
+<script>
+(function(){
+  var backButton=document.getElementById("siteBackButton");
+  if(!backButton)return;
+  backButton.addEventListener("click",function(event){
+    var ref=document.referrer;
+    var sameSite=false;
+    try{sameSite=!!ref && new URL(ref).origin===window.location.origin;}catch(e){}
+    if(sameSite && window.history.length>1){
+      event.preventDefault();
+      window.history.back();
+    }
+  });
+})();
+</script>
+</body></html>
