@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ps" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>د موبایل مرستې مرکز | Saidwali</title>
+<style>
+:root{--n:#071a35;--n2:#102b50;--g:#d9ae52;--l:#f4d58a;--bg:#f3f5f9}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--n);line-height:1.9}header{background:linear-gradient(130deg,var(--n),var(--n2));color:#fff;text-align:center;padding:24px 14px;border-bottom:4px solid var(--g)}h1{color:var(--l);margin:0}main{max-width:850px;margin:24px auto;padding:0 14px 40px}.panel{background:#fff;border:1px solid #e0e6ef;border-radius:15px;padding:18px;margin:14px 0;box-shadow:0 7px 22px #071a3510}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.tile{background:#f5f7fb;padding:14px;border-radius:12px}a.btn{display:inline-block;background:var(--n);color:var(--l);padding:10px 14px;border-radius:9px;text-decoration:none;font-weight:bold;margin:5px 3px}button{background:var(--n);color:var(--l);border:0;border-radius:9px;padding:11px 15px;font:inherit;cursor:pointer}.result{background:#f5f7fb;border-radius:10px;padding:12px;margin-top:12px;white-space:pre-line}.warning{background:#fff8e8;border:1px solid #ead39c;border-radius:10px;padding:12px}.back{color:var(--n2);font-weight:bold}
+</style></head><body><header><h1>📱 د موبایل مرستې مرکز</h1><div>Android او iPhone / iOS</div></header><main>
+<a class="back" href="./diagnostic.html">← تخنیکي مرکز ته بېرته</a>
+<section class="panel"><h2>۱. د موبایل او براوزر لومړني معلومات</h2><button onclick="mobileScan()">زما د موبایل معلومات وښیه</button><div id="result" class="result">د معلوماتو لپاره تڼۍ کېکاږئ.</div></section>
+<section class="panel"><h2>۲. د اپلیکیشنونو رسمي پلورنځي</h2><div class="grid">
+<div class="tile"><h3>🤖 Android</h3><a class="btn" href="https://play.google.com/store" target="_blank" rel="noopener">Google Play Store</a><a class="btn" href="https://f-droid.org/" target="_blank" rel="noopener">F-Droid</a><a class="btn" href="https://appgallery.huawei.com/" target="_blank" rel="noopener">Huawei AppGallery</a></div>
+<div class="tile"><h3>🍎 iPhone / iOS</h3><a class="btn" href="https://www.apple.com/app-store/" target="_blank" rel="noopener">Apple App Store</a><a class="btn" href="https://support.apple.com/itunes" target="_blank" rel="noopener">Apple Support / iTunes</a></div>
+</div></section>
+<section class="panel"><h2>۳. که Play Store کار نه کوي</h2><ol><li>انټرنېټ او د موبایل نېټه/وخت وګورئ.</li><li>Settings → Apps → Google Play Store → Storage ته لاړ شئ او Cache پاک کړئ.</li><li>Google Play Services هم وګورئ او موبایل Restart کړئ.</li><li>د Android او Google Play Services تازه‌والی وګورئ.</li><li>که موبایل د Google خدماتو ملاتړ نه لري، د جوړوونکي رسمي AppGallery یا بل باوري پلورنځی وکاروئ.</li></ol>
+<div class="warning">له نامعلومو ویب‌سایټونو APK مه نصب کوئ. د APK فایلونو سرچینه، لاسلیک او سازګاري باید تایید شي. iPhone عموماً د App Store او د Apple د منل شوو لارو له لارې اپلیکیشنونه نصبوي.</div></section>
+<section class="panel"><h2>۴. د موبایل جوړوونکي رسمي ملاتړ</h2><div class="grid">
+<div class="tile">Samsung<br><a href="https://www.samsung.com/support/" target="_blank" rel="noopener">رسمي ملاتړ</a></div>
+<div class="tile">Apple<br><a href="https://support.apple.com/" target="_blank" rel="noopener">رسمي ملاتړ</a></div>
+<div class="tile">Xiaomi<br><a href="https://www.mi.com/global/support/" target="_blank" rel="noopener">رسمي ملاتړ</a></div>
+<div class="tile">Huawei<br><a href="https://consumer.huawei.com/en/support/" target="_blank" rel="noopener">رسمي ملاتړ</a></div>
+<div class="tile">OPPO<br><a href="https://support.oppo.com/" target="_blank" rel="noopener">رسمي ملاتړ</a></div>
+<div class="tile">vivo<br><a href="https://www.vivo.com/en/support" target="_blank" rel="noopener">رسمي ملاتړ</a></div>
+</div></section></main>
+<script>function mobileScan(){const ua=navigator.userAgent||"نامعلوم";const platform=navigator.userAgentData?.platform||navigator.platform||"نه څرګندېږي";const lang=navigator.language||"نامعلوم";const touch=("ontouchstart"in window)||navigator.maxTouchPoints>0;document.getElementById("result").textContent="پلېټفارم: "+platform+"\nبراوزر: "+ua+"\nژبه: "+lang+"\nTouch ملاتړ: "+(touch?"هو":"نه/نه څرګندېږي")+"\nسکرین: "+screen.width+" × "+screen.height+"\n\nیادونه: د موبایل دقیق ماډل او ټول نصب شوي اپلیکیشنونه هر براوزر نه شي لوستلای."}</script></body></html>
