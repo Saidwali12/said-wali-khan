@@ -2,6 +2,11 @@
 <html lang="ps" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>د موبایل مرستې مرکز | Saidwali</title>
 <style>
 :root{--n:#071a35;--n2:#102b50;--g:#d9ae52;--l:#f4d58a;--bg:#f3f5f9}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--n);line-height:1.9}header{background:linear-gradient(130deg,var(--n),var(--n2));color:#fff;text-align:center;padding:24px 14px;border-bottom:4px solid var(--g)}h1{color:var(--l);margin:0}main{max-width:850px;margin:24px auto;padding:0 14px 40px}.panel{background:#fff;border:1px solid #e0e6ef;border-radius:15px;padding:18px;margin:14px 0;box-shadow:0 7px 22px #071a3510}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.tile{background:#f5f7fb;padding:14px;border-radius:12px}a.btn{display:inline-block;background:var(--n);color:var(--l);padding:10px 14px;border-radius:9px;text-decoration:none;font-weight:bold;margin:5px 3px}button{background:var(--n);color:var(--l);border:0;border-radius:9px;padding:11px 15px;font:inherit;cursor:pointer}.result{background:#f5f7fb;border-radius:10px;padding:12px;margin-top:12px;white-space:pre-line}.warning{background:#fff8e8;border:1px solid #ead39c;border-radius:10px;padding:12px}.back{color:var(--n2);font-weight:bold}
+
+/* ثابت شاتګ تڼۍ — یوازې د تخنیکي مرکز پاڼې */
+.site-back-button{position:fixed;right:16px;bottom:16px;z-index:10000;display:inline-flex;align-items:center;gap:7px;padding:10px 17px;border:2px solid #f4d58a;border-radius:12px;background:linear-gradient(135deg,#071a35,#102b50);color:#f4d58a;font: bold 15px Tahoma,Arial,sans-serif;text-decoration:none;box-shadow:0 5px 18px rgba(7,26,53,.25);cursor:pointer;}
+.site-back-button:hover,.site-back-button:focus{background:linear-gradient(135deg,#f4d58a,#d9ae52);color:#071a35;outline:2px solid #071a35;outline-offset:2px}
+@media(max-width:600px){.site-back-button{right:12px;bottom:12px;padding:9px 14px;font-size:14px}}
 </style></head><body><header><h1>📱 د موبایل مرستې مرکز</h1><div>Android او iPhone / iOS</div></header><main>
 <a class="back" href="./diagnostic.html">← تخنیکي مرکز ته بېرته</a>
 <section class="panel"><h2>۱. د موبایل او براوزر لومړني معلومات</h2><button onclick="mobileScan()">زما د موبایل معلومات وښیه</button><div id="result" class="result">د معلوماتو لپاره تڼۍ کېکاږئ.</div></section>
@@ -19,4 +24,22 @@
 <div class="tile">OPPO<br><a href="https://support.oppo.com/" target="_blank" rel="noopener">رسمي ملاتړ</a></div>
 <div class="tile">vivo<br><a href="https://www.vivo.com/en/support" target="_blank" rel="noopener">رسمي ملاتړ</a></div>
 </div></section></main>
-<script>function mobileScan(){const ua=navigator.userAgent||"نامعلوم";const platform=navigator.userAgentData?.platform||navigator.platform||"نه څرګندېږي";const lang=navigator.language||"نامعلوم";const touch=("ontouchstart"in window)||navigator.maxTouchPoints>0;document.getElementById("result").textContent="پلېټفارم: "+platform+"\nبراوزر: "+ua+"\nژبه: "+lang+"\nTouch ملاتړ: "+(touch?"هو":"نه/نه څرګندېږي")+"\nسکرین: "+screen.width+" × "+screen.height+"\n\nیادونه: د موبایل دقیق ماډل او ټول نصب شوي اپلیکیشنونه هر براوزر نه شي لوستلای."}</script></body></html>
+<script>function mobileScan(){const ua=navigator.userAgent||"نامعلوم";const platform=navigator.userAgentData?.platform||navigator.platform||"نه څرګندېږي";const lang=navigator.language||"نامعلوم";const touch=("ontouchstart"in window)||navigator.maxTouchPoints>0;document.getElementById("result").textContent="پلېټفارم: "+platform+"\nبراوزر: "+ua+"\nژبه: "+lang+"\nTouch ملاتړ: "+(touch?"هو":"نه/نه څرګندېږي")+"\nسکرین: "+screen.width+" × "+screen.height+"\n\nیادونه: د موبایل دقیق ماډل او ټول نصب شوي اپلیکیشنونه هر براوزر نه شي لوستلای."}</script>
+<!-- Universal back navigation for all Technical Center menus -->
+<a class="site-back-button" id="siteBackButton" href="./diagnostic.html" aria-label="بېرته شاتګ">⬅️ شاتګ</a>
+<script>
+(function(){
+  var backButton=document.getElementById("siteBackButton");
+  if(!backButton)return;
+  backButton.addEventListener("click",function(event){
+    var ref=document.referrer;
+    var sameSite=false;
+    try{sameSite=!!ref && new URL(ref).origin===window.location.origin;}catch(e){}
+    if(sameSite && window.history.length>1){
+      event.preventDefault();
+      window.history.back();
+    }
+  });
+})();
+</script>
+</body></html>
