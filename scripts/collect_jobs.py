@@ -87,7 +87,8 @@ def listing_candidates(html: str) -> list[dict]:
             if node is None:
                 break
             candidate = clean(node.get_text(" ", strip=True))
-            if len(candidate) > len(title) and DATE_RE.search(candidate):
+            detail_links = node.find_all("a", href=lambda value: value and "/en/jobs/details/" in value)
+            if len(detail_links) == 1 and len(candidate) > len(title) and DATE_RE.search(candidate):
                 card_text = candidate
                 break
             node = node.parent
@@ -240,7 +241,8 @@ def wazifaha_listing_candidates(html: str) -> list[dict]:
             if node is None:
                 break
             candidate_text = clean(node.get_text(" ", strip=True))
-            if len(candidate_text) > len(title) and provinces_in(candidate_text):
+            job_links = node.find_all("a", href=lambda value: value and re.match(r"^/jobs/[^/]+/?$", urlparse(value).path))
+            if len(job_links) == 1 and len(candidate_text) > len(title) and provinces_in(candidate_text):
                 card_text = candidate_text
                 break
             node = node.parent
