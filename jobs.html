@@ -238,12 +238,14 @@ function renderJobs(){
   const sourceUrl=String(j.sourceUrl||"").trim();
   const applyUrl=String(j.applyUrl||j.applicationUrl||j.onlineApplicationUrl||"").trim();
   const safeApplyUrl=/^https:\/\//i.test(applyUrl)&&applyUrl.replace(/\/+$/,"")!==sourceUrl.replace(/\/+$/,"")?applyUrl:"";
-  const emailAllowed=validEmail(email);
-  const onlineAllowed=!!safeApplyUrl;
+  const applicationMode=String(j.applicationMode||"").trim().toLowerCase();
+  // د اعلان د تایید شوې لارې درناوی: ایمیل یوازې ایمیل ته، آنلاین بست یوازې رسمي فورم ته ځي.
+  const emailAllowed=validEmail(email)&&(applicationMode==="email"||applicationMode==="both"||!applicationMode);
+  const onlineAllowed=!!safeApplyUrl&&(applicationMode==="online"||applicationMode==="both"||!applicationMode);
   const allowed=j.verified===true&&(emailAllowed||onlineAllowed)&&!expired;
   const pageUrl=location.origin+location.pathname+"#job-"+encodeURIComponent(String(j.id||""));
   const places=jobProvinces(j).map(p=>provinceNames[p]).join("، ");
-  const vacancyNo=String(j.vacancyNumber||j.vacancyNo||j.vacancyRef||"شمېره نه ده ورکړل شوې").trim();
+  const vacancyNo=String(j.vacancyNumber||j.vacancyNo||j.vacancyRef||j.id||"شمېره نه ده ورکړل شوې").trim();
   const jobLocation=String(j.dutyStation||places||"ځای نه دی مشخص شوی").trim();
   const subject="غوښتنلیک – "+vacancyNo+" – "+String(j.title||"دنده")+" – "+jobLocation;
   const applyBody="السلام علیکم،\n\nزه د لاندې بست لپاره غوښتنلیک وړاندې کوم. مهرباني وکړئ زما اسناد وارزوی.\n\nد بست شمېره: "+vacancyNo+"\nد بست نوم: "+(j.title||"")+"\nاداره: "+(j.organization||"")+"\nولایت/موقعیت: "+jobLocation+"\n\nزما CV او نور اړین اسناد له دې ایمیل سره ضمیمه دي.\n\nپه درنښت";
@@ -257,7 +259,7 @@ function renderJobs(){
    '<div class="job-info">ځای/دندې مرکز: '+esc(j.dutyStation||places||"—")+'</div>'+
    '<div class="job-info">کټګوري: '+esc(j.category||"—")+' | تابعیت: '+esc(j.nationality||"—")+' | جنسیت: '+esc(j.gender||"—")+'</div>'+
    '<div class="job-info">معاش: '+esc(j.salary||"—")+' | د قرارداد موده: '+esc(j.contractDuration||"—")+'</div>'+
-   '<div class="job-info">د بست شمېره: '+esc(j.vacancyNumber||j.vacancyNo||"—")+' | د بستونو شمېر: '+esc(j.numberOfVacancies||j.vacancies||"—")+'</div>'+
+   '<div class="job-info">د بست شمېره: '+esc(j.vacancyNumber||j.vacancyNo||j.vacancyRef||j.id||"—")+' | د بستونو شمېر: '+esc(j.numberOfVacancies||j.vacancies||"—")+'</div>'+
    '<div class="job-info">شرایط/وړتیاوې: '+esc(j.requirements||"په اصلي اعلان کې وګورئ")+'</div>'+
    '<div class="job-info">د اعلان نېټه: '+esc(j.postedDate||"—")+'</div>'+
    '<div class="job-info">د پای نېټه: '+esc(j.expiryDate||"—")+'</div>'+
