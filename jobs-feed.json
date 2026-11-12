@@ -3,6 +3,47 @@
   "policy": "Only active announcements are published after checking the source detail page, the exact target province, the closing date, and the application method. Applicants should confirm final requirements on the original source.",
   "jobs": [
     {
+      "id": "acbar-146778",
+      "vacancyRef": null,
+      "title": "Visi Cooler Technation (Nangarhar)",
+      "organization": "Alokozay Group of Companies",
+      "location": [
+        "nangarhar"
+      ],
+      "dutyStation": "Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-12",
+      "applyUrl": "https://acbar.org/en/jobs/details/146778/visi-cooler-technation-nangarhar",
+      "applyEmail": "hr@alokozay.af",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146778/visi-cooler-technation-nangarhar",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-146809",
+      "vacancyRef": null,
+      "title": "General Support (Enumerator)",
+      "organization": "Danish Refugee Council",
+      "location": [
+        "nuristan",
+        "nangarhar"
+      ],
+      "dutyStation": "Nuristan, Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-13",
+      "applyUrl": "https://acbar.org/en/jobs/details/146809/general-support-enumerator",
+      "applyEmail": "vacancies@drc.ngo",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146809/general-support-enumerator",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
       "id": "wazifaha-general-support-enumerator",
       "vacancyRef": null,
       "title": "General Support (Enumerator)",
@@ -22,6 +63,126 @@
       "applicationMode": "email",
       "verified": true,
       "verificationLevel": "aggregator_detail_and_employer_contact_checked"
+    },
+    {
+      "id": "acbar-146555",
+      "vacancyRef": null,
+      "title": "Academic Staff Member for the Master of Project Management (MPM) Program at Tabesh University",
+      "organization": "Tabesh University",
+      "location": [
+        "nangarhar"
+      ],
+      "dutyStation": "Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-17",
+      "applyUrl": "https://acbar.org/en/jobs/details/146555/academic-staff-member-for-the-master-of-project-management-mpm-program-at-tabesh-university",
+      "applyEmail": "hr@tabesh.edu.af",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146555/academic-staff-member-for-the-master-of-project-management-mpm-program-at-tabesh-university",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-146910",
+      "vacancyRef": "W-0232",
+      "title": "Reintegration Officer",
+      "organization": "WADAN",
+      "location": [
+        "nangarhar"
+      ],
+      "dutyStation": "Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-17",
+      "applyUrl": "https://acbar.org/en/jobs/details/146910/reintegration-officer",
+      "applyEmail": "jobs@wadan.org",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146910/reintegration-officer",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-146762",
+      "vacancyRef": "HR-041",
+      "title": "د اطفالو متخصص",
+      "organization": "Spinghar Momand Curative and Teaching Hospital",
+      "location": [
+        "nangarhar"
+      ],
+      "dutyStation": "Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-17",
+      "applyUrl": "https://acbar.org/en/jobs/details/146762/d-atfalo-mtkhss",
+      "applyEmail": "jobs@spingharuniversity.edu.af",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146762/d-atfalo-mtkhss",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-146827",
+      "vacancyRef": "GS-101826",
+      "title": "General Surgeon (Re Announced) (Re Announced)",
+      "organization": "HealthNet TPO",
+      "location": [
+        "kunar"
+      ],
+      "dutyStation": "Kunar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-20",
+      "applyUrl": "https://acbar.org/en/jobs/details/146827/general-surgeon-re-announced-re-announced",
+      "applyEmail": "hr1.knr@hntpo.org",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146827/general-surgeon-re-announced-re-announced",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-146828",
+      "vacancyRef": "HNTPO-2025",
+      "title": "Physiotherapist (Re Announced)",
+      "organization": "HealthNet TPO",
+      "location": [
+        "kunar"
+      ],
+      "dutyStation": "Kunar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-21",
+      "applyUrl": "https://acbar.org/en/jobs/details/146828/physiotherapist-re-announced",
+      "applyEmail": "hr1.knr@hntpo.org",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146828/physiotherapist-re-announced",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-146837",
+      "vacancyRef": null,
+      "title": "Psychosocial Counselor (Only Female)",
+      "organization": "HealthNet TPO",
+      "location": [
+        "kunar"
+      ],
+      "dutyStation": "Kunar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-21",
+      "applyUrl": "https://acbar.org/en/jobs/details/146837/psychosocial-counselor-only-female",
+      "applyEmail": "hr1.knr@hntpo.org",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146837/psychosocial-counselor-only-female",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
     },
     {
       "id": "wazifaha-vac-78441",
@@ -45,6 +206,46 @@
       "applicationMode": "online",
       "verified": true,
       "verificationLevel": "aggregator_detail_and_employer_contact_checked"
+    },
+    {
+      "id": "acbar-143744",
+      "vacancyRef": "HNTPO-05",
+      "title": "General Surgeon",
+      "organization": "HealthNet TPO",
+      "location": [
+        "kunar"
+      ],
+      "dutyStation": "Kunar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-12-07",
+      "applyUrl": "https://acbar.org/en/jobs/details/143744/general-surgeon",
+      "applyEmail": "hr1.knr@hntpo.org",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/143744/general-surgeon",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-142322",
+      "vacancyRef": null,
+      "title": "AI TEACHER",
+      "organization": "Ansar Vision Academy",
+      "location": [
+        "nangarhar"
+      ],
+      "dutyStation": "Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2027-07-31",
+      "applyUrl": "https://acbar.org/en/jobs/details/142322/ai-teacher",
+      "applyEmail": "afghanmuradhs2024@gmail.com",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/142322/ai-teacher",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
     }
   ],
   "collector": {
