@@ -12,8 +12,13 @@
 .submenu{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 18px;padding:12px;background:#fff;border:1px solid #e0e6ef;border-radius:13px;box-shadow:0 5px 16px #071a350c}
 .submenu a{display:inline-block;padding:8px 13px;border-radius:9px;background:#071a35;color:#f4d58a;text-decoration:none;font-weight:bold;font-size:14px}
 .submenu a:hover,.submenu a:focus{background:#d9ae52;color:#071a35;outline:2px solid #071a35}
+
+/* د شاته تګ لینکونه د ښکاره بټن په بڼه */
+a.back{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin:0 0 16px;padding:10px 18px;border:2px solid #d9ae52;border-radius:11px;background:linear-gradient(135deg,#071a35,#102b50);color:#f4d58a!important;font-weight:bold;text-decoration:none;box-shadow:0 4px 12px rgba(7,26,53,.18);cursor:pointer}
+a.back:hover,a.back:focus{background:linear-gradient(135deg,#f4d58a,#d9ae52);color:#071a35!important;outline:2px solid #071a35;outline-offset:2px}
+
 </style></head><body><header><h1>📱 د موبایل مرستې مرکز</h1><div>Android او iPhone / iOS</div></header><main>
-<a class="back" href="./diagnostic.html">← تخنیکي مرکز ته بېرته</a>
+<a class="back" href="./diagnostic.html">⬅ شاته تګ</a>
 <nav class="submenu" aria-label="د موبایل فرعي مینو"><a href="#android">🤖 Android</a><a href="#iphone">🍎 iPhone / iOS</a><a href="#mobile-info">📋 د موبایل معلومات</a><a href="#app-stores">📲 اپلیکیشن پلورنځي</a><a href="#mobile-support">🛠️ رسمي ملاتړ</a></nav>
 <section class="panel" id="mobile-info"><h2>۱. د موبایل او براوزر لومړني معلومات</h2><button onclick="mobileScan()">زما د موبایل معلومات وښیه</button><div id="result" class="result">د معلوماتو لپاره تڼۍ کېکاږئ.</div></section>
 <section class="panel" id="app-stores"><h2>۲. د اپلیکیشنونو رسمي پلورنځي</h2><div class="grid">
@@ -32,7 +37,7 @@
 </div></section></main>
 <script>function mobileScan(){const ua=navigator.userAgent||"نامعلوم";const platform=navigator.userAgentData?.platform||navigator.platform||"نه څرګندېږي";const lang=navigator.language||"نامعلوم";const touch=("ontouchstart"in window)||navigator.maxTouchPoints>0;document.getElementById("result").textContent="پلېټفارم: "+platform+"\nبراوزر: "+ua+"\nژبه: "+lang+"\nTouch ملاتړ: "+(touch?"هو":"نه/نه څرګندېږي")+"\nسکرین: "+screen.width+" × "+screen.height+"\n\nیادونه: د موبایل دقیق ماډل او ټول نصب شوي اپلیکیشنونه هر براوزر نه شي لوستلای."}</script>
 <!-- Universal back navigation for all Technical Center menus -->
-<a class="site-back-button" id="siteBackButton" href="./diagnostic.html" aria-label="بېرته شاتګ">⬅️ شاتګ</a>
+<a class="site-back-button" id="siteBackButton" href="./diagnostic.html" aria-label="بېرته شاتګ">⬅ شاته تګ</a>
 <script>
 (function(){
   var backButton=document.getElementById("siteBackButton");
