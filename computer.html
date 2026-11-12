@@ -7,7 +7,9 @@
 <section class="panel"><h2>۱. د براوزر له لارې لومړني معلومات</h2><p class="small">دا ازموینه د براوزر له خوا اجازه شوي معلومات ښيي؛ د Device Manager او ټولو نصب شوو ډرایورونو بشپړ بدیل نه دی.</p><button type="button" onclick="scanBasic()">زما د سیستم معلومات وښیه</button><div id="basicResult" class="result" aria-live="polite">د معلوماتو د لیدلو لپاره تڼۍ کېکاږئ.</div>
 <div class="warning" style="margin-top:12px"><b>مهم:</b> براوزر د امنیت له امله د کمپیوټر دقیق ماډل نه شي لوستلای. د دقیق ماډل لپاره لاندې وړیا Windows تشخیصي فایل ښکته کړئ او په خپل کمپیوټر کې یې پخپله اجرا کړئ. دا یوازې معلومات لولي؛ ډرایور نه نصبوي او تنظیمات نه بدلوي.</div>
 <button type="button" onclick="downloadPcDiagnostic()">د دقیق ماډل تشخیصي فایل ښکته کړئ (.ps1)</button>
-<p class="small">د اجرا طریقه: فایل په Windows کې خلاص کړئ، Right-click پرې وکړئ، Run with PowerShell وټاکئ. که د امنیت پوښتنه راشي، یوازې هغه وخت اجازه ورکړئ چې فایل مو له همدې پاڼې ښکته کړی وي. راپور به ښکاره شي او د ماډل نوم به Clipboard ته کاپي شي؛ بیا یې د «د کمپیوټر دقیق ماډل» په خانه کې Paste کړئ.</p>
+<p class="small">د اجرا طریقه: فایل ښکته کړئ او په Windows کې یې په Right-click → Run with PowerShell اجرا کړئ. راپور به په Desktop کې د Saidwali-PC-Report.json په نوم جوړ شي. دا راپور بېرته لاندې پورته کړئ.</p>
+<label for="reportFile">د تشخیص راپور دلته پورته کړئ</label><input id="reportFile" type="file" accept=".json,application/json" onchange="loadPcReport(event)">
+<div id="scanReport" class="result" aria-live="polite">تر راپور پورته کولو وروسته به د ډرایور ستونزې دلته ښکاره شي.</div>
 </section>
 <section class="panel"><h2>۲. د خپل کمپیوټر ماډل او Windows نسخه ولیکئ</h2><label for="brand">د کمپیوټر شرکت</label><select id="brand"><option value="">شرکت وټاکئ</option><option>HP</option><option>Dell</option><option>Lenovo</option><option>ASUS</option><option>Acer</option><option>Microsoft Surface</option><option>MSI</option><option>Samsung</option><option>Other</option></select>
 <label for="model">د کمپیوټر دقیق ماډل</label><input id="model" placeholder="لکه: HP ProBook 450 G8">
@@ -19,7 +21,7 @@
 </main><script>
 function scanBasic(){const ua=navigator.userAgent||"نامعلوم";const platform=navigator.userAgentData?.platform||navigator.platform||"براوزر اجازه نه ورکوي";const cores=navigator.hardwareConcurrency||"نه څرګندېږي";const memory=navigator.deviceMemory?navigator.deviceMemory+" GB (اټکلي)":"نه څرګندېږي";const lang=navigator.language||"نامعلوم";const width=screen.width+" × "+screen.height;document.getElementById("basicResult").textContent="سیستم/پلېټفارم (دقیق ماډل نه دی): "+platform+"\nبراوزر پېژندنه: "+ua+"\nمنطقي CPU کورونه: "+cores+"\nد حافظې اټکلي اندازه: "+memory+"\nد سکرین اندازه: "+width+"\nد براوزر ژبه: "+lang+"\n\nیادونه: دا معلومات د ټولو Hardware وسیلو او ډرایورونو حالت نه ښيي."}
 function downloadPcDiagnostic(){
-const ps = String.raw\`$ErrorActionPreference = "SilentlyContinue"
+const ps = String.raw`$ErrorActionPreference = "SilentlyContinue"
 $cs = Get-CimInstance Win32_ComputerSystem
 $bios = Get-CimInstance Win32_BIOS
 $board = Get-CimInstance Win32_BaseBoard
@@ -27,29 +29,24 @@ $os = Get-CimInstance Win32_OperatingSystem
 $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
 $manufacturer = ([string]$cs.Manufacturer).Trim()
 $model = ([string]$cs.Model).Trim()
-$sku = ([string]$cs.SystemSKUNumber).Trim()
-$report = @"
-د کمپیوټر شرکت: $manufacturer
-د کمپیوټر دقیق ماډل: $model
-System SKU: $sku
-د موربورډ شرکت: $($board.Manufacturer)
-د موربورډ ماډل: $($board.Product)
-BIOS نسخه: $($bios.SMBIOSBIOSVersion)
-Windows: $($os.Caption)
-Windows نسخه: $($os.Version)
-د سیستم ډول: $($os.OSArchitecture)
-CPU: $($cpu.Name)
-RAM (GB): $([math]::Round($cs.TotalPhysicalMemory / 1GB, 2))
-"@
-Write-Host $report -ForegroundColor Cyan
-$clipText = "$manufacturer $model".Trim()
-if ($clipText -and (Get-Command Set-Clipboard -ErrorAction SilentlyContinue)) {
-  Set-Clipboard -Value $clipText
-  Write-Host "\`nد شرکت او ماډل نوم Clipboard ته کاپي شو." -ForegroundColor Green
+$bad = @(Get-CimInstance Win32_PnPEntity | Where-Object { $_.ConfigManagerErrorCode -ne $null -and $_.ConfigManagerErrorCode -ne 0 } | ForEach-Object {
+  [pscustomobject]@{ name=[string]$_.Name; deviceId=[string]$_.PNPDeviceID; class=[string]$_.PNPClass; errorCode=[int]$_.ConfigManagerErrorCode; status=[string]$_.Status }
+})
+$report = [pscustomobject]@{
+ generatedAt=(Get-Date).ToString("o"); manufacturer=$manufacturer; model=$model; sku=[string]$cs.SystemSKUNumber
+ motherboard=([string]$board.Manufacturer + " " + [string]$board.Product).Trim()
+ bios=[string]$bios.SMBIOSBIOSVersion; windows=[string]$os.Caption; windowsVersion=[string]$os.Version
+ architecture=[string]$os.OSArchitecture; cpu=[string]$cpu.Name; ramGB=[math]::Round($cs.TotalPhysicalMemory / 1GB,2); problemDevices=$bad
 }
-Write-Host "\`nد کړکۍ بندولو لپاره Enter کېکاږئ."
-Read-Host
-\`;
+$desktop=[Environment]::GetFolderPath("Desktop")
+$outFile=Join-Path $desktop "Saidwali-PC-Report.json"
+$report | ConvertTo-Json -Depth 5 | Set-Content -Path $outFile -Encoding UTF8
+Write-Host "د کمپیوټر معلومات او د ډرایور راپور جوړ شو:" -ForegroundColor Green
+Write-Host $outFile -ForegroundColor Cyan
+Write-Host ("د ستونزه لرونکو وسیلو شمېر: " + $bad.Count) -ForegroundColor Yellow
+Start-Process $desktop
+Read-Host "د بندولو لپاره Enter کېکاږئ"
+`;
 const blob = new Blob([ps], {type:"text/plain;charset=utf-8"});
 const a = document.createElement("a");
 a.href = URL.createObjectURL(blob);
@@ -57,5 +54,26 @@ a.download = "Saidwali-PC-Diagnostic.ps1";
 document.body.appendChild(a); a.click(); a.remove();
 setTimeout(()=>URL.revokeObjectURL(a.href),1500);
 }
+function loadPcReport(event){
+const file=event.target.files&&event.target.files[0];if(!file)return;
+const out=document.getElementById("scanReport"),reader=new FileReader();
+reader.onload=function(){try{
+const r=JSON.parse(String(reader.result).replace(/^\uFEFF/,""));
+document.getElementById("model").value=[r.manufacturer,r.model].filter(Boolean).join(" ").trim();
+const m=String(r.manufacturer||"").toLowerCase();
+const brands=[["hewlett","HP"],["hp","HP"],["dell","Dell"],["lenovo","Lenovo"],["asus","ASUS"],["acer","Acer"],["microsoft","Microsoft Surface"],["surface","Microsoft Surface"],["msi","MSI"],["samsung","Samsung"]];
+const b=brands.find(x=>m.includes(x[0]));if(b)document.getElementById("brand").value=b[1];
+const w=String(r.windows||"").toLowerCase();if(w.includes("11"))document.getElementById("windows").value="Windows 11";else if(w.includes("10"))document.getElementById("windows").value="Windows 10";else if(w.includes("8.1"))document.getElementById("windows").value="Windows 8.1";else if(w.includes("8"))document.getElementById("windows").value="Windows 8";else if(w.includes("7"))document.getElementById("windows").value="Windows 7";
+document.getElementById("arch").value=String(r.architecture||"").includes("64")?"64-bit":String(r.architecture||"").includes("32")?"32-bit":"نه پوهېږم";
+const devices=Array.isArray(r.problemDevices)?r.problemDevices:[];
+const messages={1:"وسیله سمه نه ده تنظیم شوې؛ کېدای شي ډرایور نه وي نصب.",3:"ډرایور خراب یا د سرچینو ستونزه لري.",10:"وسیله نه چلېږي؛ ډرایور یا وسیله ستونزه لري.",18:"ډرایور بیا نصب ته اړتیا لري.",19:"د وسیلې د تنظیم ستونزه ده.",22:"وسیله غیرفعاله ده.",24:"وسیله ناسمه نصب شوې یا نه پېژندل کېږي.",28:"ډرایور نه دی نصب شوی.",31:"Windows اړین ډرایور نه شي بارولای.",32:"د ډرایور خدمت غیرفعال دی.",37:"Windows ډرایور نه شي پیلولای.",39:"ډرایور خراب یا ورک دی.",43:"Windows د وسیلې ستونزه راپور کړې."};
+let html="<b>د کمپیوټر معلومات</b><br>شرکت: "+esc(r.manufacturer)+"<br>ماډل: "+esc(r.model)+"<br>Windows: "+esc(r.windows)+"<br>سیستم: "+esc(r.architecture)+"<br>RAM: "+esc(r.ramGB)+" GB<hr>";
+if(!devices.length)html+="<b>ښه خبر!</b> په راپور کې د وسیلو کومه فعاله تېروتنه ونه موندل شوه. دا د ټولو احتمالي ستونزو د نشتوالي ضمانت نه دی.";
+else{html+="<b>موندل شوې ستونزې: "+devices.length+"</b><ul>";devices.forEach(d=>{html+="<li><b>"+esc(d.name||"ناپېژندل شوې وسیله")+"</b> — Code "+esc(d.errorCode)+"<br>"+esc(messages[d.errorCode]||"Windows د دې وسیلې لپاره د ستونزې کوډ راپور کړی.")+"</li>"});html+="</ul><p>د حل لپاره د کمپیوټر د شرکت رسمي ډرایور پاڼه پرانیزئ.</p>"}
+out.innerHTML=html+"<p><button type='button' onclick='findDrivers()'>د دې ماډل رسمي ډرایور پاڼه پرانیزئ</button></p>";
+}catch(e){out.textContent="راپور ونه لوستل شو. د Saidwali-PC-Report.json اصلي فایل پورته کړئ."}};
+reader.readAsText(file);
+}
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
 function findDrivers(){const brand=document.getElementById("brand").value;const model=document.getElementById("model").value.trim();const win=document.getElementById("windows").value;const arch=document.getElementById("arch").value;if(!brand||!model){document.getElementById("driverLinks").textContent="مهرباني وکړئ د کمپیوټر شرکت او دقیق ماډل ولیکئ.";return}const q=encodeURIComponent(brand+" "+model+" "+win+" "+arch+" drivers official support");let url="";const b=brand.toLowerCase();if(b==="hp")url="https://support.hp.com/drivers";else if(b==="dell")url="https://www.dell.com/support/home/en-us?app=drivers";else if(b==="lenovo")url="https://pcsupport.lenovo.com/";else if(b==="asus")url="https://www.asus.com/support/download-center/";else if(b==="acer")url="https://www.acer.com/us-en/support/drivers-and-manuals";else if(b==="microsoft surface")url="https://support.microsoft.com/surface";else if(b==="msi")url="https://www.msi.com/support/download";else if(b==="samsung")url="https://www.samsung.com/us/support/downloads/";else url="https://www.google.com/search?q="+q;document.getElementById("driverLinks").innerHTML="د لټون معلومات: "+brand+" — "+model+" — "+win+" — "+arch+"<br><a class='btn' href='"+url+"' target='_blank' rel='noopener'>د جوړوونکي رسمي ډرایور پاڼه پرانیزئ</a><p class='small'>په رسمي پاڼه کې همدا ماډل او Windows نسخه وټاکئ. د ډرایور سازګاري د جوړوونکي له خوا تایید کړئ.</p>"}
 </script></body></html>
