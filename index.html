@@ -2455,7 +2455,7 @@ document.addEventListener("click", function(event) {
 <!-- End Saidwali Calculator and Currency Tools -->
 
 
-<!-- Said Wali Khan app install button -->
+<!-- Said Wali Khan app install button: Android + iPhone -->
 <style>
 #saidwali-install-app {
   position: fixed; right: 14px; bottom: 76px; z-index: 99998;
@@ -2478,6 +2478,22 @@ document.addEventListener("click", function(event) {
   let installPrompt = null;
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   if (isStandalone) return;
+
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  if (isIOS) {
+    installButton.style.display = 'inline-flex';
+    installButton.addEventListener('click', () => {
+      const isSafari = /Safari/i.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
+      if (!isSafari) {
+        alert('مهرباني وکړئ دا ویب‌سایټ په iPhone کې د Safari براوزر له لارې خلاص کړئ، بیا د Share نښه ووهئ.');
+        return;
+      }
+      alert('د نصبولو لار: ۱) د Safari لاندې د Share نښه (□↑) ووهئ. ۲) Add to Home Screen انتخاب کړئ. ۳) Add ووهئ. د سیدولي خان اپلیکیشن به ستاسو د iPhone پر سکرین ښکاره شي.');
+    });
+    return;
+  }
 
   window.addEventListener('beforeinstallprompt', (event) => {
     event.preventDefault();
