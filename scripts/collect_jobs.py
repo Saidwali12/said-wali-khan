@@ -57,7 +57,7 @@ def parse_iso_date(text: str) -> str | None:
 
 
 def safe_get(url: str) -> str:
-    response = SESSION.get(url, timeout=25)
+    response = SESSION.get(url, timeout=18)
     response.raise_for_status()
     if "text/html" not in response.headers.get("Content-Type", ""):
         raise RuntimeError(f"Unexpected content type from {url}")
@@ -93,6 +93,8 @@ def listing_candidates(html: str) -> list[dict]:
             node = node.parent
 
         deadline = parse_iso_date(card_text)
+        if not provinces_in(card_text):
+            continue
         canonical = href.split("#", 1)[0].rstrip("/")
         if not deadline or deadline < date.today().isoformat() or canonical in seen:
             continue
@@ -254,7 +256,7 @@ def wazifaha_listing_candidates(html: str) -> list[dict]:
 
 def employer_page_confirms(url: str, title: str, reference: str) -> bool:
     try:
-        response = SESSION.get(url, timeout=25, allow_redirects=True)
+        response = SESSION.get(url, timeout=18, allow_redirects=True)
         if response.status_code < 200 or response.status_code >= 400:
             return False
         if "text/html" not in response.headers.get("Content-Type", ""):
@@ -411,7 +413,7 @@ def main() -> None:
     wazifaha_verified = []
     wazifaha_errors = []
     wazifaha_candidates = []
-    for page in range(1, 36):
+    for page in range(1, 13):
         url = WAZIFAHA_JOBS.format(page=page)
         try:
             page_candidates = wazifaha_listing_candidates(safe_get(url))
