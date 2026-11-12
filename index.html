@@ -126,11 +126,14 @@ header {
 
 .coin-back {
     transform: rotateY(180deg);
-    display: grid;
-    place-items: center;
-    border: 5px solid #747d86;
-    background: radial-gradient(circle at 35% 28%,#f8fafc 0%,#c9d0d6 38%,#7f8992 72%,#e8edf1 100%);
-    box-shadow: inset 0 0 0 3px #eef2f5, inset 0 0 0 6px #8b949c;
+    display: block;
+    border: 5px solid #9b5b32;
+    background-color: #a65e37;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/2/28/5_Afghani_%282004%29.jpg");
+    background-repeat: no-repeat;
+    background-size: 200% 100%;
+    background-position: right center;
+    box-shadow: inset 0 0 0 2px rgba(255,225,190,.72), inset 0 0 9px rgba(45,22,12,.5), 0 2px 7px rgba(0,0,0,.35);
 }
 
 .coin-back svg {
@@ -809,27 +812,9 @@ footer p {
             <div class="coin-face coin-front">
                 <img src="said.jpg.jpg" alt="Said Wali Khan" class="profile-photo">
             </div>
-            <div class="coin-face coin-back" aria-label="د افغانستان په الهام د سپینو زرو سکه">
-                <svg viewBox="0 0 200 200" role="img" aria-label="د افغانستان په الهام د سپینو زرو سکه">
-                    <defs>
-                        <linearGradient id="coinMetal" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0" stop-color="#ffffff"/>
-                            <stop offset=".48" stop-color="#aeb7bf"/>
-                            <stop offset="1" stop-color="#f5f7f9"/>
-                        </linearGradient>
-                    </defs>
-                    <circle cx="100" cy="100" r="91" fill="url(#coinMetal)" stroke="#626d77" stroke-width="2"/>
-                    <circle cx="100" cy="100" r="82" fill="none" stroke="#f8fafc" stroke-width="2"/>
-                    <circle cx="100" cy="100" r="75" fill="none" stroke="#77828c" stroke-width="1.5" stroke-dasharray="2 4"/>
-                    <text x="100" y="39" text-anchor="middle" font-size="17" font-weight="bold" fill="#34404a">افغانستان</text>
-                    <text x="100" y="56" text-anchor="middle" font-size="8" letter-spacing="1.5" fill="#46515b">AFGHANISTAN</text>
-                    <path d="M100 69 L108 88 L129 89 L113 102 L118 123 L100 111 L82 123 L87 102 L71 89 L92 88 Z" fill="#7b858e" stroke="#46515b" stroke-width="1.5"/>
-                    <path d="M69 132 Q100 111 131 132 L131 143 L69 143 Z" fill="#8d979f" stroke="#58636d" stroke-width="1.5"/>
-                    <path d="M80 132 L80 120 M91 128 L91 116 M109 128 L109 116 M120 132 L120 120" stroke="#e9edf0" stroke-width="2"/>
-                    <path d="M62 148 Q100 158 138 148" fill="none" stroke="#59646e" stroke-width="2"/>
-                    <text x="100" y="169" text-anchor="middle" font-size="10" font-weight="bold" fill="#34404a">د افغانستان سکه</text>
-                    <text x="100" y="181" text-anchor="middle" font-size="7" letter-spacing="1" fill="#46515b">DECORATIVE COIN</text>
-                </svg>
+            <div class="coin-face coin-back" role="img"
+                 aria-label="د افغانستان د ۲۰۰۴ کال اصلي پنځه افغانیو سکه؛ د سکې د پنځه افغانیو مخ"
+                 title="5 Afghanis, Afghanistan, 2004 — Photo: AKS.9955, Wikimedia Commons, CC BY-SA 4.0">
             </div>
         </div>
     </div>
