@@ -116,28 +116,30 @@ def parse_detail(
     soup = BeautifulSoup(html, "html.parser")
     lines = [clean(x) for x in soup.stripped_strings if clean(x)]
     full_text = clean(soup.get_text(" ", strip=True))
-    lower_top = clean(" ".join(lines[:35])).casefold()
-
-    # Diagnostic only: preserve the strict acceptance rule while identifying
-    # exactly why the current ACBAR status check rejects a detail page.
-    has_open = "open" in lower_top
-    has_closed = "closed" in lower_top
-    if not has_open or has_closed:
-        if not has_open:
-            reject("detail_status_open_not_found_in_first_35_lines")
-        if has_closed:
-            reject("detail_status_closed_word_conflict_in_first_35_lines")
-        if status_debug_samples is not None and len(status_debug_samples) < 3:
-            status_debug_samples.append({
-                "url": candidate["url"],
-                "first_35_lines": " | ".join(lines[:35])[:1200],
-            })
-        return None
-
     h1 = soup.find("h1")
     title = clean(h1.get_text(" ", strip=True)) if h1 else ""
     if not title:
         reject("detail_title_missing")
+        return None
+
+    # ACBAR places the vacancy status (for example, "NEW Open") just below
+    # the H1 title. Check this local status area, not the page header/menu.
+    title_index = next((i for i, line in enumerate(lines) if line == title), -1)
+    status_lines = lines[title_index + 1:title_index + 6] if title_index >= 0 else []
+    status_context = clean(" ".join(status_lines)).casefold()
+    has_open = bool(re.search(r"(?<![a-z])open(?![a-z])", status_context))
+    has_closed = bool(re.search(r"(?<![a-z])closed(?![a-z])", status_context))
+    if not has_open or has_closed:
+        if not has_open:
+            reject("detail_status_open_not_found_near_title")
+        if has_closed:
+            reject("detail_status_closed_near_title")
+        if status_debug_samples is not None and len(status_debug_samples) < 3:
+            status_debug_samples.append({
+                "url": candidate["url"],
+                "title": title,
+                "status_context": " | ".join(status_lines)[:1200],
+            })
         return None
 
     # ACBAR detail pages place the exact duty station immediately after Location.
