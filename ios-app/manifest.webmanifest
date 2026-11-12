@@ -1,0 +1,24 @@
+{
+  "id": "./",
+  "name": "Said Wali Khan",
+  "short_name": "Said Wali Khan",
+  "description": "Saidwali GPT — شخصي هوښیار مرستیال",
+  "lang": "ps-AF",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#071a35",
+  "theme_color": "#071a35",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "../saidwali-gpt-avatar.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
