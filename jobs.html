@@ -215,7 +215,7 @@ function renderJobs(){
    '<div class="job-info">د اعلان نېټه: '+esc(j.postedDate||"—")+'</div>'+
    '<div class="job-info">د پای نېټه: '+esc(j.expiryDate||"—")+'</div>'+
    (email?'<div class="job-info">د ادارې ایمیل: '+esc(email)+'</div>':'<div class="job-info">غوښتنلیک: د ادارې رسمي آنلاین فورم</div>')+
-   (allowed?((onlineAllowed?'<a class="apply-btn apply-online" href="'+esc(safeApplyUrl)+'" target="_blank" rel="noopener noreferrer">↗ آنلاین فورمه ډکه کړئ</a>':'')+(emailAllowed?'<a class="apply-btn" href="'+esc(gmailCompose)+'" target="_blank" rel="noopener noreferrer">✉ د Gmail له لارې غوښتنلیک واستوئ</a><a class="mailto-btn" href="'+esc(mailto)+'">که Gmail نه کاروئ: د خپل ایمیل اپلیکیشن له لارې</a>':'')):'<span class="apply-btn disabled-btn">د غوښتنلیک وخت ختم شوی یا لینک تایید نه دی</span>')+
+   (allowed?((onlineAllowed?'<a class="apply-btn apply-online" href="'+esc(safeApplyUrl)+'" target="_blank" rel="noopener noreferrer">↗ آنلاین فورمه ډکه کړئ</a>':'')+(emailAllowed?'<a class="apply-btn" href="'+esc(mailto)+'">✉ د خپل ایمیل له لارې غوښتنلیک واستوئ</a><a class="mailto-btn" href="'+esc(gmailCompose)+'" target="_blank" rel="noopener noreferrer">که Gmail کاروئ: Gmail کې یې خلاص کړئ</a>':'')):'<span class="apply-btn disabled-btn">د غوښتنلیک وخت ختم شوی یا لینک تایید نه دی</span>')+
    '<div class="countdown">'+(expired?'د بست د ثبت نام وخت ختم شوی دی.':'د ثبت نام لپاره '+days+' ورځې پاتې دي.')+'</div>'+
    '<div class="job-info"><a href="'+esc(j.sourceUrl||"#")+'" target="_blank" rel="noopener">اصلي اعلان: '+esc(j.sourceName||"سرچینه")+'</a></div>'+
    '</div>';
