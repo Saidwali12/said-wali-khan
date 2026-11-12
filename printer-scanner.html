@@ -12,8 +12,13 @@
 .submenu{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 18px;padding:12px;background:#fff;border:1px solid #e0e6ef;border-radius:13px;box-shadow:0 5px 16px #071a350c}
 .submenu a{display:inline-block;padding:8px 13px;border-radius:9px;background:#071a35;color:#f4d58a;text-decoration:none;font-weight:bold;font-size:14px}
 .submenu a:hover,.submenu a:focus{background:#d9ae52;color:#071a35;outline:2px solid #071a35}
+
+/* د شاته تګ لینکونه د ښکاره بټن په بڼه */
+a.back{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin:0 0 16px;padding:10px 18px;border:2px solid #d9ae52;border-radius:11px;background:linear-gradient(135deg,#071a35,#102b50);color:#f4d58a!important;font-weight:bold;text-decoration:none;box-shadow:0 4px 12px rgba(7,26,53,.18);cursor:pointer}
+a.back:hover,a.back:focus{background:linear-gradient(135deg,#f4d58a,#d9ae52);color:#071a35!important;outline:2px solid #071a35;outline-offset:2px}
+
 </style></head><body><header><h1>🖨️ پرنټر او سکینر مرکز</h1><div>د ماډل له مخې رسمي ډرایورونه او سافټویرونه</div></header><main>
-<a class="back" href="./diagnostic.html">← تخنیکي مرکز ته بېرته</a>
+<a class="back" href="./diagnostic.html">⬅ شاته تګ</a>
 <nav class="submenu" aria-label="د پرنټر او سکینر فرعي مینو"><a href="#printer">🖨️ د پرنټر مینو</a><a href="#scanner">📄 د سکینر مینو</a></nav>
 <section class="panel" id="printer"><h2>🖨️ د پرنټر ډرایور موندل</h2><label for="pbrand">د پرنټر شرکت</label><select id="pbrand"><option value="">شرکت وټاکئ</option><option>HP</option><option>Canon</option><option>Epson</option><option>Brother</option><option>Xerox</option><option>Samsung</option><option>Ricoh</option><option>Kyocera</option><option>Other</option></select><label for="pmodel">د پرنټر دقیق ماډل</label><input id="pmodel" placeholder="لکه: HP LaserJet Pro M404dn"><label for="pwin">Windows نسخه</label><select id="pwin"><option>Windows 11</option><option>Windows 10</option><option>Windows 8.1</option><option>Windows 8</option><option>Windows 7</option></select><button onclick="lookup('p')">رسمي ډرایور پیدا کړئ</button><div id="presult" class="result">د پرنټر شرکت او ماډل ولیکئ.</div></section>
 <section class="panel" id="scanner"><h2>📄 د سکینر ډرایور موندل</h2><label for="sbrand">د سکینر شرکت</label><select id="sbrand"><option value="">شرکت وټاکئ</option><option>HP</option><option>Canon</option><option>Epson</option><option>Brother</option><option>Fujitsu</option><option>Ricoh</option><option>Other</option></select><label for="smodel">د سکینر دقیق ماډل</label><input id="smodel" placeholder="لکه: Epson Perfection V39"><label for="swin">Windows نسخه</label><select id="swin"><option>Windows 11</option><option>Windows 10</option><option>Windows 8.1</option><option>Windows 8</option><option>Windows 7</option></select><button onclick="lookup('s')">رسمي ډرایور پیدا کړئ</button><div id="sresult" class="result">د سکینر شرکت او ماډل ولیکئ.</div></section>
@@ -22,7 +27,7 @@
 function lookup(prefix){const brand=document.getElementById(prefix+"brand").value;const model=document.getElementById(prefix+"model").value.trim();const win=document.getElementById(prefix+"win").value;const out=document.getElementById(prefix+"result");if(!brand||!model){out.textContent="مهرباني وکړئ شرکت او دقیق ماډل ولیکئ.";return}const b=brand.toLowerCase();let url;if(b==="hp")url="https://support.hp.com/drivers";else if(b==="canon")url="https://www.usa.canon.com/support";else if(b==="epson")url="https://epson.com/Support";else if(b==="brother")url="https://support.brother.com/";else if(b==="xerox")url="https://www.support.xerox.com/";else if(b==="samsung")url="https://www.samsung.com/us/support/downloads/";else if(b==="ricoh")url="https://www.ricoh.com/support";else if(b==="kyocera")url="https://www.kyoceradocumentsolutions.com/en/support/index.html";else if(b==="fujitsu")url="https://www.pfu.ricoh.com/global/scanners/";else url="https://www.google.com/search?q="+encodeURIComponent(brand+" "+model+" "+win+" official driver");out.innerHTML="ماډل: "+brand+" "+model+"<br>سیستم: "+win+"<br><a class='btn' href='"+url+"' target='_blank' rel='noopener'>د جوړوونکي رسمي ملاتړ او ډرایورونه</a><p>په رسمي پاڼه کې دقیق ماډل او Windows نسخه تایید کړئ.</p>"}
 </script>
 <!-- Universal back navigation for all Technical Center menus -->
-<a class="site-back-button" id="siteBackButton" href="./diagnostic.html" aria-label="بېرته شاتګ">⬅️ شاتګ</a>
+<a class="site-back-button" id="siteBackButton" href="./diagnostic.html" aria-label="بېرته شاتګ">⬅ شاته تګ</a>
 <script>
 (function(){
   var backButton=document.getElementById("siteBackButton");
