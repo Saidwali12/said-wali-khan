@@ -191,7 +191,7 @@ function renderJobs(){
   const mode=String(j.applicationMode||"").toLowerCase();
   const applyUrl=String(j.applyUrl||j.applicationUrl||j.onlineApplicationUrl||"").trim();
   const safeApplyUrl=/^https:\/\//i.test(applyUrl)?applyUrl:"";
-  const emailAllowed=(mode==="email"||mode==="both")&&validEmail(email)&&subject;
+  const emailAllowed=(mode==="email"||mode==="both")&&validEmail(email);
   const onlineAllowed=(mode==="online"||mode==="both")&&!!safeApplyUrl;
   const allowed=j.verified===true&&(emailAllowed||onlineAllowed)&&!expired;
   const pageUrl=location.origin+location.pathname+"#job-"+encodeURIComponent(String(j.id||""));
