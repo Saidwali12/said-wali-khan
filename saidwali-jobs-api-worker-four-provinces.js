@@ -292,7 +292,7 @@ function hasValidApplicationMethod(job) {
   const mode = String(job.applicationMode || "").toLowerCase();
   const email = String(job.applyEmail || job.email || job.applicationEmail || "").trim();
   const applyUrl = String(job.applyUrl || job.applicationUrl || job.onlineApplicationUrl || "").trim();
-  const validEmail = email.includes("@") && email.includes(".") && !/\\s/.test(email);
+  const validEmail = email.includes("@") && email.includes(".") && !/\s/.test(email);
   const validUrl = applyUrl.toLowerCase().startsWith("https://");
   if (mode === "email") return validEmail;
   if (mode === "online") return validUrl;
@@ -323,7 +323,7 @@ async function processJobAlerts(env) {
   for (const job of jobs) {
     // Never alert for expired, undated, unverified, or non-actionable jobs.
     const expiryDate = String(job.expiryDate || "");
-    const validDate = /^\\d{4}-\\d{2}-\\d{2}$/.test(expiryDate);
+    const validDate = /^\d{4}-\d{2}-\d{2}$/.test(expiryDate);
     if (job.verified !== true || !validDate || expiryDate < today ||
         !hasValidApplicationMethod(job)) continue;
 
