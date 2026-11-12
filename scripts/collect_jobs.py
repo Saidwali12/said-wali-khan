@@ -381,6 +381,12 @@ def parse_wazifaha_detail(candidate: dict) -> dict | None:
 
     slug = urlparse(candidate["url"]).path.rstrip("/").split("/")[-1]
     stable_id = ("wazifaha-" + reference.lower()) if reference else ("wazifaha-" + slug.lower())
+    employment_type = "د اصلي اعلان له مخې"
+    for i, line in enumerate(lines):
+        if line.casefold().rstrip(":") == "employment type" and i + 1 < len(lines):
+            employment_type = lines[i + 1]
+            break
+
     return {
         "id": stable_id,
         "vacancyRef": reference or None,
@@ -388,7 +394,7 @@ def parse_wazifaha_detail(candidate: dict) -> dict | None:
         "organization": organization or "د اصلي اعلان له مخې",
         "location": provinces,
         "dutyStation": ", ".join(p.title() for p in provinces),
-        "employmentType": "د اصلي اعلان له مخې",
+        "employmentType": employment_type,
         "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د اصلي اعلان او د کار ورکوونکي پاڼه وګورئ.",
         "expiryDate": deadline,
         "applyUrl": apply_url or candidate["url"],
