@@ -418,7 +418,7 @@ def main() -> None:
         try:
             page_candidates = wazifaha_listing_candidates(safe_get(url))
             if not page_candidates:
-                break
+                continue
             wazifaha_candidates.extend(page_candidates)
         except Exception as exc:
             wazifaha_errors.append(f"page {page}: {exc}")
