@@ -153,7 +153,7 @@ def main() -> None:
     by_id = {str(job.get("id")): job for job in active_existing if job.get("id")}
     def normalized_source(value: str) -> str:
         value = str(value or "").strip().split("#", 1)[0].rstrip("/")
-        value = re.sub(r"^https://www\\.", "https://", value, flags=re.I)
+        value = re.sub(r"^https://www\.", "https://", value, flags=re.I)
         return value.casefold()
     existing_sources = {
         normalized_source(job.get("sourceUrl"))
