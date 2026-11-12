@@ -204,6 +204,17 @@ def parse_detail(candidate: dict) -> dict | None:
 
 WAZIFAHA_BASE = "https://wazifaha.com"
 WAZIFAHA_JOBS = WAZIFAHA_BASE + "/jobs?page={page}"
+ORG_EMAIL_DOMAINS = {
+    "danish refugee council": ("drc.ngo",),
+    "drc": ("drc.ngo",),
+    "unicef": ("unicef.org",),
+    "unops": ("unops.org",),
+    "international organization for migration": ("iom.int",),
+    "iom": ("iom.int",),
+    "world food programme": ("wfp.org",),
+    "wfp": ("wfp.org",),
+    "who": ("who.int",),
+}
 
 
 def parse_flexible_date(text: str) -> str | None:
@@ -321,8 +332,6 @@ def parse_wazifaha_detail(candidate: dict) -> dict | None:
         if "apply" in label and parsed.scheme == "https" and parsed.netloc and not parsed.netloc.lower().endswith("wazifaha.com"):
             apply_url = href
             break
-    if not apply_url or not employer_page_confirms(apply_url, title, reference):
-        return None
 
     organization = ""
     try:
@@ -333,6 +342,27 @@ def parse_wazifaha_detail(candidate: dict) -> dict | None:
                 break
     except StopIteration:
         pass
+
+    apply_email = ""
+    submission_start = -1
+    for i, line in enumerate(lines):
+        if any(marker in line.casefold() for marker in ("submission guideline", "submission email", "how to apply")):
+            submission_start = i
+            break
+    submission_text = " ".join(lines[submission_start:]) if submission_start >= 0 else ""
+    email_match = EMAIL_RE.search(submission_text)
+    if email_match:
+        possible_email = email_match.group(0).lower()
+        org_key = organization.casefold()
+        allowed_domains = next((domains for name, domains in ORG_EMAIL_DOMAINS.items() if name in org_key), ())
+        if any(possible_email.endswith("@" + domain) for domain in allowed_domains):
+            apply_email = possible_email
+
+    if apply_url:
+        if not employer_page_confirms(apply_url, title, reference):
+            return None
+    elif not apply_email:
+        return None
 
     slug = urlparse(candidate["url"]).path.rstrip("/").split("/")[-1]
     stable_id = ("wazifaha-" + reference.lower()) if reference else ("wazifaha-" + slug.lower())
@@ -346,12 +376,13 @@ def parse_wazifaha_detail(candidate: dict) -> dict | None:
         "employmentType": "د اصلي اعلان له مخې",
         "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د اصلي اعلان او د کار ورکوونکي پاڼه وګورئ.",
         "expiryDate": deadline,
-        "applyUrl": apply_url,
-        "sourceName": "Wazifaha (employer link checked)",
+        "applyUrl": apply_url or candidate["url"],
+        "applyEmail": apply_email,
+        "sourceName": "Wazifaha (employer contact checked)",
         "sourceUrl": candidate["url"],
-        "applicationMode": "online",
+        "applicationMode": "both" if apply_url and apply_email else ("email" if apply_email else "online"),
         "verified": True,
-        "verificationLevel": "aggregator_detail_and_employer_page_checked",
+        "verificationLevel": "aggregator_detail_and_employer_contact_checked",
     }
 
 
