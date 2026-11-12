@@ -324,7 +324,7 @@ document.getElementById("applicantForm").addEventListener("submit",async functio
   const response=await fetch(JOBS_API+"/register",{method:"POST",body:new FormData(form)});
   const data=await response.json();
   if(!response.ok||!data.success)throw new Error(data.error||"ثبت‌نام بریالی نه شو.");
-  showRegStatus("✓ ثبت‌نام په بریالیتوب بشپړ شو! اوس به د دندو پاڼې ته بېرته ولاړ شئ.",true);form.reset();
+  showRegStatus("مبارک دې وي! ستاسې نوم‌لیکنه په بریالیتوب بشپړه شوه. د نویو دندو خبرتیاوې به ستاسې ایمیل ته درلېږل کېږي. اوس به د دندو پاڼې ته بېرته ولاړ شئ.",true);form.reset();
   setTimeout(()=>{closeApplicantForm();document.getElementById("jobsContainer").scrollIntoView({behavior:"smooth",block:"start"});},2600);
  }catch(err){showRegStatus(err.message||"له سرور سره اړیکه ټینګه نه شوه. وروسته بیا هڅه وکړئ.",false);}
  finally{btn.disabled=false;btn.textContent="ثبت‌نام بشپړ کړئ";}
