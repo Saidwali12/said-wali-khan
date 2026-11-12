@@ -34,10 +34,8 @@ jobs:
           SDKMANAGER="$(find "$ANDROID_HOME" -type f -name sdkmanager 2>/dev/null | head -n 1)"
           if [ -z "$SDKMANAGER" ]; then
             echo "sdkmanager was not found under ANDROID_HOME"
-            find "$ANDROID_HOME" -maxdepth 4 -type d 2>/dev/null | head -80
             exit 1
           fi
-          echo "Using: $SDKMANAGER"
           yes | "$SDKMANAGER" --licenses || true
           "$SDKMANAGER" --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
@@ -70,11 +68,29 @@ jobs:
           npx cap add android
           npx cap sync android
 
+      - name: Fix duplicate Kotlin standard libraries
+        shell: bash
+        run: |
+          cat > android/kotlin-resolution.init.gradle <<'EOF'
+          allprojects {
+            configurations.configureEach {
+              resolutionStrategy.eachDependency { details ->
+                if (details.requested.group == 'org.jetbrains.kotlin' &&
+                    (details.requested.name == 'kotlin-stdlib-jdk7' ||
+                     details.requested.name == 'kotlin-stdlib-jdk8')) {
+                  details.useTarget('org.jetbrains.kotlin:kotlin-stdlib:1.8.22')
+                  details.because('Avoid duplicate Kotlin standard library classes')
+                }
+              }
+            }
+          }
+          EOF
+
       - name: Build installable debug APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew --init-script kotlin-resolution.init.gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
