@@ -126,48 +126,23 @@ text-align:center;
 padding:15px;
 margin-top:20px;
 }
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-/* د QR برخه د پاڼې له اصلي جوړښت څخه جلا، په چپ اړخ کې */
+
+/* د اپلیکیشن QR کوډ: په ټولو سکرینونو کې د منځپانګې برخه وي، نه پوښ */
 .app-install-qr{
-  position:absolute;
-  left:14px;
-  top:50%;
-  transform:translateY(-50%);
-  z-index:1000;
-  width:210px;
-  box-sizing:border-box;
-  background:#fff;
-  border:2px solid #d9ae52;
-  border-radius:14px;
-  padding:12px;
-  text-align:center;
-  box-shadow:0 4px 18px rgba(0,0,0,.18);
+  position:relative;width:min(290px,92%);box-sizing:border-box;margin:18px auto 8px;
+  background:#fff;border:2px solid #d9ae52;border-radius:14px;padding:14px;
+  text-align:center;box-shadow:0 4px 18px rgba(0,0,0,.18);
 }
-.app-install-qr h2{font-size:17px;color:#071a35;margin:0 0 8px}
-.app-install-qr img{width:180px;max-width:100%;height:auto;border:4px solid #071a35;border-radius:8px}
-.app-install-qr p{font-size:13px;line-height:1.7;margin:8px 0;color:#222}
-.app-install-qr .app-download-link{
-  display:block;background:#071a35;color:#f4d58a;text-decoration:none;
-  padding:9px;border-radius:8px;font-weight:bold;margin-top:8px
-}
-/* په موبایل کې هم په چپ اړخ کې پاتې کېږي او د پاڼې منځپانګه نه خوځوي */
-@media(max-width:700px){
-  header{padding:14px 8px 18px}
-  .app-install-qr{
-    top:50%;
-    bottom:auto;
-    left:6px;
-    width:105px;
-    padding:7px;
-    border-radius:10px;
-  }
-  .app-install-qr h2{font-size:10px}
-  .app-install-qr img{width:82px;border-width:2px}
-  .app-install-qr p{font-size:9px;line-height:1.3}
-  .app-install-qr .app-download-link{font-size:9px;padding:5px}
-}</style>
+.app-install-qr h2{font-size:18px;color:#071a35;margin:0 0 10px}
+.app-install-qr img{display:block;width:220px;max-width:100%;height:auto;margin:0 auto;border:4px solid #071a35;border-radius:8px}
+.app-install-qr p{font-size:13px;line-height:1.8;margin:9px 0;color:#222}
+.app-install-qr .app-download-link{display:block;background:#071a35;color:#f4d58a;text-decoration:none;padding:11px;border-radius:8px;font-weight:bold;margin-top:9px}
+.app-install-qr .app-download-link:hover{background:#173e6c}
+.app-install-qr .install-help{font-size:12px;color:#4b5563}
+</style>
 
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
@@ -178,12 +153,7 @@ margin-top:20px;
 ⬅ شاتګ
 </a>
 
-<div class="app-install-qr">
-<h2>📱 د موبایل اپلیکیشن</h2>
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&amp;data=https%3A%2F%2Fdrive.google.com%2Fuc%3Fexport%3Ddownload%26id%3D1fZ1XPzIIQqIpGasI37pCoAKsQTpS4Kpr" alt="د سیدولي خان Android اپلیکیشن د ډاونلوډ QR کوډ">
-<p><strong>QR کوډ سکین کړئ</strong><br>زموږ د ویب‌سایټ Android اپلیکیشن په موبایل کې ډاونلوډ او نصب کړئ.</p>
-<a class="app-download-link" href="https://drive.google.com/uc?export=download&amp;id=1fZ1XPzIIQqIpGasI37pCoAKsQTpS4Kpr" target="_blank" rel="noopener">⬇️ اپلیکیشن ډاونلوډ کړئ</a>
-</div>
+
 
 <div class="logo">
 ستاسو لوګو
@@ -192,6 +162,13 @@ margin-top:20px;
 <h1>سیدولي خان کوهستاني ګروپ</h1>
 <p>د اړیکو او تماس پاڼه</p>
 
+<div class="app-install-qr">
+<h2>📱 د Android اپلیکیشن ډاونلوډ</h2>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&amp;data=https%3A%2F%2Fgithub.com%2FSaidwali12%2Fsaid-wali-khan%2Freleases%2Flatest%2Fdownload%2FSaidwali-Android.apk" alt="د سیدولي خان Android اپلیکیشن مستقیم ډاونلوډ QR کوډ">
+<p><strong>QR کوډ سکین کړئ</strong><br>په بل موبایل کې یې سکین کړئ؛ د Android اپلیکیشن د ډاونلوډ لینک به خلاص شي.</p>
+<a class="app-download-link" href="https://github.com/Saidwali12/said-wali-khan/releases/latest/download/Saidwali-Android.apk" target="_blank" rel="noopener">⬇️ د Android اپلیکیشن ډاونلوډ</a>
+<p class="install-help">له ډاونلوډ وروسته APK خلاص کړئ او د موبایل د لارښوونو له مخې یې نصب کړئ. دا نسخه یوازې د Android لپاره ده.</p>
+</div>
 </header>
 
 <div class="container">
