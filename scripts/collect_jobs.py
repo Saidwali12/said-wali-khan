@@ -104,7 +104,10 @@ def listing_candidates(html: str) -> list[dict]:
     return output
 
 
-def parse_detail(candidate: dict) -> dict | None:
+def parse_detail(candidate: dict, rejection_counts: dict | None = None) -> dict | None:
+    def reject(reason: str) -> None:
+        if rejection_counts is not None:
+            rejection_counts[reason] = rejection_counts.get(reason, 0) + 1
     html = safe_get(candidate["url"])
     soup = BeautifulSoup(html, "html.parser")
     lines = [clean(x) for x in soup.stripped_strings if clean(x)]
@@ -113,11 +116,13 @@ def parse_detail(candidate: dict) -> dict | None:
 
     # Require an explicitly open vacancy, not merely an accessible old page.
     if "open" not in lower_top or "closed" in lower_top:
+        reject("detail_status_not_explicitly_open")
         return None
 
     h1 = soup.find("h1")
     title = clean(h1.get_text(" ", strip=True)) if h1 else ""
     if not title:
+        reject("detail_title_missing")
         return None
 
     # ACBAR detail pages place the exact duty station immediately after Location.
@@ -128,6 +133,7 @@ def parse_detail(candidate: dict) -> dict | None:
             break
     provinces = provinces_in(location_text)
     if not provinces:
+        reject("target_province_not_found_in_location_field")
         return None
 
     # Prefer the application email explicitly shown in the submission section.
@@ -161,6 +167,7 @@ def parse_detail(candidate: dict) -> dict | None:
                 break
 
     if not apply_email and not apply_url:
+        reject("application_email_or_external_apply_link_missing")
         return None
 
     # Organization is the first short non-navigation line after the heading.
@@ -177,6 +184,7 @@ def parse_detail(candidate: dict) -> dict | None:
 
     job_number = re.search(r"/details/(\d+)/", urlparse(candidate["url"]).path)
     if not job_number:
+        reject("vacancy_id_missing_from_url")
         return None
     vacancy_match = re.search(r"\b(?:VAC-\d+|[A-Z]{1,5}-\d+)\b", full_text, re.I)
     vacancy_ref = vacancy_match.group(0).upper() if vacancy_match else ""
@@ -449,9 +457,10 @@ def main() -> None:
 
     verified = []
     detail_errors = []
+    detail_rejections = {}
     for candidate in candidates:
         try:
-            job = parse_detail(candidate)
+            job = parse_detail(candidate, detail_rejections)
             if job:
                 verified.append(job)
         except Exception as exc:
@@ -553,6 +562,7 @@ def main() -> None:
         "acbar_detail_verified": len(verified),
         "acbar_detail_rejected_or_unverified": len(candidates) - len(verified),
         "acbar_detail_errors": detail_errors[:10],
+        "acbar_detail_rejection_reasons": detail_rejections,
         "wazifaha_listing_candidates": len(wazifaha_candidates),
         "wazifaha_detail_verified": len(wazifaha_verified),
         "wazifaha_errors": wazifaha_errors[:10],
