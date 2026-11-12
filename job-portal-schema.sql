@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS applicants (
   cv_name TEXT,
   cv_type TEXT,
   created_at TEXT NOT NULL,
-  active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0,1))
+  active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0,1)),
+  selected_provinces TEXT NOT NULL DEFAULT '[]'
 );
 CREATE UNIQUE INDEX IF NOT EXISTS applicants_active_email
 ON applicants(email) WHERE active = 1;
