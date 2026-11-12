@@ -88,6 +88,49 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 .reg-status.ok:before{content:'✓';display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:50%;background:#1f9d55;color:#fff;margin-left:9px;font-size:18px}
 @media(max-width:600px){.reg-modal{padding:0;inset:0}.reg-panel{width:100%;max-width:none;min-height:100dvh;height:100dvh;margin:0;border-radius:0;padding:18px 15px 28px;overflow-y:auto}.reg-grid{grid-template-columns:1fr}.job-card{padding:15px}.job-title{font-size:17px}.search-box{margin:8px;border-radius:6px}}
 
+
+/* یوازې د دندو کارتونه کوچني او منظم کول؛ نورې برخې نه بدلېږي */
+.jobs-container{
+ max-width:1240px;
+ padding:8px;
+ grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+ gap:8px;
+}
+.job-card{
+ padding:10px 12px;
+ border-right-width:4px;
+ border-radius:6px;
+}
+.job-title{
+ font-size:15px;
+ line-height:1.35;
+ margin-bottom:5px;
+}
+.job-meta{gap:4px;margin:5px 0 7px}
+.job-tag{font-size:10px;padding:3px 6px}
+.job-info{
+ font-size:11px;
+ line-height:1.45;
+ margin:2px 0;
+ overflow-wrap:anywhere;
+}
+.apply-btn{
+ font-size:11px;
+ padding:6px 9px;
+ margin:5px 4px 0 0;
+}
+.mailto-btn{font-size:10px;margin:6px 5px 0 0}
+.countdown{font-size:10px;margin:6px 0 0}
+.new-badge{font-size:10px;margin-bottom:4px}
+@media(max-width:650px){
+ .jobs-container{grid-template-columns:1fr;gap:6px;padding:6px}
+ .job-card{padding:9px 10px}
+ .job-title{font-size:14px}
+ .job-info{font-size:10.5px;line-height:1.4}
+ .job-tag{font-size:9px;padding:2px 5px}
+ .apply-btn{font-size:10px;padding:6px 8px}
+}
+
 </style>
 </head>
 <body>
