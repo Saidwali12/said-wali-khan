@@ -26,12 +26,17 @@ a.btn:hover{background:#173e6c}footer{text-align:center;color:#66758b;font-size:
 .submenu{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 18px;padding:12px;background:#fff;border:1px solid #e0e6ef;border-radius:13px;box-shadow:0 5px 16px #071a350c}
 .submenu a{display:inline-block;padding:8px 13px;border-radius:9px;background:#071a35;color:#f4d58a;text-decoration:none;font-weight:bold;font-size:14px}
 .submenu a:hover,.submenu a:focus{background:#d9ae52;color:#071a35;outline:2px solid #071a35}
+
+/* د شاته تګ لینکونه د ښکاره بټن په بڼه */
+a.back{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin:0 0 16px;padding:10px 18px;border:2px solid #d9ae52;border-radius:11px;background:linear-gradient(135deg,#071a35,#102b50);color:#f4d58a!important;font-weight:bold;text-decoration:none;box-shadow:0 4px 12px rgba(7,26,53,.18);cursor:pointer}
+a.back:hover,a.back:focus{background:linear-gradient(135deg,#f4d58a,#d9ae52);color:#071a35!important;outline:2px solid #071a35;outline-offset:2px}
+
 </style>
 </head>
 <body>
 <header><h1>🛠️ Saidwali Universal Technical Center</h1><p>د کمپیوټر، موبایل، پرنټر او سکینر د مرستې مرکز</p></header>
 <main>
-<a class="back" href="./index.html">← بېرته اصلي پاڼې ته</a>
+<a class="back" href="./index.html">⬅ شاته تګ</a>
 <div class="notice"><strong>یادونه:</strong> دا مرکز د وسیلې ځینې معلومات په براوزر کې پېژني او د رسمي ډرایورونو/سافټویرونو سرچینې درښيي. د ټولو ډرایورونو بشپړ تشخیص او نصب د جلا پروګرام او ستاسې د اجازې غوښتنه کوي.</div>
 <section class="grid">
 <article class="card"><div class="ico">💻</div><h2>د کمپیوټر برخه</h2><p>د Windows نسخې، د کمپیوټر پېژندنه، د ډرایورونو موندل او د ستونزو تشخیص.</p><a class="btn" href="./computer.html">د کمپیوټر فرعي مینو خلاص کړئ</a><p><b>فرعي برخې:</b> Windows 7، 8/8.1، 10 او 11؛ ډرایورونه او تشخیص.</p></article>
@@ -42,7 +47,7 @@ a.btn:hover{background:#173e6c}footer{text-align:center;color:#66758b;font-size:
 </main><footer>© Saidwali Technical Center — وړیا تخنیکي لارښوونې</footer>
 
 <!-- Universal back navigation for all Technical Center menus -->
-<a class="site-back-button" id="siteBackButton" href="./index.html" aria-label="بېرته شاتګ">⬅️ شاتګ</a>
+<a class="site-back-button" id="siteBackButton" href="./index.html" aria-label="بېرته شاتګ">⬅ شاته تګ</a>
 <script>
 (function(){
   var backButton=document.getElementById("siteBackButton");
