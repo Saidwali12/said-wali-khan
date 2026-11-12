@@ -491,6 +491,50 @@ nav {
     border-right: 4px solid var(--gold);
 }
 
+/* د چټکو خدماتو او اعلانونو منظم کارتونه */
+.quick-service-cards,
+.announcement-cards {
+    grid-template-columns: repeat(auto-fit,minmax(min(100%,260px),1fr));
+    align-items: stretch;
+    gap: 16px;
+}
+.quick-service-card,
+.announcement-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 180px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    text-align: right;
+}
+.quick-service-card h3,
+.announcement-card h3 {
+    color: var(--navy);
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 8px;
+}
+.quick-service-card p,
+.announcement-card p,
+.section-intro {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.9;
+}
+.quick-service-action {
+    color: #9a6b19;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: auto;
+    padding-top: 12px;
+}
+.quick-service-card:focus-visible,
+.announcement-card:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+}
+
 /* BBC */
 
 .bbc-section {
@@ -513,8 +557,23 @@ nav {
 
 #bbc-news {
     display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    grid-template-columns: repeat(auto-fit,minmax(min(100%,280px),1fr));
     gap: 14px;
+    align-items: stretch;
+}
+.bbc-updated {
+    color: var(--muted);
+    font-size: 12px;
+    text-align: left;
+    margin: -10px 2px 14px;
+}
+.news-item {
+    min-width: 0;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-wrap: anywhere;
 }
 
 .news-item {
@@ -1086,28 +1145,43 @@ footer p {
 
 <h2 class="section-title">چټک خدمات</h2>
 
-<div class="cards">
+<div class="cards quick-service-cards">
 
-<div class="card">
-<h3>📢 وظیفې</h3>
-<p>
-د دولتي، خصوصي او نړیوالو ادارو وروستي اعلانونه.
-</p>
-</div>
+<a class="card quick-service-card" href="jobs.html">
+<h3>📢 وظیفې او کاري فرصتونه</h3>
+<p>د دولتي، خصوصي او نړیوالو ادارو د دندو اعلانونه او د غوښتنلیک لارښوونې.</p>
+<span class="quick-service-action">اعلانونه وګورئ ←</span>
+</a>
 
-<div class="card">
-<h3>🤖 AI مرکز</h3>
-<p>
-ChatGPT, Gemini, Claude او نور AI وسایل.
-</p>
-</div>
+<a class="card quick-service-card" href="ai.html">
+<h3>🤖 د مصنوعي ځیرکتیا مرکز</h3>
+<p>د Saidwali AI، ChatGPT، Gemini او نورو ګټورو AI وسایلو ته لاسرسی.</p>
+<span class="quick-service-action">AI مرکز ته لاړ شئ ←</span>
+</a>
 
-<div class="card">
-<h3>🌐 مهم لینکونه</h3>
-<p>
-Facebook, WhatsApp, Google, YouTube او نور.
-</p>
-</div>
+<a class="card quick-service-card" href="computer.html">
+<h3>💻 کمپیوټر او تخنیکي مرسته</h3>
+<p>د Windows، کمپیوټر، موبایل، پرنټر او سکینر د ستونزو حل او ډرایورونه.</p>
+<span class="quick-service-action">لارښوونې وګورئ ←</span>
+</a>
+
+<a class="card quick-service-card" href="news.html">
+<h3>📰 خبرونه او تازه معلومات</h3>
+<p>د افغانستان او نړۍ خبرونه، نړیوالې سرچینې او مهم معلومات.</p>
+<span class="quick-service-action">خبرونه ولولئ ←</span>
+</a>
+
+<a class="card quick-service-card" href="software-books.html">
+<h3>📚 کتابونه او سافټویرونه</h3>
+<p>د کتابونو، فایلونو، عکسونو او اړینو سافټویرونو برخه.</p>
+<span class="quick-service-action">برخه پرانیزئ ←</span>
+</a>
+
+<a class="card quick-service-card" href="links.html">
+<h3>🌐 مهم ویب‌سایټونه</h3>
+<p>Google، YouTube، Facebook، WhatsApp او نور ګټور لینکونه.</p>
+<span class="quick-service-action">لینکونه وګورئ ←</span>
+</a>
 
 </div>
 </section>
@@ -1118,25 +1192,26 @@ Facebook, WhatsApp, Google, YouTube او نور.
 
 <h2 class="section-title">وروستي اعلانونه</h2>
 
-<div class="cards">
+<p class="section-intro">د نوو دندو، خبرونو او خپرو شویو معلوماتو د کتلو لپاره لاندې سرچینې وکاروئ. اعلانونه د اړوندې سرچینې له پاڼې څخه تایید کړئ.</p>
+<div class="cards announcement-cards">
 
-<div class="card job-card">
-<h3>د کمپیوټر استاد</h3>
-<p>ځای: کابل</p>
-<p>معاش: 25000 افغانۍ</p>
-</div>
+<a class="card announcement-card" href="jobs.html">
+<h3>💼 د دندو او بورسونو اعلانونه</h3>
+<p>د افغانستان د دولتي، خصوصي او نړیوالو ادارو د تازه کاري فرصتونو برخه.</p>
+<span class="quick-service-action">د دندو پاڼه وګورئ ←</span>
+</a>
 
-<div class="card job-card">
-<h3>دتحلیل اوګزارش دهی</h3>
-<p>دنورستان ولایت کامدیش ولسوالی</p>
-<p>معاش: ۱۸۰۰۰ افغانۍ</p>
-</div>
+<a class="card announcement-card" href="Nasharyat.html.html">
+<h3>📣 نشریات او رسمي اعلانونه</h3>
+<p>د خپرو شویو خبرتیاوو، عامه اعلانونو او مهمو معلوماتو برخه.</p>
+<span class="quick-service-action">اعلانونه ولولئ ←</span>
+</a>
 
-<div class="card job-card">
-<h3>IT Officer</h3>
-<p>ځای: مزار شریف</p>
-<p>معاش: 40000 افغانۍ</p>
-</div>
+<a class="card announcement-card" href="Taza.html.html">
+<h3>🔔 تازه خبرتیاوې او معلومات</h3>
+<p>د ویب‌سایټ د تازه معلوماتو او نوو خپرونو برخه.</p>
+<span class="quick-service-action">تازه معلومات وګورئ ←</span>
+</a>
 
 </div>
 </section>
@@ -1149,8 +1224,9 @@ Facebook, WhatsApp, Google, YouTube او نور.
 
 <h2 class="bbc-heading">📰 BBC World News</h2>
 
-<div id="bbc-news">
-<div class="news-message">خبرونه لوډیږي...</div>
+<div class="bbc-updated" id="bbc-updated">د خبرونو تازه کېدل...</div>
+<div id="bbc-news" aria-live="polite">
+<div class="news-message">د BBC نړیوال خبرونه لوډیږي...</div>
 </div>
 
 </div>
@@ -1238,60 +1314,53 @@ WhatsApp 0799668428
 
 <a class="back-top" href="#top" aria-label="بېرته پورته">↑</a>
 
-<!-- BBC خبرونه -->
-
+<!-- BBC نړیوال خبرونه: په اتومات ډول تازه کېدل -->
 <script>
-const feed =
-"https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml";
-
-fetch(feed)
-.then(response => {
-    if (!response.ok) {
-        throw new Error("Network error");
-    }
-    return response.json();
-})
-.then(data => {
-
+(function () {
+    const feed = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml&count=15";
     const container = document.getElementById("bbc-news");
-    container.innerHTML = "";
+    const updated = document.getElementById("bbc-updated");
+    if (!container) return;
 
-    if (!data.items || data.items.length === 0) {
-        container.innerHTML =
-        '<div class="news-message">اوس مهال خبرونه شتون نه لري.</div>';
-        return;
+    async function loadBBCNews() {
+        try {
+            const response = await fetch(feed + "&_=" + Date.now(), { cache: "no-store" });
+            if (!response.ok) throw new Error("BBC feed unavailable");
+            const data = await response.json();
+            if (!data.items || !data.items.length) throw new Error("No BBC items");
+
+            const fragment = document.createDocumentFragment();
+            data.items.slice(0, 15).forEach(item => {
+                if (!item.title || !item.link) return;
+                const article = document.createElement("article");
+                article.className = "news-item";
+                const heading = document.createElement("h3");
+                const link = document.createElement("a");
+                link.href = item.link;
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.textContent = item.title;
+                heading.appendChild(link);
+                const date = document.createElement("p");
+                date.textContent = item.pubDate ? new Date(item.pubDate).toLocaleString() : "BBC World News";
+                article.appendChild(heading);
+                article.appendChild(date);
+                fragment.appendChild(article);
+            });
+            if (!fragment.childNodes.length) throw new Error("No valid articles");
+            container.replaceChildren(fragment);
+            if (updated) updated.textContent = "وروستی تازه کېدل: " + new Date().toLocaleString();
+        } catch (error) {
+            if (!container.querySelector(".news-item")) {
+                container.innerHTML = '<div class="news-message">د BBC خبرونه اوس ترلاسه نه شول. مهرباني وکړئ لږ وروسته بیا هڅه وکړئ.</div>';
+            }
+            if (updated) updated.textContent = "د خبرونو د ترلاسه کولو هڅه وشوه؛ راتلونکی اتومات تازه کېدل به بیا وشي.";
+        }
     }
 
-    data.items.slice(0,15).forEach(item => {
-
-        const article = document.createElement("div");
-        article.className = "news-item";
-
-        const heading = document.createElement("h3");
-        const link = document.createElement("a");
-
-        link.href = item.link;
-        link.target = "_blank";
-        link.rel = "noopener";
-        link.textContent = item.title;
-
-        heading.appendChild(link);
-
-        const date = document.createElement("p");
-        date.textContent = item.pubDate || "";
-
-        article.appendChild(heading);
-        article.appendChild(date);
-
-        container.appendChild(article);
-
-    });
-
-})
-.catch(() => {
-    document.getElementById("bbc-news").innerHTML =
-    '<div class="news-message">خبرونه ترلاسه نشول. مهرباني وکړئ وروسته بیا هڅه وکړئ.</div>';
-});
+    loadBBCNews();
+    window.setInterval(loadBBCNews, 10 * 60 * 1000);
+})();
 </script>
 
 <!-- د مینو فعالیت -->
