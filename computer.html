@@ -17,6 +17,45 @@
 <section class="panel"><h2>۳. د عامو ستونزو لارښوونې</h2><ul><li>Bluetooth: د Device Manager او د جوړوونکي رسمي ډرایور وګورئ.</li><li>Wi-Fi: د Wireless اډاپټر ماډل او Hardware ID معلوم کړئ.</li><li>Sound: د Audio وسیلې او د کمپیوټر د جوړوونکي ډرایور وګورئ.</li><li>Hotspot: د Wi-Fi اډاپټر ملاتړ، Driver او Windows تنظیمات وڅېړئ.</li><li>USB، Camera، Graphics او Chipset: د خپل دقیق ماډل له رسمي ملاتړ پاڼې ډرایور واخلئ.</li></ul>
 <div class="warning">Windows 7 او 8 زاړه سیستمونه دي؛ ځینې جوړوونکي یې نور ډرایورونه نه تازه کوي. د نامعلومو ډرایورونو اتومات نصب مه کوئ. د نصب مخکې Restore Point یا Backup جوړ کړئ.</div></section>
 </main><script>
-function scanBasic(){const ua=navigator.userAgent||"نامعلوم";const platform=navigator.userAgentData?.platform||navigator.platform||"براوزر اجازه نه ورکوي";const cores=navigator.hardwareConcurrency||"نه څرګندېږي";const memory=navigator.deviceMemory?navigator.deviceMemory+" GB (اټکلي)":"نه څرګندېږي";const lang=navigator.language||"نامعلوم";const width=screen.width+" × "+screen.height;document.getElementById("basicResult").textContent="سیستم/پلېټفارم: "+platform+"\nبراوزر پېژندنه: "+ua+"\nمنطقي CPU کورونه: "+cores+"\nد حافظې اټکلي اندازه: "+memory+"\nد سکرین اندازه: "+width+"\nد براوزر ژبه: "+lang+"\n\nیادونه: دا معلومات د ټولو Hardware وسیلو او ډرایورونو حالت نه ښيي."}
+function scanBasic(){const ua=navigator.userAgent||"نامعلوم";const platform=navigator.userAgentData?.platform||navigator.platform||"براوزر اجازه نه ورکوي";const cores=navigator.hardwareConcurrency||"نه څرګندېږي";const memory=navigator.deviceMemory?navigator.deviceMemory+" GB (اټکلي)":"نه څرګندېږي";const lang=navigator.language||"نامعلوم";const width=screen.width+" × "+screen.height;document.getElementById("basicResult").textContent="سیستم/پلېټفارم (دقیق ماډل نه دی): "+platform+"\nبراوزر پېژندنه: "+ua+"\nمنطقي CPU کورونه: "+cores+"\nد حافظې اټکلي اندازه: "+memory+"\nد سکرین اندازه: "+width+"\nد براوزر ژبه: "+lang+"\n\nیادونه: دا معلومات د ټولو Hardware وسیلو او ډرایورونو حالت نه ښيي."}
+function downloadPcDiagnostic(){
+const ps = String.raw\`$ErrorActionPreference = "SilentlyContinue"
+$cs = Get-CimInstance Win32_ComputerSystem
+$bios = Get-CimInstance Win32_BIOS
+$board = Get-CimInstance Win32_BaseBoard
+$os = Get-CimInstance Win32_OperatingSystem
+$cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
+$manufacturer = ([string]$cs.Manufacturer).Trim()
+$model = ([string]$cs.Model).Trim()
+$sku = ([string]$cs.SystemSKUNumber).Trim()
+$report = @"
+د کمپیوټر شرکت: $manufacturer
+د کمپیوټر دقیق ماډل: $model
+System SKU: $sku
+د موربورډ شرکت: $($board.Manufacturer)
+د موربورډ ماډل: $($board.Product)
+BIOS نسخه: $($bios.SMBIOSBIOSVersion)
+Windows: $($os.Caption)
+Windows نسخه: $($os.Version)
+د سیستم ډول: $($os.OSArchitecture)
+CPU: $($cpu.Name)
+RAM (GB): $([math]::Round($cs.TotalPhysicalMemory / 1GB, 2))
+"@
+Write-Host $report -ForegroundColor Cyan
+$clipText = "$manufacturer $model".Trim()
+if ($clipText -and (Get-Command Set-Clipboard -ErrorAction SilentlyContinue)) {
+  Set-Clipboard -Value $clipText
+  Write-Host "\`nد شرکت او ماډل نوم Clipboard ته کاپي شو." -ForegroundColor Green
+}
+Write-Host "\`nد کړکۍ بندولو لپاره Enter کېکاږئ."
+Read-Host
+\`;
+const blob = new Blob([ps], {type:"text/plain;charset=utf-8"});
+const a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "Saidwali-PC-Diagnostic.ps1";
+document.body.appendChild(a); a.click(); a.remove();
+setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
 function findDrivers(){const brand=document.getElementById("brand").value;const model=document.getElementById("model").value.trim();const win=document.getElementById("windows").value;const arch=document.getElementById("arch").value;if(!brand||!model){document.getElementById("driverLinks").textContent="مهرباني وکړئ د کمپیوټر شرکت او دقیق ماډل ولیکئ.";return}const q=encodeURIComponent(brand+" "+model+" "+win+" "+arch+" drivers official support");let url="";const b=brand.toLowerCase();if(b==="hp")url="https://support.hp.com/drivers";else if(b==="dell")url="https://www.dell.com/support/home/en-us?app=drivers";else if(b==="lenovo")url="https://pcsupport.lenovo.com/";else if(b==="asus")url="https://www.asus.com/support/download-center/";else if(b==="acer")url="https://www.acer.com/us-en/support/drivers-and-manuals";else if(b==="microsoft surface")url="https://support.microsoft.com/surface";else if(b==="msi")url="https://www.msi.com/support/download";else if(b==="samsung")url="https://www.samsung.com/us/support/downloads/";else url="https://www.google.com/search?q="+q;document.getElementById("driverLinks").innerHTML="د لټون معلومات: "+brand+" — "+model+" — "+win+" — "+arch+"<br><a class='btn' href='"+url+"' target='_blank' rel='noopener'>د جوړوونکي رسمي ډرایور پاڼه پرانیزئ</a><p class='small'>په رسمي پاڼه کې همدا ماډل او Windows نسخه وټاکئ. د ډرایور سازګاري د جوړوونکي له خوا تایید کړئ.</p>"}
 </script></body></html>
