@@ -49534,7 +49534,23 @@ document.addEventListener(
     if(story){const item=stories[Number(story.dataset.storyIndex)];if(!item)return;viewer();const media=document.getElementById("swStoryMedia");media.innerHTML="";const node=document.createElement(item.type==="video"?"video":"img");node.src=item.url;if(item.type==="video"){node.controls=true;node.autoplay=true;}media.appendChild(node);document.getElementById("swStoryViewer").classList.add("open");return;}
     if(e.target.closest("#swStoryViewer button")||e.target.id==="swStoryViewer"){document.getElementById("swStoryViewer")?.classList.remove("open");}
   });
-  function placeNews(){const card=document.getElementById("swNewsCard");const side=document.querySelector(".right-sidebar");const center=document.getElementById("mainContent");const left=document.querySelector(".left-sidebar");if(!card||!side||!center||!left)return;const width=window.innerWidth;if(width<=720){if(card.parentElement!==left)left.insertBefore(card,left.firstChild);}else if(width<=1000){const feed=document.getElementById("feedPage");if(card.parentElement!==center)center.insertBefore(card,feed||center.firstChild);}else if(card.parentElement!==side){side.insertBefore(card,side.firstChild);}}
+  function placeNews(){
+    const card=document.getElementById("swNewsCard");
+    const side=document.querySelector(".right-sidebar");
+    const center=document.getElementById("mainContent");
+    const feed=document.getElementById("feedPage");
+    const storiesBox=document.getElementById("swStories");
+    if(!card||!side||!center||!feed)return;
+    const width=window.innerWidth;
+    if(width<=720){
+      const anchor=storiesBox||feed.firstElementChild;
+      if(anchor){
+        if(card.parentElement!==feed || card.previousElementSibling!==anchor) anchor.insertAdjacentElement("afterend",card);
+      }else if(card.parentElement!==feed) feed.insertBefore(card,feed.firstChild);
+    }else if(width<=1000){
+      if(card.parentElement!==center || card.previousElementSibling!==null) center.insertBefore(card,center.firstChild);
+    }else if(card.parentElement!==side) side.insertBefore(card,side.firstChild);
+  }
   function init(){addStories();addNews();placeNews();}
   window.addEventListener("resize",placeNews);
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
@@ -49552,3 +49568,35 @@ document.addEventListener(
 <script src="language.js?v=20261111-3"></script></script>
 
 <script src="saidwali-gpt-global.js"></script>
+
+<style id="saidwali-facebook-sponsored-layout">
+#swNewsCard:before{content:"⭐ سپانسر شوې برخه";display:block;color:#65676b;font-size:12px;font-weight:800;padding:0 0 9px;margin-bottom:9px;border-bottom:1px solid #e4e6eb}
+@media(max-width:720px){
+.main-container{padding-left:8px!important;padding-right:8px!important}
+.main-grid{direction:rtl!important;grid-template-columns:minmax(0,1fr)!important;gap:8px!important}
+.left-sidebar,.right-sidebar{display:none!important}
+#mainContent,#feedPage{width:100%!important;min-width:0!important}
+#swNewsCard{display:block!important;width:100%!important;max-width:none!important;margin:0 0 12px!important;padding:13px!important;border-radius:12px!important}
+#swNewsViewport{height:280px!important}
+#swNewsCard .sw-news-item.sw-news-with-image{display:flex!important;align-items:center!important;gap:9px!important}
+#swNewsCard .sw-news-thumb{width:76px!important;height:62px!important;flex:0 0 76px!important;margin:0!important}
+#swNewsCard .sw-news-title{font-size:12px!important}
+#swNewsCard .sw-news-source{font-size:10px!important}
+}
+</style>
+<script id="saidwali-safe-logout-fix">
+window.logoutUser=async function(){
+ if(!window.confirm("ایا غواړې له حساب څخه ووځې؟"))return;
+ try{if(typeof apiRequest==="function"&&typeof sessionToken!=="undefined"&&sessionToken)await apiRequest("/logout",{method:"POST"});}catch(error){console.warn("Logout request:",error);}
+ try{sessionToken="";}catch(error){}
+ try{currentUser=null;}catch(error){}
+ ["saidwali_session_token","saidwali_session","sessionToken","token"].forEach(function(key){try{localStorage.removeItem(key);}catch(error){}});
+ const app=document.getElementById("app"),auth=document.getElementById("authPage"),login=document.getElementById("loginBox"),register=document.getElementById("registerBox");
+ if(app)app.classList.add("hidden");if(auth)auth.classList.remove("hidden");if(register)register.classList.add("hidden");if(login)login.classList.remove("hidden");
+ const identifier=document.getElementById("loginIdentifier"),password=document.getElementById("loginPassword");
+ if(identifier)identifier.value="";if(password)password.value="";
+ const message=document.getElementById("loginMessage");
+ if(message){message.textContent="تاسو له حساب څخه ووتل. بېرته ننوتلای شئ یا نوی حساب جوړولای شئ.";message.className="auth-message success";}
+ window.scrollTo({top:0,behavior:"smooth"});
+};
+</script>
