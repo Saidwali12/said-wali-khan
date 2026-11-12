@@ -104,7 +104,11 @@ def listing_candidates(html: str) -> list[dict]:
     return output
 
 
-def parse_detail(candidate: dict, rejection_counts: dict | None = None) -> dict | None:
+def parse_detail(
+    candidate: dict,
+    rejection_counts: dict | None = None,
+    status_debug_samples: list | None = None,
+) -> dict | None:
     def reject(reason: str) -> None:
         if rejection_counts is not None:
             rejection_counts[reason] = rejection_counts.get(reason, 0) + 1
@@ -114,9 +118,20 @@ def parse_detail(candidate: dict, rejection_counts: dict | None = None) -> dict 
     full_text = clean(soup.get_text(" ", strip=True))
     lower_top = clean(" ".join(lines[:35])).casefold()
 
-    # Require an explicitly open vacancy, not merely an accessible old page.
-    if "open" not in lower_top or "closed" in lower_top:
-        reject("detail_status_not_explicitly_open")
+    # Diagnostic only: preserve the strict acceptance rule while identifying
+    # exactly why the current ACBAR status check rejects a detail page.
+    has_open = "open" in lower_top
+    has_closed = "closed" in lower_top
+    if not has_open or has_closed:
+        if not has_open:
+            reject("detail_status_open_not_found_in_first_35_lines")
+        if has_closed:
+            reject("detail_status_closed_word_conflict_in_first_35_lines")
+        if status_debug_samples is not None and len(status_debug_samples) < 3:
+            status_debug_samples.append({
+                "url": candidate["url"],
+                "first_35_lines": " | ".join(lines[:35])[:1200],
+            })
         return None
 
     h1 = soup.find("h1")
@@ -458,9 +473,10 @@ def main() -> None:
     verified = []
     detail_errors = []
     detail_rejections = {}
+    status_debug_samples = []
     for candidate in candidates:
         try:
-            job = parse_detail(candidate, detail_rejections)
+            job = parse_detail(candidate, detail_rejections, status_debug_samples)
             if job:
                 verified.append(job)
         except Exception as exc:
@@ -563,6 +579,7 @@ def main() -> None:
         "acbar_detail_rejected_or_unverified": len(candidates) - len(verified),
         "acbar_detail_errors": detail_errors[:10],
         "acbar_detail_rejection_reasons": detail_rejections,
+        "acbar_status_debug_samples": status_debug_samples,
         "wazifaha_listing_candidates": len(wazifaha_candidates),
         "wazifaha_detail_verified": len(wazifaha_verified),
         "wazifaha_errors": wazifaha_errors[:10],
