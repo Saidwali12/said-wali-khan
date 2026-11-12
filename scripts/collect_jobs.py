@@ -333,15 +333,30 @@ def parse_wazifaha_detail(candidate: dict) -> dict | None:
             apply_url = href
             break
 
+    # The first text lines after the title can be employment labels such as
+    # "Full time". Read the organization from the company link attached after
+    # the actual H1 instead of guessing from nearby plain text.
     organization = ""
-    try:
-        h1_index = next(i for i, line in enumerate(lines) if line == title)
-        for line in lines[h1_index + 1:h1_index + 5]:
-            if line and "views" not in line.casefold() and len(line) <= 180:
-                organization = line
+    generic_labels = {
+        "full time", "part time", "contract", "temporary", "internship",
+        "private company", "government", "ngo", "new", "open", "closed"
+    }
+    if h1:
+        for company_link in h1.find_all_next("a", href=True, limit=10):
+            label = clean(company_link.get_text(" ", strip=True))
+            if label and label.casefold() not in generic_labels:
+                organization = label
                 break
-    except StopIteration:
-        pass
+    if not organization:
+        try:
+            h1_index = next(i for i, line in enumerate(lines) if line == title)
+            for line in lines[h1_index + 1:h1_index + 8]:
+                if (line and line.casefold() not in generic_labels
+                        and "views" not in line.casefold() and len(line) <= 180):
+                    organization = line
+                    break
+        except StopIteration:
+            pass
 
     apply_email = ""
     submission_start = -1
