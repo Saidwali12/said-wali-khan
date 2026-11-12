@@ -97,7 +97,7 @@ header {
     width: 150px;
     height: 150px;
     transform-style: preserve-3d;
-    animation: afghanCoinFlip 7s ease-in-out infinite;
+    animation: afghanCoinFlip 10.5s ease-in-out infinite;
 }
 
 .coin-face {
@@ -109,11 +109,21 @@ header {
     border-radius: 50%;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    border: 4px solid #d9ae52;
+    background: #071a35;
+    box-shadow: 0 2px 9px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.12);
 }
 
 .coin-front {
-    background: #071a35;
-    border: 4px solid #071a35;
+    transform: translateZ(43.3px);
+}
+
+.coin-back {
+    transform: rotateY(120deg) translateZ(43.3px);
+}
+
+.coin-third {
+    transform: rotateY(240deg) translateZ(43.3px);
 }
 
 .profile-photo {
@@ -124,29 +134,21 @@ header {
     border-radius: 50%;
 }
 
-.coin-back {
-    transform: rotateY(180deg);
-    display: block;
-    border: 5px solid #9b5b32;
-    background-color: #a65e37;
-    background-image: url("https://upload.wikimedia.org/wikipedia/commons/2/28/5_Afghani_%282004%29.jpg");
-    background-repeat: no-repeat;
-    background-size: 200% 100%;
-    background-position: right center;
-    box-shadow: inset 0 0 0 2px rgba(255,225,190,.72), inset 0 0 9px rgba(45,22,12,.5), 0 2px 7px rgba(0,0,0,.35);
-}
-
-.coin-back svg {
-    display: block;
+.coin-face img {
     width: 100%;
     height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 @keyframes afghanCoinFlip {
-    0%, 43% { transform: rotateY(0deg); }
-    50% { transform: rotateY(180deg); }
-    93% { transform: rotateY(180deg); }
-    100% { transform: rotateY(360deg); }
+    0%, 28.57% { transform: rotateY(0deg); }
+    33.33% { transform: rotateY(-120deg); }
+    61.90% { transform: rotateY(-120deg); }
+    66.67% { transform: rotateY(-240deg); }
+    95.24% { transform: rotateY(-240deg); }
+    100% { transform: rotateY(-360deg); }
 }
 
 .profile-name {
@@ -807,14 +809,18 @@ footer p {
 <div class="profile">
 
 <div>
-    <div class="profile-photo-wrap" aria-label="د سیدولي خان عکس او د افغانستان په الهام د سپینو زرو سکې متحرک مخونه">
+    <div class="profile-photo-wrap" aria-label="د سیدولي خان عکس، د افغانستان پنځه افغانیو سکه او د Saidwali GPT عکس په درې ثانیو وار سره">
         <div class="coin-rotator">
             <div class="coin-face coin-front">
                 <img src="said.jpg.jpg" alt="Said Wali Khan" class="profile-photo">
             </div>
-            <div class="coin-face coin-back" role="img"
-                 aria-label="د افغانستان د ۲۰۰۴ کال اصلي پنځه افغانیو سکه؛ د سکې د پنځه افغانیو مخ"
-                 title="5 Afghanis, Afghanistan, 2004 — Photo: AKS.9955, Wikimedia Commons, CC BY-SA 4.0">
+            <div class="coin-face coin-back">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/5_Afghani_%282004%29.jpg"
+                     alt="د افغانستان د ۲۰۰۴ کال پنځه افغانیو سکه">
+            </div>
+            <div class="coin-face coin-third">
+                <img src="https://saidwali12.github.io/said-wali-khan/saidwali-gpt-avatar.png?v=20261103"
+                     alt="Saidwali GPT مرستیال">
             </div>
         </div>
     </div>
