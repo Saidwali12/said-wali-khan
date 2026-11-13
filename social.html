@@ -31719,7 +31719,7 @@ function openPhotoManager(target = "profile") {
         <h3 style="margin:0 0 10px">👤 د پروفایل عکس</h3>
         <img id="photoManagerAvatarPreview" src="${escapeHTML(avatar)}" alt="Profile photo" style="display:block;width:112px;height:112px;object-fit:cover;border-radius:50%;margin:0 auto 12px;background:#eee;border:3px solid #1877f2">
         <input id="photoManagerAvatarFile" type="file" accept="image/*" class="form-control" onchange="previewSBookProfilePhoto(event)" style="width:100%">
-        <button type="button" class="btn" onclick="uploadSBookProfilePhoto()" style="width:100%;margin-top:10px">⬆️ عکس ثبت کړه</button>
+        <button type="button" class="btn" onclick="uploadSBookProfilePhoto()" style="width:100%;margin-top:10px">💾 د پروفایل عکس خوندي کول</button>
         <button type="button" class="btn btn-secondary" onclick="removeSBookProfilePhoto()" style="width:100%;margin-top:8px">🗑️ اوسنی عکس لرې کړه</button>
         <button type="button" class="btn btn-secondary" onclick="loadSBookPhotoGallery('profile')" style="width:100%;margin-top:8px">🖼️ له خپلو پخوانیو عکسونو انتخاب</button>
         <div id="photoManagerAvatarStatus" class="muted" role="status" style="margin-top:9px"></div>
@@ -31728,7 +31728,7 @@ function openPhotoManager(target = "profile") {
         <h3 style="margin:0 0 10px">🖼️ د پوښ عکس (Cover)</h3>
         <img id="photoManagerCoverPreview" src="${escapeHTML(cover)}" alt="Cover photo" style="display:block;width:100%;height:130px;object-fit:cover;border-radius:10px;margin-bottom:12px;background:#eee">
         <input id="photoManagerCoverFile" type="file" accept="image/*" class="form-control" onchange="previewSBookCoverPhoto(event)" style="width:100%">
-        <button type="button" class="btn" onclick="uploadSBookCoverPhoto()" style="width:100%;margin-top:10px">⬆️ Cover ثبت کړه</button>
+        <button type="button" class="btn" onclick="uploadSBookCoverPhoto()" style="width:100%;margin-top:10px">💾 د پوښ عکس خوندي کول</button>
         <button type="button" class="btn btn-secondary" onclick="removeSBookCoverPhoto()" style="width:100%;margin-top:8px">🗑️ Cover لرې کړه</button>
         <button type="button" class="btn btn-secondary" onclick="loadSBookPhotoGallery('cover')" style="width:100%;margin-top:8px">🖼️ له خپلو پخوانیو عکسونو Cover انتخاب</button>
         <div id="photoManagerCoverStatus" class="muted" role="status" style="margin-top:9px"></div>
@@ -31777,7 +31777,7 @@ async function loadSBookPhotoGallery(target) {
     itemsBox.innerHTML = unique.map((url, index) =>
       '<button type="button" onclick="selectSBookGalleryPhoto(' + index + ', \'TARGET\')" style="border:2px solid #e4e6eb;border-radius:9px;padding:2px;background:#fff;cursor:pointer;overflow:hidden"><img src="' + safeURL(url) + '" alt="زما عکس" loading="lazy" style="display:block;width:100%;height:105px;object-fit:cover" onerror="this.parentElement.style.display=\'none\'"></button>'.replace("TARGET", target)
     ).join("");
-    if (status) status.textContent = "د عکس د انتخاب لپاره پر هغه کلیک وکړئ. عکس به په اوتومات ډول پروفایل ته ثبت شي.";
+    if (status) status.textContent = "د پخواني عکس د انتخاب لپاره پر هغه کلیک وکړئ؛ عکس به سمدستي ستاسو پروفایل ته خوندي شي.";
   } catch (error) {
     if (status) status.textContent = "❌ " + (error.message || "د عکسونو لوستلو کې ستونزه راغله.");
   }
@@ -50095,7 +50095,7 @@ function previewSBookProfilePhoto(event) {
     preview.dataset.previewUrl = url;
     preview.src = url;
   }
-  if (status) status.textContent = "مخکتنه: د ثبت لپاره «انځور پورته او ثبت کړه» کېکاږئ.";
+  if (status) status.textContent = "مخکتنه: د عکس د خوندي کولو لپاره لاندې «💾 د پروفایل عکس خوندي کول» تڼۍ کېکاږئ.";
 }
 
 function previewSBookCoverPhoto(event) {
@@ -50119,7 +50119,7 @@ function previewSBookCoverPhoto(event) {
     preview.dataset.previewUrl = url;
     preview.src = url;
   }
-  if (status) status.textContent = "مخکتنه: د ثبت لپاره «Cover پورته او ثبت کړه» کېکاږئ.";
+  if (status) status.textContent = "مخکتنه: د پوښ عکس د خوندي کولو لپاره لاندې «💾 د پوښ عکس خوندي کول» تڼۍ کېکاږئ.";
 }
 
 async function uploadSBookProfilePhoto() {
