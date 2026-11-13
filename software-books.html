@@ -14,7 +14,13 @@ header h1{font-size:clamp(21px,4vw,30px);margin:0 0 5px}
 header p{margin:0;color:#f4d58a}
 #clockBox{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;background:#fff;margin:12px auto;padding:14px;max-width:690px;border:1px solid #e4e9f2;border-radius:16px;box-shadow:0 2px 8px #00000012}
 .clock-panel{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
-#clock{width:150px;height:150px;max-width:38vw}
+#clock{width:166px;height:166px;max-width:38vw;display:block}
+.wall-clock{position:relative;width:190px;height:190px;display:flex;align-items:center;justify-content:center;margin:7px auto 9px;border-radius:50%;background:radial-gradient(circle at 35% 25%,#c99b55,#75451f 58%,#3d2415 78%,#b27b35 84%,#5b351c 100%);border:5px solid #56331b;box-shadow:inset 0 0 0 3px #e4c17c,inset 0 0 0 7px #6e431f,0 7px 13px #0005,0 2px 3px #fff8}
+.wall-clock:before{content:"";position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:24px;height:12px;border-radius:9px 9px 2px 2px;background:linear-gradient(90deg,#70421e,#d5a65c,#70421e);border:2px solid #573319;z-index:0}
+.wall-clock:after{content:"";position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:7px;height:7px;border-radius:50%;background:#c99b55;border:2px solid #70421e}
+.wall-clock canvas{position:relative;z-index:1;border-radius:50%;background:#fffdf5;box-shadow:0 0 0 3px #d8b46d}
+.wall-clock-label{font-size:10px;letter-spacing:2px;color:#f4d58a;text-align:center;margin-top:-3px;text-shadow:0 1px 2px #2c170b}
+
 #watchShell{position:relative;display:flex;align-items:center;gap:7px;background:linear-gradient(90deg,#8a5b19,#e5bd62 18%,#a8792d 85%,#6b4517);padding:10px 7px 10px 12px;border-radius:15px;box-shadow:inset 0 0 0 2px #f7d98b,0 4px 10px #0003}
 #watchFace{width:150px;min-height:112px;background:linear-gradient(145deg,#d8e6e4,#8fa8a9);border:5px solid #76501f;border-radius:5px;padding:7px 8px;color:#14272a;font-family:Arial,sans-serif;text-align:center;box-shadow:inset 0 0 9px #263b3b66}
 #watchDate{font-size:12px;display:flex;justify-content:space-between;letter-spacing:1px}
@@ -71,7 +77,10 @@ footer{text-align:center;background:var(--navy);color:#fff;padding:16px;font-siz
 <div id="clockBox" aria-label="د افغانستان ساعتونه">
   <div class="clock-panel">
     <div>
-      <canvas id="clock" width="300" height="300" aria-label="انلاګ ساعت له ۱ تر ۱۲ شمېرو سره"></canvas>
+      <div class="wall-clock" aria-label="د لرغوني دیوالي ساعت چوکاټ">
+        <canvas id="clock" width="300" height="300" aria-label="انلاګ ساعت له ۱ تر ۱۲ شمېرو سره"></canvas>
+      </div>
+      <div class="wall-clock-label">SAIDWALI • WALL CLOCK</div>
       <div id="afgTime">🇦🇫 د افغانستان وخت: --:--:--</div>
     </div>
     <div id="watchShell" aria-label="د الفجر په بڼه ډیجیټلي ساعت">
