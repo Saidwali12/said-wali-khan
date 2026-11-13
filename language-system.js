@@ -70,7 +70,7 @@
     if (window.__swLanguageEngineLoading) return;
     window.__swLanguageEngineLoading = true;
     var script = document.createElement("script");
-    script.src = "/said-wali-khan/language.js?v=20261112-2";
+    script.src = "/said-wali-khan/language.js?v=20261113-1";
     script.onload = function () {
       window.__swLanguageEngineLoading = false;
       attachLanguageEngine();
