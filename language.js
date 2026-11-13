@@ -573,6 +573,15 @@
   function apply(lang) {
     if (!["ps","fa","en","ur","ar"].includes(lang)) lang = "ps";
     window.__swActiveLanguage = lang;
+    // د Google Translate د اضافي اتومات ژباړې بار/پوښتنې مخنیوی.
+    document.documentElement.setAttribute("translate", "no");
+    document.body.setAttribute("translate", "no");
+    if (!document.querySelector('meta[name="google"][content="notranslate"]')) {
+      const noTranslateMeta = document.createElement("meta");
+      noTranslateMeta.name = "google";
+      noTranslateMeta.content = "notranslate";
+      document.head.appendChild(noTranslateMeta);
+    }
     const rtl = lang !== "en";
     document.documentElement.lang = lang;
     document.documentElement.dir = rtl ? "rtl" : "ltr";
