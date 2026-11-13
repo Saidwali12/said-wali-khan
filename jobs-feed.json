@@ -3,27 +3,6 @@
   "policy": "Only active announcements are published after checking the source detail page, the exact target province, the closing date, and the application method. Applicants should confirm final requirements on the original source.",
   "jobs": [
     {
-      "id": "acbar-146809",
-      "vacancyRef": null,
-      "title": "General Support (Enumerator)",
-      "organization": "Danish Refugee Council",
-      "location": [
-        "nuristan",
-        "nangarhar"
-      ],
-      "dutyStation": "Nuristan, Nangarhar",
-      "employmentType": "د اصلي اعلان له مخې",
-      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
-      "expiryDate": "2026-11-13",
-      "applyUrl": "",
-      "applyEmail": "vacancies@drc.ngo",
-      "sourceName": "ACBAR",
-      "sourceUrl": "https://acbar.org/en/jobs/details/146809/general-support-enumerator",
-      "applicationMode": "email",
-      "verified": true,
-      "verificationLevel": "detail_page_checked"
-    },
-    {
       "id": "wazifaha-general-support-enumerator",
       "vacancyRef": null,
       "title": "General Support (Enumerator)",
