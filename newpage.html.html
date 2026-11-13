@@ -1363,7 +1363,7 @@ MARQUEE
 
 &nbsp;&nbsp; ★ &nbsp;&nbsp;
 
-📰 د افغانستان تازه خبرونه
+📰 د افغانستان او نړۍ تازه خبرونه
 
 &nbsp;&nbsp; ★ &nbsp;&nbsp;
 
@@ -2717,371 +2717,134 @@ setInterval(
    AFGHANISTAN NEWS RSS
 ===================================================== */
 
-async function loadNews(){
-
-const newsList=
-document.getElementById(
-"newsList"
-);
-
-
-try{
-
-const rssUrl=
-"https://feeds.bbci.co.uk/pashto/rss.xml";
-
-
-const api=
-"https://api.rss2json.com/v1/api.json?rss_url="+
-encodeURIComponent(rssUrl);
-
-
-const response=
-await fetch(api);
-
-
-const data=
-await response.json();
-
-
-if(
-!data.items ||
-!data.items.length
-){
-
-throw new Error(
-"No news"
-);
-
-}
-
-
-let html="";
-
-
-data.items.slice(0,10)
-.forEach(
-item=>{
-
-
-let image="";
-
-
-if(
-item.enclosure &&
-item.enclosure.link
-){
-
-image=
-item.enclosure.link;
-
-}
-
-
-if(!image){
-
-image=
-"https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=600&q=80";
-
-}
-
-
-let summary=
-item.description
-||
-"د خبر لنډ معلومات د اصلي سرچینې له مخې.";
-
-
-summary=
-summary
-.replace(/<[^>]*>/g,"")
-.substring(0,180);
-
-
-html+=`
-
-<div class="news-item">
-
-<img
-src="${image}"
-onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=600&q=80'">
-
-<a
-href="${item.link}"
-target="_blank">
-
-${item.title}
-
-</a>
-
-<div class="news-summary">
-
-${summary}...
-
-</div>
-
-<div class="news-source">
-
-📰 سرچینه: BBC پښتو
-
-</div>
-
-</div>
-
-`;
-
-});
-
-
-newsList.innerHTML=
-html+html;
-
-
-}catch(error){
-
-console.log(
-"News error:",
-error
-);
-
-
-newsList.innerHTML=`
-
-<div class="news-item">
-
-<img
-src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=600&q=80">
-
-<a
-href="https://www.bbc.com/pashto"
-target="_blank">
-
-د افغانستان تازه خبرونه
-
-</a>
-
-<div class="news-summary">
-
-د BBC پښتو رسمي پاڼه کې د افغانستان او نړۍ تازه خبرونه، راپورونه او مهم معلومات وګورئ.
-
-</div>
-
-<div class="news-source">
-
-📰 BBC پښتو
-
-</div>
-
-</div>
-
-`;
-
-}
-
-}
-
-
 /* =====================================================
-   TECHNOLOGY NEWS RSS
+   MULTI-SOURCE NEWS AGGREGATOR
+   افغانستان، نړۍ او ټکنالوژي ـ اتومات RSS تازه کول
 ===================================================== */
+
+const NEWS_PROXY="https://api.rss2json.com/v1/api.json?rss_url=";
+
+const afghanNewsFeeds=[
+{source:"BBC پښتو",url:"https://feeds.bbci.co.uk/pashto/rss.xml"},
+{source:"TOLOnews",url:"https://news.google.com/rss/search?q=site%3Atolonews.com&hl=en&gl=US&ceid=US%3Aen"},
+{source:"باختر / افغانستان",url:"https://news.google.com/rss/search?q=Afghanistan+site%3Abakhtarnews.af&hl=en&gl=US&ceid=US%3Aen"},
+{source:"افغانستان ـ نړیوالې سرچینې",url:"https://news.google.com/rss/search?q=Afghanistan+when%3A1d&hl=en&gl=US&ceid=US%3Aen"}
+];
+
+const worldNewsFeeds=[
+{source:"BBC World",url:"https://feeds.bbci.co.uk/news/world/rss.xml"},
+{source:"The Guardian",url:"https://www.theguardian.com/world/rss"},
+{source:"Al Jazeera",url:"https://www.aljazeera.com/xml/rss/all.xml"},
+{source:"Associated Press",url:"https://flipboard.com/@associatedpress/top-stories-u7govdf1z.rss"},
+{source:"Deutsche Welle",url:"https://rss.dw.com/rdf/rss-en-top"}
+];
+
+const technologyFeeds=[
+{source:"BBC Technology",url:"https://feeds.bbci.co.uk/news/technology/rss.xml"},
+{source:"The Guardian Technology",url:"https://www.theguardian.com/uk/technology/rss"},
+{source:"TechCrunch",url:"https://techcrunch.com/feed/"},
+{source:"The Verge",url:"https://www.theverge.com/rss/index.xml"},
+{source:"Wired",url:"https://www.wired.com/feed/rss"},
+{source:"Reuters Technology",url:"https://news.google.com/rss/search?q=when%3A7d+site%3Areuters.com%2Ftechnology&ceid=US%3Aen&hl=en-US&gl=US"},
+{source:"Ars Technica",url:"https://feeds.arstechnica.com/arstechnica/index"}
+];
+
+function cleanNewsText(value){
+const box=document.createElement("div");
+box.innerHTML=value||"";
+return (box.textContent||box.innerText||"").replace(/\\s+/g," ").trim().slice(0,220);
+}
+
+function newsImage(item){
+if(item.thumbnail)return item.thumbnail;
+if(item.enclosure&&item.enclosure.link)return item.enclosure.link;
+const html=item.description||item.content||"";
+const match=html.match(/<img[^>]+src=["']([^"']+)/i);
+return match?match[1]:"";
+}
+
+async function readNewsFeed(feed){
+try{
+const response=await fetch(NEWS_PROXY+encodeURIComponent(feed.url));
+if(!response.ok)throw new Error("RSS request failed");
+const data=await response.json();
+if(data.status!=="ok"||!Array.isArray(data.items))return [];
+return data.items.map(item=>({
+title:cleanNewsText(item.title),
+link:item.link||feed.url,
+summary:cleanNewsText(item.description||item.content),
+image:newsImage(item),
+source:feed.source,
+date:item.pubDate?new Date(item.pubDate).getTime():0
+})).filter(item=>item.title&&item.link);
+}catch(error){
+console.warn("News feed unavailable:",feed.source,error);
+return [];
+}
+}
+
+async function loadNews(){
+const newsList=document.getElementById("newsList");
+if(!newsList)return;
+const feeds=[...afghanNewsFeeds,...worldNewsFeeds];
+const results=await Promise.all(feeds.map(readNewsFeed));
+const seen=new Set();
+const items=results.flat().filter(item=>{
+const key=item.link.split("?")[0];
+if(seen.has(key))return false;
+seen.add(key);
+return true;
+}).sort((a,b)=>b.date-a.date).slice(0,30);
+
+if(!items.length){
+newsList.innerHTML='<div class="news-item"><a href="https://www.bbc.com/pashto" target="_blank" rel="noopener">د خبرونو سرچینې اوس نه ځوابوي؛ د BBC پښتو او TOLOnews رسمي پاڼې پرانیزئ.</a></div>';
+return;
+}
+const html=items.map(item=>`
+<div class="news-item">
+${item.image?`<img src="${item.image}" alt="" loading="lazy" onerror="this.style.display='none'>`:""}
+<a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a>
+<div class="news-summary">${item.summary||"د بشپړ خبر د لوستلو لپاره پر سرلیک کلیک وکړئ."}</div>
+<div class="news-source">📰 ${item.source}</div>
+</div>`).join("");
+newsList.innerHTML=html+html;
+}
 
 async function loadTechNews(){
+const techList=document.getElementById("techNewsList");
+if(!techList)return;
+const results=await Promise.all(technologyFeeds.map(readNewsFeed));
+const seen=new Set();
+const items=results.flat().filter(item=>{
+const key=item.link.split("?")[0];
+if(seen.has(key))return false;
+seen.add(key);
+return true;
+}).sort((a,b)=>b.date-a.date).slice(0,35);
 
-const techList=
-document.getElementById(
-"techNewsList"
-);
-
-
-try{
-
-
-/*
-   BBC Technology RSS
-*/
-
-const rssUrl=
-"https://feeds.bbci.co.uk/news/technology/rss.xml";
-
-
-const api=
-"https://api.rss2json.com/v1/api.json?rss_url="+
-encodeURIComponent(rssUrl);
-
-
-const response=
-await fetch(api);
-
-
-const data=
-await response.json();
-
-
-if(
-!data.items ||
-!data.items.length
-){
-
-throw new Error(
-"No technology news"
-);
-
+if(!items.length){
+techList.innerHTML='<div class="tech-news-item"><a href="https://www.bbc.com/news/technology" target="_blank" rel="noopener">د ټکنالوژۍ خبرونه اوس نه ترلاسه کېږي؛ د BBC Technology پاڼه وګورئ.</a></div>';
+return;
 }
-
-
-let html="";
-
-
-data.items.slice(0,10)
-.forEach(
-item=>{
-
-
-let image="";
-
-
-if(
-item.enclosure &&
-item.enclosure.link
-){
-
-image=
-item.enclosure.link;
-
-}
-
-
-if(!image){
-
-image=
-"https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80";
-
-}
-
-
-let summary=
-item.description
-||
-"د ټکنالوژۍ د خبر لنډ معلومات.";
-
-
-summary=
-summary
-.replace(/<[^>]*>/g,"")
-.substring(0,170);
-
-
-html+=`
-
+const html=items.map(item=>`
 <div class="tech-news-item">
-
-<img
-src="${image}"
-onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80'">
-
-<a
-href="${item.link}"
-target="_blank">
-
-${item.title}
-
-</a>
-
-<div class="tech-summary">
-
-${summary}...
-
-</div>
-
-<div class="tech-source">
-
-💻 سرچینه: BBC Technology
-
-</div>
-
-</div>
-
-`;
-
-});
-
-
-/*
-   دوه ځله لیست کوو،
-   څو حرکت مسلسل ښکاره شي.
-*/
-
-techList.innerHTML=
-html+html;
-
-
-}catch(error){
-
-console.log(
-"Technology News Error:",
-error
-);
-
-
-techList.innerHTML=`
-
-<div class="tech-news-item">
-
-<img
-src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80">
-
-<a
-href="https://www.bbc.com/news/technology"
-target="_blank">
-
-💻 د ټکنالوژۍ تازه خبرونه
-
-</a>
-
-<div class="tech-summary">
-
-د مصنوعي ځیرکتیا، کمپیوټر، موبایل، انټرنېټ او نوې ټکنالوژۍ مهم خبرونه دلته وګورئ.
-
-</div>
-
-<div class="tech-source">
-
-💻 BBC Technology
-
-</div>
-
-</div>
-
-`;
-
+${item.image?`<img src="${item.image}" alt="" loading="lazy" onerror="this.style.display='none'>`:""}
+<a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a>
+<div class="tech-summary">${item.summary||"د بشپړ خبر د لوستلو لپاره پر سرلیک کلیک وکړئ."}</div>
+<div class="tech-source">💻 ${item.source}</div>
+</div>`).join("");
+techList.innerHTML=html+html;
 }
 
-}
-
-
-/* =====================================================
-   لومړی خبرونه
-===================================================== */
-
+/* لومړی ځل سمدستي خبرونه رااخلي */
 loadNews();
-
 loadTechNews();
 
+/* هر ۱۵ دقیقې خبرونه له ټولو سرچینو تازه کېږي */
+setInterval(loadNews,15*60*1000);
+setInterval(loadTechNews,15*60*1000);
 
-/*
-   هر ۳۰ دقیقې خبرونه تازه کېږي
-*/
-
-setInterval(
-loadNews,
-30*60*1000
-);
-
-setInterval(
-loadTechNews,
-30*60*1000
-);
-
+/* د خبرونو د سرلیکونو د خوندیتوب لپاره له RSS څخه متن پاکېږي. */
 
 /* =====================================================
    SEARCH DATA
