@@ -3,6 +3,17 @@
 (function () {
   "use strict";
   const dict = {
+    "Welcome": {ps:"ښه راغلاست",fa:"خوش آمدید",en:"Welcome",ur:"خوش آمدید",ar:"أهلاً وسهلاً"},
+    "Our Service:": {ps:"زموږ خدمتونه:",fa:"خدمات ما:",en:"Our Service:",ur:"ہماری خدمات:",ar:"خدماتنا:"},
+    "A comprehensive online hub for job opportunities, the latest news and publications, the Saidwali AI assistant, computer and mobile technical support, printer and scanner drivers, books and software, useful websites and links, files and photos, cricket and online games, WhatsApp and social pages, calculators, currency exchange rates, and many other useful services.": {
+      ps:"د دندو فرصتونو، تازه خبرونو او خپرونو، د سیدولي AI مرستیال، د کمپیوټر او موبایل تخنیکي ملاتړ، د پرنټر او سکنر ډرایورونو، کتابونو او سافټویرونو، ګټورو وېب‌سایټونو او لینکونو، فایلونو او انځورونو، کرکټ او انلاین لوبو، واټس‌اپ او ټولنیزو پاڼو، محاسبې، د اسعارو تبادلې او ګڼو نورو ګټورو خدمتونو لپاره یو بشپړ انلاین مرکز.",
+      fa:"یک مرکز جامع آنلاین برای فرصت‌های شغلی، تازه‌ترین اخبار و نشریات، دستیار هوشمند سیدولی، پشتیبانی تخنیکی کمپیوتر و موبایل، درایورهای چاپگر و اسکنر، کتاب‌ها و نرم‌افزارها، وب‌سایت‌ها و پیوندهای مفید، فایل‌ها و تصاویر، کریکت و بازی‌های آنلاین، واتساپ و صفحات اجتماعی، ماشین‌حساب، تبادل اسعار و بسیاری خدمات مفید دیگر.",
+      en:"A comprehensive online hub for job opportunities, the latest news and publications, the Saidwali AI assistant, computer and mobile technical support, printer and scanner drivers, books and software, useful websites and links, files and photos, cricket and online games, WhatsApp and social pages, calculators, currency exchange rates, and many other useful services.",
+      ur:"ملازمت کے مواقع، تازہ ترین خبریں اور اشاعتیں، سیدولی اے آئی معاون، کمپیوٹر اور موبائل کی تکنیکی مدد، پرنٹر اور اسکینر ڈرائیورز، کتابیں اور سافٹ ویئر، مفید ویب سائٹس اور روابط، فائلیں اور تصاویر، کرکٹ اور آن لائن کھیل، واٹس ایپ اور سماجی صفحات، کیلکولیٹر، کرنسی کے تبادلے کی شرح اور بہت سی دوسری مفید خدمات کے لیے ایک جامع آن لائن مرکز۔",
+      ar:"منصة إلكترونية شاملة لفرص العمل، وآخر الأخبار والمنشورات، ومساعد سيدولي الذكي، والدعم التقني للحاسوب والهواتف، وتعريفات الطابعات والماسحات الضوئية، والكتب والبرامج، والمواقع والروابط المفيدة، والملفات والصور، والكريكيت والألعاب عبر الإنترنت، وواتساب والصفحات الاجتماعية، والآلات الحاسبة، وأسعار صرف العملات، والعديد من الخدمات المفيدة الأخرى."
+    },
+    "Learn More": {ps:"نور معلومات",fa:"بیشتر بدانید",en:"Learn More",ur:"مزید جانیں",ar:"اعرف المزيد"},
+    "Android and iPhone Technical Guides": {ps:"د Android او iPhone تخنیکي لارښودونه",fa:"راهنماهای تخنیکی اندروید و آیفون",en:"Android and iPhone Technical Guides",ur:"اینڈرائیڈ اور آئی فون کے تکنیکی رہنما",ar:"أدلة تقنية لأندرويد وآيفون"},
     "سیدولی خان کوهستانی ګروپ ویب سایټ": {
       fa:"وب‌سایت گروه سیدولی خان کوهستانی", en:"Said Wali Khan Kohistani Group Website",
       ur:"سید ولی خان کوہستانی گروپ ویب سائٹ", ar:"موقع مجموعة سيد ولي خان كوهيستاني"
@@ -663,7 +674,7 @@
       const trimmed = original.trim();
       if (!trimmed) continue;
       const item = dict[trimmed];
-      if (item) node.nodeValue = original.replace(trimmed, lang === "ps" ? trimmed : (item[lang] || trimmed));
+      if (item) node.nodeValue = original.replace(trimmed, (item[lang] || trimmed));
       else node.nodeValue = original;
     }
     document.querySelectorAll("input[placeholder],textarea[placeholder]").forEach(el => {
