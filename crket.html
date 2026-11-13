@@ -585,6 +585,22 @@ footer{
 .history-more{display:block;margin:14px auto 0;padding:10px 22px;border:1px solid #d9ae52;border-radius:9px;background:#f4d58a;color:#071a35;font-weight:bold;cursor:pointer}
 @media(max-width:600px){.history-panel{padding:12px}.history-panel h2{font-size:17px}.history-controls label,.history-controls input,.history-controls button{width:100%}}
 
+
+/* د کرکټ عکسونو ګالري */
+.cricket-photo-gallery{width:100%;margin:22px 0;padding:15px;background:linear-gradient(135deg,#071a35,#143e6d);border:1px solid #d9ae52;border-radius:15px;color:#fff}
+.cricket-photo-gallery h2{margin:0 0 6px;color:#f4d58a;font-size:20px}
+.cricket-photo-gallery .gallery-note{margin:0 0 12px;color:#dce7f2;font-size:12px;line-height:1.8}
+.cricket-photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cricket-photo-card{margin:0;overflow:hidden;border:1px solid #d9ae52;border-radius:11px;background:#fff;color:#102b50}
+.cricket-photo-card a{display:block}
+.cricket-photo-card img{display:block;width:100%;height:190px;object-fit:cover;transition:transform .35s}
+.cricket-photo-card:hover img{transform:scale(1.04)}
+.cricket-photo-card figcaption{padding:8px 10px;font-size:12px;font-weight:bold;line-height:1.6}
+.cricket-photo-card small{display:block;color:#66788a;font-weight:normal}
+.cricket-photo-source{display:flex;justify-content:flex-end;margin-top:10px}
+.cricket-photo-source a{color:#f4d58a;font-size:12px;text-decoration:none}
+@media(max-width:520px){.cricket-photo-gallery{padding:11px}.cricket-photo-grid{grid-template-columns:1fr}.cricket-photo-card img{height:210px}}
+
 </style>
 </head>
 
@@ -748,6 +764,39 @@ footer{
  <div class="history-status" id="historyStatus">⏳ د تاریخي لوبو معلومات راټولېږي...</div>
  <div class="history-results" id="historyResults"></div>
  <button type="button" class="history-more" id="historyMore" onclick="loadCricketHistory(false)" hidden>نورې پایلې ښکاره کړه</button>
+</section>
+
+
+<section class="cricket-photo-gallery" id="cricketPhotoGallery">
+ <h2>📸 د کرکټ انځوریزه ګالري</h2>
+ <p class="gallery-note">د افغانستان ملي لوبډلې او د نړیوال کرکټ ښکلي انځورونه. پر هر عکس کلیک وکړئ چې د انځور سرچینه پرانیزئ.</p>
+ <div class="cricket-photo-grid">
+  <figure class="cricket-photo-card">
+   <a href="https://www.afintl.com/202507018260" target="_blank" rel="noopener">
+    <img src="https://i.afintl.com/images/rdk9umy0/production/8571315e7fdb4cf46ed6265792f2a1f764375198-2048x1231.jpg?auto=format&fit=max&h=630&q=70&rect=0%2C79%2C2048%2C1075&w=1200" alt="د افغانستان د کرکټ ملي لوبډله" loading="lazy">
+   </a>
+   <figcaption>🇦🇫 د افغانستان ملي لوبډله <small>سرچینه: افغانستان انټرنشنل</small></figcaption>
+  </figure>
+  <figure class="cricket-photo-card">
+   <a href="https://sports.ndtv.com/t20-world-cup-2024/t20-world-cup-2024-match-5-afghanistan-vs-uganda-players-to-watch-out-for-5801126" target="_blank" rel="noopener">
+    <img src="https://c.ndtvimg.com/2023-11/asvipjbo_team-afghanistan-ani_640x480_11_November_23.jpg?im=FeatureCrop%2Calgorithm%3Ddnn%2Cwidth%3D806%2Cheight%3D605" alt="د افغانستان لوبغاړي د لوبې پر مهال" loading="lazy">
+   </a>
+   <figcaption>🏏 افغان لوبغاړي د لوبې پر مهال <small>سرچینه: NDTV Sports</small></figcaption>
+  </figure>
+  <figure class="cricket-photo-card">
+   <a href="https://www.mykhel.com/cricket/t20-world-cup-2926-group-d-teams-schedule-preview-prediction-full-list-of-matches-411607.html" target="_blank" rel="noopener">
+    <img src="https://images.mykhel.com/img/2026/02/afghanistan-t20wc20241-1770304046.jpg" alt="د افغانستان لوبډلې د بریا لمانځنه" loading="lazy">
+   </a>
+   <figcaption>🎉 د افغان لوبډلې د بریا شېبې <small>سرچینه: myKhel</small></figcaption>
+  </figure>
+  <figure class="cricket-photo-card">
+   <a href="https://www.afintl.com/pa/202605265783" target="_blank" rel="noopener">
+    <img src="https://i.afintl.com/images/rdk9umy0/production/90022291734a2748a482895f37dfd563823b8c5b-4929x3380.png?auto=format&fit=max&h=630&rect=0%2C396%2C4929%2C2588&w=1200" alt="افغان لوبغاړي د میدان په منځ کې" loading="lazy">
+   </a>
+   <figcaption>🇦🇫 افغان لوبغاړي په میدان کې <small>سرچینه: افغانستان انټرنشنل پښتو</small></figcaption>
+  </figure>
+ </div>
+ <div class="cricket-photo-source"><a href="https://acb.af/en-US" target="_blank" rel="noopener">د افغانستان کرکټ بورډ رسمي وېب‌پاڼه او ګالري ←</a></div>
 </section>
 
 <section class="fixtureBox"><h2>📅 راتلونکې لوبې او مهالوېش</h2><p>د راتلونکو نړیوالو لوبو رسمي مهالوېش د ICC له سرچینې وګورئ.</p><a href="https://www.icc-cricket.com/fixtures-results" target="_blank" rel="noopener">د ICC راتلونکې لوبې او پایلې پرانیزئ ←</a></section>
