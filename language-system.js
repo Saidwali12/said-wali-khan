@@ -37,8 +37,31 @@
     });
   }
 
-  function applySelectedLanguage(lang) {
+  function showLanguageLoading(lang) {
+    var overlay = document.getElementById("sw-language-loading");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.id = "sw-language-loading";
+      overlay.setAttribute("role", "status");
+      overlay.setAttribute("aria-live", "polite");
+      overlay.innerHTML = '<div class="sw-language-loading-card"><span class="sw-language-spinner"></span><strong class="sw-language-loading-text"></strong></div>';
+      var style = document.createElement("style");
+      style.textContent = '#sw-language-loading{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;background:rgba(5,18,38,.94);color:#f4d58a;font-family:Tahoma,Arial,sans-serif}#sw-language-loading.sw-visible{display:flex}.sw-language-loading-card{display:flex;flex-direction:column;align-items:center;gap:18px;padding:30px 38px;border:1px solid #d9ae52;border-radius:16px;background:#071a35;box-shadow:0 15px 50px #0006;font-size:18px}.sw-language-spinner{width:38px;height:38px;border:4px solid #ffffff35;border-top-color:#f4d58a;border-radius:50%;animation:swLangSpin .8s linear infinite}@keyframes swLangSpin{to{transform:rotate(360deg)}}';
+      document.head.appendChild(style);
+      document.body.appendChild(overlay);
+    }
+    var messages = {ps:"ژبه بدلېږي، مهرباني وکړئ لږ شېبه انتظار وکړئ…",fa:"در حال تغییر زبان است؛ لطفاً لحظه‌ای منتظر بمانید…",en:"Changing language, please wait…",ur:"زبان تبدیل ہو رہی ہے، براہِ کرم انتظار کریں…",ar:"جارٍ تغيير اللغة، يرجى الانتظار قليلاً…"};
+    overlay.querySelector(".sw-language-loading-text").textContent = messages[lang] || messages.ps;
+    overlay.classList.add("sw-visible");
+  }
+  function hideLanguageLoading() {
+    var overlay = document.getElementById("sw-language-loading");
+    if (overlay) overlay.classList.remove("sw-visible");
+  }
+
+  function applySelectedLanguage(lang, showLoader) {
     if (!LANGS.some(function (x) { return x.code === lang; })) return;
+    if (showLoader) showLanguageLoading(lang);
     selected = lang;
     try {
       localStorage.setItem(KEY, lang);
@@ -49,6 +72,7 @@
     if (typeof window.__swApplyLanguage === "function") {
       window.__swApplyLanguage(lang);
     }
+    if (showLoader) window.setTimeout(hideLanguageLoading, 550);
   }
 
   function attachLanguageEngine() {
@@ -61,7 +85,7 @@
           });
         }
       };
-      applySelectedLanguage(selected);
+      applySelectedLanguage(selected, false);
       return;
     }
 
@@ -70,7 +94,7 @@
     if (window.__swLanguageEngineLoading) return;
     window.__swLanguageEngineLoading = true;
     var script = document.createElement("script");
-    script.src = "/said-wali-khan/language.js?v=20261113-1";
+    script.src = "/said-wali-khan/language.js?v=20261114-1";
     script.onload = function () {
       window.__swLanguageEngineLoading = false;
       attachLanguageEngine();
@@ -96,7 +120,7 @@
       b.textContent = item.label;
       b.setAttribute("data-saidwali-lang", item.code);
       b.addEventListener("click", function () {
-        applySelectedLanguage(item.code);
+        applySelectedLanguage(item.code, true);
         menu.classList.remove("open");
       });
       list.appendChild(b);
@@ -118,7 +142,7 @@
   }
 
   window.changeLanguage = function (lang, button) {
-    applySelectedLanguage(lang);
+    applySelectedLanguage(lang, true);
     if (button && button.parentElement) {
       button.parentElement.querySelectorAll("button").forEach(function (b) {
         b.classList.toggle("active", b === button);
