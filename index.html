@@ -1914,8 +1914,8 @@ body.dark-mode .site-search-heading strong{color:#f4d58a}
  <div class="site-search-panel">
   <div class="site-search-heading"><strong>🔍 د ویب‌سایټ په ټولو برخو کې لټون</strong><button id="site-search-close" type="button" aria-label="بندول">×</button></div>
   <input id="site-search-input" type="search" placeholder="د خبر، دندې، خدمت یا بل مطلب نوم ولیکئ..." autocomplete="off">
-  <div class="site-search-actions"><button id="site-search-google" type="button">Google کې لټون</button><button id="site-search-yahoo" type="button">Yahoo کې لټون</button></div>
-  <p class="site-search-note">لټون د همدې ویب‌سایټ په هغو پاڼو کې کېږي چې Google یا Yahoo ثبت کړې وي. نوې پاڼې ښايي تر ثبتېدو وروسته په پایلو کې ښکاره شي.</p>
+  <div class="site-search-actions"><button id="site-search-google" type="button">Google کې لټون</button><button id="site-search-yahoo" type="button">Yahoo کې لټون</button><button id="site-search-github" type="button">GitHub کې لټون</button></div>
+  <p class="site-search-note">Google او Yahoo د همدې ویب‌سایټ ثبت شوې پاڼې لټوي. GitHub د سیدولي خان د ویب‌سایټ په اصلي Repository کې د فایلونو او پاڼو متن لټوي؛ د GitHub د کوډ پایلو د لیدلو لپاره کېدای شي حساب ته ننوتل اړین وي.</p>
  </div>
 </div>
 <script>
@@ -1933,7 +1933,13 @@ body.dark-mode .site-search-heading strong{color:#f4d58a}
   function runSiteSearch(engine){
     const term=searchInput&&searchInput.value.trim();if(!term){if(searchInput)searchInput.focus();return}
     const query='site:saidwali12.github.io/said-wali-khan/ '+term;
-    const url=engine==='yahoo'?'https://search.yahoo.com/search?p='+encodeURIComponent(query):'https://www.google.com/search?q='+encodeURIComponent(query);
+    let url;
+    if(engine==='github'){
+      url='https://github.com/Saidwali12/said-wali-khan/search?q='+encodeURIComponent(term)+'&type=code';
+    }else{
+      const query='site:saidwali12.github.io/said-wali-khan/ '+term;
+      url=engine==='yahoo'?'https://search.yahoo.com/search?p='+encodeURIComponent(query):'https://www.google.com/search?q='+encodeURIComponent(query);
+    }
     window.open(url,'_blank','noopener');
   }
   if(searchTrigger&&searchDialog&&searchInput){
@@ -1942,6 +1948,7 @@ body.dark-mode .site-search-heading strong{color:#f4d58a}
     searchDialog.addEventListener('click',e=>{if(e.target===searchDialog)closeSiteSearch()});
     document.getElementById('site-search-google').addEventListener('click',()=>runSiteSearch('google'));
     document.getElementById('site-search-yahoo').addEventListener('click',()=>runSiteSearch('yahoo'));
+    document.getElementById('site-search-github').addEventListener('click',()=>runSiteSearch('github'));
     searchInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runSiteSearch('google')}if(e.key==='Escape')closeSiteSearch()});
     document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSiteSearch()});
   }
