@@ -2320,119 +2320,32 @@ const fullName =
 
   function showFeedPage() {
 
-    const mainContent =
-      $("mainContent");
-
-    if (!mainContent) {
+    /*
+      د کورپاڼې لپاره د Facebook په څېر
+      Stories + What's on your mind + Feed بکس وکاروه.
+      دا د چپ او ښي اړخ مېنوګانې نه بدلوي.
+    */
+    if (typeof loadHomeFeedWithComposer === "function") {
+      loadHomeFeedWithComposer();
+      updateUserUI();
       return;
     }
 
+    const mainContent = $("mainContent");
+    if (!mainContent) return;
 
     mainContent.innerHTML = `
-
       <div id="feedPage">
-
         <div class="card">
-
-          <div class="row">
-
-            <img
-              id="postAvatar"
-              class="avatar"
-              alt="profile"
-            >
-
-            <div>
-
-              <strong>
-                نوی پوسټ جوړ کړه
-              </strong>
-
-              <div class="muted">
-                خپل فکر له ملګرو سره شریک کړه
-              </div>
-
-            </div>
-
-          </div>
-
-          <div
-            style="
-              margin-top:12px;
-            "
-          >
-
-            <textarea
-              id="postContent"
-              class="form-control"
-              rows="4"
-              placeholder="څه فکر کوې؟"
-            ></textarea>
-
-          </div>
-
-          <div
-            style="
-              margin-top:8px;
-            "
-          >
-
-            <input
-              id="postMediaURL"
-              class="form-control"
-              type="url"
-              placeholder="د عکس URL (اختیاري)"
-            >
-
-          </div>
-
-          <div
-            style="
-              margin-top:10px;
-              display:flex;
-              justify-content:flex-start;
-            "
-          >
-
-            <button
-              class="btn"
-              onclick="createPost()"
-            >
-              پوسټ خپور کړه
-            </button>
-
-          </div>
-
+          <textarea id="postContent" class="form-control" rows="4" placeholder="څه فکر کوې؟"></textarea>
+          <button class="btn" onclick="createPost()">پوسټ خپور کړه</button>
         </div>
-
-
-        <div
-          id="feedContainer"
-        >
-
-          <div class="card">
-            Feed لوډ کېږي...
-          </div>
-
-        </div>
-
+        <div id="feedContainer"></div>
       </div>
-
     `;
 
-
     updateUserUI();
-
-
-    if (
-      typeof loadFeed ===
-      "function"
-    ) {
-
-      loadFeed();
-
-    }
-
+    if (typeof loadFeed === "function") loadFeed();
   }
 
 
@@ -23343,7 +23256,7 @@ function renderCreatePostBox() {
 
       <textarea
         id="newPostContent"
-        placeholder="ستاسو په فکر کې څه دي؟"
+        placeholder="څه فکر کوې، ${escapeHTML(name)}؟"
         rows="4"
         style="
           width:100%;
@@ -42805,89 +42718,92 @@ function renderSinglePost(
 async function createNewPost() {
 
   if (!currentUser) {
-
-    alert(
-      "لومړی Login وکړئ."
-    );
-
+    alert("لومړی Login وکړئ.");
     return;
-
   }
 
-
-  const input =
-    $("newPostContent");
-
-
-  if (!input) return;
-
-
-  const content =
-    input.value.trim();
-
-
-  if (!content) {
-
-    alert(
-      "د پوسټ متن ولیکئ."
-    );
-
+  const input = $("newPostContent");
+  if (!input) {
+    alert("د پوسټ لیکلو بکس پیدا نه شو. پاڼه تازه کړئ.");
     return;
-
   }
 
+  const content = input.value.trim();
+  if (!content && !selectedPostImageFile) {
+    alert("لږ تر لږه متن ولیکئ یا یو عکس انتخاب کړئ.");
+    return;
+  }
 
-  const result =
-    await apiRequest(
-      "/posts",
-      {
+  const button = document.querySelector("#createPostContainer .btn:not(.btn-secondary)");
+  if (button) {
+    button.disabled = true;
+    button.textContent = "⏳ خپرېږي...";
+  }
 
-        method:
-          "POST",
+  try {
+    let uploadedMedia = null;
 
-        body:
-          JSON.stringify({
+    if (selectedPostImageFile) {
+      const formData = new FormData();
+      formData.append("file", selectedPostImageFile);
 
-            content
+      const uploadResult = await apiRequest("/media/upload", {
+        method: "POST",
+        body: formData
+      });
 
-          })
-
+      if (!uploadResult || !uploadResult.success || !uploadResult.media || !uploadResult.media.media_url) {
+        throw new Error(uploadResult?.message || "عکس ImageKit ته پورته نه شو. د ImageKit تنظیمات او Worker وګورئ.");
       }
-    );
 
+      uploadedMedia = uploadResult.media;
+    }
 
-  if (
-    !result ||
-    !result.success
-  ) {
+    const postResult = await apiRequest("/posts", {
+      method: "POST",
+      body: JSON.stringify({
+        content: content,
+        media: uploadedMedia ? [uploadedMedia] : [],
+        privacy: getPostPrivacyValue(),
+        status: "published"
+      })
+    });
 
-    alert(
-      result?.message ||
-      "پوسټ جوړ نه شو."
-    );
+    if (!postResult || !postResult.success) {
+      throw new Error(postResult?.message || "پوسټ خپور نه شو.");
+    }
 
-    return;
+    input.value = "";
+    removePostImage();
 
+    if (button) {
+      button.disabled = false;
+      button.textContent = "🚀 خپرول";
+    }
+
+    alert("پوسټ په بریالیتوب سره خپور شو. ✅");
+
+    if (typeof loadFeed === "function") {
+      await loadFeed(true);
+    }
+
+  } catch (error) {
+    console.error("createNewPost error:", error);
+    alert(error.message || "د پوسټ جوړولو پر مهال ستونزه رامنځته شوه.");
+    if (button) {
+      button.disabled = false;
+      button.textContent = "🚀 خپرول";
+    }
   }
-
-
-  input.value =
-    "";
-
-
-  alert(
-    "✓ پوسټ په بریالیتوب جوړ شو."
-  );
-
-
-  await loadFeedPosts();
-
 }
 
 
 /* =====================================================
    LIKE / UNLIKE
    ===================================================== */
+
+
+
 
 async function togglePostLike(
   postId
