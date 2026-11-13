@@ -11,6 +11,7 @@
   ];
   var KEY = "saidwali-site-language";
   var selected = "ps";
+  var initialized = false;
   try { selected = localStorage.getItem(KEY) || "ps"; } catch (e) {}
   if (!LANGS.some(function (x) { return x.code === selected; })) selected = "ps";
 
@@ -78,9 +79,13 @@
   }
 
   function init() {
-    var holder = document.createElement("div");
-    holder.id = "google_translate_element";
-    document.body.appendChild(holder);
+    if (initialized || !document.body) return;
+    initialized = true;
+    if (!document.getElementById("google_translate_element")) {
+      var holder = document.createElement("div");
+      holder.id = "google_translate_element";
+      document.body.appendChild(holder);
+    }
     addLanguageMenu();
     setDirection(selected);
     setTranslateCookie(selected);
@@ -98,7 +103,9 @@
   }
 
   window.googleTranslateElementInit = function () {
-    if (window.google && google.translate && google.translate.TranslateElement) {
+    init();
+    if (window.google && google.translate && google.translate.TranslateElement && !window.__saidwaliTranslateReady) {
+      window.__saidwaliTranslateReady = true;
       new google.translate.TranslateElement({
         pageLanguage: "ps",
         includedLanguages: "ps,fa,en,ur,ar",
