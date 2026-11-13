@@ -50168,19 +50168,16 @@ async function uploadSBookProfileAsset(inputId, fieldName, statusId, previewId, 
       body: JSON.stringify(payload)
     });
     if (!saved || saved.success !== true) throw new Error(saved && saved.message || "انځور پورته شو، خو پروفایل کې ثبت نه شو.");
-    const updated = saved.user || saved.data?.user;
-    if (updated) currentUser = updated;
-    else {
-      if (!currentUser) currentUser = {};
-      if (kind === "profile") {
-        currentUser.profile_photo = imageUrl;
-        currentUser.profile_photo_url = imageUrl;
-        currentUser.avatar_url = imageUrl;
-      } else {
-        currentUser.cover_photo = imageUrl;
-        currentUser.cover_photo_url = imageUrl;
-        currentUser.cover_url = imageUrl;
-      }
+    const updated = saved.user || saved.profile || saved.data?.user || saved.data;
+    currentUser = Object.assign({}, currentUser || {}, updated && typeof updated === "object" ? updated : {});
+    if (kind === "profile") {
+      currentUser.profile_photo = imageUrl;
+      currentUser.profile_photo_url = imageUrl;
+      currentUser.avatar_url = imageUrl;
+    } else {
+      currentUser.cover_photo = imageUrl;
+      currentUser.cover_photo_url = imageUrl;
+      currentUser.cover_url = imageUrl;
     }
     updateUserUI();
     fillProfileForm();
