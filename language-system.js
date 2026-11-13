@@ -82,7 +82,7 @@
   // Google may inject its translation toolbar after the page loads.
   // Keep the translator active but suppress its visible banner and page offset.
   function hideGoogleTranslationToolbar() {
-    var selectors = ["iframe.goog-te-banner-frame", ".goog-te-banner-frame", ".goog-te-balloon-frame", "#goog-gt-tt", ".goog-te-menu-frame"];
+    var selectors = ["iframe.goog-te-banner-frame", ".goog-te-banner-frame", ".goog-te-balloon-frame", "#goog-gt-tt", ".goog-te-menu-frame", "body > .skiptranslate", "body > iframe.skiptranslate"];
     selectors.forEach(function (selector) {
       document.querySelectorAll(selector).forEach(function (node) {
         node.style.setProperty("display", "none", "important");
@@ -101,7 +101,7 @@
     hideGoogleTranslationToolbar();
     if (window.__saidwaliToolbarObserver || !document.body || !window.MutationObserver) return;
     window.__saidwaliToolbarObserver = new MutationObserver(hideGoogleTranslationToolbar);
-    window.__saidwaliToolbarObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class"] });
+    window.__saidwaliToolbarObserver.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class"] });
   }
 
   function init() {
