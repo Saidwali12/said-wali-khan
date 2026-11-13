@@ -140,7 +140,7 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 <body>
 <button class="back-btn" onclick="history.back()" type="button">⬅ شاتګ</button>
 <header>سیدولي خان جاب پورټل</header>
-<div class="top-news"><marquee behavior="scroll" direction="left" scrollamount="6">د کونړ، نورستان، لغمان او ننګرهار تازه کاري فرصتونه | د ایمیل له لارې مستقیم غوښتنلیک | د پای نېټه حتمي وګورئ</marquee></div>
+<div class="top-news"><marquee id="jobsNewsTicker" behavior="scroll" direction="right" scrollamount="6">د کونړ، نورستان، لغمان او ننګرهار تازه کاري فرصتونه | د ایمیل له لارې مستقیم غوښتنلیک | د پای نېټه حتمي وګورئ</marquee></div>
 <div class="intro-note"><b style="color:#0d47a1">د کونړ، نورستان، لغمان او ننګرهار د کار اعلانونه</b><br>یوازې هغه بستونه چې د ادارې اصلي ایمیل او د غوښتنلیک موضوع یې تایید شوې وي.</div>
 <div class="notice">د هر بست د غوښتنلیک تڼۍ به د ادارې ایمیل، د بست موضوع او اړوند معلومات چمتو کړي. خپل CV او اسناد ورسره ضمیمه کړئ او ایمیل خپله واستوئ. د خبرتیا په ایمیل کې به د همدې بست د سیدولي خان پاڼې لینک او د اصلي اعلان لینک هم وي.</div>
 
@@ -425,5 +425,32 @@ function showRegStatus(message,ok){const el=document.getElementById("regStatus")
 <script src="saidwali-gpt-global.js"></script>
 
 <script src="/said-wali-khan/language-system.js"></script>
+<script>
+(function(){
+  const ticker=document.getElementById("jobsNewsTicker");
+  if(!ticker)return;
+  function setTickerDirection(lang){
+    const code=String(lang||document.documentElement.lang||"ps").toLowerCase();
+    const english=code==="en";
+    ticker.setAttribute("direction",english?"left":"right");
+    ticker.style.direction=english?"ltr":"rtl";
+    ticker.style.textAlign=english?"left":"right";
+  }
+  function currentLanguage(){
+    try{return localStorage.getItem("sw_site_language")||document.documentElement.lang||"ps"}
+    catch(e){return document.documentElement.lang||"ps"}
+  }
+  setTickerDirection(currentLanguage());
+  const previousChangeLanguage=window.changeLanguage;
+  window.changeLanguage=function(lang){
+    if(typeof previousChangeLanguage==="function")previousChangeLanguage.apply(this,arguments);
+    setTickerDirection(lang);
+  };
+  document.addEventListener("DOMContentLoaded",function(){setTickerDirection(currentLanguage())},{once:true});
+  new MutationObserver(function(){
+    setTickerDirection(document.documentElement.lang||currentLanguage());
+  }).observe(document.documentElement,{attributes:true,attributeFilter:["lang"]});
+})();
+</script>
 </body>
 </html>
