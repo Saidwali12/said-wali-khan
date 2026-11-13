@@ -598,34 +598,22 @@ footer{
 
 
 
-<!-- د اصلي ویب‌سایټ په شان د کرکټ چینلونو مینو -->
+<!-- یوازې رسمي او تایید شوې سرچینې؛ هېڅ جعلي یا تش Live پلیر نشته -->
 <div class="cricket-channel-nav" id="tvNav">
  <div class="dropdown">
-  <button class="dropbtn" type="button" aria-expanded="false" onclick="toggleCricketMenu('cricketChannelMenu',this)">📺 د کرکټ ژوندۍ تلویزیونونه ▼</button>
+  <button class="dropbtn" type="button" aria-expanded="false" onclick="toggleCricketMenu('cricketChannelMenu',this)">📺 رسمي کرکټ ژوندۍ خپرونې ▼</button>
   <div class="dropdown-content" id="cricketChannelMenu">
-   <div class="channel-menu-label">🇦🇫 د افغانستان رسمي خپرندویان</div>
-   <a href="#" onclick="event.preventDefault();openCricketTV('Lemar TV — د افغانستان د ICC ۲۰۲۶ رسمي خپرندوی','https://lemar.af/')">📡 Lemar TV — رسمي خپرندوی</a>
-   <a href="#" onclick="event.preventDefault();openCricketTV('Ariana TV / ATN — د هغو سیالیو لپاره چې حقونه لري','https://arianatelevision.com/')">📺 Ariana TV / ATN — د ټاکلو سیالیو خپرونې</a>
-   <div class="channel-menu-label">🌍 نړیوال رسمي ژوندی خدمت</div>
-   <a href="#" onclick="event.preventDefault();openCricketTV('ICC.tv — د هېواد او سیالۍ له مخې','https://www.icc-cricket.com/icc-tv')">🏆 ICC.tv — د سیمې له مخې ژوندۍ لوبې</a>
-   <div class="channel-menu-label">ℹ️ د خپرونې په اړه</div>
-   <div style="padding:11px 14px;color:#334;font-size:12px;line-height:1.8">د دې رسمي خدمتونو د ویډیو د نورو وېب‌پاڼو دننه ښودلو اجازه په عامه توګه نه ده تایید شوې. که ویډیو په همدې پرده کې بنده وي، د رسمي لینک تڼۍ وکاروئ. د لوبې خپرونه د حقونو او هېواد له مخې بدلېږي.</div>
+   <div class="channel-menu-label">🇦🇫 د افغانستان لپاره رسمي خپرونه</div>
+   <a href="https://www.arianatelevision.com/live/" target="_blank" rel="noopener">📺 Ariana TV / ATN — رسمي Live پاڼه</a>
+   <div class="channel-menu-label">🌍 د ICC رسمي انلاین خپرونه</div>
+   <a href="https://www.icc-cricket.com/icc-tv" target="_blank" rel="noopener">🏆 ICC.tv — یوازې هغه لوبې چې افغانستان کې موجودې وي</a>
+   <div style="padding:11px 14px;color:#334;font-size:12px;line-height:1.9">
+    دلته یوازې رسمي سرچینې دي. هره لوبه په هر چینل کې نه خپرېږي؛ د سیالۍ حقونه او د خپرونې وخت د لوبې له مخې بدلېږي. د Live نښه او د لوبې نوم په رسمي پاڼه کې وګورئ. که هلته ژوندۍ لوبه نه وي، دا پاڼه یې Live نه ګڼي.
+   </div>
   </div>
  </div>
- <span class="channel-menu-note">د رسمي خپرونې پاڼه دلته هڅه کېږي؛ که د ویډیو د Embed اجازه نه وي، رسمي لینک خلاص کړئ.</span>
+ <span class="channel-menu-note">د ناتایید شویو چینلونو لینکونه لرې شوي؛ د ژوندۍ خپرونې لپاره رسمي Live پاڼه پرانیزئ.</span>
 </div>
-<section id="cricketTVScreen" class="tvScreen" aria-live="polite">
- <div class="tvScreenHead">
-  <strong id="cricketTVTitle">📺 ژوندۍ خپرونه</strong>
-  <div class="tvActions">
-   <a id="cricketTVExternal" href="#" target="_blank" rel="noopener">که ویډیو دلته خلاصه نه شوه، دلته یې وګورئ ↗</a>
-   <button type="button" onclick="fullscreenCricketTV()">⛶ بشپړه پرده</button>
-   <button type="button" onclick="closeCricketTV()">✖ تلویزیون بندول</button>
-  </div>
- </div>
- <iframe id="cricketTVFrame" title="د کرکټ ژوندۍ تلویزیوني خپرونه" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
- <p class="tvHint">یادونه: دا د رسمي خدمت پاڼه ده، نه تضمین شوی Embed ویډیو. که د خدمت مالک د نورو سایټونو دننه ویډیو بند کړې وي، پورته رسمي لینک پرانیزئ. د خپرونې حقونه د سیالۍ او هېواد له مخې بدلېږي.</p>
-</section>
 <div class="livebar">
  🔴 LIVE — معلومات هر 15 ثانیې تازه کېږي
 </div>
