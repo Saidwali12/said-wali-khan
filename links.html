@@ -7,14 +7,11 @@
 <title>مهم لینکونه</title>
 
 <style>
-
 body{
 font-family:Tahoma;
 background:#f4f7fb;
 margin:0;
 }
-
-/* BACK BUTTON */
 .back-btn{
 position:fixed;
 top:12px;
@@ -28,16 +25,12 @@ font-size:14px;
 box-shadow:0 0 10px rgba(0,0,0,0.25);
 z-index:9999;
 }
-
-/* HEADER */
 header{
 background:#0d47a1;
 color:white;
 text-align:center;
 padding:18px;
 }
-
-/* MOVING INFO TICKER */
 .ticker{
 background:#e53935;
 color:white;
@@ -46,27 +39,30 @@ padding:10px;
 overflow:hidden;
 white-space:nowrap;
 }
-
 .ticker span{
 display:inline-block;
 padding-left:100%;
 animation:move 12s linear infinite;
 }
-
 @keyframes move{
 0%{transform:translateX(0);}
 100%{transform:translateX(-100%);}
 }
-
-/* GRID */
+.section-title{
+margin:18px 12px 0;
+padding:10px 14px;
+background:#071a35;
+color:#f4d58a;
+border-right:5px solid #d9ae52;
+border-radius:8px;
+font-size:17px;
+}
 .container{
 display:grid;
 grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
 gap:10px;
 padding:12px;
 }
-
-/* CARD */
 .link-box{
 background:white;
 padding:12px;
@@ -75,26 +71,17 @@ box-shadow:0 0 6px rgba(0,0,0,0.1);
 text-align:center;
 transition:0.2s;
 }
-
-.link-box:hover{
-transform:scale(1.03);
-}
-
-/* ICON */
+.link-box:hover{transform:scale(1.03);}
 .link-box img{
 width:40px;
 height:40px;
 margin-bottom:6px;
 object-fit:contain;
 }
-
-/* TITLE */
 .link-box h2{
 font-size:14px;
 margin:6px 0;
 }
-
-/* BUTTON */
 .link-box a{
 display:inline-block;
 background:#ff9800;
@@ -103,8 +90,9 @@ padding:8px 12px;
 text-decoration:none;
 border-radius:5px;
 font-size:12px;
+margin:3px 2px;
 }
-
+.link-box a.app-btn{background:#16834a;}
 footer{
 background:#0d47a1;
 color:white;
@@ -113,113 +101,96 @@ padding:15px;
 margin-top:20px;
 font-size:13px;
 }
-
 </style>
-
 </head>
 
 <body>
-
-<!-- BACK BUTTON -->
 <a href="javascript:history.back()" class="back-btn">⬅ شاته</a>
 
 <header>
-<h1>🌐 مهم ویب سایټونه</h1>
-<p>ټول مهم ټولنیز شبکې</p>
+<h1>🌐 مهم ویب سایټونه او موبایل اپلېکېشنونه</h1>
+<p>ګټور نړیوال خدمات؛ په کمپیوټر او موبایل کې یې وکاروئ</p>
 </header>
 
-<!-- MOVING TICKER -->
 <div class="ticker">
-<span>
-📢 دلته تاسو کولی شئ Facebook، WhatsApp، Instagram، YouTube، Google، Gmail، LinkedIn، Wikipedia، Yahoo، BBC News او زاویه نیوز څخه استفاده وکړئ.
-</span>
+<span>📢 د اړیکو، مصنوعي ځیرکتیا، زده‌کړو، دفتر، ډیزاین، کلاوډ، کارموندنې او ټولنیزو شبکو مشهور خدمات دلته ومومئ. د اپ تڼۍ د Android اپلېکېشن پاڼې ته ځي.</span>
 </div>
 
+<h2 class="section-title">🌐 ټولنیزې شبکې او اړیکې</h2>
 <div class="container">
-
-<!-- FACEBOOK -->
-<div class="link-box">
-<img src="https://cdn-icons-png.flaticon.com/512/733/733547.png">
-<h2>Facebook</h2>
-<a href="https://www.facebook.com" target="_blank">Open</a>
+<div class="link-box"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt=""><h2>Facebook</h2><a href="https://www.facebook.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Facebook&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt=""><h2>WhatsApp</h2><a href="https://www.whatsapp.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=WhatsApp&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt=""><h2>Instagram</h2><a href="https://www.instagram.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Instagram&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt=""><h2>YouTube</h2><a href="https://www.youtube.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=YouTube&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Telegram</h2><a href="https://telegram.org" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Telegram&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>TikTok</h2><a href="https://www.tiktok.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=TikTok&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Messenger</h2><a href="https://www.messenger.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Messenger&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>X (Twitter)</h2><a href="https://x.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=X%20Twitter&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Snapchat</h2><a href="https://www.snapchat.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Snapchat&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Pinterest</h2><a href="https://www.pinterest.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Pinterest&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Reddit</h2><a href="https://www.reddit.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Reddit&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
 </div>
 
-<!-- WHATSAPP -->
-<div class="link-box">
-<img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
-<h2>WhatsApp</h2>
-<a href="https://www.whatsapp.com" target="_blank">Open</a>
+<h2 class="section-title">🤖 مصنوعي ځیرکتیا او هوښیار لټون</h2>
+<div class="container">
+<div class="link-box"><h2>ChatGPT</h2><a href="https://chatgpt.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=ChatGPT&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Google Gemini</h2><a href="https://gemini.google.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Google%20Gemini&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Claude AI</h2><a href="https://claude.ai" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Claude%20AI&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Microsoft Copilot</h2><a href="https://copilot.microsoft.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Microsoft%20Copilot&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Perplexity AI</h2><a href="https://www.perplexity.ai" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Perplexity&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
 </div>
 
-<!-- INSTAGRAM -->
-<div class="link-box">
-<img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
-<h2>Instagram</h2>
-<a href="https://www.instagram.com" target="_blank">Open</a>
+<h2 class="section-title">📚 زده‌کړې، ژباړه او معلومات</h2>
+<div class="container">
+<div class="link-box"><h2>Wikipedia</h2><a href="https://www.wikipedia.org" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Wikipedia&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Khan Academy</h2><a href="https://www.khanacademy.org" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Khan%20Academy&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Coursera</h2><a href="https://www.coursera.org" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Coursera&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Duolingo</h2><a href="https://www.duolingo.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Duolingo&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Google Translate</h2><a href="https://translate.google.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Google%20Translate&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
 </div>
 
-<!-- YOUTUBE -->
-<div class="link-box">
-<img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">
-<h2>YouTube</h2>
-<a href="https://www.youtube.com" target="_blank">Open</a>
+<h2 class="section-title">💼 دفتر، ایمیل او آنلاین غونډې</h2>
+<div class="container">
+<div class="link-box"><h2>Google</h2><a href="https://www.google.com" target="_blank" rel="noopener">ویب پاڼه</a></div>
+<div class="link-box"><h2>Gmail</h2><a href="https://mail.google.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Gmail&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Google Drive</h2><a href="https://drive.google.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Google%20Drive&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Google Docs</h2><a href="https://docs.google.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Google%20Docs&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Microsoft 365</h2><a href="https://www.microsoft365.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Microsoft%20365&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Microsoft Outlook</h2><a href="https://outlook.live.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Microsoft%20Outlook&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Zoom</h2><a href="https://zoom.us" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Zoom&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Google Meet</h2><a href="https://meet.google.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Google%20Meet&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>LinkedIn</h2><a href="https://www.linkedin.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=LinkedIn&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
 </div>
 
-<!-- GOOGLE -->
-<div class="link-box">
-<img src="https://cdn-icons-png.flaticon.com/512/281/281764.png">
-<h2>Google</h2>
-<a href="https://www.google.com" target="_blank">Open</a>
+<h2 class="section-title">🎨 ډیزاین، ویډیو او اسناد</h2>
+<div class="container">
+<div class="link-box"><h2>Canva</h2><a href="https://www.canva.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Canva&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>CapCut</h2><a href="https://www.capcut.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=CapCut&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Adobe Acrobat</h2><a href="https://www.adobe.com/acrobat.html" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Adobe%20Acrobat&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
 </div>
 
-<!-- GMAIL -->
-<div class="link-box">
-<img src="https://cdn-icons-png.flaticon.com/512/732/732200.png">
-<h2>Gmail</h2>
-<a href="https://mail.google.com" target="_blank">Open</a>
+<h2 class="section-title">☁️ کلاوډ، فایلونه او تخنیکي خدمات</h2>
+<div class="container">
+<div class="link-box"><h2>OneDrive</h2><a href="https://onedrive.live.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Microsoft%20OneDrive&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Dropbox</h2><a href="https://www.dropbox.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Dropbox&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>GitHub</h2><a href="https://github.com" target="_blank" rel="noopener">ویب پاڼه</a></div>
+<div class="link-box"><h2>Google Maps</h2><a href="https://maps.google.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Google%20Maps&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
 </div>
 
-<!-- LINKEDIN -->
-<div class="link-box">
-<img src="https://cdn-icons-png.flaticon.com/512/174/174857.png">
-<h2>LinkedIn</h2>
-<a href="https://www.linkedin.com" target="_blank">Open</a>
+<h2 class="section-title">💻 آنلاین کار او مسلکي فرصتونه</h2>
+<div class="container">
+<div class="link-box"><h2>Fiverr</h2><a href="https://www.fiverr.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Fiverr&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
+<div class="link-box"><h2>Upwork</h2><a href="https://www.upwork.com" target="_blank" rel="noopener">ویب پاڼه</a><a class="app-btn" href="https://play.google.com/store/search?q=Upwork&c=apps" target="_blank" rel="noopener">Android اپ</a></div>
 </div>
 
-<!-- WIKIPEDIA -->
-<div class="link-box">
-<img src="https://cdn-icons-png.flaticon.com/512/2111/2111540.png">
-<h2>Wikipedia</h2>
-<a href="https://www.wikipedia.org" target="_blank">Open</a>
+<h2 class="section-title">📰 خبرونه او نور معلومات</h2>
+<div class="container">
+<div class="link-box"><h2>BBC News</h2><a href="https://www.bbc.com/news" target="_blank" rel="noopener">ویب پاڼه</a></div>
+<div class="link-box"><h2>Yahoo</h2><a href="https://www.yahoo.com" target="_blank" rel="noopener">ویب پاڼه</a></div>
+<div class="link-box"><h2>زاویه نیوز</h2><a href="https://example.com" target="_blank" rel="noopener">ویب پاڼه</a></div>
 </div>
 
-<!-- YAHOO -->
-<div class="link-box">
-<img src="https://cdn-icons-png.flaticon.com/512/732/732221.png">
-<h2>Yahoo</h2>
-<a href="https://mail.yahoo.com" target="_blank">Open</a>
-</div>
-
-<!-- BBC -->
-<div class="link-box">
-<img src="https://cdn-icons-png.flaticon.com/512/196/196581.png">
-<h2>BBC News</h2>
-<a href="https://www.bbc.com/news" target="_blank">Open</a>
-</div>
-
-<!-- ZAWIYA -->
-<div class="link-box">
-<img src="https://cdn-icons-png.flaticon.com/512/21/21601.png">
-<h2>زاویه نیوز</h2>
-<a href="https://example.com" target="_blank">Open</a>
-</div>
-
-</div>
-
-<footer>
-© 2026 سیدولی خان کوهستانی ګروپ
-</footer>
-
+<footer>© 2026 سیدولی خان کوهستاني ګروپ</footer>
 
 <div id="sw-language-bar" style="position:fixed;bottom:12px;left:12px;z-index:99999;background:#071a35;border:1px solid #d9ae52;border-radius:12px;padding:6px 8px;display:flex;gap:5px;flex-wrap:wrap;box-shadow:0 3px 14px #0005">
 <button type="button" onclick="changeLanguage('ps',this)" style="padding:5px 8px;border:0;border-radius:6px">پښتو</button>
@@ -228,10 +199,8 @@ font-size:13px;
 <button type="button" onclick="changeLanguage('ur',this)" style="padding:5px 8px;border:0;border-radius:6px">اردو</button>
 <button type="button" onclick="changeLanguage('ar',this)" style="padding:5px 8px;border:0;border-radius:6px">العربية</button>
 </div>
-<script src="language.js?v=20261112-2"></script></script>
-
+<script src="language.js?v=20261112-2"></script>
 <script src="saidwali-gpt-global.js"></script>
-
 <script src="/said-wali-khan/language-system.js"></script>
 </body>
 </html>
