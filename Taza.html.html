@@ -113,6 +113,23 @@ color:#666;
 font-size:12px;
 }
 
+
+/* د نړۍ د تاوېېدونکې ګول نقشې بڼه */
+.world-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 12px 28px;background:linear-gradient(180deg,#071a35,#0d47a1);overflow:hidden;text-align:center}
+.world-stage h3{color:#f4d58a;margin:0 0 15px;font-size:19px}
+.globe{width:clamp(175px,32vw,250px);aspect-ratio:1;border-radius:50%;position:relative;overflow:hidden;background:radial-gradient(ellipse at 30% 25%,rgba(255,255,255,.9),transparent 8%),radial-gradient(ellipse at 35% 30%,#39a9dc 0%,#0876b8 45%,#043568 78%,#021b3b 100%);box-shadow:inset -22px -12px 35px #00152dcc,inset 10px 8px 22px #b9efff66,0 0 28px #58c9ff88,0 0 65px #1c91e955;animation:globeFloat 5s ease-in-out infinite}
+.globe:before{content:"";position:absolute;inset:-5%;border-radius:50%;background:repeating-linear-gradient(90deg,transparent 0 27px,#b9eaff66 28px 29px,transparent 30px 55px);transform:perspective(280px) rotateY(18deg);animation:globeSpin 12s linear infinite}
+.globe:after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse at 28% 31%,#78c86b 0 9%,transparent 9.5%),radial-gradient(ellipse at 39% 42%,#a2d879 0 11%,transparent 11.5%),radial-gradient(ellipse at 57% 29%,#78bd62 0 8%,transparent 8.5%),radial-gradient(ellipse at 67% 56%,#a0d66e 0 12%,transparent 12.5%),radial-gradient(ellipse at 45% 70%,#7ec76a 0 7%,transparent 7.5%),linear-gradient(0deg,transparent 48.8%,#b9eaff66 49.5% 50.5%,transparent 51.2%);animation:landDrift 16s linear infinite}
+.world-caption{color:#dceeff;font-size:13px;margin:16px 0 0}
+@keyframes globeSpin{from{transform:perspective(280px) rotateY(0)}to{transform:perspective(280px) rotateY(360deg)}}
+@keyframes landDrift{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes globeFloat{0%,100%{translate:0 0}50%{translate:0 -7px}}
+.item{display:flex;align-items:flex-start;gap:14px}
+.item-image{width:clamp(105px,24%,180px);height:118px;object-fit:cover;border-radius:8px;flex:0 0 auto;background:#e8eef5}
+.item-content{min-width:0;flex:1}
+@media(max-width:560px){.item{gap:10px;padding:11px}.item-image{width:104px;height:92px}.item a{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.globe,.globe:before,.globe:after{animation:none}}
+
 </style>
 </head>
 
@@ -224,9 +241,29 @@ link=linkNode.getAttribute("href") ||
 linkNode.textContent || "";
 }
 
+// د RSS له بېلابېلو بڼو څخه د خبر انځور راایستل
+let image="";
+const mediaNodes=Array.from(node.getElementsByTagName("*"));
+const mediaImage=mediaNodes.find(el=>{
+ const tag=(el.localName || el.nodeName || "").toLowerCase();
+ return tag==="thumbnail" || tag==="content" || tag==="enclosure";
+});
+if(mediaImage) image=mediaImage.getAttribute("url") || mediaImage.getAttribute("href") || "";
+if(!image){
+ const htmlNode=mediaNodes.find(el=>{
+  const tag=(el.localName || el.nodeName || "").toLowerCase();
+  return tag==="encoded" || tag==="description" || tag==="summary";
+ });
+ if(htmlNode && htmlNode.textContent){
+  const parsed=new DOMParser().parseFromString(htmlNode.textContent,"text/html");
+  const img=parsed.querySelector("img");
+  if(img) image=img.getAttribute("src") || img.getAttribute("data-src") || "";
+ }
+}
 return {
-title:titleNode ? titleNode.textContent.trim() : "",
-link:link.trim()
+ title:titleNode ? titleNode.textContent.trim() : "",
+ link:link.trim(),
+ image:image.trim()
 };
 }).filter(item=>item.title).slice(0,5);
 
@@ -264,14 +301,21 @@ headlines.push(item.title);
 
 const link=safeURL(item.link);
 const title=safeText(item.title);
+const imageURL=safeURL(item.image);
+const imageHTML=imageURL
+? `<img class="item-image" src="${safeText(imageURL)}" alt="د خبر انځور" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">`
+: "";
 
 html+=`
 <div class="item">
+${imageHTML}
+<div class="item-content">
 ${link
 ? `<a href="${safeText(link)}" target="_blank" rel="noopener noreferrer">${title}</a>`
 : `<strong>${title}</strong>`
 }
 <div class="source">${safeText(feedData.name)}</div>
+</div>
 </div>
 `;
 });
