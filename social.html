@@ -23650,8 +23650,8 @@ async function createNewPost() {
 
   try {
 
-    let mediaUrl =
-      "";
+    let mediaUrl = "";
+    let uploadedMedia = null;
 
 
     /*
@@ -23677,7 +23677,7 @@ async function createNewPost() {
 
         const uploadResult =
           await apiRequest(
-            "/upload",
+            "/media/upload",
             {
               method:
                 "POST",
@@ -23692,7 +23692,9 @@ async function createNewPost() {
           uploadResult.success
         ) {
 
+          uploadedMedia = uploadResult.media || null;
           mediaUrl =
+            uploadedMedia?.media_url ||
             uploadResult.url ||
             uploadResult.media_url ||
             uploadResult.file_url ||
@@ -23750,8 +23752,8 @@ async function createNewPost() {
       content:
         content,
 
-      media_url:
-        mediaUrl,
+      media:
+        uploadedMedia && mediaUrl ? [uploadedMedia] : [],
 
       privacy:
         getPostPrivacyValue()
@@ -24419,7 +24421,11 @@ function renderPostCard(
     "";
 
 
+  const firstMedia =
+    Array.isArray(post.media) ? post.media[0] : null;
+
   const mediaUrl =
+    firstMedia?.media_url ||
     post.media_url ||
     post.image_url ||
     post.photo_url ||
@@ -48955,10 +48961,17 @@ async function apiRequest(endpoint, options = {}) {
 
   try {
 
-    const headers = {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    };
+    const headers = { ...(options.headers || {}) };
+    const isFormData =
+      typeof FormData !== "undefined" &&
+      options.body instanceof FormData;
+
+    if (isFormData) {
+      delete headers["Content-Type"];
+      delete headers["content-type"];
+    } else if (!headers["Content-Type"] && !headers["content-type"]) {
+      headers["Content-Type"] = "application/json";
+    }
 
     if (sessionToken) {
       headers["Authorization"] =
@@ -49474,7 +49487,7 @@ document.addEventListener(
 <button type="button" onclick="changeLanguage('ur',this)" style="padding:5px 8px;border:0;border-radius:6px">اردو</button>
 <button type="button" onclick="changeLanguage('ar',this)" style="padding:5px 8px;border:0;border-radius:6px">العربية</button>
 </div>
-<script src="language.js?v=20261112-2"></script></script>
+<script src="language.js?v=20261112-2"></script>
 
 <script src="saidwali-gpt-global.js"></script>
 
