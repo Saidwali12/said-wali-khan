@@ -521,6 +521,37 @@ footer{
 @keyframes menuIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:700px){.cricket-channel-nav{margin:12px auto}.cricket-channel-nav .dropdown{width:100%}.cricket-channel-nav .dropbtn{width:100%}.cricket-channel-nav .dropdown-content{position:relative;top:0;width:100%;max-height:55vh;margin-top:5px}.tvScreen iframe{height:58vw;min-height:230px}}
 
+
+/* د کرکټ مرکز وروستۍ بڼه: چټک لاسرسی او د موبایل سم ترتیب */
+.cricket-quick-nav{width:94%;max-width:1250px;margin:14px auto;display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
+.cricket-quick-nav a{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 15px;border-radius:24px;background:#071a35;border:1px solid #d9ae52;color:#f4d58a;text-decoration:none;font-size:13px;font-weight:700;transition:.2s}
+.cricket-quick-nav a:hover{background:#d9ae52;color:#071a35;transform:translateY(-2px)}
+.afghan-hub{margin:14px 0 18px;padding:16px;border-radius:15px;background:linear-gradient(135deg,#071a35,#17436a);border:1px solid #d9ae52;color:#fff;box-shadow:0 5px 18px #00000012}
+.afghan-hub h2{margin:0 0 8px;color:#f4d58a;font-size:20px}
+.afghan-hub p{margin:0 0 12px;line-height:1.9;font-size:13px;color:#e5edf5}
+.afghan-hub-links{display:flex;gap:8px;flex-wrap:wrap}
+.afghan-hub-links a{display:inline-block;padding:8px 11px;border-radius:8px;background:#f4d58a;color:#071a35;text-decoration:none;font-size:12px;font-weight:bold}
+.afghan-hub-links a:hover{background:#fff}
+#matchesSection,#newsSection,#tvNav{scroll-margin-top:15px}
+@media(max-width:850px){
+ .cricket-desk{display:flex!important;flex-direction:column!important;gap:12px!important;padding:0 10px!important}
+ .cricket-desk>main.container{order:1!important;width:100%!important;max-width:none!important;padding:0!important}
+ .cricket-desk>.cricket-news-rail{order:2!important;position:static!important;width:100%!important;max-width:none!important;margin:0 0 16px!important;padding:12px!important}
+ .cricket-desk .news-scroll-window{height:250px!important}
+ .cricket-desk .rail-news{font-size:12px!important;padding:9px!important;line-height:1.7!important}
+ .cricket-desk .rail-news small{font-size:10px!important}
+ .cricket-desk .cricket-api-item{font-size:11px!important}
+ .cricket-desk .cricket-api-news h3{font-size:13px!important}
+ .cricket-desk .cricket-api-status{font-size:10px!important}
+ .cricket-quick-nav{width:96%;gap:6px}
+ .cricket-quick-nav a{padding:9px 11px;font-size:12px}
+ .afghan-hub{padding:13px}
+ .afghan-hub h2{font-size:17px}
+}
+@media(max-width:420px){
+ .cricket-quick-nav a{flex:1 1 42%;font-size:11px}
+ .afghan-hub-links a{flex:1 1 100%;text-align:center}
+}
 </style>
 </head>
 
@@ -557,10 +588,18 @@ footer{
 
 </header>
 
+<nav class="cricket-quick-nav" aria-label="د کرکټ چټک مینو">
+ <a href="#matchesSection">🔴 ژوندۍ لوبې</a>
+ <a href="#matchesSection" onclick="setTimeout(function(){const b=document.querySelectorAll('.filter')[1];if(b)filterTeam('afghanistan',b)},80)">🇦🇫 افغانستان</a>
+ <a href="#tvNav">📺 ژوندۍ تلویزیون</a>
+ <a href="#newsSection">📰 تازه خبرونه</a>
+ <a href="https://www.icc-cricket.com/rankings" target="_blank" rel="noopener">🏆 نړیوال مقامونه</a>
+</nav>
+
 
 
 <!-- د اصلي ویب‌سایټ په شان د کرکټ چینلونو مینو -->
-<div class="cricket-channel-nav">
+<div class="cricket-channel-nav" id="tvNav">
  <div class="dropdown">
   <button class="dropbtn" type="button" aria-expanded="false" onclick="toggleCricketMenu('cricketChannelMenu',this)">📺 د کرکټ ژوندۍ تلویزیونونه ▼</button>
   <div class="dropdown-content" id="cricketChannelMenu">
@@ -609,7 +648,7 @@ footer{
 
 <main class="container"><div class="cricket-columns"><div class="cricket-main">
 
-<div class="title">
+<div class="title" id="matchesSection">
 🏏 د نړۍ روانې کرکټ لوبې
 </div>
 
@@ -652,6 +691,17 @@ footer{
 <button class="formatChip" onclick="filterFormat('odi',this)">🏆 ODI / پنځوس اوریز</button>
 <button class="formatChip" onclick="filterFormat('test',this)">🔴 Test / ټېسټ</button>
 </div>
+
+<section class="afghan-hub" aria-label="د افغانستان کرکټ مرکز">
+ <h2>🇦🇫 د افغانستان کرکټ ځانګړی مرکز</h2>
+ <p>د افغان ملي لوبډلې خبرونه، رسمي مهالوېش، نړیوال مقامونه او د کرکټ بورډ تازه اعلانونه له باوري سرچینو تعقیب کړئ.</p>
+ <div class="afghan-hub-links">
+  <a href="https://www.afghancricket.af/" target="_blank" rel="noopener">د افغانستان کرکټ بورډ</a>
+  <a href="https://www.icc-cricket.com/teams/afghanistan" target="_blank" rel="noopener">د افغانستان ملي لوبډله</a>
+  <a href="https://www.icc-cricket.com/fixtures-results" target="_blank" rel="noopener">د لوبو مهالوېش</a>
+  <a href="https://www.icc-cricket.com/rankings" target="_blank" rel="noopener">د ICC نړیوال مقامونه</a>
+ </div>
+</section>
 <div id="matches">
 
 <div class="loading">
@@ -665,7 +715,7 @@ footer{
 </div>
 
 <section class="fixtureBox"><h2>📅 راتلونکې لوبې او مهالوېش</h2><p>د راتلونکو نړیوالو لوبو رسمي مهالوېش د ICC له سرچینې وګورئ.</p><a href="https://www.icc-cricket.com/fixtures-results" target="_blank" rel="noopener">د ICC راتلونکې لوبې او پایلې پرانیزئ ←</a></section>
-<section class="news">
+<section class="news" id="newsSection">
 
 <div class="title">
 📰 د نړۍ تازه کرکټ معلومات او د ICC خبرونه
@@ -1513,7 +1563,7 @@ async function loadCricketApiNews(){
  }catch(error){if(status)status.textContent="د کرکټ API سره اړیکه ونه شوه: "+error.message;}
 }
 loadCricketApiNews();
-setInterval(loadCricketApiNews,10000);
+setInterval(loadCricketApiNews,15000);
 
 /* =====================================================
    START
@@ -1524,7 +1574,7 @@ loadLive();
 
 /* هر 30 ثانیې Live لیست تازه کړه */
 
-setInterval(loadLive,10000);
+setInterval(loadLive,15000);
 
 
 /* د پرانیستل شوي سکورکارډ تازه کول */
