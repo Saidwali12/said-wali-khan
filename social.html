@@ -2306,23 +2306,22 @@ const fullName =
       $("postAvatar");
 
 
-    if (
-      sidebarAvatar &&
-      profilePhoto
-    ) {
-
-      sidebarAvatar.src =
-        safeURL(profilePhoto);
+    if (sidebarAvatar) {
+      if (profilePhoto) {
+        sidebarAvatar.src = safeURL(profilePhoto);
+        sidebarAvatar.style.visibility = "visible";
+      } else {
+        sidebarAvatar.removeAttribute("src");
+      }
     }
 
-
-    if (
-      postAvatar &&
-      profilePhoto
-    ) {
-
-      postAvatar.src =
-        safeURL(profilePhoto);
+    if (postAvatar) {
+      if (profilePhoto) {
+        postAvatar.src = safeURL(profilePhoto);
+        postAvatar.style.visibility = "visible";
+      } else {
+        postAvatar.removeAttribute("src");
+      }
     }
 
   }
@@ -4172,35 +4171,32 @@ async function loadProfile() {
         </div>
 
 
-        <div>
-
-          <label>
-            Profile Photo URL
-          </label>
-
-          <input
-            id="profileAvatarURL"
-            class="form-control"
-            type="url"
-            placeholder="https://..."
-          >
-
+        <div style="border:1px solid #e4e6eb;border-radius:12px;padding:14px">
+          <label style="display:block;font-weight:bold;margin-bottom:10px">📷 د پروفایل انځور</label>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <img id="profilePageAvatarPreview" alt="Profile photo" style="width:100px;height:100px;border-radius:50%;object-fit:cover;background:#eee;border:3px solid #1877f2">
+            <div style="display:grid;gap:8px">
+              <input id="profileAvatarFile" type="file" accept="image/*" class="form-control" onchange="previewSBookProfilePhoto(event)">
+              <button type="button" class="btn" onclick="uploadSBookProfilePhoto()">⬆️ انځور پورته او ثبت کړه</button>
+              <button type="button" class="btn btn-secondary" onclick="removeSBookProfilePhoto()">🗑️ اوسنی انځور لرې کړه</button>
+            </div>
+          </div>
+          <input id="profileAvatarURL" type="hidden">
+          <div id="profileAvatarStatus" class="muted" style="margin-top:8px"></div>
         </div>
 
-
-        <div>
-
-          <label>
-            Cover Photo URL
-          </label>
-
-          <input
-            id="profileCoverURL"
-            class="form-control"
-            type="url"
-            placeholder="https://..."
-          >
-
+        <div style="border:1px solid #e4e6eb;border-radius:12px;padding:14px">
+          <label style="display:block;font-weight:bold;margin-bottom:10px">🖼️ د پوښ انځور (Cover)</label>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <img id="profilePageCoverPreview" alt="Cover photo" style="width:180px;height:85px;object-fit:cover;border-radius:10px;background:#eee">
+            <div style="display:grid;gap:8px">
+              <input id="profileCoverFile" type="file" accept="image/*" class="form-control" onchange="previewSBookCoverPhoto(event)">
+              <button type="button" class="btn" onclick="uploadSBookCoverPhoto()">⬆️ Cover پورته او ثبت کړه</button>
+              <button type="button" class="btn btn-secondary" onclick="removeSBookCoverPhoto()">🗑️ Cover لرې کړه</button>
+            </div>
+          </div>
+          <input id="profileCoverURL" type="hidden">
+          <div id="profileCoverStatus" class="muted" style="margin-top:8px"></div>
         </div>
 
 
@@ -4316,15 +4312,16 @@ function fillProfileForm() {
   }
 
 
-  if (avatarInput) {
-    avatarInput.value =
-      avatar;
+  if (avatarInput) avatarInput.value = avatar;
+  if (coverInput) coverInput.value = cover;
+
+  const avatarPreview = $("profilePageAvatarPreview");
+  if (avatarPreview) {
+    avatarPreview.src = avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='100%25' height='100%25' fill='%23e4e6eb'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' font-size='48'%3E%F0%9F%91%A4%3C/text%3E%3C/svg%3E";
   }
-
-
-  if (coverInput) {
-    coverInput.value =
-      cover;
+  const coverPreview = $("profilePageCoverPreview");
+  if (coverPreview) {
+    coverPreview.src = cover || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='170'%3E%3Crect width='100%25' height='100%25' fill='%23e4e6eb'/%3E%3C/svg%3E";
   }
 
 
@@ -4354,20 +4351,14 @@ function fillProfileForm() {
   }
 
 
-  const avatarElement =
-    $("profilePageAvatar");
-
-  if (
-    avatarElement &&
-    avatar
-  ) {
-
-    avatarElement.src =
-      avatar;
-
-    avatarElement.style.visibility =
-      "visible";
-
+  const avatarElement = $("profilePageAvatar");
+  if (avatarElement) {
+    if (avatar) {
+      avatarElement.src = safeURL(avatar);
+      avatarElement.style.visibility = "visible";
+    } else {
+      avatarElement.style.visibility = "hidden";
+    }
   }
 
 }
@@ -50103,3 +50094,177 @@ window.createNewPost = createNewPost;
 window.createMediaPost = createMediaPost;
 </script>
 
+
+
+<script>
+/* S-Book profile and cover photo upload: isolated profile-only enhancement. */
+function previewSBookProfilePhoto(event) {
+  const file = event.target.files && event.target.files[0];
+  const preview = document.getElementById("profilePageAvatarPreview");
+  const status = document.getElementById("profileAvatarStatus");
+  if (!file) return;
+  if (!file.type || !file.type.startsWith("image/")) {
+    event.target.value = "";
+    if (status) status.textContent = "مهرباني وکړئ د انځور فایل وټاکئ.";
+    return;
+  }
+  if (file.size > 25 * 1024 * 1024) {
+    event.target.value = "";
+    if (status) status.textContent = "انځور باید له 25MB څخه کم وي.";
+    return;
+  }
+  if (preview) {
+    if (preview.dataset.previewUrl) URL.revokeObjectURL(preview.dataset.previewUrl);
+    const url = URL.createObjectURL(file);
+    preview.dataset.previewUrl = url;
+    preview.src = url;
+  }
+  if (status) status.textContent = "مخکتنه: د ثبت لپاره «انځور پورته او ثبت کړه» کېکاږئ.";
+}
+
+function previewSBookCoverPhoto(event) {
+  const file = event.target.files && event.target.files[0];
+  const preview = document.getElementById("profilePageCoverPreview");
+  const status = document.getElementById("profileCoverStatus");
+  if (!file) return;
+  if (!file.type || !file.type.startsWith("image/")) {
+    event.target.value = "";
+    if (status) status.textContent = "مهرباني وکړئ د انځور فایل وټاکئ.";
+    return;
+  }
+  if (file.size > 25 * 1024 * 1024) {
+    event.target.value = "";
+    if (status) status.textContent = "انځور باید له 25MB څخه کم وي.";
+    return;
+  }
+  if (preview) {
+    if (preview.dataset.previewUrl) URL.revokeObjectURL(preview.dataset.previewUrl);
+    const url = URL.createObjectURL(file);
+    preview.dataset.previewUrl = url;
+    preview.src = url;
+  }
+  if (status) status.textContent = "مخکتنه: د ثبت لپاره «Cover پورته او ثبت کړه» کېکاږئ.";
+}
+
+async function uploadSBookProfilePhoto() {
+  return uploadSBookProfileAsset("profileAvatarFile", "profile_photo_url", "profileAvatarStatus", "profilePageAvatarPreview", "profile");
+}
+async function uploadSBookCoverPhoto() {
+  return uploadSBookProfileAsset("profileCoverFile", "cover_photo_url", "profileCoverStatus", "profilePageCoverPreview", "cover");
+}
+
+async function uploadSBookProfileAsset(inputId, fieldName, statusId, previewId, kind) {
+  const input = document.getElementById(inputId);
+  const status = document.getElementById(statusId);
+  const file = input && input.files && input.files[0];
+  if (!file) {
+    if (status) status.textContent = "لومړی انځور انتخاب کړئ.";
+    return;
+  }
+  if (!sessionToken) {
+    if (status) status.textContent = "مهرباني وکړئ لومړی خپل حساب ته ننوځئ.";
+    return;
+  }
+  const buttons = document.querySelectorAll('button[onclick*="' + (kind === "profile" ? "uploadSBookProfilePhoto" : "uploadSBookCoverPhoto") + '"]');
+  buttons.forEach(b => { b.disabled = true; b.dataset.oldText = b.textContent; b.textContent = "⏳ پورته کېږي..."; });
+  if (status) status.textContent = "انځور ImageKit ته پورته کېږي...";
+  try {
+    const form = new FormData();
+    form.append("file", file);
+    const response = await fetch(API_URL + "/media/upload", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + sessionToken },
+      body: form
+    });
+    let data = {};
+    try { data = await response.json(); } catch (_) {}
+    const media = data.media || data.data || data;
+    const imageUrl = media.media_url || media.url || media.file_url || media.thumbnail_url;
+    if (!response.ok || data.success === false || !imageUrl) {
+      throw new Error(data.message || data.error || ("اپلوډ ناکام شو (HTTP " + response.status + ")"));
+    }
+    const payload = {};
+    payload[fieldName] = imageUrl;
+    if (kind === "profile") payload.avatar_url = imageUrl;
+    else payload.cover_url = imageUrl;
+    const saved = await apiRequest("/profile", {
+      method: "PUT",
+      body: JSON.stringify(payload)
+    });
+    if (!saved || saved.success !== true) throw new Error(saved && saved.message || "انځور پورته شو، خو پروفایل کې ثبت نه شو.");
+    const updated = saved.user || saved.data?.user;
+    if (updated) currentUser = updated;
+    else {
+      if (!currentUser) currentUser = {};
+      if (kind === "profile") {
+        currentUser.profile_photo_url = imageUrl;
+        currentUser.avatar_url = imageUrl;
+      } else {
+        currentUser.cover_photo_url = imageUrl;
+        currentUser.cover_url = imageUrl;
+      }
+    }
+    updateUserUI();
+    fillProfileForm();
+    if (status) status.textContent = "✅ انځور په بریالیتوب ثبت شو.";
+    if (input) input.value = "";
+  } catch (error) {
+    console.error("S-Book profile photo upload:", error);
+    if (status) status.textContent = "❌ " + (error.message || "ستونزه رامنځته شوه.");
+  } finally {
+    buttons.forEach(b => { b.disabled = false; b.textContent = b.dataset.oldText || b.textContent; });
+  }
+}
+
+async function removeSBookProfilePhoto() {
+  if (!confirm("ایا غواړئ خپل اوسنی پروفایل انځور لرې کړئ؟")) return;
+  const status = document.getElementById("profileAvatarStatus");
+  if (status) status.textContent = "⏳ انځور لرې کېږي...";
+  const result = await apiRequest("/profile", {
+    method: "PUT",
+    body: JSON.stringify({ profile_photo_url: "", avatar_url: "" })
+  });
+  if (!result || result.success !== true) {
+    if (status) status.textContent = "❌ " + (result && result.message || "انځور لرې نه شو.");
+    return;
+  }
+  currentUser = result.user || result.data?.user || currentUser || {};
+  currentUser.profile_photo_url = "";
+  currentUser.profile_photo = "";
+  currentUser.avatar_url = "";
+  const preview = document.getElementById("profilePageAvatarPreview");
+  if (preview) preview.removeAttribute("src");
+  updateUserUI();
+  fillProfileForm();
+  if (status) status.textContent = "✅ پروفایل انځور لرې شو.";
+}
+
+async function removeSBookCoverPhoto() {
+  if (!confirm("ایا غواړئ خپل Cover انځور لرې کړئ؟")) return;
+  const status = document.getElementById("profileCoverStatus");
+  if (status) status.textContent = "⏳ Cover لرې کېږي...";
+  const result = await apiRequest("/profile", {
+    method: "PUT",
+    body: JSON.stringify({ cover_photo_url: "", cover_url: "" })
+  });
+  if (!result || result.success !== true) {
+    if (status) status.textContent = "❌ " + (result && result.message || "Cover لرې نه شو.");
+    return;
+  }
+  currentUser = result.user || result.data?.user || currentUser || {};
+  currentUser.cover_photo_url = "";
+  currentUser.cover_photo = "";
+  currentUser.cover_url = "";
+  const preview = document.getElementById("profilePageCoverPreview");
+  if (preview) preview.removeAttribute("src");
+  updateUserUI();
+  fillProfileForm();
+  if (status) status.textContent = "✅ Cover انځور لرې شو.";
+}
+window.previewSBookProfilePhoto = previewSBookProfilePhoto;
+window.previewSBookCoverPhoto = previewSBookCoverPhoto;
+window.uploadSBookProfilePhoto = uploadSBookProfilePhoto;
+window.uploadSBookCoverPhoto = uploadSBookCoverPhoto;
+window.removeSBookProfilePhoto = removeSBookProfilePhoto;
+window.removeSBookCoverPhoto = removeSBookCoverPhoto;
+</script>
