@@ -565,91 +565,9 @@
     "© ټول حقوق خوندي دي.": {fa:"© تمامی حقوق محفوظ است.",en:"© All rights reserved.",ur:"© جملہ حقوق محفوظ ہیں۔",ar:"© جميع الحقوق محفوظة."}
   });
 
-  // Automatic fallback for static Pashto/Dari/Arabic text not yet in the dictionary.
-  // User-generated posts, comments, messages and editable fields remain excluded.
-  const autoTranslationCache = new Map();
-  const autoTranslationQueue = [];
-  let autoTranslationWorkers = 0;
-  function queueAutomaticTranslations(lang) {
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-    let node;
-    while ((node = walker.nextNode())) {
-      const parent = node.parentElement;
-      if (!parent || /^(SCRIPT|STYLE|TEXTAREA|INPUT)$/i.test(parent.tagName)) continue;
-      if (parent.closest("#sw-language-bar,[contenteditable='true'],marquee,.top-news,.ticker,.news-ticker,#jobsNewsTicker,[data-no-translate]")) continue;
-      if (!Object.prototype.hasOwnProperty.call(node, "__swOriginal")) node.__swOriginal = node.nodeValue;
-      const original = node.__swOriginal;
-      const trimmed = original.trim();
-      if (!trimmed || !/\p{L}/u.test(trimmed) || dict[trimmed]) continue;
-      if (trimmed.length > 500 || node.__swAutoQueued === lang) continue;
-      const cacheKey = lang + "|" + trimmed;
-      if (autoTranslationCache.has(cacheKey)) {
-        node.nodeValue = original.replace(trimmed, autoTranslationCache.get(cacheKey));
-        continue;
-      }
-      node.__swAutoQueued = lang;
-      autoTranslationQueue.push({node, original, trimmed, lang, cacheKey});
-    }
-    // Also cover form hints, select options and accessibility text.
-    document.querySelectorAll("input[placeholder],textarea[placeholder],[title],[aria-label],[alt],option,input[type='button'],input[type='submit'],input[type='reset']").forEach(el => {
-      const attrs = ["placeholder","title","aria-label","alt","value"];
-      attrs.forEach(attr => {
-        if (!el.hasAttribute(attr) && !(attr === "value" && /^(button|submit|reset)$/i.test(el.type || ""))) return;
-        const dataKey = "swAutoOriginal" + attr.replace(/(^|-)([a-z])/g, (_, p, ch) => ch.toUpperCase());
-        const current = attr === "value" ? el.value : el.getAttribute(attr);
-        if (el.dataset[dataKey] === undefined) el.dataset[dataKey] = current || "";
-        const originalValue = el.dataset[dataKey];
-        const trimmedValue = originalValue.trim();
-        if (!trimmedValue || !/\p{L}/u.test(trimmedValue) || dict[trimmedValue] || trimmedValue.length > 500) return;
-        const cacheKey = lang + "|" + trimmedValue;
-        if (autoTranslationCache.has(cacheKey)) {
-          if (attr === "value") el.value = autoTranslationCache.get(cacheKey);
-          else el.setAttribute(attr, autoTranslationCache.get(cacheKey));
-          return;
-        }
-        if (el.dataset["swAutoQueued" + attr] === lang) return;
-        el.dataset["swAutoQueued" + attr] = lang;
-        autoTranslationQueue.push({lang, trimmed:trimmedValue, cacheKey, apply:(translated) => {
-          if (!el.isConnected || window.__swActiveLanguage !== lang) return;
-          if (attr === "value") el.value = translated;
-          else el.setAttribute(attr, translated);
-        }});
-      });
-    });
-    document.querySelectorAll("option").forEach(el => {
-      if (el.dataset.swOriginalText === undefined) el.dataset.swOriginalText = el.textContent;
-      const originalValue = el.dataset.swOriginalText;
-      const trimmedValue = originalValue.trim();
-      if (!trimmedValue || !/\p{L}/u.test(trimmedValue) || dict[trimmedValue] || trimmedValue.length > 500) return;
-      const cacheKey = lang + "|" + trimmedValue;
-      if (autoTranslationCache.has(cacheKey)) { el.textContent = autoTranslationCache.get(cacheKey); return; }
-      if (el.dataset.swAutoOptionQueued === lang) return;
-      el.dataset.swAutoOptionQueued = lang;
-      autoTranslationQueue.push({lang, trimmed:trimmedValue, cacheKey, apply:(translated) => {
-        if (el.isConnected && window.__swActiveLanguage === lang) el.textContent = translated;
-      }});
-    });
-    runAutomaticTranslationWorkers();
-  }
-  function runAutomaticTranslationWorkers() {
-    while (autoTranslationWorkers < 2 && autoTranslationQueue.length) {
-      const task = autoTranslationQueue.shift();
-      autoTranslationWorkers++;
-      fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + task.lang + "&dt=t&q=" + encodeURIComponent(task.trimmed))
-        .then(response => { if (!response.ok) throw new Error("Translation unavailable"); return response.json(); })
-        .then(data => {
-          const translated = Array.isArray(data[0]) ? data[0].map(part => part[0] || "").join("") : "";
-          if (!translated) return;
-          autoTranslationCache.set(task.cacheKey, translated);
-          if (task.apply) task.apply(translated);
-          else if (task.node.isConnected && window.__swActiveLanguage === task.lang) {
-            task.node.nodeValue = task.original.replace(task.trimmed, translated);
-          }
-        })
-        .catch(() => {})
-        .finally(() => { autoTranslationWorkers--; runAutomaticTranslationWorkers(); });
-    }
-  }
+  // Local-only language system: no external machine-translation requests.
+  // Text without a reviewed dictionary entry remains in its original language.
+  function queueAutomaticTranslations() {}
 
   const langNames = {ps:"پښتو",fa:"دری",en:"English",ur:"اردو",ar:"العربية"};
   function apply(lang) {
