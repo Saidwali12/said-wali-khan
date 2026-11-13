@@ -49658,3 +49658,131 @@ function goBackToMainSite(){
 }
 </style>
 
+
+
+<!-- SW_FACEBOOK_NAV_V3 -->
+<style id="sw-facebook-nav-v3">
+#app .ebook-desktop-nav{max-width:none!important;gap:2px!important}
+#app .ebook-nav-btn{font-size:15px!important;font-weight:700!important;min-width:78px!important;padding:0 8px!important;white-space:nowrap!important}
+#app .ebook-nav-btn.active{color:#1877f2!important;border-bottom:3px solid #1877f2!important;background:#f0f7ff!important}
+#app .header-actions .header-button.active{background:#e7f3ff!important;color:#1877f2!important;box-shadow:inset 0 0 0 2px #1877f2!important}
+#app .sw-nav-menu{position:absolute;top:58px;right:12px;z-index:3000;width:min(330px,calc(100vw - 24px));padding:12px;background:#fff;border:1px solid #dddfe2;border-radius:12px;box-shadow:0 8px 28px #0002;display:none;direction:rtl}
+#app .sw-nav-menu.open{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+#app .sw-nav-menu button{border:0;border-radius:8px;padding:12px 8px;background:#f0f2f5;color:#1c1e21;text-align:right;font:700 14px Tahoma;cursor:pointer}
+#app .sw-nav-menu button:hover{background:#e7f3ff;color:#1877f2}
+#app .sw-section-placeholder{background:#fff;border:1px solid #e4e6eb;border-radius:13px;padding:28px 18px;text-align:center;box-shadow:0 1px 2px #0001}
+#app .sw-section-placeholder .sw-big-icon{font-size:48px;margin-bottom:10px}
+#app .sw-section-placeholder h2{font-size:21px;margin:0 0 9px}
+#app .sw-section-placeholder p{color:#65676b;line-height:1.8;margin:0 auto 14px;max-width:520px}
+#app .sw-section-placeholder small{display:inline-block;background:#fff7e6;color:#8a5b00;padding:7px 10px;border-radius:8px;line-height:1.7}
+#app .sw-composer-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid #e4e6eb}
+#app .sw-composer-actions button{flex:1;min-width:105px;border:0;border-radius:8px;background:#f0f2f5;color:#4b4f56;padding:10px 7px;font-weight:700;cursor:pointer}
+#app .sw-composer-actions button:hover{background:#e7f3ff;color:#1877f2}
+#app .sw-video-preview{display:none;margin-top:10px}
+#app .sw-video-preview video{width:100%;max-height:300px;border-radius:10px;background:#111}
+@media(max-width:720px){
+ #app .ebook-mobile-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+ #app .ebook-mobile-nav button.active{color:#1877f2!important;background:#e7f3ff!important;box-shadow:inset 0 3px #1877f2!important}
+ #app .sw-nav-menu{position:fixed;top:65px;right:8px}
+}
+</style>
+<script id="sw-facebook-nav-v3-script">
+(function(){
+ const $=id=>document.getElementById(id);
+ const pages=[
+  {id:"home",label:"کور",icon:"⌂",run:()=>{if(typeof showFeedPage==="function")showFeedPage();}},
+  {id:"reels",label:"ریلز",icon:"▶",placeholder:true},
+  {id:"market",label:"مارکېټ‌پلېس",icon:"🛍️",placeholder:true},
+  {id:"groups",label:"ګروپونه",icon:"👥",placeholder:true},
+  {id:"gaming",label:"ګېمینګ",icon:"🎮",placeholder:true},
+  {id:"menu",label:"مېنو",icon:"☰",menu:true}
+ ];
+ let active="home";
+ function setActive(id){
+  active=id;
+  document.querySelectorAll("#app .ebook-nav-btn,#app .ebook-mobile-nav button,#app .header-actions [data-sw-nav]").forEach(b=>{
+   b.classList.toggle("active",b.dataset.swNav===id);
+   if(b.tagName==="BUTTON")b.setAttribute("aria-current",b.dataset.swNav===id?"page":"false");
+  });
+ }
+ function placeholder(id){
+  const p=pages.find(x=>x.id===id); if(!p)return;
+  const main=$("mainContent"); if(!main)return;
+  main.innerHTML='<section class="sw-section-placeholder"><div class="sw-big-icon">'+p.icon+'</div><h2>'+p.label+'</h2><p>دا برخه د S-BOOK په مېنو کې چمتو شوې ده. د دې برخې د اصلي فعالیت لپاره لا د اړوند Worker API او SQL جدولونو اړتیا شته.</p><small>اوس مهال یوازې ډیزاین او د مېنو انتخاب فعال دی؛ د معلوماتو ثبت او شریکول لا نه دي نښلول شوي.</small><p style="margin-top:16px"><button class="btn" type="button" onclick="showFeedPage()">بېرته کورپاڼې ته</button></p></section>';
+ }
+ function navigate(id){
+  const p=pages.find(x=>x.id===id);if(!p)return;
+  if(p.menu){toggleMenu();return;}
+  setActive(id);
+  if(p.placeholder){placeholder(id);return;}
+  if(p.run)p.run();
+ }
+ function toggleMenu(){
+  const m=$("swFacebookMenu");if(!m)return;
+  m.classList.toggle("open");setActive(m.classList.contains("open")?"menu":active);
+ }
+ function buildMenu(){
+  if($("swFacebookMenu"))return;
+  const header=document.querySelector("#app .top-header");if(!header)return;
+  const menu=document.createElement("div");menu.id="swFacebookMenu";menu.className="sw-nav-menu";
+  menu.innerHTML='<button data-target="home">🏠 کورپاڼه</button><button data-target="reels">▶ ریلز</button><button data-target="market">🛍️ مارکېټ‌پلېس</button><button data-target="groups">👥 ګروپونه</button><button data-target="gaming">🎮 ګېمینګ</button><button data-target="profile">👤 اکاونټ</button><button data-target="messages">💬 مسنجر</button><button data-target="notifications">🔔 خبرتیاوې</button>';
+  header.appendChild(menu);
+  menu.addEventListener("click",e=>{const b=e.target.closest("[data-target]");if(!b)return;menu.classList.remove("open");const t=b.dataset.target;if(t==="profile"){setActive("profile");if(typeof loadProfile==="function")loadProfile();}else if(t==="messages"){setActive("messages");if(typeof loadMessagesPage==="function")loadMessagesPage();}else if(t==="notifications"){setActive("notifications");if(typeof loadNotificationsPage==="function")loadNotificationsPage();}else navigate(t);});
+  document.addEventListener("click",e=>{if(!menu.contains(e.target)&&!e.target.closest('[data-sw-nav="menu"]'))menu.classList.remove("open");});
+ }
+ function buildNavigation(){
+  const nav=document.querySelector("#app .ebook-desktop-nav");
+  if(nav){
+   nav.innerHTML="";
+   pages.forEach(p=>{const b=document.createElement("button");b.type="button";b.className="ebook-nav-btn";b.dataset.swNav=p.id;b.title=p.label;b.textContent=p.icon+" "+p.label;b.addEventListener("click",()=>navigate(p.id));nav.appendChild(b);});
+  }
+  const actions=document.querySelector("#app .header-actions");
+  if(actions){
+   actions.innerHTML='<button type="button" class="header-button" data-sw-nav="messages" title="مسنجر">💬</button><button type="button" class="header-button" data-sw-nav="notifications" title="خبرتیاوې">🔔</button><button type="button" class="header-button" data-sw-nav="profile" title="اکاونټ">👤</button><button type="button" class="header-button" onclick="logoutUser()" title="وتل">↪</button>';
+   actions.querySelector('[data-sw-nav="messages"]').addEventListener("click",()=>{setActive("messages");if(typeof loadMessagesPage==="function")loadMessagesPage();});
+   actions.querySelector('[data-sw-nav="notifications"]').addEventListener("click",()=>{setActive("notifications");if(typeof loadNotificationsPage==="function")loadNotificationsPage();});
+   actions.querySelector('[data-sw-nav="profile"]').addEventListener("click",()=>{setActive("profile");if(typeof loadProfile==="function")loadProfile();});
+  }
+  const mobile=document.querySelector("#app .ebook-mobile-nav");
+  if(mobile){
+   mobile.innerHTML="";
+   const items=[pages[0],pages[1],pages[5],{id:"messages",label:"مسنجر",icon:"💬"},{id:"notifications",label:"خبرتیاوې",icon:"🔔"}];
+   items.forEach(p=>{const b=document.createElement("button");b.type="button";b.dataset.swNav=p.id;b.innerHTML="<span>"+p.icon+"</span><span>"+p.label+"</span>";b.addEventListener("click",()=>{if(p.id==="messages"){setActive("messages");if(typeof loadMessagesPage==="function")loadMessagesPage();}else if(p.id==="notifications"){setActive("notifications");if(typeof loadNotificationsPage==="function")loadNotificationsPage();}else navigate(p.id);});mobile.appendChild(b);});
+  }
+  buildMenu();setActive("home");
+ }
+ function addComposerControls(){
+  const c=$("createPostContainer");if(!c||c.querySelector(".sw-composer-actions"))return;
+  const textarea=c.querySelector("textarea");
+  if(textarea)textarea.placeholder="څه فکر کوې؟";
+  const imageInput=$("postImageInput");
+  const actionHost=imageInput?.parentElement;
+  if(!actionHost)return;
+  const row=document.createElement("div");row.className="sw-composer-actions";
+  row.innerHTML='<button type="button" id="swPhotoAction">🖼️ عکس</button><button type="button" id="swVideoAction">🎬 ویډیو</button>';
+  actionHost.insertAdjacentElement("afterend",row);
+  $("swPhotoAction").addEventListener("click",()=>imageInput.click());
+  const video=document.createElement("input");video.type="file";video.accept="video/*";video.id="swVideoInput";video.hidden=true;c.appendChild(video);
+  const preview=document.createElement("div");preview.className="sw-video-preview";preview.id="swVideoPreview";c.appendChild(preview);
+  $("swVideoAction").addEventListener("click",()=>video.click());
+  video.addEventListener("change",()=>{
+   const f=video.files&&video.files[0];if(!f)return;
+   preview.style.display="block";preview.innerHTML="";
+   const v=document.createElement("video");v.controls=true;v.src=URL.createObjectURL(f);preview.appendChild(v);
+   const note=document.createElement("p");note.className="muted";note.style.marginTop="7px";note.textContent="ویډیو یوازې د مخکتنې لپاره ښکاري؛ د ویډیو د سرور اپلوډ API لا نه دی تایید شوی، نو دا به د پوسټ په توګه نه خپرېږي.";preview.appendChild(note);
+  });
+ }
+ const observer=new MutationObserver(()=>{addComposerControls();});
+ function init(){
+  buildNavigation();
+  addComposerControls();
+  observer.observe(document.body,{childList:true,subtree:true});
+ }
+ document.addEventListener("click",e=>{
+  const nav=e.target.closest("[data-sw-nav]");if(nav&&nav.dataset.swNav==="menu"){e.preventDefault();toggleMenu();}
+ });
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+ window.addEventListener("load",()=>{buildNavigation();addComposerControls();});
+})();
+</script>
+
