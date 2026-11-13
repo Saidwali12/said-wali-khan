@@ -560,98 +560,26 @@ nav {
 .live-update-more{display:inline-block;margin-top:8px;color:#946719;font-size:11px;font-weight:bold;text-decoration:none}
 @media(max-width:700px){.live-updates-grid{grid-template-columns:1fr}.live-update-column{padding:10px}.live-update-list{gap:6px}}
 
-/* BBC */
-
-.bbc-section {
-    background: white;
-    padding: 25px;
-    border-radius: 18px;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-}
-
-.bbc-heading {
-    background: linear-gradient(90deg,#800000,#b51f2a);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 10px;
-    margin-bottom: 16px;
-    font-size: 18px;
-    line-height: 1.5;
-    border-right: 4px solid var(--gold);
-}
-
-#bbc-news {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(min(100%,280px),1fr));
-    gap: 14px;
-    align-items: stretch;
-}
-.bbc-updated {
-    color: var(--muted);
-    font-size: 12px;
-    text-align: left;
-    margin: -10px 2px 14px;
-}
-.news-item {
-    min-width: 0;
-    min-height: 130px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow-wrap: anywhere;
-}
-
-.news-item {
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    padding: 16px;
-    transition: .25s;
-}
-
-.news-item:hover {
-    background: #fffaf0;
-    border-color: #dfc17f;
-    transform: translateY(-3px);
-}
-
-.news-item h3 {
-    display: flex;
-    align-items: flex-start;
-    gap: 7px;
-    font-size: 14px;
-    line-height: 1.75;
-}
-.news-item-icon {
-    flex: 0 0 auto;
-    font-size: 12px;
-    line-height: 1.8;
-    opacity: .8;
-}
-
-.news-item a {
-    color: var(--navy2);
-    text-decoration: none;
-}
-
-.news-item a:hover {
-    color: #ad7b27;
-}
-
-.news-item p {
-    color: var(--muted);
-    font-size: 12px;
-    margin-top: 8px;
-}
-
-.news-message {
-    grid-column: 1/-1;
-    text-align: center;
-    padding: 20px;
-    color: var(--muted);
-}
-
+/* د پنځو خبري سرچینو منظم جدولونه */
+.news-hub{background:#fff;padding:20px;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
+.news-hub-title{font-size:23px;color:var(--navy);text-align:center;margin-bottom:7px}
+.news-hub-intro{text-align:center;color:var(--muted);font-size:12px;margin-bottom:18px}
+.news-source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.news-source{min-width:0;border:1px solid var(--border);border-radius:13px;overflow:hidden;background:#f8fafc}
+.news-source-head{padding:10px 13px;background:linear-gradient(110deg,#071a35,#173e6c);color:#f4d58a;font-size:15px;font-weight:bold;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.news-source-status{font-size:10px;color:#e6edf7;font-weight:normal}
+.news-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.news-table td{padding:9px;border-bottom:1px solid #e6ebf2;vertical-align:middle}
+.news-table tr:last-child td{border-bottom:0}
+.news-table .news-photo-cell{width:88px}
+.news-table img{display:block;width:76px;height:56px;object-fit:cover;border-radius:8px;border:1px solid #e1e6ee;background:#edf1f6}
+.news-table .news-no-photo{width:76px;height:56px;border-radius:8px;background:#e9eef5;display:grid;place-items:center;font-size:22px}
+.news-table a{display:block;color:#173e6c;text-decoration:none;font-size:12px;line-height:1.7;font-weight:bold;overflow-wrap:anywhere}
+.news-table a:hover{color:#a87520;text-decoration:underline}
+.news-table small{display:block;color:#8a6a2d;font-size:10px;margin-top:3px;font-weight:normal}
+.news-source-error{padding:12px;color:var(--muted);font-size:11px;line-height:1.8;text-align:center}
+.news-hub-updated{text-align:center;color:var(--muted);font-size:11px;margin-top:15px}
+@media(max-width:760px){.news-source-grid{grid-template-columns:1fr}.news-hub{padding:12px}.news-table .news-photo-cell{width:82px}.news-table img,.news-table .news-no-photo{width:70px;height:52px}}
 /* اړیکې */
 
 #contact {
@@ -1292,20 +1220,35 @@ footer p {
 </div>
 </section>
 
-<!-- BBC World News -->
-
-<section class="section">
-
-<div class="bbc-section">
-
-<h2 class="bbc-heading">📰 BBC World News</h2>
-
-<div class="bbc-updated" id="bbc-updated">د خبرونو تازه کېدل...</div>
-<div id="bbc-news" aria-live="polite">
-<div class="news-message">د BBC نړیوال خبرونه لوډیږي...</div>
-</div>
-
-</div>
+<!-- د پنځو خبري سرچینو تازه خبرونه -->
+<section class="section" id="news-hub-section">
+ <div class="news-hub">
+  <h2 class="news-hub-title">🌍 د نړۍ او افغانستان تازه خبرونه</h2>
+  <p class="news-hub-intro">له هرې سرچینې څخه درې تازه خبرونه؛ د خبر په سرلیک کلیک وکړئ چې بشپړ راپور د اصلي سرچینې په پاڼه کې ولولئ.</p>
+  <div class="news-source-grid">
+   <section class="news-source" aria-label="BBC Pashto">
+    <div class="news-source-head"><span>🟢 بي‌بي‌سي پښتو</span><span class="news-source-status" id="news-status-bbc-ps">لوډېږي...</span></div>
+    <table class="news-table"><tbody id="news-rows-bbc-ps"><tr><td colspan="2" class="news-source-error">خبرونه لوډېږي...</td></tr></tbody></table>
+   </section>
+   <section class="news-source" aria-label="BBC Urdu">
+    <div class="news-source-head"><span>🟢 بي‌بي‌سي اردو</span><span class="news-source-status" id="news-status-bbc-ur">لوډېږي...</span></div>
+    <table class="news-table"><tbody id="news-rows-bbc-ur"><tr><td colspan="2" class="news-source-error">خبرونه لوډېږي...</td></tr></tbody></table>
+   </section>
+   <section class="news-source" aria-label="BBC World English">
+    <div class="news-source-head"><span>🔵 BBC World English</span><span class="news-source-status" id="news-status-bbc-en">لوډېږي...</span></div>
+    <table class="news-table"><tbody id="news-rows-bbc-en"><tr><td colspan="2" class="news-source-error">خبرونه لوډېږي...</td></tr></tbody></table>
+   </section>
+   <section class="news-source" aria-label="Al Jazeera">
+    <div class="news-source-head"><span>🔴 الجزیره نړیوال</span><span class="news-source-status" id="news-status-aljazeera">لوډېږي...</span></div>
+    <table class="news-table"><tbody id="news-rows-aljazeera"><tr><td colspan="2" class="news-source-error">خبرونه لوډېږي...</td></tr></tbody></table>
+   </section>
+   <section class="news-source" aria-label="Bakhtar official news">
+    <div class="news-source-head"><span>🇦🇫 د امارت رسمي خبرونه – باختر</span><span class="news-source-status" id="news-status-bakhtar">لوډېږي...</span></div>
+    <table class="news-table"><tbody id="news-rows-bakhtar"><tr><td colspan="2" class="news-source-error">خبرونه لوډېږي...</td></tr></tbody></table>
+   </section>
+  </div>
+  <div class="news-hub-updated" id="news-hub-updated">د خبرونو تازه کېدل...</div>
+ </div>
 </section>
 
 <!-- نور معلومات -->
@@ -1390,62 +1333,102 @@ WhatsApp 0799668428
 
 <a class="back-top" href="#top" aria-label="بېرته پورته">↑</a>
 
-<!-- BBC نړیوال خبرونه: په اتومات ډول تازه کېدل -->
+<!-- د پنځو خبري سرچینو RSS: درې درې خبرونه او موجود انځورونه -->
 <script>
-(function () {
-    const feed = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml&count=15";
-    const container = document.getElementById("bbc-news");
-    const updated = document.getElementById("bbc-updated");
-    if (!container) return;
-
-    async function loadBBCNews() {
-        try {
-            const response = await fetch(feed + "&_=" + Date.now(), { cache: "no-store" });
-            if (!response.ok) throw new Error("BBC feed unavailable");
-            const data = await response.json();
-            if (!data.items || !data.items.length) throw new Error("No BBC items");
-
-            const fragment = document.createDocumentFragment();
-            data.items.slice(0, 15).forEach(item => {
-                if (!item.title || !item.link) return;
-                const article = document.createElement("article");
-                article.className = "news-item";
-                const heading = document.createElement("h3");
-                const icon = document.createElement("span");
-                icon.className = "news-item-icon";
-                icon.setAttribute("aria-hidden", "true");
-                icon.textContent = "📰";
-                const link = document.createElement("a");
-                link.href = item.link;
-                link.target = "_blank";
-                link.rel = "noopener noreferrer";
-                link.textContent = item.title;
-                heading.appendChild(icon);
-                heading.appendChild(link);
-                const date = document.createElement("p");
-                const activeLang = document.documentElement.lang || "ps";
-                date.textContent = item.pubDate ? new Date(item.pubDate).toLocaleString(activeLang) : "BBC World News";
-                article.appendChild(heading);
-                article.appendChild(date);
-                fragment.appendChild(article);
-            });
-            if (!fragment.childNodes.length) throw new Error("No valid articles");
-            container.replaceChildren(fragment);
-            if (updated) updated.textContent = "وروستی تازه کېدل: " + new Date().toLocaleString();
-        } catch (error) {
-            if (!container.querySelector(".news-item")) {
-                container.innerHTML = '<div class="news-message">د BBC خبرونه اوس ترلاسه نه شول. مهرباني وکړئ لږ وروسته بیا هڅه وکړئ.</div>';
-            }
-            if (updated) updated.textContent = "د خبرونو د ترلاسه کولو هڅه وشوه؛ راتلونکی اتومات تازه کېدل به بیا وشي.";
-        }
-    }
-
-    loadBBCNews();
-    window.setInterval(loadBBCNews, 10 * 60 * 1000);
+(function(){
+ const sources=[
+  {id:"bbc-ps",url:"https://feeds.bbci.co.uk/pashto/rss.xml",name:"BBC پښتو"},
+  {id:"bbc-ur",url:"https://feeds.bbci.co.uk/urdu/rss.xml",name:"BBC اردو"},
+  {id:"bbc-en",url:"https://feeds.bbci.co.uk/news/world/rss.xml",name:"BBC World"},
+  {id:"aljazeera",url:"https://www.aljazeera.com/xml/rss/all.xml",name:"Al Jazeera"},
+  {id:"bakhtar",url:"https://www.bakhtarnews.af/en/rss/latest-posts",name:"باختر – رسمي خبري آژانس"}
+ ];
+ const proxy="https://proxy.cors.dev/";
+ const safeText=value=>(value||"").replace(/<[^>]*>/g," ").replace(/&nbsp;/g," ").trim();
+ function itemImage(node){
+  const selectors=["thumbnail","content","content:encoded","description"];
+  for(const name of selectors){
+   const nodes=Array.from(node.getElementsByTagName("*")).filter(el=>(el.localName||"").toLowerCase()===name);
+   for(const el of nodes){
+    const url=el.getAttribute("url")||el.getAttribute("href");
+    if(url&&/^https?:\/\//i.test(url))return url;
+    const html=el.textContent||"";
+    const match=html.match(/<img[^>]+src=[\"']([^\"']+)[\"']/i);
+    if(match&&/^https?:\/\//i.test(match[1]))return match[1];
+   }
+  }
+  const enclosure=node.querySelector("enclosure[url]");
+  const enclosureUrl=enclosure?.getAttribute("url");
+  return enclosureUrl&&/^https?:\/\//i.test(enclosureUrl)?enclosureUrl:"";
+ }
+ function itemLink(node){
+  const link=node.querySelector("link");
+  return link?.getAttribute("href")||link?.textContent?.trim()||node.querySelector("guid")?.textContent?.trim()||"";
+ }
+ function parseFeed(xmlText){
+  const xml=new DOMParser().parseFromString(xmlText,"application/xml");
+  if(xml.querySelector("parsererror"))throw new Error("RSS XML error");
+  return Array.from(xml.querySelectorAll("item,entry")).map(node=>{
+   const title=safeText(node.querySelector("title")?.textContent);
+   const link=itemLink(node);
+   const date=node.querySelector("pubDate,published,updated,date")?.textContent?.trim()||"";
+   return {title,link,date,image:itemImage(node)};
+  }).filter(item=>item.title&&/^https?:\/\//i.test(item.link)).slice(0,3);
+ }
+ function renderRows(source,items){
+  const body=document.getElementById("news-rows-"+source.id);
+  const status=document.getElementById("news-status-"+source.id);
+  if(!body||!status)return;
+  body.replaceChildren();
+  if(!items.length){
+   body.innerHTML='<tr><td colspan="2" class="news-source-error">اوس مهال د دې سرچینې خبرونه ترلاسه نه شول؛ د سرچینې اصلي وېب‌پاڼه وګورئ.</td></tr>';
+   status.textContent="لنډمهاله ستونزه";
+   return;
+  }
+  items.forEach((item,index)=>{
+   const tr=document.createElement("tr");
+   const photoCell=document.createElement("td");photoCell.className="news-photo-cell";
+   if(item.image){
+    const img=document.createElement("img");img.src=item.image;img.alt="د خبر انځور";img.loading="lazy";img.referrerPolicy="no-referrer";
+    img.onerror=()=>{const fallback=document.createElement("div");fallback.className="news-no-photo";fallback.textContent="📰";img.replaceWith(fallback);};
+    photoCell.appendChild(img);
+   }else{
+    const fallback=document.createElement("div");fallback.className="news-no-photo";fallback.textContent="📰";photoCell.appendChild(fallback);
+   }
+   const textCell=document.createElement("td");
+   const a=document.createElement("a");a.href=item.link;a.target="_blank";a.rel="noopener noreferrer";a.textContent=(index+1)+". "+item.title;
+   textCell.appendChild(a);
+   if(item.date){
+    const date=document.createElement("small");
+    const parsed=new Date(item.date);
+    date.textContent=Number.isNaN(parsed.getTime())?item.date:parsed.toLocaleString("ps-AF",{timeZone:"Asia/Kabul"});
+    textCell.appendChild(date);
+   }
+   tr.append(photoCell,textCell);body.appendChild(tr);
+  });
+  status.textContent="۳ تازه خبرونه";
+ }
+ async function loadSource(source){
+  const status=document.getElementById("news-status-"+source.id);
+  try{
+   const response=await fetch(proxy+source.url,{cache:"no-store"});
+   if(!response.ok)throw new Error("Feed request failed");
+   const items=parseFeed(await response.text());
+   renderRows(source,items);
+  }catch(error){
+   renderRows(source,[]);
+  }
+ }
+ async function refreshAll(){
+  await Promise.allSettled(sources.map(loadSource));
+  const updated=document.getElementById("news-hub-updated");
+  if(updated)updated.textContent="وروستی تازه کېدل: "+new Date().toLocaleString("ps-AF",{timeZone:"Asia/Kabul"});
+ }
+ refreshAll();
+ window.setInterval(refreshAll,10*60*1000);
 })();
 </script>
 
- 
 <!-- د کورپاڼې ژوندی تازه معلومات: د تایید شوو دندو او RSS خبرونو لنډیز -->
 <script>
 (function(){
