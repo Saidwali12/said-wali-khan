@@ -560,7 +560,6 @@
   const autoTranslationQueue = [];
   let autoTranslationWorkers = 0;
   function queueAutomaticTranslations(lang) {
-    if (lang === "ps") return;
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     let node;
     while ((node = walker.nextNode())) {
