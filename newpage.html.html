@@ -890,160 +890,66 @@ transform:translateY(-50%);
 
 
 /* =====================================================
-   PERSONAL
-   ۴۰٪ لویه شوې ساحه
+   PERSONAL PHOTO VERTICAL GALLERY
+   عکسونه له ښکته څخه پورته په مسلسل ډول
 ===================================================== */
 
 .personal{
-padding:15px;
+padding:14px;
 background:linear-gradient(135deg,#ffffff,#f3faff);
 }
 
-
-/*
-   پخوانی:
-   height:285px
-
-   نوی:
-   height:400px
-*/
-
-.personal-slide{
-display:none;
-height:400px;
+.personal-window{
+height:520px;
 overflow:hidden;
-border-radius:18px;
+position:relative;
+border-radius:16px;
 background:#eef7ff;
-box-shadow:0 5px 18px rgba(0,0,0,.18);
 }
 
-.personal-slide.active{
+.personal-track{
+display:flex;
+flex-direction:column;
+gap:13px;
+animation:personalScrollUp 42s linear infinite;
+will-change:transform;
+}
+
+.personal-window:hover .personal-track{
+animation-play-state:paused;
+}
+
+.personal-photo{
 display:block;
+flex:0 0 auto;
+height:260px;
+overflow:hidden;
+border-radius:15px;
+background:#dceeff;
+box-shadow:0 4px 14px rgba(0,0,0,.18);
+border:2px solid #fff;
 }
 
-
-/* د ټولو عکسونو عمومي اندازه */
-
-.personal-slide img{
+.personal-photo img{
 width:100%;
-height:400px;
-object-fit:cover;
-border-radius:18px;
+height:100%;
 display:block;
+object-fit:cover;
+transition:transform .5s ease;
 }
 
-
-/* =====================================================
-   د هر عکس جلا Animation
-===================================================== */
-
-
-/* عکس ۱ ـ نرم Zoom */
-
-.personal-slide:nth-child(1).active img{
-animation:personalZoom 5s ease-in-out;
+.personal-photo:hover img{
+transform:scale(1.06);
 }
 
-@keyframes personalZoom{
-
-0%{
-transform:scale(1);
-opacity:.2;
+@keyframes personalScrollUp{
+from{transform:translateY(0);}
+to{transform:translateY(-50%);}
 }
 
-100%{
-transform:scale(1.08);
-opacity:1;
+@media(prefers-reduced-motion:reduce){
+.personal-track{animation:none;}
 }
-
-}
-
-
-/* عکس ۲ ـ له ښي لوري حرکت */
-
-.personal-slide:nth-child(2).active img{
-animation:personalRight 5s ease-out;
-}
-
-@keyframes personalRight{
-
-0%{
-transform:translateX(45px) scale(1.04);
-opacity:0;
-}
-
-100%{
-transform:translateX(0) scale(1);
-opacity:1;
-}
-
-}
-
-
-/* عکس ۳ ـ له چپ لوري حرکت */
-
-.personal-slide:nth-child(3).active img{
-animation:personalLeft 5s ease-out;
-}
-
-@keyframes personalLeft{
-
-0%{
-transform:translateX(-45px) scale(1.04);
-opacity:0;
-}
-
-100%{
-transform:translateX(0) scale(1);
-opacity:1;
-}
-
-}
-
-
-/* عکس ۴ ـ نرم Rotate + Zoom */
-
-.personal-slide:nth-child(4).active img{
-animation:personalRotate 5s ease-out;
-}
-
-@keyframes personalRotate{
-
-0%{
-transform:scale(.88) rotate(-2deg);
-opacity:0;
-}
-
-100%{
-transform:scale(1) rotate(0);
-opacity:1;
-}
-
-}
-
-
-/* عکس ۵ ـ له ښکته پورته کېدل */
-
-.personal-slide:nth-child(5).active img{
-animation:personalUp 5s ease-out;
-}
-
-@keyframes personalUp{
-
-0%{
-transform:translateY(45px) scale(.97);
-opacity:0;
-}
-
-100%{
-transform:translateY(0) scale(1);
-opacity:1;
-}
-
-}
-
-
-/* د شخصي عکسونو لاندې معلومات */
 
 .personal-note{
 text-align:center;
@@ -2141,91 +2047,88 @@ target="_blank">
 
 
 <!-- =====================================================
-   شخصي عکسونه
+   شخصي عکسونه ـ مسلسل پورته تلونکې ګالري
 ===================================================== -->
 
 <div class="box">
 
 <div class="box-title">
-
-🖼️ دژوندی خاطری په مختلفوبرخو کی عکسونه
-
+🖼️ زما د ژوند، خاطرو او فعالیتونو انځورونه
 </div>
-
 
 <div class="personal">
 
+<div class="personal-window">
+<div class="personal-track">
 
-<div class="personal-slide active">
+<a class="personal-photo" href="photos1.jpg" target="_blank" rel="noopener">
+<img src="photos1.jpg" alt="د سیمینار ورکولو په جریان کې" loading="lazy">
+</a>
 
-<img
-src="photos1.jpg"
-alt="دسیمنارورکولو په جریان کی">
+<a class="personal-photo" href="photos9.jpg" target="_blank" rel="noopener">
+<img src="photos9.jpg" alt="د تخنیکي او مسلکي ګروپ" loading="lazy">
+</a>
+
+<a class="personal-photo" href="photos12.jpg" target="_blank" rel="noopener">
+<img src="photos12.jpg" alt="د چکر یو عکس" loading="lazy">
+</a>
+
+<a class="personal-photo" href="photos11.jpg" target="_blank" rel="noopener">
+<img src="photos11.jpg" alt="شخصي عکس" loading="lazy">
+</a>
+
+<a class="personal-photo" href="photos1%20(6).jpg" target="_blank" rel="noopener">
+<img src="photos1%20(6).jpg" alt="شخصي عکس" loading="lazy">
+</a>
+
+<a class="personal-photo" href="photos1%20(4).jpg" target="_blank" rel="noopener">
+<img src="photos1%20(4).jpg" alt="شخصي عکس" loading="lazy">
+</a>
+
+<a class="personal-photo" href="photos1%20(5).jpg" target="_blank" rel="noopener">
+<img src="photos1%20(5).jpg" alt="شخصي عکس" loading="lazy">
+</a>
+
+<!-- د حرکت د مسلسل ساتلو لپاره د عکسونو دوهمه کاپي -->
+<a class="personal-photo" href="photos1.jpg" target="_blank" rel="noopener" aria-hidden="true">
+<img src="photos1.jpg" alt="" loading="lazy">
+</a>
+
+<a class="personal-photo" href="photos9.jpg" target="_blank" rel="noopener" aria-hidden="true">
+<img src="photos9.jpg" alt="" loading="lazy">
+</a>
+
+<a class="personal-photo" href="photos12.jpg" target="_blank" rel="noopener" aria-hidden="true">
+<img src="photos12.jpg" alt="" loading="lazy">
+</a>
+
+<a class="personal-photo" href="photos11.jpg" target="_blank" rel="noopener" aria-hidden="true">
+<img src="photos11.jpg" alt="" loading="lazy">
+</a>
+
+<a class="personal-photo" href="photos1%20(6).jpg" target="_blank" rel="noopener" aria-hidden="true">
+<img src="photos1%20(6).jpg" alt="" loading="lazy">
+</a>
+
+<a class="personal-photo" href="photos1%20(4).jpg" target="_blank" rel="noopener" aria-hidden="true">
+<img src="photos1%20(4).jpg" alt="" loading="lazy">
+</a>
+
+<a class="personal-photo" href="photos1%20(5).jpg" target="_blank" rel="noopener" aria-hidden="true">
+<img src="photos1%20(5).jpg" alt="" loading="lazy">
+</a>
 
 </div>
-
-
-<div class="personal-slide">
-
-<img
-src="photos9.jpg"
-alt="دنخنیکی اومسلکی گروپ">
-
-</div>
-
-
-<div class="personal-slide">
-
-<img
-src="photos12.jpg"
-alt="دچکر یو عکس">
-
-</div>
-
-
-<div class="personal-slide">
-
-<img
-src="photos11.jpg"
-alt="شخصي عکس ۴">
-
-</div>
-
-
-<div class="personal-slide">
-
-<img
-src="photos1 (6).jpg"
-alt="شخصي عکس ۵">
-
-</div>
-<div class="personal-slide">
-
-<img
-src="photos1 (4).jpg"
-alt="شخصي عکس ۵">
-
-</div>
-</div>
-<div class="personal-slide">
-
-<img
-src="photos1 (5).jpg"
-alt="شخصي عکس ۵">
-
 </div>
 
 <div class="personal-note">
-
-✨ دژوند خاطرات ځانګړی فکر اوځآنګړی مفکوره اووطن دوستی؛
-
-
+✨ د ژوند خاطرې، ځانګړي فعالیتونه او د وطن مینه
+<br>د ګالري د درولو لپاره موږک پر انځورونو کېږدئ؛ پر هر انځور کلیک وکړئ چې لوی یې وګورئ.
 </div>
 
 </div>
 
 </div>
-
 
 </aside>
 
@@ -2306,49 +2209,7 @@ changeSlide,
 );
 
 
-/* =====================================================
-   PERSONAL SLIDER
-===================================================== */
-
-let personalIndex=0;
-
-const personalSlides=
-document.querySelectorAll(
-".personal-slide"
-);
-
-function changePersonal(){
-
-personalSlides.forEach(
-s=>s.classList.remove("active")
-);
-
-personalIndex++;
-
-if(
-personalIndex>=personalSlides.length
-){
-
-personalIndex=0;
-
-}
-
-personalSlides[
-personalIndex
-].classList.add("active");
-
-}
-
-
-/*
-   هر ۵ ثانیې وروسته نوی عکس
-*/
-
-setInterval(
-changePersonal,
-5000
-);
-
+/* شخصي عکسونه اوس د CSS په مسلسل عمودي حرکت ښودل کېږي. */
 
 /* =====================================================
    WEATHER LOCATIONS
