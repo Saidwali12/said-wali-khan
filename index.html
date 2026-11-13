@@ -560,11 +560,11 @@ nav {
 .live-update-more{display:inline-block;margin-top:8px;color:#946719;font-size:11px;font-weight:bold;text-decoration:none}
 @media(max-width:700px){.live-updates-grid{grid-template-columns:1fr}.live-update-column{padding:10px}.live-update-list{gap:6px}}
 
-/* د پنځو خبري سرچینو منظم جدولونه */
+/* د درې مهمو خبري سرچینو منظم جدولونه */
 .news-hub{background:#fff;padding:20px;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
 .news-hub-title{font-size:23px;color:var(--navy);text-align:center;margin-bottom:7px}
 .news-hub-intro{text-align:center;color:var(--muted);font-size:12px;margin-bottom:18px}
-.news-source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.news-source-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .news-source{min-width:0;border:1px solid var(--border);border-radius:13px;overflow:hidden;background:#f8fafc}
 .news-source-head{padding:10px 13px;background:linear-gradient(110deg,#071a35,#173e6c);color:#f4d58a;font-size:15px;font-weight:bold;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .news-source-status{font-size:10px;color:#e6edf7;font-weight:normal}
@@ -1245,7 +1245,7 @@ footer p {
 </div>
 </section>
 
-<!-- د پنځو خبري سرچینو تازه خبرونه -->
+<!-- د درې مهمو خبري سرچینو تازه خبرونه -->
 <section class="section" id="news-hub-section">
  <div class="news-hub">
   <h2 class="news-hub-title">🌍 د نړۍ او افغانستان تازه خبرونه</h2>
@@ -1258,14 +1258,6 @@ footer p {
    <section class="news-source" aria-label="BBC Urdu">
     <div class="news-source-head"><span>🟢 بي‌بي‌سي اردو</span><span class="news-source-status" id="news-status-bbc-ur">لوډېږي...</span></div>
     <table class="news-table"><tbody id="news-rows-bbc-ur"><tr><td colspan="2" class="news-source-error">خبرونه لوډېږي...</td></tr></tbody></table>
-   </section>
-   <section class="news-source" aria-label="BBC World English">
-    <div class="news-source-head"><span>🔵 BBC World English</span><span class="news-source-status" id="news-status-bbc-en">لوډېږي...</span></div>
-    <table class="news-table"><tbody id="news-rows-bbc-en"><tr><td colspan="2" class="news-source-error">خبرونه لوډېږي...</td></tr></tbody></table>
-   </section>
-   <section class="news-source" aria-label="Al Jazeera">
-    <div class="news-source-head"><span>🔴 الجزیره نړیوال</span><span class="news-source-status" id="news-status-aljazeera">لوډېږي...</span></div>
-    <table class="news-table"><tbody id="news-rows-aljazeera"><tr><td colspan="2" class="news-source-error">خبرونه لوډېږي...</td></tr></tbody></table>
    </section>
    <section class="news-source" aria-label="Bakhtar official news">
     <div class="news-source-head"><span>🇦🇫 د امارت رسمي خبرونه – باختر</span><span class="news-source-status" id="news-status-bakhtar">لوډېږي...</span></div>
@@ -1364,8 +1356,6 @@ WhatsApp 0799668428
  const sources=[
   {id:"bbc-ps",url:"https://feeds.bbci.co.uk/pashto/rss.xml",name:"BBC پښتو"},
   {id:"bbc-ur",url:"https://feeds.bbci.co.uk/urdu/rss.xml",name:"BBC اردو"},
-  {id:"bbc-en",url:"https://feeds.bbci.co.uk/news/world/rss.xml",name:"BBC World"},
-  {id:"aljazeera",url:"https://www.aljazeera.com/xml/rss/all.xml",name:"Al Jazeera"},
   {id:"bakhtar",url:"https://www.bakhtarnews.af/en/rss/latest-posts",name:"باختر – رسمي خبري آژانس"}
  ];
  const proxy="https://proxy.cors.dev/";
