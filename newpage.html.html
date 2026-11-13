@@ -758,63 +758,109 @@ font-weight:bold;
 
 
 /* =====================================================
-   NEWSPAPERS AND MAGAZINES
+   LIVE MAGAZINE PUBLICATIONS
 ===================================================== */
 
-.publication-list{
-max-height:690px;
+.magazine-intro{
+padding:11px 13px;
+color:#526579;
+font-size:11px;
+line-height:1.9;
+background:#f4faff;
+text-align:center;
+}
+
+.magazine-feed{
+max-height:850px;
 overflow-y:auto;
 padding:10px;
 background:#fff;
 }
 
-.publication-group-title{
-margin:8px 0 6px;
-padding:9px 10px;
-border-radius:9px;
-background:linear-gradient(135deg,#075ca8,#1296df);
-color:#fff;
-font-size:13px;
-font-weight:bold;
-text-align:center;
+.magazine-card{
+display:grid;
+grid-template-columns:105px minmax(0,1fr);
+gap:10px;
+padding:11px 0;
+border-bottom:1px solid #e2edf5;
+direction:ltr;
 }
 
-.publication-link{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:8px;
-padding:10px 8px;
-margin:5px 0;
-border:1px solid #e0edf7;
-border-right:4px solid #d9ae52;
-border-radius:9px;
-background:#f8fcff;
+.magazine-card img{
+width:105px;
+height:135px;
+object-fit:cover;
+border-radius:8px;
+background:#eaf2f8;
+}
+
+.magazine-card-content{
+min-width:0;
+direction:ltr;
+text-align:left;
+}
+
+.magazine-name{
+color:#b18428;
+font-size:10px;
+font-weight:bold;
+margin-bottom:5px;
+}
+
+.magazine-card a{
+display:block;
 color:#075ca8;
 font-size:13px;
+line-height:1.55;
 font-weight:bold;
 text-decoration:none;
-transition:background .2s,transform .2s;
 }
 
-.publication-link:hover{
-background:#eaf5ff;
-transform:translateX(-2px);
+.magazine-card a:hover{
+text-decoration:underline;
 }
 
-.publication-link span{
+.magazine-summary{
+color:#566575;
+font-size:10px;
+line-height:1.7;
+margin-top:5px;
+}
+
+.magazine-date{
+color:#8995a1;
+font-size:9px;
+margin-top:6px;
+}
+
+.magazine-loading,.magazine-empty{
+padding:22px 10px;
+text-align:center;
+color:#64788b;
+font-size:12px;
+line-height:1.9;
+}
+
+.magazine-footnote{
+padding:10px 12px;
+background:#f8fbff;
 color:#718096;
 font-size:10px;
-font-weight:normal;
-white-space:nowrap;
+line-height:1.9;
 }
 
-.publication-note{
-padding:10px 6px 4px;
-color:#68798a;
-font-size:10px;
-line-height:1.9;
-text-align:center;
+@media(max-width:550px){
+.magazine-card{
+grid-template-columns:88px minmax(0,1fr);
+gap:8px;
+}
+.magazine-card img{
+width:88px;
+height:118px;
+}
+.magazine-card a{
+font-size:12px;
+}
 }
 
 /* =====================================================
@@ -1865,45 +1911,27 @@ SIDEBAR
 
 
 <!-- =====================================================
-   د نړۍ مشهورې ورځپاڼې او مجلې
+   د نړۍ د مجلو تازه ګڼې او خپرونې
 ===================================================== -->
 
-<div class="box">
+<div class="box magazine-box">
 
 <div class="box-title">
-📚 د نړۍ مشهورې ورځپاڼې او مجلې
+📚 د نړۍ مشهورې مجلې ـ تازه خپرونې او ګڼې
 </div>
 
-<div class="publication-list">
-
-<div class="publication-group-title">📰 نړیوالې ورځپاڼې</div>
-<a class="publication-link" href="https://www.nytimes.com/" target="_blank" rel="noopener noreferrer">The New York Times <span>امریکا</span></a>
-<a class="publication-link" href="https://www.theguardian.com/international" target="_blank" rel="noopener noreferrer">The Guardian <span>بریتانیا</span></a>
-<a class="publication-link" href="https://www.washingtonpost.com/" target="_blank" rel="noopener noreferrer">The Washington Post <span>امریکا</span></a>
-<a class="publication-link" href="https://www.ft.com/" target="_blank" rel="noopener noreferrer">Financial Times <span>اقتصاد</span></a>
-<a class="publication-link" href="https://www.independent.co.uk/" target="_blank" rel="noopener noreferrer">The Independent <span>بریتانیا</span></a>
-<a class="publication-link" href="https://www.aljazeera.com/" target="_blank" rel="noopener noreferrer">Al Jazeera <span>نړیوال</span></a>
-
-<div class="publication-group-title">📖 مشهورې اوونیزې او عمومي مجلې</div>
-<a class="publication-link" href="https://time.com/" target="_blank" rel="noopener noreferrer">TIME <span>خبرونه او ټولنه</span></a>
-<a class="publication-link" href="https://www.economist.com/" target="_blank" rel="noopener noreferrer">The Economist <span>سیاست او اقتصاد</span></a>
-<a class="publication-link" href="https://www.newyorker.com/" target="_blank" rel="noopener noreferrer">The New Yorker <span>کلتور او تحلیل</span></a>
-<a class="publication-link" href="https://www.smithsonianmag.com/" target="_blank" rel="noopener noreferrer">Smithsonian <span>تاریخ او کلتور</span></a>
-<a class="publication-link" href="https://www.nationalgeographic.com/" target="_blank" rel="noopener noreferrer">National Geographic <span>طبیعت او جغرافیه</span></a>
-<a class="publication-link" href="https://www.forbes.com/" target="_blank" rel="noopener noreferrer">Forbes <span>سوداګري</span></a>
-
-<div class="publication-group-title">🔬 علمي او ټکنالوژۍ مجلې</div>
-<a class="publication-link" href="https://www.scientificamerican.com/" target="_blank" rel="noopener noreferrer">Scientific American <span>ساینس</span></a>
-<a class="publication-link" href="https://www.nature.com/" target="_blank" rel="noopener noreferrer">Nature <span>علمي څېړنې</span></a>
-<a class="publication-link" href="https://www.science.org/" target="_blank" rel="noopener noreferrer">Science <span>څېړنې</span></a>
-<a class="publication-link" href="https://www.newscientist.com/" target="_blank" rel="noopener noreferrer">New Scientist <span>نوې موندنې</span></a>
-<a class="publication-link" href="https://www.wired.com/" target="_blank" rel="noopener noreferrer">WIRED <span>ټکنالوژي</span></a>
-<a class="publication-link" href="https://www.technologyreview.com/" target="_blank" rel="noopener noreferrer">MIT Technology Review <span>نوښت او AI</span></a>
-<a class="publication-link" href="https://techcrunch.com/" target="_blank" rel="noopener noreferrer">TechCrunch <span>ډیجیټل نړۍ</span></a>
-
-<div class="publication-note">د هرې خپرونې پر نوم کلیک وکړئ؛ د هغې رسمي وېب‌پاڼه به په نوې کړکۍ کې پرانیستل شي. ځینې مجلې د بشپړو مقالو لوستلو لپاره ګډون غواړي.</div>
-
+<div class="magazine-intro">
+د مشهورو اوونیزو او عمومي مجلو وروستي خپاره شوي مطالب، د پوښ/مقالې انځورونه، د خپرېدو نېټه او لنډیزونه دلته په اتومات ډول ښکاري.
 </div>
+
+<div id="magazineFeed" class="magazine-feed">
+<div class="magazine-loading">د مجلو تازه خپرونې راټولېږي...</div>
+</div>
+
+<div class="magazine-footnote">
+یادونه: دا برخه د خپرونکو د RSS له لارې تازه مطالب او د هغوی انځورونه رااخلي؛ دا د مجلو د چاپ شوو ګڼو بشپړ PDF یا سکین شوې نسخې نه دي. د بشپړې ګڼې لوستلو لپاره د خپرونکي رسمي لینک پرانیزئ؛ ځینې مطالب ګډون غواړي.
+</div>
+
 </div>
 
 
@@ -2790,11 +2818,96 @@ results.innerHTML=
 }
 
 
-document.getElementById(
-"google"
-).href=
+document.g/* =====================================================
+   LIVE MAGAZINE FEEDS
+   د مشهورو مجلو تازه خپرونې او انځورونه
+===================================================== */
 
-"https://www.google.com/search?q="+
+const MAGAZINE_PROXY="https://api.rss2json.com/v1/api.json?rss_url=";
+
+const magazineFeeds=[
+{name:"TIME Magazine",url:"https://time.com/feed/"},
+{name:"The Economist",url:"https://www.economist.com/latest/rss.xml"},
+{name:"The New Yorker",url:"https://www.newyorker.com/feed/everything"},
+{name:"Smithsonian Magazine",url:"https://www.smithsonianmag.com/rss/latest_articles/"},
+{name:"National Geographic",url:"https://www.nationalgeographic.com/feed"},
+{name:"Scientific American",url:"https://www.scientificamerican.com/feed/"},
+{name:"Forbes",url:"https://www.forbes.com/innovation/feed/"},
+{name:"New Scientist",url:"https://www.newscientist.com/feed/home/"}
+];
+
+function magazineText(value){
+const el=document.createElement("div");
+el.innerHTML=value||"";
+return (el.textContent||el.innerText||"").replace(/\\s+/g," ").trim().slice(0,260);
+}
+
+function magazineImage(item){
+if(item.thumbnail)return item.thumbnail;
+if(item.enclosure&&item.enclosure.link)return item.enclosure.link;
+const raw=item.description||item.content||"";
+const m=raw.match(/<img[^>]+src=["']([^"']+)/i);
+return m?m[1]:"";
+}
+
+async function readMagazineFeed(feed){
+try{
+const response=await fetch(MAGAZINE_PROXY+encodeURIComponent(feed.url));
+if(!response.ok)throw new Error("Magazine feed request failed");
+const data=await response.json();
+if(data.status!=="ok"||!Array.isArray(data.items))return [];
+return data.items.slice(0,5).map(item=>({
+name:feed.name,
+title:magazineText(item.title),
+summary:magazineText(item.description||item.content),
+link:item.link||"",
+image:magazineImage(item),
+date:item.pubDate?new Date(item.pubDate):null
+})).filter(item=>item.title&&item.link);
+}catch(error){
+console.warn("Magazine feed unavailable:",feed.name,error);
+return [];
+}
+}
+
+async function loadMagazinePublications(){
+const target=document.getElementById("magazineFeed");
+if(!target)return;
+target.innerHTML='<div class="magazine-loading">د مجلو تازه خپرونې راټولېږي...</div>';
+const groups=await Promise.all(magazineFeeds.map(readMagazineFeed));
+const seen=new Set();
+const items=groups.flat().filter(item=>{
+const key=item.link.split("?")[0];
+if(seen.has(key))return false;
+seen.add(key);
+return true;
+}).sort((a,b)=>(b.date?b.date.getTime():0)-(a.date?a.date.getTime():0));
+
+if(!items.length){
+target.innerHTML='<div class="magazine-empty">اوسمهال د مجلو اتومات خپرونې نه ترلاسه کېږي. لږ وروسته بیا هڅه وکړئ.</div>';
+return;
+}
+
+target.innerHTML=items.map(item=>{
+const date=item.date&&!isNaN(item.date.getTime())?item.date.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}):"";
+const image=item.image?'<img src="'+item.image.replace(/"/g,"&quot;")+'" alt="'+item.name.replace(/"/g,"&quot;")+'" loading="lazy" onerror="this.style.display=\'none\'">':'<div class="magazine-cover-placeholder">📖</div>';
+return '<article class="magazine-card">'+image+
+'<div class="magazine-card-content">'+
+'<div class="magazine-name">'+item.name+'</div>'+
+'<a href="'+item.link+'" target="_blank" rel="noopener noreferrer">'+item.title+'</a>'+
+(item.summary?'<div class="magazine-summary">'+item.summary+'</div>':'')+
+'<div class="magazine-date">'+(date?'🗓 '+date:'')+'</div>'+
+'</div></article>';
+}).join("");
+}
+
+loadMagazinePublications();
+setInterval(loadMagazinePublications,30*60*1000);
+
+/* د مجلو د خپرونو سرچینې د خپرونکو RSS دي؛ د هر سرلیک لینک اصلي خپرونې ته ځي. */
+
+
+?q="+
 encodeURIComponent(q);
 
 
