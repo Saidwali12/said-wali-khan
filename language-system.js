@@ -20,6 +20,15 @@
   } catch (e) { selected = "ps"; }
 
   function setDirection(lang) {
+    // د براوزر/Google Translate له خوا د ټولې پاڼې د بیا ژباړلو مخنیوی؛ ژباړه زموږ خپل سیستم کوي.
+    document.documentElement.setAttribute("translate", "no");
+    if (document.body) document.body.setAttribute("translate", "no");
+    if (!document.querySelector('meta[name="google"][content="notranslate"]')) {
+      var noTranslateMeta = document.createElement("meta");
+      noTranslateMeta.name = "google";
+      noTranslateMeta.content = "notranslate";
+      document.head.appendChild(noTranslateMeta);
+    }
     var rtl = lang !== "en";
     document.documentElement.setAttribute("lang", lang);
     document.documentElement.setAttribute("dir", rtl ? "rtl" : "ltr");
