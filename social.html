@@ -49797,3 +49797,77 @@ function goBackToMainSite(){
 })();
 </script>
 
+
+
+<!-- S-BOOK FACEBOOK-STYLE DESIGN LAYER -->
+<style id="sw-facebook-polish-v4">
+#app .top-header{
+  position:sticky!important;top:0!important;z-index:7000!important;
+  min-height:64px!important;height:auto!important;padding:5px 16px!important;
+  display:flex!important;align-items:center!important;gap:14px!important;
+  background:#fff!important;color:#1c1e21!important;
+  border-bottom:1px solid #dddfe2!important;box-shadow:0 1px 3px rgba(0,0,0,.08)!important
+}
+#app .brand{color:#1877f2!important;font-size:27px!important;font-weight:900!important;letter-spacing:-.5px!important}
+#app .search-input{background:#f0f2f5!important;border:0!important;color:#1c1e21!important;min-height:42px!important}
+#app .ebook-desktop-nav{height:54px!important;flex:1 1 auto!important;display:flex!important;align-items:stretch!important;justify-content:center!important;gap:5px!important}
+#app .ebook-nav-btn{position:relative!important;min-width:54px!important;max-width:112px!important;height:52px!important;flex:1 1 0!important;border:0!important;border-radius:9px 9px 0 0!important;background:transparent!important;color:#65676b!important;font-size:25px!important;padding:0 8px!important;display:flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
+#app .ebook-nav-btn.active{color:#1877f2!important;background:#f0f7ff!important;border-bottom:3px solid #1877f2!important}
+#app .ebook-nav-btn:hover,#app .header-actions .header-button:hover{background:#f0f2f5!important;color:#1877f2!important}
+#app .ebook-nav-btn::after,#app .header-actions .header-button::after{
+ content:attr(data-tooltip);position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(-3px);
+ background:#242526;color:#fff;font:600 12px Tahoma,Arial,sans-serif;padding:6px 9px;border-radius:7px;
+ white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease,transform .15s ease;z-index:9000
+}
+#app .ebook-nav-btn:hover::after,#app .header-actions .header-button:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
+#app .header-actions{display:flex!important;gap:7px!important;align-items:center!important}
+#app .header-actions .header-button{position:relative!important;width:42px!important;height:42px!important;min-width:42px!important;border:0!important;border-radius:50%!important;background:#e4e6eb!important;color:#1c1e21!important;padding:0!important;font-size:19px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+#app .main-container{max-width:1500px!important;margin:14px auto!important;padding:0 16px 30px!important}
+#app .main-grid{gap:18px!important;align-items:start!important}
+#app .left-sidebar,#app .right-sidebar{position:sticky!important;top:78px!important;max-height:calc(100vh - 90px)!important;overflow:auto!important;scrollbar-width:thin!important}
+#app .sidebar-card,#app .card,#app .post-card{border:1px solid #e4e6eb!important;box-shadow:0 1px 2px rgba(0,0,0,.08)!important;border-radius:12px!important}
+#app .sidebar-item{border-radius:9px!important;transition:background .15s ease!important}
+#app .sidebar-item:hover{background:#f0f2f5!important}
+#app #mainContent{min-width:0!important}
+#app .sw-nav-menu{top:66px!important;box-shadow:0 8px 28px rgba(0,0,0,.18)!important;border:1px solid #e4e6eb!important}
+#app .ebook-mobile-nav button{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;font-size:12px!important;font-weight:700!important}
+#app .ebook-mobile-nav button span:first-child{font-size:21px!important;line-height:1.2!important}
+@media(min-width:721px) and (max-width:1050px){
+ #app .ebook-nav-btn{font-size:22px!important;min-width:42px!important;padding:0 3px!important}
+ #app .brand{font-size:23px!important}
+ #app .search-container{max-width:260px!important}
+}
+@media(max-width:720px){
+ #app .top-header{background:#fff!important;padding:6px 9px!important;gap:8px!important}
+ #app .brand{font-size:23px!important}
+ #app .header-actions .header-button{width:38px!important;height:38px!important;min-width:38px!important}
+ #app .main-container{margin:8px auto!important;padding:0 7px 90px!important}
+ #app .left-sidebar,#app .right-sidebar{display:none!important}
+ #app .ebook-mobile-nav{background:rgba(255,255,255,.98)!important;backdrop-filter:blur(10px)!important}
+ #app .ebook-mobile-nav button{font-size:10px!important}
+}
+</style>
+<script id="sw-facebook-polish-v4-script">
+(function(){
+ function polish(){
+  const nav=document.querySelector("#app .ebook-desktop-nav");
+  if(nav){
+   nav.querySelectorAll("button").forEach(b=>{
+    const label=b.title||b.getAttribute("aria-label")||b.dataset.tooltip||b.textContent.trim();
+    const icon=(b.textContent.trim().match(/^\S+/)||["•"])[0];
+    b.dataset.tooltip=label;b.setAttribute("aria-label",label);b.title=label;
+    b.textContent=icon;
+   });
+  }
+  document.querySelectorAll("#app .header-actions .header-button").forEach(b=>{
+   const label=b.title||b.getAttribute("aria-label")||b.textContent.trim();
+   b.dataset.tooltip=label;b.setAttribute("aria-label",label);
+  });
+ }
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",polish);
+ else polish();
+ window.addEventListener("load",polish);
+ const app=document.getElementById("app");
+ if(app)new MutationObserver(polish).observe(app,{childList:true,subtree:true});
+})();
+</script>
