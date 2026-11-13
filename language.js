@@ -708,8 +708,23 @@
   function observeTranslations() {
     let active = "ps";
     try { active = localStorage.getItem("sw_site_language") || "ps"; } catch(e) {}
-    const observer = new MutationObserver(() => apply(window.__swActiveLanguage || active));
-    observer.observe(document.body, {childList:true,subtree:true});
+    let queued = false;
+    const observer = new MutationObserver(() => {
+      if (queued) return;
+      queued = true;
+      Promise.resolve().then(() => {
+        queued = false;
+        active = window.__swActiveLanguage || active;
+        apply(active);
+      });
+    });
+    // Re-apply when pages insert menus, forms, cards, or change accessible labels.
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["placeholder", "title", "aria-label", "alt"]
+    });
   }
   function startLanguageSystem() {
     // Restore the visitor's last selected language on every page.
