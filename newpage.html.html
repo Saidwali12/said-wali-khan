@@ -758,136 +758,64 @@ font-weight:bold;
 
 
 /* =====================================================
-   NEWS
+   NEWSPAPERS AND MAGAZINES
 ===================================================== */
 
-.news{
-height:650px;
-overflow:hidden;
+.publication-list{
+max-height:690px;
+overflow-y:auto;
+padding:10px;
+background:#fff;
 }
 
-.news-list{
-animation:newsMove 55s linear infinite;
-}
-
-.news-list:hover{
-animation-play-state:paused;
-}
-
-.news-item{
-padding:12px;
-border-bottom:1px solid #ddd;
-background:white;
-}
-
-.news-item img{
-width:100%;
-height:135px;
-object-fit:cover;
-border-radius:10px;
-margin-bottom:6px;
-}
-
-.news-item a{
-color:#075ca8;
-text-decoration:none;
-font-size:14px;
-line-height:1.6;
+.publication-group-title{
+margin:8px 0 6px;
+padding:9px 10px;
+border-radius:9px;
+background:linear-gradient(135deg,#075ca8,#1296df);
+color:#fff;
+font-size:13px;
 font-weight:bold;
-display:block;
+text-align:center;
 }
 
-.news-summary{
-font-size:11px;
-line-height:1.8;
-color:#555;
-margin-top:5px;
-}
-
-.news-source{
-font-size:9px;
-color:#888;
-margin-top:4px;
-}
-
-@keyframes newsMove{
-
-from{
-transform:translateY(0);
-}
-
-to{
-transform:translateY(-50%);
-}
-
-}
-
-
-/* =====================================================
-   TECHNOLOGY NEWS
-===================================================== */
-
-.tech-news{
-height:520px;
-overflow:hidden;
-}
-
-.tech-news-list{
-animation:techMove 50s linear infinite;
-}
-
-.tech-news-list:hover{
-animation-play-state:paused;
-}
-
-.tech-news-item{
-padding:12px;
-border-bottom:1px solid #ddd;
-background:white;
-}
-
-.tech-news-item img{
-width:100%;
-height:135px;
-object-fit:cover;
-border-radius:10px;
-margin-bottom:7px;
-}
-
-.tech-news-item a{
-display:block;
+.publication-link{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:8px;
+padding:10px 8px;
+margin:5px 0;
+border:1px solid #e0edf7;
+border-right:4px solid #d9ae52;
+border-radius:9px;
+background:#f8fcff;
 color:#075ca8;
+font-size:13px;
 font-weight:bold;
-font-size:14px;
-line-height:1.7;
 text-decoration:none;
+transition:background .2s,transform .2s;
 }
 
-.tech-summary{
-font-size:11px;
-line-height:1.8;
-color:#555;
-margin-top:5px;
+.publication-link:hover{
+background:#eaf5ff;
+transform:translateX(-2px);
 }
 
-.tech-source{
-font-size:9px;
-color:#888;
-margin-top:5px;
+.publication-link span{
+color:#718096;
+font-size:10px;
+font-weight:normal;
+white-space:nowrap;
 }
 
-@keyframes techMove{
-
-from{
-transform:translateY(0);
+.publication-note{
+padding:10px 6px 4px;
+color:#68798a;
+font-size:10px;
+line-height:1.9;
+text-align:center;
 }
-
-to{
-transform:translateY(-50%);
-}
-
-}
-
 
 /* =====================================================
    PERSONAL PHOTO VERTICAL GALLERY
@@ -1937,112 +1865,45 @@ SIDEBAR
 
 
 <!-- =====================================================
-   افغانستان تازه خبرونه
+   د نړۍ مشهورې ورځپاڼې او مجلې
 ===================================================== -->
 
 <div class="box">
 
 <div class="box-title">
-
-📰 د افغانستان تازه خبرونه
-
+📚 د نړۍ مشهورې ورځپاڼې او مجلې
 </div>
 
+<div class="publication-list">
 
-<div class="news">
+<div class="publication-group-title">📰 نړیوالې ورځپاڼې</div>
+<a class="publication-link" href="https://www.nytimes.com/" target="_blank" rel="noopener noreferrer">The New York Times <span>امریکا</span></a>
+<a class="publication-link" href="https://www.theguardian.com/international" target="_blank" rel="noopener noreferrer">The Guardian <span>بریتانیا</span></a>
+<a class="publication-link" href="https://www.washingtonpost.com/" target="_blank" rel="noopener noreferrer">The Washington Post <span>امریکا</span></a>
+<a class="publication-link" href="https://www.ft.com/" target="_blank" rel="noopener noreferrer">Financial Times <span>اقتصاد</span></a>
+<a class="publication-link" href="https://www.independent.co.uk/" target="_blank" rel="noopener noreferrer">The Independent <span>بریتانیا</span></a>
+<a class="publication-link" href="https://www.aljazeera.com/" target="_blank" rel="noopener noreferrer">Al Jazeera <span>نړیوال</span></a>
 
-<div
-class="news-list"
-id="newsList">
+<div class="publication-group-title">📖 مشهورې اوونیزې او عمومي مجلې</div>
+<a class="publication-link" href="https://time.com/" target="_blank" rel="noopener noreferrer">TIME <span>خبرونه او ټولنه</span></a>
+<a class="publication-link" href="https://www.economist.com/" target="_blank" rel="noopener noreferrer">The Economist <span>سیاست او اقتصاد</span></a>
+<a class="publication-link" href="https://www.newyorker.com/" target="_blank" rel="noopener noreferrer">The New Yorker <span>کلتور او تحلیل</span></a>
+<a class="publication-link" href="https://www.smithsonianmag.com/" target="_blank" rel="noopener noreferrer">Smithsonian <span>تاریخ او کلتور</span></a>
+<a class="publication-link" href="https://www.nationalgeographic.com/" target="_blank" rel="noopener noreferrer">National Geographic <span>طبیعت او جغرافیه</span></a>
+<a class="publication-link" href="https://www.forbes.com/" target="_blank" rel="noopener noreferrer">Forbes <span>سوداګري</span></a>
 
+<div class="publication-group-title">🔬 علمي او ټکنالوژۍ مجلې</div>
+<a class="publication-link" href="https://www.scientificamerican.com/" target="_blank" rel="noopener noreferrer">Scientific American <span>ساینس</span></a>
+<a class="publication-link" href="https://www.nature.com/" target="_blank" rel="noopener noreferrer">Nature <span>علمي څېړنې</span></a>
+<a class="publication-link" href="https://www.science.org/" target="_blank" rel="noopener noreferrer">Science <span>څېړنې</span></a>
+<a class="publication-link" href="https://www.newscientist.com/" target="_blank" rel="noopener noreferrer">New Scientist <span>نوې موندنې</span></a>
+<a class="publication-link" href="https://www.wired.com/" target="_blank" rel="noopener noreferrer">WIRED <span>ټکنالوژي</span></a>
+<a class="publication-link" href="https://www.technologyreview.com/" target="_blank" rel="noopener noreferrer">MIT Technology Review <span>نوښت او AI</span></a>
+<a class="publication-link" href="https://techcrunch.com/" target="_blank" rel="noopener noreferrer">TechCrunch <span>ډیجیټل نړۍ</span></a>
 
-<div class="news-item">
-
-<img
-src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=600&q=80">
-
-<a
-href="https://www.bbc.com/pashto"
-target="_blank">
-
-د افغانستان تازه خبرونه
-
-</a>
-
-<div class="news-summary">
-
-د افغانستان، سیمې او نړۍ د مهمو تازه پېښو سرټکي دلته په اتومات ډول تازه کېږي.
-
-</div>
-
-<div class="news-source">
-
-BBC پښتو
+<div class="publication-note">د هرې خپرونې پر نوم کلیک وکړئ؛ د هغې رسمي وېب‌پاڼه به په نوې کړکۍ کې پرانیستل شي. ځینې مجلې د بشپړو مقالو لوستلو لپاره ګډون غواړي.</div>
 
 </div>
-
-</div>
-
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-   TECHNOLOGY NEWS
-===================================================== -->
-
-<div class="box">
-
-<div class="box-title">
-
-💻 د ټکنالوژۍ تازه ورځني خبرونه
-
-</div>
-
-
-<div class="tech-news">
-
-<div
-class="tech-news-list"
-id="techNewsList">
-
-
-<div class="tech-news-item">
-
-<img
-src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80">
-
-<a
-href="https://www.bbc.com/news/technology"
-target="_blank">
-
-د ټکنالوژۍ تازه خبرونه
-
-</a>
-
-<div class="tech-summary">
-
-د کمپیوټر، موبایل، مصنوعي ځیرکتیا، انټرنېټ او نوې ټکنالوژۍ تازه خبرونه.
-
-</div>
-
-<div class="tech-source">
-
-💻 BBC Technology
-
-</div>
-
-</div>
-
-
-</div>
-
-</div>
-
 </div>
 
 
@@ -2713,138 +2574,8 @@ setInterval(
 );
 
 
-/* =====================================================
-   AFGHANISTAN NEWS RSS
-===================================================== */
+/* د ورځپاڼو او مجلو لینکونه مستقیمو رسمي وېب‌پاڼو ته ځي. */
 
-/* =====================================================
-   MULTI-SOURCE NEWS AGGREGATOR
-   افغانستان، نړۍ او ټکنالوژي ـ اتومات RSS تازه کول
-===================================================== */
-
-const NEWS_PROXY="https://api.rss2json.com/v1/api.json?rss_url=";
-
-const afghanNewsFeeds=[
-{source:"BBC پښتو",url:"https://feeds.bbci.co.uk/pashto/rss.xml"},
-{source:"TOLOnews",url:"https://news.google.com/rss/search?q=site%3Atolonews.com&hl=en&gl=US&ceid=US%3Aen"},
-{source:"باختر / افغانستان",url:"https://news.google.com/rss/search?q=Afghanistan+site%3Abakhtarnews.af&hl=en&gl=US&ceid=US%3Aen"},
-{source:"افغانستان ـ نړیوالې سرچینې",url:"https://news.google.com/rss/search?q=Afghanistan+when%3A1d&hl=en&gl=US&ceid=US%3Aen"}
-];
-
-const worldNewsFeeds=[
-{source:"BBC World",url:"https://feeds.bbci.co.uk/news/world/rss.xml"},
-{source:"The Guardian",url:"https://www.theguardian.com/world/rss"},
-{source:"Al Jazeera",url:"https://www.aljazeera.com/xml/rss/all.xml"},
-{source:"Associated Press",url:"https://flipboard.com/@associatedpress/top-stories-u7govdf1z.rss"},
-{source:"Deutsche Welle",url:"https://rss.dw.com/rdf/rss-en-top"}
-];
-
-const technologyFeeds=[
-{source:"BBC Technology",url:"https://feeds.bbci.co.uk/news/technology/rss.xml"},
-{source:"The Guardian Technology",url:"https://www.theguardian.com/uk/technology/rss"},
-{source:"TechCrunch",url:"https://techcrunch.com/feed/"},
-{source:"The Verge",url:"https://www.theverge.com/rss/index.xml"},
-{source:"Wired",url:"https://www.wired.com/feed/rss"},
-{source:"Reuters Technology",url:"https://news.google.com/rss/search?q=when%3A7d+site%3Areuters.com%2Ftechnology&ceid=US%3Aen&hl=en-US&gl=US"},
-{source:"Ars Technica",url:"https://feeds.arstechnica.com/arstechnica/index"}
-];
-
-function cleanNewsText(value){
-const box=document.createElement("div");
-box.innerHTML=value||"";
-return (box.textContent||box.innerText||"").replace(/\\s+/g," ").trim().slice(0,220);
-}
-
-function newsImage(item){
-if(item.thumbnail)return item.thumbnail;
-if(item.enclosure&&item.enclosure.link)return item.enclosure.link;
-const html=item.description||item.content||"";
-const match=html.match(/<img[^>]+src=["']([^"']+)/i);
-return match?match[1]:"";
-}
-
-async function readNewsFeed(feed){
-try{
-const response=await fetch(NEWS_PROXY+encodeURIComponent(feed.url));
-if(!response.ok)throw new Error("RSS request failed");
-const data=await response.json();
-if(data.status!=="ok"||!Array.isArray(data.items))return [];
-return data.items.map(item=>({
-title:cleanNewsText(item.title),
-link:item.link||feed.url,
-summary:cleanNewsText(item.description||item.content),
-image:newsImage(item),
-source:feed.source,
-date:item.pubDate?new Date(item.pubDate).getTime():0
-})).filter(item=>item.title&&item.link);
-}catch(error){
-console.warn("News feed unavailable:",feed.source,error);
-return [];
-}
-}
-
-async function loadNews(){
-const newsList=document.getElementById("newsList");
-if(!newsList)return;
-const feeds=[...afghanNewsFeeds,...worldNewsFeeds];
-const results=await Promise.all(feeds.map(readNewsFeed));
-const seen=new Set();
-const items=results.flat().filter(item=>{
-const key=item.link.split("?")[0];
-if(seen.has(key))return false;
-seen.add(key);
-return true;
-}).sort((a,b)=>b.date-a.date).slice(0,30);
-
-if(!items.length){
-newsList.innerHTML='<div class="news-item"><a href="https://www.bbc.com/pashto" target="_blank" rel="noopener">د خبرونو سرچینې اوس نه ځوابوي؛ د BBC پښتو او TOLOnews رسمي پاڼې پرانیزئ.</a></div>';
-return;
-}
-const html=items.map(item=>`
-<div class="news-item">
-${item.image?`<img src="${item.image}" alt="" loading="lazy" onerror="this.style.display='none'>`:""}
-<a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a>
-<div class="news-summary">${item.summary||"د بشپړ خبر د لوستلو لپاره پر سرلیک کلیک وکړئ."}</div>
-<div class="news-source">📰 ${item.source}</div>
-</div>`).join("");
-newsList.innerHTML=html+html;
-}
-
-async function loadTechNews(){
-const techList=document.getElementById("techNewsList");
-if(!techList)return;
-const results=await Promise.all(technologyFeeds.map(readNewsFeed));
-const seen=new Set();
-const items=results.flat().filter(item=>{
-const key=item.link.split("?")[0];
-if(seen.has(key))return false;
-seen.add(key);
-return true;
-}).sort((a,b)=>b.date-a.date).slice(0,35);
-
-if(!items.length){
-techList.innerHTML='<div class="tech-news-item"><a href="https://www.bbc.com/news/technology" target="_blank" rel="noopener">د ټکنالوژۍ خبرونه اوس نه ترلاسه کېږي؛ د BBC Technology پاڼه وګورئ.</a></div>';
-return;
-}
-const html=items.map(item=>`
-<div class="tech-news-item">
-${item.image?`<img src="${item.image}" alt="" loading="lazy" onerror="this.style.display='none'>`:""}
-<a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a>
-<div class="tech-summary">${item.summary||"د بشپړ خبر د لوستلو لپاره پر سرلیک کلیک وکړئ."}</div>
-<div class="tech-source">💻 ${item.source}</div>
-</div>`).join("");
-techList.innerHTML=html+html;
-}
-
-/* لومړی ځل سمدستي خبرونه رااخلي */
-loadNews();
-loadTechNews();
-
-/* هر ۱۵ دقیقې خبرونه له ټولو سرچینو تازه کېږي */
-setInterval(loadNews,15*60*1000);
-setInterval(loadTechNews,15*60*1000);
-
-/* د خبرونو د سرلیکونو د خوندیتوب لپاره له RSS څخه متن پاکېږي. */
 
 /* =====================================================
    SEARCH DATA
