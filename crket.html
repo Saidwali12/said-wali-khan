@@ -786,8 +786,8 @@ let selectedTeam='';
 ===================================================== */
 
 async function api(path){
- const freshPath=path+(path.includes("?")?"&":"?")+"_refresh="+Date.now();
- const response=await fetch(API+freshPath,{cache:"no-store",headers:{"Cache-Control":"no-cache"}});
+ /* د URL ثابت ساتل د Cloudflare Cache فعال ساتي؛ هر ۱۵ ثانیې نوې تصادفي URL مه جوړوه. */
+ const response=await fetch(API+path,{cache:"no-store"});
  if(!response.ok)throw new Error("API Error "+response.status);
  return await response.json();
 }
@@ -802,34 +802,48 @@ let liveLastSuccess=0;
 
 function normalizeLiveMatch(m){
  if(!m||typeof m!=="object")return null;
- const teams=Array.isArray(m.teams)?m.teams:[];
  const innings=Array.isArray(m.innings)?m.innings:[];
  const current=innings.length?innings[innings.length-1]:{};
- const first=m.first_team||m.team1||m.home_team||teams[0]||{};
- const second=m.second_team||m.team2||m.away_team||teams[1]||{};
- const name=t=>t.full_name||t.name||t.team_name||t.country||"";
- const scoreFor=t=>{
-  if(t.score!==undefined&&t.score!==null&&t.score!=="")return String(t.score);
-  const inn=innings.filter(x=>String(x.team||"").toLowerCase()===name(t).toLowerCase()).slice(-1)[0];
-  return inn?String(inn.runs??0)+"/"+String(inn.wickets??0)+" ("+String(inn.overs??"0")+" ov)":"--";
+ const rawTeams=Array.isArray(m.teams)?m.teams:[];
+ const teamInfo=Array.isArray(m.teamInfo)?m.teamInfo:[];
+ const scores=Array.isArray(m.score)?m.score:[];
+ const teamName=t=>typeof t==="string"?t:(t?.full_name||t?.name||t?.team_name||t?.country||"");
+ const firstRaw=m.first_team||m.team1||m.home_team||rawTeams[0]||teamInfo[0]||{};
+ const secondRaw=m.second_team||m.team2||m.away_team||rawTeams[1]||teamInfo[1]||{};
+ const infoFor=(name,index)=>{
+  const found=teamInfo.find(t=>String(teamName(t)).toLowerCase()===String(name).toLowerCase());
+  return found||teamInfo[index]||{};
  };
+ const makeTeam=(raw,index)=>{
+  const name=teamName(raw)||teamName(infoFor("",index))||"Team "+(index+1);
+  const scoreRows=scores.filter(x=>{
+   const inning=String(x.inning||x.team||"").toLowerCase();
+   return inning.includes(name.toLowerCase());
+  });
+  const scoreRow=scoreRows.length?scoreRows[scoreRows.length-1]:(scores[index]||null);
+  const score=raw&&typeof raw==="object"&&raw.score?raw.score:
+   scoreRow?(String(scoreRow.r??scoreRow.runs??0)+"/"+String(scoreRow.w??scoreRow.wickets??0)+" ("+String(scoreRow.o??scoreRow.overs??"0")+" ov)"):"--";
+  return {...infoFor(name,index),...(raw&&typeof raw==="object"?raw:{}),full_name:name,score};
+ };
+ const first=makeTeam(firstRaw,0),second=makeTeam(secondRaw,1);
  const batting=m.batting_team?.full_name||m.batting_team?.name||m.batting_team||m.batting||current.team||"";
  const id=m.match_id??m.id??m.match??m.slug??"";
+ const isStarted=m.matchStarted===true||m.matchStarted==="true";
+ const isEnded=m.matchEnded===true||m.matchEnded==="true";
+ const state=isStarted&&!isEnded?"live":(m.state||m.status||"scheduled");
  return {
-  ...m,match_id:id,
-  first_team:{...first,full_name:name(first)||"Team 1",score:scoreFor(first)},
-  second_team:{...second,full_name:name(second)||"Team 2",score:scoreFor(second)},
-  format:m.format||m.match_type||"CRICKET",
-  state:m.state||m.status||"scheduled",
-  status:m.status||m.status_detail||m.short_status||"",
-  status_detail:m.status_detail||m.short_status||m.status||"",
-  venue:m.venue||m.ground||"",
-  series_name:m.series_name||m.competition||m.series||"",
-  batting_team:batting,
-  runs:m.runs??current.runs,wickets:m.wickets??current.wickets,
-  overs:m.overs??current.overs,run_rate:m.run_rate??m.current_run_rate,
+  ...m,match_id:id,first_team:first,second_team:second,
+  format:m.format||m.matchType||m.match_type||"CRICKET",
+  state,status:m.status||m.status_detail||m.short_status||(isStarted&&!isEnded?"In Progress":""),
+  status_detail:m.status_detail||m.short_status||m.status||(isStarted&&!isEnded?"In Progress":""),
+  venue:m.venue||m.ground||"",series_name:m.series_name||m.seriesName||m.competition||m.series||"",
+  batting_team:batting,runs:m.runs??current.runs??scores[scores.length-1]?.r,
+  wickets:m.wickets??current.wickets??scores[scores.length-1]?.w,
+  overs:m.overs??current.overs??scores[scores.length-1]?.o,
+  run_rate:m.run_rate??m.current_run_rate,
   batsman:m.batsman||m.striker||current.striker||current.batter,
-  bowler:m.bowler||current.bowler
+  bowler:m.bowler||current.bowler,
+  _isLive:isStarted&&!isEnded
  };
 }
 function extractLiveRows(result){
@@ -843,7 +857,11 @@ async function loadLive(){
  try{
   const result=await api("/live");
   const rawRows=extractLiveRows(result);
-  const rows=rawRows.map(normalizeLiveMatch).filter(Boolean);
+  /* CricketData currentMatches د ټولو current لوبو معلومات ورکوي؛ یوازې matchStarted او لا نه ختمه شوې لوبې Live دي. */
+  const rows=rawRows.map(normalizeLiveMatch).filter(m=>m&&(
+   m._isLive===true ||
+   (m.matchStarted===undefined && /live|in.?progress|in.?play|innings/i.test(String(m.status||m.status_detail||m.state||"")) && !/complete|finished|result|won by|abandoned/i.test(String(m.status||m.status_detail||m.state||"")))
+  ));
   if(!rows.length&&allMatches.length)throw new Error("API دا ځل تش لېست راکړ؛ پخوانۍ لوبې ساتل شوې دي.");
   const getTeams=m=>String(m.first_team.full_name+" "+m.second_team.full_name);
   rows.sort((x,y)=>{
