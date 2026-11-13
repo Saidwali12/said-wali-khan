@@ -74,9 +74,34 @@
     });
     menu.querySelector("button").addEventListener("click", function () { menu.classList.toggle("open"); });
     var style = document.createElement("style");
-    style.textContent = '#saidwali-quick-language{position:fixed;top:12px;left:12px;z-index:999999;font:bold 13px Tahoma,Arial,sans-serif;direction:rtl}#saidwali-quick-language>button{background:#102b50;color:#f4d58a;border:1px solid #d9ae52;border-radius:8px;padding:8px 12px;cursor:pointer}#saidwali-quick-language .saidwali-lang-list{display:none;position:absolute;top:42px;left:0;background:#fff;padding:6px;border-radius:9px;box-shadow:0 5px 20px #0004;min-width:120px}#saidwali-quick-language.open .saidwali-lang-list{display:grid;gap:4px}#saidwali-quick-language .saidwali-lang-list button{border:0;background:#f2f4f8;padding:8px;border-radius:6px;text-align:right;cursor:pointer;color:#102b50}#saidwali-quick-language button.active{background:#d9ae52;color:#071a35}#google_translate_element{position:fixed!important;left:-10000px!important;top:0!important;width:1px!important;height:1px!important;overflow:hidden!important}.goog-te-banner-frame,.goog-te-balloon-frame{display:none!important}html body{top:0!important}.skiptranslate iframe{visibility:hidden!important}';
+    style.textContent = '#saidwali-quick-language{position:fixed;top:12px;left:12px;z-index:999999;font:bold 13px Tahoma,Arial,sans-serif;direction:rtl}#saidwali-quick-language>button{background:#102b50;color:#f4d58a;border:1px solid #d9ae52;border-radius:8px;padding:8px 12px;cursor:pointer}#saidwali-quick-language .saidwali-lang-list{display:none;position:absolute;top:42px;left:0;background:#fff;padding:6px;border-radius:9px;box-shadow:0 5px 20px #0004;min-width:120px}#saidwali-quick-language.open .saidwali-lang-list{display:grid;gap:4px}#saidwali-quick-language .saidwali-lang-list button{border:0;background:#f2f4f8;padding:8px;border-radius:6px;text-align:right;cursor:pointer;color:#102b50}#saidwali-quick-language button.active{background:#d9ae52;color:#071a35}#google_translate_element{position:fixed!important;left:-10000px!important;top:0!important;width:1px!important;height:1px!important;overflow:hidden!important}iframe.goog-te-banner-frame,.goog-te-banner-frame,.goog-te-balloon-frame,#goog-gt-tt,.goog-te-menu-frame{display:none!important;visibility:hidden!important}html,html body{top:0!important;margin-top:0!important}body{position:static!important}';
     document.head.appendChild(style);
     document.body.appendChild(menu);
+  }
+
+  // Google may inject its translation toolbar after the page loads.
+  // Keep the translator active but suppress its visible banner and page offset.
+  function hideGoogleTranslationToolbar() {
+    var selectors = ["iframe.goog-te-banner-frame", ".goog-te-banner-frame", ".goog-te-balloon-frame", "#goog-gt-tt", ".goog-te-menu-frame"];
+    selectors.forEach(function (selector) {
+      document.querySelectorAll(selector).forEach(function (node) {
+        node.style.setProperty("display", "none", "important");
+        node.style.setProperty("visibility", "hidden", "important");
+        node.style.setProperty("height", "0", "important");
+      });
+    });
+    if (document.body) {
+      document.body.style.setProperty("top", "0", "important");
+      document.body.style.setProperty("margin-top", "0", "important");
+    }
+    document.documentElement.style.setProperty("margin-top", "0", "important");
+  }
+
+  function watchGoogleTranslationToolbar() {
+    hideGoogleTranslationToolbar();
+    if (window.__saidwaliToolbarObserver || !document.body || !window.MutationObserver) return;
+    window.__saidwaliToolbarObserver = new MutationObserver(hideGoogleTranslationToolbar);
+    window.__saidwaliToolbarObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class"] });
   }
 
   function init() {
@@ -88,6 +113,7 @@
       document.body.appendChild(holder);
     }
     addLanguageMenu();
+    watchGoogleTranslationToolbar();
     setDirection(selected);
     setTranslateCookie(selected);
     if (selected !== "ps") {
