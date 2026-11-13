@@ -23751,7 +23751,10 @@ async function createNewPost() {
         content,
 
       media_url:
-        mediaUrl
+        mediaUrl,
+
+      privacy:
+        getPostPrivacyValue()
 
     };
 
@@ -24030,26 +24033,7 @@ async function loadHomeFeedWithComposer() {
    NAVIGATION
    ===================================================== */
 
-document.addEventListener(
-  "click",
-  function(event) {
-
-    const target =
-      event.target.closest(
-        "[data-nav='home']"
-      );
-
-
-    if (!target) return;
-
-
-    event.preventDefault();
-
-
-    loadHomeFeedWithComposer();
-
-  }
-);
+/* د Home تکراري listener لرې شو؛ یواځې یو navigation فعال پاتې کېږي. */
 
 
 /* =====================================================
@@ -42238,115 +42222,27 @@ let commentsCache = {};
 
 async function loadHomeFeed() {
 
-  const main =
-    $("mainContent");
+  /* د Home پاڼه د پوسټ جوړولو واحد بکس او Feed کاروي. */
+  if (typeof loadHomeFeedWithComposer === "function") {
+    return loadHomeFeedWithComposer();
+  }
 
+  const main = $("mainContent");
   if (!main) return;
 
-
   main.innerHTML = `
-
-    <div
-      style="
-        max-width:850px;
-        margin:auto;
-      "
-    >
-
-      <div
-        class="card"
-        style="
-          padding:18px;
-          margin-bottom:12px;
-        "
-      >
-
-        <h2
-          style="
-            margin:0 0 15px;
-          "
-        >
-          📰 Home
-        </h2>
-
-
-        ${
-          currentUser
-            ? `
-              <textarea
-                id="newPostContent"
-                placeholder="څه شی شریکول غواړئ؟"
-                rows="4"
-                style="
-                  width:100%;
-                  box-sizing:border-box;
-                  padding:12px;
-                  border:1px solid #ddd;
-                  border-radius:10px;
-                  resize:vertical;
-                  font-family:inherit;
-                "
-              ></textarea>
-
-
-              <div
-                style="
-                  display:flex;
-                  justify-content:flex-end;
-                  margin-top:10px;
-                "
-              >
-
-                <button
-                  type="button"
-                  class="btn"
-                  onclick="
-                    createNewPost()
-                  "
-                >
-                  📤 پوسټ کول
-                </button>
-
-              </div>
-            `
-            : `
-              <div
-                style="
-                  text-align:center;
-                  padding:15px;
-                "
-              >
-                د پوسټ کولو لپاره Login وکړئ.
-              </div>
-            `
-        }
-
-      </div>
-
-
-      <div
-        id="homePosts"
-      >
-
-        <div
-          class="card"
-          style="
-            padding:40px;
-            text-align:center;
-          "
-        >
-          ⏳ پوسټونه لوډ کېږي...
-        </div>
-
-      </div>
-
+    <div id="createPostContainer"></div>
+    <div id="feedContainer" class="card" style="padding:24px;text-align:center">
+      د پوسټونو د برخې د چمتو کېدو په حال کې...
     </div>
-
   `;
 
-
-  await loadFeedPosts();
-
+  if (typeof renderEnhancedCreatePostBox === "function") {
+    renderEnhancedCreatePostBox();
+  }
+  if (typeof loadFeed === "function") {
+    await loadFeed();
+  }
 }
 
 
