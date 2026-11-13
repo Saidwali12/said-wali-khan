@@ -31702,7 +31702,7 @@ async function saveEditedProfile() {
    PHOTO MANAGER
    ===================================================== */
 
-function openPhotoManager() {
+function openPhotoManager(target = "profile") {
   if (!currentUser) return;
   const existing = $("photoManagerModal");
   if (existing) existing.remove();
@@ -41023,8 +41023,15 @@ function renderProfile(
                     cover
                   )}') center/cover`
                 : "linear-gradient(135deg,#1877f2,#0d47a1)"};
+            position:relative;
           "
-        ></div>
+        >
+          ${isMe ? `
+            <button type="button" class="btn" onclick="openPhotoManager('cover')" style="position:absolute;right:14px;bottom:14px;background:#fff;color:#1c1e21;border:1px solid #ddd;box-shadow:0 1px 4px #0002">
+              📷 د پوښ عکس بدلول
+            </button>
+          ` : ""}
+        </div>
 
 
         <!-- AVATAR -->
@@ -41068,6 +41075,11 @@ function renderProfile(
               `
           }
 
+          ${isMe ? `
+            <button type="button" onclick="openPhotoManager('profile')" title="د پروفایل عکس بدلول" aria-label="د پروفایل عکس بدلول" style="position:absolute;right:2px;bottom:2px;width:38px;height:38px;border-radius:50%;border:2px solid #fff;background:#1877f2;color:#fff;font-size:18px;cursor:pointer">
+              📷
+            </button>
+          ` : ""}
         </div>
 
 
@@ -41186,6 +41198,14 @@ function renderProfile(
                     "
                   >
                     ✏️ پروفایل سمول
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="openPhotoManager('profile')"
+                  >
+                    📸 د پروفایل عکس انتخاب
                   </button>
 
                   <button
