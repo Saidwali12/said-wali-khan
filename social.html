@@ -50123,10 +50123,10 @@ function previewSBookCoverPhoto(event) {
 }
 
 async function uploadSBookProfilePhoto() {
-  return uploadSBookProfileAsset(document.getElementById("photoManagerAvatarFile") ? "photoManagerAvatarFile" : "profileAvatarFile", "profile_photo_url", document.getElementById("photoManagerAvatarStatus") ? "photoManagerAvatarStatus" : "profileAvatarStatus", document.getElementById("photoManagerAvatarPreview") ? "photoManagerAvatarPreview" : "profilePageAvatarPreview", "profile");
+  return uploadSBookProfileAsset(document.getElementById("photoManagerAvatarFile") ? "photoManagerAvatarFile" : "profileAvatarFile", "profile_photo", document.getElementById("photoManagerAvatarStatus") ? "photoManagerAvatarStatus" : "profileAvatarStatus", document.getElementById("photoManagerAvatarPreview") ? "photoManagerAvatarPreview" : "profilePageAvatarPreview", "profile");
 }
 async function uploadSBookCoverPhoto() {
-  return uploadSBookProfileAsset(document.getElementById("photoManagerCoverFile") ? "photoManagerCoverFile" : "profileCoverFile", "cover_photo_url", document.getElementById("photoManagerCoverStatus") ? "photoManagerCoverStatus" : "profileCoverStatus", document.getElementById("photoManagerCoverPreview") ? "photoManagerCoverPreview" : "profilePageCoverPreview", "cover");
+  return uploadSBookProfileAsset(document.getElementById("photoManagerCoverFile") ? "photoManagerCoverFile" : "profileCoverFile", "cover_photo", document.getElementById("photoManagerCoverStatus") ? "photoManagerCoverStatus" : "profileCoverStatus", document.getElementById("photoManagerCoverPreview") ? "photoManagerCoverPreview" : "profilePageCoverPreview", "cover");
 }
 
 async function uploadSBookProfileAsset(inputId, fieldName, statusId, previewId, kind) {
@@ -50173,16 +50173,22 @@ async function uploadSBookProfileAsset(inputId, fieldName, statusId, previewId, 
     else {
       if (!currentUser) currentUser = {};
       if (kind === "profile") {
+        currentUser.profile_photo = imageUrl;
         currentUser.profile_photo_url = imageUrl;
         currentUser.avatar_url = imageUrl;
       } else {
+        currentUser.cover_photo = imageUrl;
         currentUser.cover_photo_url = imageUrl;
         currentUser.cover_url = imageUrl;
       }
     }
     updateUserUI();
     fillProfileForm();
-    if (status) status.textContent = "✅ انځور په بریالیتوب ثبت شو.";
+    const savedPreview = document.getElementById(previewId);
+    if (savedPreview) { savedPreview.src = imageUrl; savedPreview.dataset.previewUrl = ""; }
+    const profileMain = document.getElementById("profilePosts");
+    if (profileMain && typeof renderProfile === "function") renderProfile(currentUser);
+    if (status) status.textContent = "✅ انځور په بریالیتوب ثبت شو او په خپل ځای کې ښکاره شو.";
     if (input) input.value = "";
   } catch (error) {
     console.error("S-Book profile photo upload:", error);
@@ -50198,15 +50204,15 @@ async function removeSBookProfilePhoto() {
   if (status) status.textContent = "⏳ انځور لرې کېږي...";
   const result = await apiRequest("/profile", {
     method: "PUT",
-    body: JSON.stringify({ profile_photo_url: "", avatar_url: "" })
+    body: JSON.stringify({ profile_photo: "", avatar_url: "" })
   });
   if (!result || result.success !== true) {
     if (status) status.textContent = "❌ " + (result && result.message || "انځور لرې نه شو.");
     return;
   }
   currentUser = result.user || result.data?.user || currentUser || {};
-  currentUser.profile_photo_url = "";
   currentUser.profile_photo = "";
+  currentUser.profile_photo_url = "";
   currentUser.avatar_url = "";
   const preview = document.getElementById("photoManagerAvatarPreview") || document.getElementById("profilePageAvatarPreview");
   if (preview) preview.removeAttribute("src");
@@ -50221,15 +50227,15 @@ async function removeSBookCoverPhoto() {
   if (status) status.textContent = "⏳ Cover لرې کېږي...";
   const result = await apiRequest("/profile", {
     method: "PUT",
-    body: JSON.stringify({ cover_photo_url: "", cover_url: "" })
+    body: JSON.stringify({ cover_photo: "", cover_url: "" })
   });
   if (!result || result.success !== true) {
     if (status) status.textContent = "❌ " + (result && result.message || "Cover لرې نه شو.");
     return;
   }
   currentUser = result.user || result.data?.user || currentUser || {};
-  currentUser.cover_photo_url = "";
   currentUser.cover_photo = "";
+  currentUser.cover_photo_url = "";
   currentUser.cover_url = "";
   const preview = document.getElementById("photoManagerCoverPreview") || document.getElementById("profilePageCoverPreview");
   if (preview) preview.removeAttribute("src");
