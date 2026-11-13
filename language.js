@@ -566,7 +566,7 @@
     while ((node = walker.nextNode())) {
       const parent = node.parentElement;
       if (!parent || /^(SCRIPT|STYLE|TEXTAREA|INPUT)$/i.test(parent.tagName)) continue;
-      if (parent.closest("#sw-language-bar,.user-post,.post-content,.comment,.comments,.post-card,.messages-layout,[contenteditable='true'],marquee,.top-news,.ticker,.news-ticker,#jobsNewsTicker,[data-no-translate],.notranslate,[translate='no']")) continue;
+      if (parent.closest("#sw-language-bar,[contenteditable='true'],marquee,.top-news,.ticker,.news-ticker,#jobsNewsTicker,[data-no-translate]")) continue;
       if (!Object.prototype.hasOwnProperty.call(node, "__swOriginal")) node.__swOriginal = node.nodeValue;
       const original = node.__swOriginal;
       const trimmed = original.trim();
@@ -658,7 +658,7 @@
     while ((node = walker.nextNode())) {
       const parent = node.parentElement;
       if (!parent || /^(SCRIPT|STYLE|TEXTAREA|INPUT)$/i.test(parent.tagName)) continue;
-      if (parent.closest("#sw-language-bar,.user-post,.post-content,.comment,.comments,.post-card,.messages-layout,[contenteditable='true'],marquee,.top-news,.ticker,.news-ticker,#jobsNewsTicker,[data-no-translate],.notranslate,[translate='no']")) continue;
+      if (parent.closest("#sw-language-bar,[contenteditable='true'],marquee,.top-news,.ticker,.news-ticker,#jobsNewsTicker,[data-no-translate]")) continue;
       if (!Object.prototype.hasOwnProperty.call(node, "__swOriginal")) node.__swOriginal = node.nodeValue;
       const original = node.__swOriginal;
       const trimmed = original.trim();
