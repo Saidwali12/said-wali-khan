@@ -1562,8 +1562,8 @@ async function loadCricketApiNews(){
    const a=m.first_team||{},b=m.second_team||{};
    const title=(a.full_name||"Team 1")+" "+(a.score||"--")+" — "+(b.full_name||"Team 2")+" "+(b.score||"--");
    const state=m.status_detail||m.short_status||m.status||m.state||"Live معلومات";
-   const id=Number(m.match_id);
-   return '<a class="cricket-api-item" href="#detail" '+(Number.isFinite(id)&&id>0?'onclick="openMatch('+id+');return false;"':'')+'><b>🏏 '+escapeHTML(title)+'</b><br>'+escapeHTML(state)+(m.venue?' • '+escapeHTML(m.venue):'')+'</a>';
+   const id=String(m.match_id||"");
+   return '<a class="cricket-api-item" href="#detail" '+(id?'onclick="openMatch(\''+escapeHTML(id)+'\');return false;"':'')+'><b>🏏 '+escapeHTML(title)+'</b><br>'+escapeHTML(state)+(m.venue?' • '+escapeHTML(m.venue):'')+'</a>';
   }).join("");
   if(status)status.textContent="له API څخه "+matches.length+" لوبې ترلاسه شوې؛ "+new Date().toLocaleTimeString()+"؛ د لوبې په نوم کلیک وکړئ چې سکورکارډ او بال په بال تبصره وګورئ.";
  }catch(error){if(status)status.textContent="د کرکټ API سره اړیکه ونه شوه: "+error.message;}
