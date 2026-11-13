@@ -49867,7 +49867,5 @@ function goBackToMainSite(){
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",polish);
  else polish();
  window.addEventListener("load",polish);
- const app=document.getElementById("app");
- if(app)new MutationObserver(polish).observe(app,{childList:true,subtree:true});
 })();
 </script>
