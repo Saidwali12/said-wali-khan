@@ -1894,6 +1894,13 @@ body.dark-mode .language-options button{background:#26364b!important;color:#f4d5
 .site-search-actions button{flex:1;min-width:125px;padding:11px 13px;border:1px solid #d9ae52;border-radius:9px;background:linear-gradient(135deg,#102b50,#071a35);color:#f4d58a;font:bold 13px Tahoma,Arial,sans-serif;cursor:pointer}
 .site-search-actions button:hover{background:#d9ae52;color:#071a35}
 .site-search-note{margin-top:10px;color:#68778c;font-size:11px;line-height:1.8}
+#site-search-results{margin-top:12px;max-height:48vh;overflow:auto}
+.site-search-result{display:block;padding:11px 12px;margin:8px 0;border:1px solid #e1e6ee;border-right:4px solid #d9ae52;border-radius:9px;background:#f8fafc;color:#102b50;text-decoration:none}
+.site-search-result strong{display:block;font-size:14px;margin-bottom:4px}
+.site-search-result span{display:block;font-size:12px;line-height:1.7;color:#52647b}
+.site-search-empty{padding:12px;color:#68778c;font-size:13px}
+body.dark-mode .site-search-result{background:#243449;border-color:#42536a;color:#f4d58a}
+body.dark-mode .site-search-result span{color:#d5deea}
 body.dark-mode .site-search-panel{background:#1b293b;color:#e7edf6}
 body.dark-mode .site-search-heading strong{color:#f4d58a}
 @media(max-width:480px){#site-search-trigger{width:34px;height:34px;flex-basis:34px}#site-search-dialog{padding-top:75px}.site-search-panel{padding:15px}.site-search-heading strong{font-size:16px}}
@@ -1914,8 +1921,9 @@ body.dark-mode .site-search-heading strong{color:#f4d58a}
  <div class="site-search-panel">
   <div class="site-search-heading"><strong>🔍 د ویب‌سایټ په ټولو برخو کې لټون</strong><button id="site-search-close" type="button" aria-label="بندول">×</button></div>
   <input id="site-search-input" type="search" placeholder="د خبر، دندې، خدمت یا بل مطلب نوم ولیکئ..." autocomplete="off">
-  <div class="site-search-actions"><button id="site-search-google" type="button">Google کې لټون</button><button id="site-search-yahoo" type="button">Yahoo کې لټون</button><button id="site-search-github" type="button">سیدولي ویب سرچ</button></div>
-  <p class="site-search-note">Google او Yahoo د همدې ویب‌سایټ ثبت شوې پاڼې لټوي. GitHub د سیدولي خان د ویب‌سایټ په اصلي Repository کې د فایلونو او پاڼو متن لټوي؛ د GitHub د کوډ پایلو د لیدلو لپاره کېدای شي حساب ته ننوتل اړین وي.</p>
+  <div class="site-search-actions"><button id="site-search-internal" type="button">سیدولي ویب سرچ</button><button id="site-search-google" type="button">Google کې لټون</button><button id="site-search-yahoo" type="button">Yahoo کې لټون</button></div>
+  <p class="site-search-note">د سیدولي ویب سرچ ستاسو د ویب‌سایټ په پاڼو او خدماتو کې دننه لټون کوي. د پایلو په نوم کلیک وکړئ چې اړونده پاڼه پرانیستل شي.</p>
+  <div id="site-search-results" aria-live="polite"></div>
  </div>
 </div>
 <script>
@@ -1930,26 +1938,53 @@ body.dark-mode .site-search-heading strong{color:#f4d58a}
   const searchClose=document.getElementById('site-search-close');
   if(!menu||!trigger||!theme||!options)return;
   function closeSiteSearch(){if(searchDialog)searchDialog.classList.remove('open');if(searchTrigger)searchTrigger.setAttribute('aria-expanded','false')}
-  function runSiteSearch(engine){
+  async function runSiteSearch(engine){
     const term=searchInput&&searchInput.value.trim();if(!term){if(searchInput)searchInput.focus();return}
     const query='site:saidwali12.github.io/said-wali-khan/ '+term;
-    let url;
-    if(engine==='github'){
-      url='https://github.com/Saidwali12/said-wali-khan/search?q='+encodeURIComponent(term)+'&type=code';
-    }else{
-      const query='site:saidwali12.github.io/said-wali-khan/ '+term;
-      url=engine==='yahoo'?'https://search.yahoo.com/search?p='+encodeURIComponent(query):'https://www.google.com/search?q='+encodeURIComponent(query);
+    if(engine==='google'||engine==='yahoo'){
+      const url=engine==='yahoo'?'https://search.yahoo.com/search?p='+encodeURIComponent(query):'https://www.google.com/search?q='+encodeURIComponent(query);
+      window.open(url,'_blank','noopener');return;
     }
-    window.open(url,'_blank','noopener');
+    const resultsBox=document.getElementById('site-search-results');
+    if(!resultsBox)return;
+    resultsBox.innerHTML='<div class="site-search-empty">ستاسو د لټون پایلې لټول کېږي...</div>';
+    const pages=[['index.html','اصلي پاڼه'],['Nasharyat.html.html','نشریات او اعلانونه'],['newpage.html.html','معلومات مجازی'],['news.html','داخلي ولسوالیو خبرونه'],['Taza.html.html','تازه خبرونه'],['jobs.html','وظیفې او کاري فرصتونه'],['ai.html','AI مرکز'],['links.html','ټولنیزې او ګټورې اړیکې'],['software-books.html','کتابونه او سافټویرونه'],['diagnostic.html','د تخنیکي مرکز خدمتونه'],['computer.html','کمپیوټر او Windows'],['mobile.html','Android او iPhone'],['printer-scanner.html','پرنټرونه او سکینرونه'],['crket.html','کرکټ'],['social.html','ټولنیزه شبکه'],['games.html','لوبې'],['contact.html','اړیکه']];
+    const terms=term.toLocaleLowerCase().split(/\\s+/).filter(Boolean);
+    const found=[];
+    await Promise.all(pages.map(async page=>{
+      try{
+        const response=await fetch(new URL(page[0],document.baseURI).href,{cache:'no-store'});
+        if(!response.ok)return;
+        const html=await response.text(),doc=new DOMParser().parseFromString(html,'text/html');
+        doc.querySelectorAll('script,style,noscript,svg').forEach(el=>el.remove());
+        const title=(doc.querySelector('title')?.textContent||page[1]).trim();
+        const body=(doc.body?.innerText||doc.body?.textContent||'').replace(/\\s+/g,' ').trim();
+        const haystack=(title+' '+page[1]+' '+body).toLocaleLowerCase();
+        const score=terms.reduce((n,t)=>n+(haystack.includes(t)?1:0),0);
+        if(score===terms.length){
+          const at=body.toLocaleLowerCase().indexOf(terms[0]);
+          const snippet=at>=0?body.slice(Math.max(0,at-75),Math.min(body.length,at+190)):body.slice(0,190);
+          found.push({href:new URL(page[0],document.baseURI).href,title:page[1]+' — '+title,snippet,score});
+        }
+      }catch(err){}
+    }));
+    if(!found.length){resultsBox.innerHTML='<div class="site-search-empty">ستاسو د لټون لپاره په پاڼو کې پایله ونه موندل شوه. بله کلیمه وازمویئ.</div>';return}
+    found.sort((a,b)=>b.score-a.score);resultsBox.replaceChildren();
+    found.forEach(item=>{
+      const link=document.createElement('a');link.className='site-search-result';link.href=item.href;
+      const heading=document.createElement('strong');heading.textContent=item.title;
+      const detail=document.createElement('span');detail.textContent=item.snippet;
+      link.append(heading,detail);resultsBox.appendChild(link);
+    });
   }
   if(searchTrigger&&searchDialog&&searchInput){
     searchTrigger.addEventListener('click',()=>{searchDialog.classList.add('open');searchTrigger.setAttribute('aria-expanded','true');menu.classList.remove('open');trigger.setAttribute('aria-expanded','false');setTimeout(()=>searchInput.focus(),40)});
     searchClose.addEventListener('click',closeSiteSearch);
     searchDialog.addEventListener('click',e=>{if(e.target===searchDialog)closeSiteSearch()});
+    document.getElementById('site-search-internal').addEventListener('click',()=>runSiteSearch('internal'));
     document.getElementById('site-search-google').addEventListener('click',()=>runSiteSearch('google'));
     document.getElementById('site-search-yahoo').addEventListener('click',()=>runSiteSearch('yahoo'));
-    document.getElementById('site-search-github').addEventListener('click',()=>runSiteSearch('github'));
-    searchInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runSiteSearch('google')}if(e.key==='Escape')closeSiteSearch()});
+    searchInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runSiteSearch('internal')}if(e.key==='Escape')closeSiteSearch()});
     document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSiteSearch()});
   }
   trigger.addEventListener('click',function(){
