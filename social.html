@@ -31706,41 +31706,107 @@ function openPhotoManager() {
   if (!currentUser) return;
   const existing = $("photoManagerModal");
   if (existing) existing.remove();
-
-  const avatar = currentUser.profile_photo || currentUser.profile_photo_url || currentUser.avatar_url || "";
-  const cover = currentUser.cover_photo || currentUser.cover_photo_url || currentUser.cover_url || "";
-
+  const avatar = currentUser.profile_photo || currentUser.profile_photo_url || currentUser.avatar_url || currentUser.avatar || "";
+  const cover = currentUser.cover_photo || currentUser.cover_photo_url || currentUser.cover_url || currentUser.cover || "";
   const modal = document.createElement("div");
   modal.id = "photoManagerModal";
-  modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:99999;display:flex;align-items:center;justify-content:center;padding:15px;overflow:auto;";
+  modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:99999;display:flex;align-items:center;justify-content:center;padding:12px;overflow:auto;";
   modal.innerHTML = `
-    <div class="card" style="width:100%;max-width:520px;max-height:92vh;overflow:auto;padding:18px;border-radius:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-        <h2 style="margin:0">📷 د پروفایل انځورونه</h2>
-        <button type="button" onclick="closePhotoManager()" aria-label="Close" style="border:0;background:none;font-size:28px;cursor:pointer">×</button>
-      </div>
-      <p class="muted">خپل عکس له موبایل یا کمپیوټر څخه وټاکئ؛ د لینک لیکلو اړتیا نشته.</p>
-
+    <div class="card" style="width:100%;max-width:560px;max-height:94vh;overflow:auto;padding:18px;border-radius:16px;background:#fff">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><h2 style="margin:0">📷 د پروفایل عکسونه</h2><button type="button" onclick="closePhotoManager()" aria-label="Close" style="border:0;background:none;font-size:28px;cursor:pointer">×</button></div>
+      <p class="muted">عکس له خپل موبایل/کمپیوټر څخه وټاکئ، یا له خپلو پخوانیو پوسټونو څخه یې انتخاب کړئ. له Save وروسته به خلکو ته ستاسو په پروفایل کې ښکاره شي.</p>
       <section style="border:1px solid #e4e6eb;border-radius:12px;padding:14px;margin-top:12px">
-        <h3 style="margin:0 0 12px">👤 د پروفایل عکس</h3>
-        <img id="profilePageAvatarPreview" src="${escapeHTML(avatar)}" alt="Profile photo" style="display:block;width:112px;height:112px;object-fit:cover;border-radius:50%;margin:0 auto 12px;background:#eee;border:3px solid #1877f2">
-        <input id="profileAvatarFile" type="file" accept="image/*" class="form-control" onchange="previewSBookProfilePhoto(event)" style="width:100%">
-        <button type="button" class="btn" onclick="uploadSBookProfilePhoto()" style="width:100%;margin-top:10px">⬆️ عکس پورته او ثبت کړه</button>
-        <button type="button" class="btn btn-secondary" onclick="removeSBookProfilePhoto()" style="width:100%;margin-top:8px">🗑️ عکس لرې کړه</button>
-        <div id="profileAvatarStatus" class="muted" role="status" style="margin-top:9px"></div>
+        <h3 style="margin:0 0 10px">👤 د پروفایل عکس</h3>
+        <img id="photoManagerAvatarPreview" src="${escapeHTML(avatar)}" alt="Profile photo" style="display:block;width:112px;height:112px;object-fit:cover;border-radius:50%;margin:0 auto 12px;background:#eee;border:3px solid #1877f2">
+        <input id="photoManagerAvatarFile" type="file" accept="image/*" class="form-control" onchange="previewSBookProfilePhoto(event)" style="width:100%">
+        <button type="button" class="btn" onclick="uploadSBookProfilePhoto()" style="width:100%;margin-top:10px">⬆️ عکس ثبت کړه</button>
+        <button type="button" class="btn btn-secondary" onclick="removeSBookProfilePhoto()" style="width:100%;margin-top:8px">🗑️ اوسنی عکس لرې کړه</button>
+        <button type="button" class="btn btn-secondary" onclick="loadSBookPhotoGallery('profile')" style="width:100%;margin-top:8px">🖼️ له خپلو پخوانیو عکسونو انتخاب</button>
+        <div id="photoManagerAvatarStatus" class="muted" role="status" style="margin-top:9px"></div>
       </section>
-
       <section style="border:1px solid #e4e6eb;border-radius:12px;padding:14px;margin-top:12px">
-        <h3 style="margin:0 0 12px">🖼️ د پوښ عکس (Cover)</h3>
-        <img id="profilePageCoverPreview" src="${escapeHTML(cover)}" alt="Cover photo" style="display:block;width:100%;height:120px;object-fit:cover;border-radius:10px;margin-bottom:12px;background:#eee">
-        <input id="profileCoverFile" type="file" accept="image/*" class="form-control" onchange="previewSBookCoverPhoto(event)" style="width:100%">
-        <button type="button" class="btn" onclick="uploadSBookCoverPhoto()" style="width:100%;margin-top:10px">⬆️ Cover پورته او ثبت کړه</button>
+        <h3 style="margin:0 0 10px">🖼️ د پوښ عکس (Cover)</h3>
+        <img id="photoManagerCoverPreview" src="${escapeHTML(cover)}" alt="Cover photo" style="display:block;width:100%;height:130px;object-fit:cover;border-radius:10px;margin-bottom:12px;background:#eee">
+        <input id="photoManagerCoverFile" type="file" accept="image/*" class="form-control" onchange="previewSBookCoverPhoto(event)" style="width:100%">
+        <button type="button" class="btn" onclick="uploadSBookCoverPhoto()" style="width:100%;margin-top:10px">⬆️ Cover ثبت کړه</button>
         <button type="button" class="btn btn-secondary" onclick="removeSBookCoverPhoto()" style="width:100%;margin-top:8px">🗑️ Cover لرې کړه</button>
-        <div id="profileCoverStatus" class="muted" role="status" style="margin-top:9px"></div>
+        <button type="button" class="btn btn-secondary" onclick="loadSBookPhotoGallery('cover')" style="width:100%;margin-top:8px">🖼️ له خپلو پخوانیو عکسونو Cover انتخاب</button>
+        <div id="photoManagerCoverStatus" class="muted" role="status" style="margin-top:9px"></div>
       </section>
-    </div>
-  `;
+      <section id="photoManagerGallery" style="display:none;border:1px solid #e4e6eb;border-radius:12px;padding:12px;margin-top:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong id="photoManagerGalleryTitle">ستاسو پخواني عکسونه</strong><button type="button" class="btn btn-secondary" onclick="document.getElementById('photoManagerGallery').style.display='none'">بندول</button></div>
+        <div id="photoManagerGalleryItems" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px"></div>
+        <div id="photoManagerGalleryStatus" class="muted" role="status" style="margin-top:10px"></div>
+      </section>
+    </div>`;
   document.body.appendChild(modal);
+}
+
+async function loadSBookPhotoGallery(target) {
+  const gallery = document.getElementById("photoManagerGallery");
+  const itemsBox = document.getElementById("photoManagerGalleryItems");
+  const status = document.getElementById("photoManagerGalleryStatus");
+  const title = document.getElementById("photoManagerGalleryTitle");
+  if (!gallery || !itemsBox) return;
+  gallery.style.display = "block"; itemsBox.innerHTML = "";
+  if (title) title.textContent = target === "cover" ? "د Cover لپاره خپل پخواني عکسونه وټاکئ" : "د پروفایل لپاره خپل پخواني عکسونه وټاکئ";
+  if (status) status.textContent = "⏳ ستاسو پخواني پوسټونه لوستل کېږي...";
+  try {
+    const result = await apiRequest("/feed", { method: "GET" });
+    if (!result || result.success !== true) throw new Error(result?.message || "د عکسونو ترلاسه کول ناکام شول.");
+    const posts = Array.isArray(result.posts) ? result.posts : Array.isArray(result.data) ? result.data : Array.isArray(result.results) ? result.results : Array.isArray(result.data?.posts) ? result.data.posts : [];
+    const myId = String(currentUser?.id ?? currentUser?.user_id ?? "");
+    const urls = [];
+    posts.forEach(post => {
+      const ownerId = String(post.user_id ?? post.author_id ?? post.owner_id ?? post.user?.id ?? "");
+      if (!myId || ownerId !== myId) return;
+      (Array.isArray(post.media) ? post.media : []).forEach(item => {
+        const type = String(item.media_type || item.type || item.mime_type || "").toLowerCase();
+        const url = item.media_url || item.url || item.file_url || item.thumbnail_url || "";
+        if (url && (!type || type.includes("image") || type === "photo")) urls.push(url);
+      });
+      const fallback = post.media_url || post.image_url || post.photo_url || "";
+      if (fallback) urls.push(fallback);
+    });
+    const unique = [...new Set(urls)].filter(Boolean);
+    if (!unique.length) {
+      if (status) status.textContent = "ستاسو په ترلاسه شویو پوسټونو کې پخواني عکسونه ونه موندل شول. له موبایل څخه نوی عکس انتخاب کړئ.";
+      return;
+    }
+    window.__sbookGalleryPhotoUrls = unique;
+    itemsBox.innerHTML = unique.map((url, index) =>
+      '<button type="button" onclick="selectSBookGalleryPhoto(' + index + ', \'TARGET\')" style="border:2px solid #e4e6eb;border-radius:9px;padding:2px;background:#fff;cursor:pointer;overflow:hidden"><img src="' + safeURL(url) + '" alt="زما عکس" loading="lazy" style="display:block;width:100%;height:105px;object-fit:cover" onerror="this.parentElement.style.display=\'none\'"></button>'.replace("TARGET", target)
+    ).join("");
+    if (status) status.textContent = "د عکس د انتخاب لپاره پر هغه کلیک وکړئ. عکس به په اوتومات ډول پروفایل ته ثبت شي.";
+  } catch (error) {
+    if (status) status.textContent = "❌ " + (error.message || "د عکسونو لوستلو کې ستونزه راغله.");
+  }
+}
+
+async function selectSBookGalleryPhoto(index, target) {
+  const url = window.__sbookGalleryPhotoUrls && window.__sbookGalleryPhotoUrls[index];
+  if (!url || !currentUser) return;
+  const status = document.getElementById(target === "cover" ? "photoManagerCoverStatus" : "photoManagerAvatarStatus");
+  if (status) status.textContent = "⏳ ټاکل شوی عکس پروفایل ته ثبتېږي...";
+  try {
+    const payload = target === "cover" ? { cover_photo_url: url, cover_url: url } : { profile_photo_url: url, avatar_url: url };
+    const saved = await apiRequest("/profile", { method: "PUT", body: JSON.stringify(payload) });
+    if (!saved || saved.success !== true) throw new Error(saved?.message || "عکس ثبت نه شو.");
+    currentUser = saved.user || saved.data?.user || currentUser;
+    if (target === "cover") {
+      currentUser.cover_photo_url = url; currentUser.cover_url = url;
+      const preview = document.getElementById("photoManagerCoverPreview"); if (preview) preview.src = safeURL(url);
+    } else {
+      currentUser.profile_photo_url = url; currentUser.avatar_url = url;
+      const preview = document.getElementById("photoManagerAvatarPreview"); if (preview) preview.src = safeURL(url);
+    }
+    updateUserUI();
+    if (status) status.textContent = "✅ عکس په بریالیتوب ثبت شو او ستاسو په پروفایل کې به ښکاره شي.";
+    const g = document.getElementById("photoManagerGallery"); if (g) g.style.display = "none";
+    if (typeof loadProfile === "function" && $("mainContent")) await loadProfile(currentUser.id);
+  } catch (error) {
+    if (status) status.textContent = "❌ " + (error.message || "عکس ثبت نه شو.");
+  }
 }
 
 /* =====================================================
@@ -49976,8 +50042,8 @@ window.createMediaPost = createMediaPost;
 /* S-Book profile and cover photo upload: isolated profile-only enhancement. */
 function previewSBookProfilePhoto(event) {
   const file = event.target.files && event.target.files[0];
-  const preview = document.getElementById("profilePageAvatarPreview");
-  const status = document.getElementById("profileAvatarStatus");
+  const preview = document.getElementById("photoManagerAvatarPreview") || document.getElementById("profilePageAvatarPreview");
+  const status = document.getElementById("photoManagerAvatarStatus") || document.getElementById("profileAvatarStatus");
   if (!file) return;
   if (!file.type || !file.type.startsWith("image/")) {
     event.target.value = "";
@@ -50000,8 +50066,8 @@ function previewSBookProfilePhoto(event) {
 
 function previewSBookCoverPhoto(event) {
   const file = event.target.files && event.target.files[0];
-  const preview = document.getElementById("profilePageCoverPreview");
-  const status = document.getElementById("profileCoverStatus");
+  const preview = document.getElementById("photoManagerCoverPreview") || document.getElementById("profilePageCoverPreview");
+  const status = document.getElementById("photoManagerCoverStatus") || document.getElementById("profileCoverStatus");
   if (!file) return;
   if (!file.type || !file.type.startsWith("image/")) {
     event.target.value = "";
@@ -50023,10 +50089,10 @@ function previewSBookCoverPhoto(event) {
 }
 
 async function uploadSBookProfilePhoto() {
-  return uploadSBookProfileAsset("profileAvatarFile", "profile_photo_url", "profileAvatarStatus", "profilePageAvatarPreview", "profile");
+  return uploadSBookProfileAsset(document.getElementById("photoManagerAvatarFile") ? "photoManagerAvatarFile" : "profileAvatarFile", "profile_photo_url", document.getElementById("photoManagerAvatarStatus") ? "photoManagerAvatarStatus" : "profileAvatarStatus", document.getElementById("photoManagerAvatarPreview") ? "photoManagerAvatarPreview" : "profilePageAvatarPreview", "profile");
 }
 async function uploadSBookCoverPhoto() {
-  return uploadSBookProfileAsset("profileCoverFile", "cover_photo_url", "profileCoverStatus", "profilePageCoverPreview", "cover");
+  return uploadSBookProfileAsset(document.getElementById("photoManagerCoverFile") ? "photoManagerCoverFile" : "profileCoverFile", "cover_photo_url", document.getElementById("photoManagerCoverStatus") ? "photoManagerCoverStatus" : "profileCoverStatus", document.getElementById("photoManagerCoverPreview") ? "photoManagerCoverPreview" : "profilePageCoverPreview", "cover");
 }
 
 async function uploadSBookProfileAsset(inputId, fieldName, statusId, previewId, kind) {
@@ -50094,7 +50160,7 @@ async function uploadSBookProfileAsset(inputId, fieldName, statusId, previewId, 
 
 async function removeSBookProfilePhoto() {
   if (!confirm("ایا غواړئ خپل اوسنی پروفایل انځور لرې کړئ؟")) return;
-  const status = document.getElementById("profileAvatarStatus");
+  const status = document.getElementById("photoManagerAvatarStatus") || document.getElementById("profileAvatarStatus");
   if (status) status.textContent = "⏳ انځور لرې کېږي...";
   const result = await apiRequest("/profile", {
     method: "PUT",
@@ -50108,7 +50174,7 @@ async function removeSBookProfilePhoto() {
   currentUser.profile_photo_url = "";
   currentUser.profile_photo = "";
   currentUser.avatar_url = "";
-  const preview = document.getElementById("profilePageAvatarPreview");
+  const preview = document.getElementById("photoManagerAvatarPreview") || document.getElementById("profilePageAvatarPreview");
   if (preview) preview.removeAttribute("src");
   updateUserUI();
   fillProfileForm();
@@ -50117,7 +50183,7 @@ async function removeSBookProfilePhoto() {
 
 async function removeSBookCoverPhoto() {
   if (!confirm("ایا غواړئ خپل Cover انځور لرې کړئ؟")) return;
-  const status = document.getElementById("profileCoverStatus");
+  const status = document.getElementById("photoManagerCoverStatus") || document.getElementById("profileCoverStatus");
   if (status) status.textContent = "⏳ Cover لرې کېږي...";
   const result = await apiRequest("/profile", {
     method: "PUT",
@@ -50131,7 +50197,7 @@ async function removeSBookCoverPhoto() {
   currentUser.cover_photo_url = "";
   currentUser.cover_photo = "";
   currentUser.cover_url = "";
-  const preview = document.getElementById("profilePageCoverPreview");
+  const preview = document.getElementById("photoManagerCoverPreview") || document.getElementById("profilePageCoverPreview");
   if (preview) preview.removeAttribute("src");
   updateUserUI();
   fillProfileForm();
