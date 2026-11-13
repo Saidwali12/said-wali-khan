@@ -31703,169 +31703,45 @@ async function saveEditedProfile() {
    ===================================================== */
 
 function openPhotoManager() {
+  if (!currentUser) return;
+  const existing = $("photoManagerModal");
+  if (existing) existing.remove();
 
-  if (!currentUser) {
+  const avatar = currentUser.profile_photo || currentUser.profile_photo_url || currentUser.avatar_url || "";
+  const cover = currentUser.cover_photo || currentUser.cover_photo_url || currentUser.cover_url || "";
 
-    return;
-
-  }
-
-
-  const modal =
-    document.createElement(
-      "div"
-    );
-
-
-  modal.id =
-    "photoManagerModal";
-
-
-  modal.style.cssText = `
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    z-index:99999;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:15px;
-  `;
-
-
+  const modal = document.createElement("div");
+  modal.id = "photoManagerModal";
+  modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:99999;display:flex;align-items:center;justify-content:center;padding:15px;overflow:auto;";
   modal.innerHTML = `
-
-    <div
-      class="card"
-      style="
-        width:100%;
-        max-width:450px;
-        padding:20px;
-      "
-    >
-
-      <div
-        style="
-          display:flex;
-          justify-content:space-between;
-        "
-      >
-
-        <h2
-          style="
-            margin-top:0;
-          "
-        >
-          📷 عکسونه
-        </h2>
-
-
-        <button
-          type="button"
-          onclick="
-            closePhotoManager()
-          "
-          style="
-            border:0;
-            background:none;
-            font-size:25px;
-          "
-        >
-          ×
-        </button>
-
+    <div class="card" style="width:100%;max-width:520px;max-height:92vh;overflow:auto;padding:18px;border-radius:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <h2 style="margin:0">📷 د پروفایل انځورونه</h2>
+        <button type="button" onclick="closePhotoManager()" aria-label="Close" style="border:0;background:none;font-size:28px;cursor:pointer">×</button>
       </div>
+      <p class="muted">خپل عکس له موبایل یا کمپیوټر څخه وټاکئ؛ د لینک لیکلو اړتیا نشته.</p>
 
+      <section style="border:1px solid #e4e6eb;border-radius:12px;padding:14px;margin-top:12px">
+        <h3 style="margin:0 0 12px">👤 د پروفایل عکس</h3>
+        <img id="profilePageAvatarPreview" src="${escapeHTML(avatar)}" alt="Profile photo" style="display:block;width:112px;height:112px;object-fit:cover;border-radius:50%;margin:0 auto 12px;background:#eee;border:3px solid #1877f2">
+        <input id="profileAvatarFile" type="file" accept="image/*" class="form-control" onchange="previewSBookProfilePhoto(event)" style="width:100%">
+        <button type="button" class="btn" onclick="uploadSBookProfilePhoto()" style="width:100%;margin-top:10px">⬆️ عکس پورته او ثبت کړه</button>
+        <button type="button" class="btn btn-secondary" onclick="removeSBookProfilePhoto()" style="width:100%;margin-top:8px">🗑️ عکس لرې کړه</button>
+        <div id="profileAvatarStatus" class="muted" role="status" style="margin-top:9px"></div>
+      </section>
 
-      <p>
-        د Profile عکس URL دلته ولیکئ:
-      </p>
-
-
-      <input
-        id="profileAvatarUrl"
-        type="url"
-        placeholder="https://..."
-        value="${escapeHTML(
-          currentUser.avatar_url ||
-          ""
-        )}"
-        style="
-          width:100%;
-          box-sizing:border-box;
-          padding:10px;
-          margin-bottom:12px;
-          border:1px solid #ddd;
-          border-radius:8px;
-          direction:ltr;
-        "
-      >
-
-
-      <button
-        type="button"
-        class="btn"
-        onclick="
-          saveProfileAvatar()
-        "
-        style="
-          width:100%;
-          margin-bottom:10px;
-        "
-      >
-        🖼️ Profile عکس خوندي کړه
-      </button>
-
-
-      <p>
-        د Cover عکس URL:
-      </p>
-
-
-      <input
-        id="profileCoverUrl"
-        type="url"
-        placeholder="https://..."
-        value="${escapeHTML(
-          currentUser.cover_url ||
-          ""
-        )}"
-        style="
-          width:100%;
-          box-sizing:border-box;
-          padding:10px;
-          margin-bottom:12px;
-          border:1px solid #ddd;
-          border-radius:8px;
-          direction:ltr;
-        "
-      >
-
-
-      <button
-        type="button"
-        class="btn btn-secondary"
-        onclick="
-          saveProfileCover()
-        "
-        style="
-          width:100%;
-        "
-      >
-        🖼️ Cover عکس خوندي کړه
-      </button>
-
+      <section style="border:1px solid #e4e6eb;border-radius:12px;padding:14px;margin-top:12px">
+        <h3 style="margin:0 0 12px">🖼️ د پوښ عکس (Cover)</h3>
+        <img id="profilePageCoverPreview" src="${escapeHTML(cover)}" alt="Cover photo" style="display:block;width:100%;height:120px;object-fit:cover;border-radius:10px;margin-bottom:12px;background:#eee">
+        <input id="profileCoverFile" type="file" accept="image/*" class="form-control" onchange="previewSBookCoverPhoto(event)" style="width:100%">
+        <button type="button" class="btn" onclick="uploadSBookCoverPhoto()" style="width:100%;margin-top:10px">⬆️ Cover پورته او ثبت کړه</button>
+        <button type="button" class="btn btn-secondary" onclick="removeSBookCoverPhoto()" style="width:100%;margin-top:8px">🗑️ Cover لرې کړه</button>
+        <div id="profileCoverStatus" class="muted" role="status" style="margin-top:9px"></div>
+      </section>
     </div>
-
   `;
-
-
-  document.body.appendChild(
-    modal
-  );
-
+  document.body.appendChild(modal);
 }
-
 
 /* =====================================================
    CLOSE PHOTO MANAGER
