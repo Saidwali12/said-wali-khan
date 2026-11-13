@@ -566,7 +566,7 @@
     while ((node = walker.nextNode())) {
       const parent = node.parentElement;
       if (!parent || /^(SCRIPT|STYLE|TEXTAREA|INPUT)$/i.test(parent.tagName)) continue;
-      if (parent.closest("#sw-language-bar,.user-post,.post-content,.comment,.comments,.post-card,.messages-layout,[contenteditable='true']")) continue;
+      if (parent.closest("#sw-language-bar,.user-post,.post-content,.comment,.comments,.post-card,.messages-layout,[contenteditable='true'],marquee,.top-news,.ticker,.news-ticker,#jobsNewsTicker,[data-no-translate],.notranslate,[translate='no']")) continue;
       if (!Object.prototype.hasOwnProperty.call(node, "__swOriginal")) node.__swOriginal = node.nodeValue;
       const original = node.__swOriginal;
       const trimmed = original.trim();
@@ -658,7 +658,7 @@
     while ((node = walker.nextNode())) {
       const parent = node.parentElement;
       if (!parent || /^(SCRIPT|STYLE|TEXTAREA|INPUT)$/i.test(parent.tagName)) continue;
-      if (parent.closest("#sw-language-bar,.user-post,.post-content,.comment,.comments,.post-card,.messages-layout,[contenteditable='true']")) continue;
+      if (parent.closest("#sw-language-bar,.user-post,.post-content,.comment,.comments,.post-card,.messages-layout,[contenteditable='true'],marquee,.top-news,.ticker,.news-ticker,#jobsNewsTicker,[data-no-translate],.notranslate,[translate='no']")) continue;
       if (!Object.prototype.hasOwnProperty.call(node, "__swOriginal")) node.__swOriginal = node.nodeValue;
       const original = node.__swOriginal;
       const trimmed = original.trim();
@@ -704,6 +704,7 @@
     queueAutomaticTranslations(lang);
     try { localStorage.setItem("sw_site_language", lang); } catch(e) {}
   }
+  window.__swApplyLanguage = apply;
   window.changeLanguage = function(lang) { apply(lang); };
   function observeTranslations() {
     let active = "ps";
