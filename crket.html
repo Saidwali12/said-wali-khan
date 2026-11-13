@@ -565,6 +565,26 @@ footer{
 .card.live .view{background:#173d64;color:#fff;border:1px solid #d9ae52}
 .card.live .view:hover{background:#d9ae52;color:#071a35}
 
+
+/* OpenCricket تاریخي پایلې */
+.history-panel{background:#071a35;color:#fff;border:1px solid #d9ae52;border-radius:15px;padding:16px;margin:20px 0;box-shadow:0 5px 18px #0002}
+.history-panel h2{color:#f4d58a;margin:0 0 8px;font-size:20px}
+.history-panel p{color:#dce7f2;font-size:13px;line-height:1.8}
+.history-controls{display:flex;gap:9px;flex-wrap:wrap;align-items:end;margin:12px 0}
+.history-controls label{display:grid;gap:5px;color:#f4d58a;font-size:12px}
+.history-controls input{padding:10px;border:1px solid #d9ae52;border-radius:8px;background:#fff;color:#102b50;min-width:145px}
+.history-controls button{padding:10px 15px;border:1px solid #d9ae52;border-radius:8px;background:#f4d58a;color:#071a35;font-weight:bold;cursor:pointer}
+.history-status{font-size:12px;color:#dce7f2;line-height:1.8;margin:10px 0}
+.history-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.history-card{background:#fff;color:#102b50;border-radius:11px;padding:12px;border-right:4px solid #d9ae52;line-height:1.8}
+.history-card .history-comp{font-size:12px;color:#76551b;font-weight:bold}
+.history-card .history-date{font-size:11px;color:#617487}
+.history-card .history-teams{font-weight:bold;margin:7px 0}
+.history-card .history-score{font-size:12px;color:#173d64}
+.history-card .history-result{margin-top:7px;padding-top:7px;border-top:1px solid #e5ebf0;font-weight:bold;color:#116044;font-size:12px}
+.history-more{display:block;margin:14px auto 0;padding:10px 22px;border:1px solid #d9ae52;border-radius:9px;background:#f4d58a;color:#071a35;font-weight:bold;cursor:pointer}
+@media(max-width:600px){.history-panel{padding:12px}.history-panel h2{font-size:17px}.history-controls label,.history-controls input,.history-controls button{width:100%}}
+
 </style>
 </head>
 
@@ -714,6 +734,21 @@ footer{
 <div id="detail" class="detail">
 <div id="detailContent"></div>
 </div>
+
+
+<section class="history-panel" id="historySection">
+ <h2>📚 د کرکټ تاریخي لوبې او پایلې</h2>
+ <p>دا برخه د OpenCricket API له لارې د پخوانیو لوبو پایلې ښيي؛ دا ژوندۍ لوبې نه دي. د نېټې له مخې پایلې ولټوئ.</p>
+ <div class="history-controls">
+  <label>له نېټې <input type="date" id="historyFrom"></label>
+  <label>تر نېټې <input type="date" id="historyTo"></label>
+  <button type="button" onclick="loadCricketHistory(true)">🔎 پایلې ولټوه</button>
+  <button type="button" onclick="resetCricketHistory()">↩️ وروستۍ پایلې</button>
+ </div>
+ <div class="history-status" id="historyStatus">⏳ د تاریخي لوبو معلومات راټولېږي...</div>
+ <div class="history-results" id="historyResults"></div>
+ <button type="button" class="history-more" id="historyMore" onclick="loadCricketHistory(false)" hidden>نورې پایلې ښکاره کړه</button>
+</section>
 
 <section class="fixtureBox"><h2>📅 راتلونکې لوبې او مهالوېش</h2><p>د راتلونکو نړیوالو لوبو رسمي مهالوېش د ICC له سرچینې وګورئ.</p><a href="https://www.icc-cricket.com/fixtures-results" target="_blank" rel="noopener">د ICC راتلونکې لوبې او پایلې پرانیزئ ←</a></section>
 <section class="news" id="newsSection">
@@ -1633,5 +1668,71 @@ setInterval(()=>{
 <script src="saidwali-gpt-global.js"></script>
 
 <script src="/said-wali-khan/language-system.js"></script>
+
+<script>
+/* OpenCricket تاریخي پایلې: له Live لوبو جلا ساتل کېږي */
+let cricketHistoryCursor = "";
+let cricketHistoryBusy = false;
+function resetCricketHistory(){
+ const from=document.getElementById("historyFrom");
+ const to=document.getElementById("historyTo");
+ if(from)from.value="";
+ if(to)to.value="";
+ loadCricketHistory(true);
+}
+async function loadCricketHistory(reset=true){
+ const status=document.getElementById("historyStatus");
+ const results=document.getElementById("historyResults");
+ const more=document.getElementById("historyMore");
+ if(!status||!results||cricketHistoryBusy)return;
+ cricketHistoryBusy=true;
+ if(reset){cricketHistoryCursor="";results.innerHTML="";if(more)more.hidden=true;}
+ status.textContent="⏳ د OpenCricket API تاریخي پایلې ترلاسه کېږي...";
+ try{
+  const params=new URLSearchParams({limit:"20"});
+  const from=document.getElementById("historyFrom")?.value||"";
+  const to=document.getElementById("historyTo")?.value||"";
+  if(from)params.set("from",from);
+  if(to)params.set("to",to);
+  if(!reset&&cricketHistoryCursor)params.set("cursor",cricketHistoryCursor);
+  const response=await fetch(API+"/opencricket/matches?"+params.toString(),{cache:"no-store"});
+  const payload=await response.json();
+  if(!response.ok||payload.success===false)throw new Error(payload.error||("API "+response.status));
+  const rows=Array.isArray(payload.data)?payload.data:[];
+  if(!rows.length){
+   if(reset)results.innerHTML='<div class="history-card">په ټاکلې نېټه کې پایلې ونه موندل شوې.</div>';
+   status.textContent="API ځواب ورکړ؛ خو د دې لټون لپاره نورې لوبې نشته.";
+   cricketHistoryCursor="";
+   if(more)more.hidden=true;
+   return;
+  }
+  const html=rows.map(m=>{
+   const teams=Array.isArray(m.teams)?m.teams:[];
+   const innings=Array.isArray(m.innings)?m.innings:[];
+   const teamLines=teams.map(t=>{
+    const inn=innings.find(x=>x.team_id===t.id);
+    const score=inn?(String(inn.runs??0)+"/"+String(inn.wickets??0)+" ("+String(inn.overs??"--")+" ov)"):"";
+    return '<div class="history-score">'+escapeHTML(t.name||"لوبډله")+(score?" — "+escapeHTML(score):"")+'</div>';
+   }).join("");
+   const venue=m.venue?(m.venue.name||"")+(m.venue.city?", "+m.venue.city:""):"";
+   return '<article class="history-card">'+
+    '<div class="history-comp">'+escapeHTML(m.competition?.name||"نړیواله لوبه")+' • '+escapeHTML(m.format||"")+'</div>'+
+    '<div class="history-date">📅 '+escapeHTML(m.date||"نېټه نشته")+' • '+escapeHTML(venue)+'</div>'+
+    '<div class="history-teams">'+teamLines+'</div>'+
+    (m.result?'<div class="history-result">🏆 '+escapeHTML(m.result)+'</div>':'')+
+   '</article>';
+  }).join("");
+  results.insertAdjacentHTML("beforeend",html);
+  cricketHistoryCursor=payload.meta?.next_cursor||"";
+  if(more)more.hidden=!cricketHistoryCursor;
+  status.textContent="✅ "+rows.length+" تاریخي لوبې ترلاسه شوې. سرچینه: OpenCricket API / "+escapeHTML(payload.meta?.source||"Cricsheet")+". دا پایلې Live نه دي.";
+ }catch(error){
+  status.textContent="❌ د تاریخي پایلو ترلاسه کولو کې ستونزه: "+error.message;
+  if(more)more.hidden=true;
+ }finally{cricketHistoryBusy=false;}
+}
+loadCricketHistory(true);
+</script>
+
 </body>
 </html>
