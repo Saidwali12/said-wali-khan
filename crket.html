@@ -1689,7 +1689,7 @@ async function loadCricketHistory(reset=true){
  if(reset){cricketHistoryCursor="";results.innerHTML="";if(more)more.hidden=true;}
  status.textContent="⏳ د OpenCricket API تاریخي پایلې ترلاسه کېږي...";
  try{
-  const params=new URLSearchParams({limit:"20"});
+  const params=new URLSearchParams({limit:"10"});
   const from=document.getElementById("historyFrom")?.value||"";
   const to=document.getElementById("historyTo")?.value||"";
   if(from)params.set("from",from);
