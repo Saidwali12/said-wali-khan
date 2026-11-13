@@ -40952,12 +40952,16 @@ function renderProfile(
 
 
   const avatar =
+    user.profile_photo ||
+    user.profile_photo_url ||
     user.avatar_url ||
     user.avatar ||
     "";
 
 
   const cover =
+    user.cover_photo ||
+    user.cover_photo_url ||
     user.cover_url ||
     user.cover ||
     "";
@@ -41182,6 +41186,16 @@ function renderProfile(
                     "
                   >
                     ✏️ پروفایل سمول
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="
+                      openPhotoManager()
+                    "
+                  >
+                    📷 عکسونه
                   </button>
                 `
                 : `
