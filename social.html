@@ -49778,9 +49778,6 @@ function goBackToMainSite(){
   addComposerControls();
   observer.observe(document.body,{childList:true,subtree:true});
  }
- document.addEventListener("click",e=>{
-  const nav=e.target.closest("[data-sw-nav]");if(nav&&nav.dataset.swNav==="menu"){e.preventDefault();toggleMenu();}
- });
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
  window.addEventListener("load",()=>{buildNavigation();addComposerControls();});
 })();
