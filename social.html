@@ -49705,7 +49705,7 @@ function goBackToMainSite(){
  const $=id=>document.getElementById(id);
  const pages=[
   {id:"home",label:"کور",icon:"⌂",run:()=>{if(typeof showFeedPage==="function")showFeedPage();}},
-  {id:"reels",label:"ریلز",icon:"▶",placeholder:true},
+  {id:"reels",label:"ریلز",icon:"▶",run:()=>{if(typeof window.loadReelsPage==="function")window.loadReelsPage();}},
   {id:"market",label:"مارکېټ‌پلېس",icon:"🛍️",placeholder:true},
   {id:"groups",label:"ګروپونه",icon:"👥",placeholder:true},
   {id:"gaming",label:"ګېمینګ",icon:"🎮",placeholder:true},
@@ -49867,5 +49867,45 @@ function goBackToMainSite(){
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",polish);
  else polish();
  window.addEventListener("load",polish);
+})();
+</script>
+
+
+<!-- S-BOOK REELS: connected to the existing /feed API -->
+<script id="sw-reels-api-v1">
+(function(){
+ const API="https://saidwali-social-api.walizaad2.workers.dev";
+ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const token=()=>localStorage.getItem("saidwali_session_token")||"";
+ function isVideo(p){
+  const u=String(p.media_url||p.video_url||p.file_url||"").toLowerCase();
+  const t=String(p.media_type||p.file_type||p.mime_type||"").toLowerCase();
+  return t.startsWith("video/")||/\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i.test(u);
+ }
+ window.loadReelsPage=async function(){
+  const main=document.getElementById("mainContent");if(!main)return;
+  main.innerHTML='<section class="card" style="max-width:760px;margin:0 auto"><h2>▶ ریلز</h2><p class="muted" style="margin-top:8px">د S-BOOK له خپرو شویو ویډیويي پوسټونو څخه ریلز</p><div id="swReelsList" style="display:grid;gap:16px;margin-top:16px">ویډیوګانې لوډ کېږي...</div></section>';
+  const list=document.getElementById("swReelsList");
+  try{
+   const headers={"Accept":"application/json"};
+   if(token())headers.Authorization="Bearer "+token();
+   const res=await fetch(API+"/feed",{method:"GET",headers});
+   const data=await res.json();
+   if(!res.ok||!data.success)throw new Error(data.message||"Feed API ځواب ورنه کړ");
+   const posts=Array.isArray(data.posts)?data.posts:Array.isArray(data.data)?data.data:[];
+   const videos=posts.filter(isVideo);
+   if(!videos.length){
+    list.innerHTML='<div style="padding:26px;text-align:center;background:#f0f2f5;border-radius:12px"><div style="font-size:42px">🎬</div><h3>تر اوسه ویډیويي ریلز نشته</h3><p class="muted" style="margin-top:8px">کله چې د S-BOOK په پوسټونو کې ویډیو خپره شي، دلته به ښکاره شي.</p><button class="btn" style="margin-top:14px" onclick="showFeedPage()">ویډیو پوسټ کړئ</button></div>';
+    return;
+   }
+   list.innerHTML=videos.map(p=>{
+    const url=p.media_url||p.video_url||p.file_url||"";
+    const name=p.full_name||p.author_name||p.username||"S-BOOK کارن";
+    return '<article style="background:#111;color:#fff;border-radius:14px;overflow:hidden"><video controls playsinline preload="metadata" style="display:block;width:100%;max-height:72vh;background:#000" src="'+esc(url)+'"></video><div style="padding:13px"><strong>'+esc(name)+'</strong><p style="white-space:pre-wrap;margin-top:7px">'+esc(p.content||"")+'</p><small style="color:#ccc">🎬 S-BOOK ریلز</small></div></article>';
+   }).join("");
+  }catch(e){
+   list.innerHTML='<div style="padding:18px;background:#fff0f0;color:#a11;border-radius:10px">د ریلز معلومات له API څخه ترلاسه نه شول: '+esc(e.message)+'</div>';
+  }
+ };
 })();
 </script>
