@@ -105,7 +105,7 @@ font-size:13px;
 </head>
 
 <body>
-<a href="javascript:history.back()" class="back-btn">⬅ شاته</a>
+<a href="index.html" class="back-btn" id="linksBackButton">⬅ شاته</a>
 
 <header>
 <h1>🌐 مهم ویب سایټونه او موبایل اپلېکېشنونه</h1>
@@ -199,6 +199,25 @@ font-size:13px;
 <button type="button" onclick="changeLanguage('ur',this)" style="padding:5px 8px;border:0;border-radius:6px">اردو</button>
 <button type="button" onclick="changeLanguage('ar',this)" style="padding:5px 8px;border:0;border-radius:6px">العربية</button>
 </div>
+<script>
+(function () {
+  var backButton = document.getElementById('linksBackButton');
+  if (!backButton) return;
+  backButton.addEventListener('click', function (event) {
+    var previousPage = document.referrer;
+    if (previousPage) {
+      try {
+        if (new URL(previousPage).origin === window.location.origin) {
+          event.preventDefault();
+          window.history.back();
+        }
+      } catch (error) {
+        // که مخکینی ادرس سم نه وي، index.html ته ځي.
+      }
+    }
+  });
+})();
+</script>
 <script src="language.js?v=20261112-2"></script>
 <script src="saidwali-gpt-global.js"></script>
 <script src="/said-wali-khan/language-system.js"></script>
