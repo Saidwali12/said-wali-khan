@@ -24348,15 +24348,28 @@ function renderPostCard(
     "";
 
 
-  const firstMedia =
-    Array.isArray(post.media) ? post.media[0] : null;
+  const mediaItems =
+    Array.isArray(post.media) ? post.media.filter(Boolean) : [];
 
-  const mediaUrl =
-    firstMedia?.media_url ||
-    post.media_url ||
-    post.image_url ||
-    post.photo_url ||
-    "";
+  if (!mediaItems.length) {
+    const fallbackUrl = post.media_url || post.image_url || post.photo_url || post.video_url || "";
+    if (fallbackUrl) mediaItems.push({ media_url: fallbackUrl, media_type: post.video_url ? "video" : "image" });
+  }
+
+  const mediaHTML = mediaItems.map(function(item) {
+    const url = safeURL(item.media_url || item.url || item.file_url || "");
+    const type = String(item.media_type || item.type || "").toLowerCase();
+    const mime = String(item.mime_type || "").toLowerCase();
+    const isVideo = type === "video" || mime.startsWith("video/");
+    const isAudio = type === "audio" || mime.startsWith("audio/");
+    const isImage = type === "image" || mime.startsWith("image/") || (!type && !mime);
+    if (!url) return "";
+    if (isVideo) return '<div style="background:#111;text-align:center"><video controls playsinline preload="metadata" style="display:block;width:100%;max-height:600px;background:#000" src="' + url + '"></video></div>';
+    if (isAudio) return '<div style="padding:14px;background:#f5f5f5"><audio controls preload="metadata" style="width:100%" src="' + url + '"></audio></div>';
+    if (isImage) return '<div style="background:#f5f5f5;text-align:center"><img src="' + url + '" alt="Post image" loading="lazy" style="display:block;width:100%;max-height:600px;object-fit:contain" onerror="this.parentElement.style.display=\'none\'"></div>';
+    const filename = escapeHTML(item.file_name || item.name || "د فایل پرانیستل");
+    return '<div style="padding:14px;background:#f5f5f5"><a href="' + url + '" target="_blank" rel="noopener noreferrer" style="color:#1877f2;font-weight:bold">📎 ' + filename + ' — فایل پرانیزئ</a></div>';
+  }).join("");
 
 
   const createdAt =
@@ -24564,37 +24577,9 @@ function renderPostCard(
       }
 
 
-      <!-- POST IMAGE -->
+      <!-- POST MEDIA: عکس، ویډیو، غږ او فایل -->
 
-      ${
-        mediaUrl
-          ? `
-            <div
-              style="
-                background:#f5f5f5;
-                text-align:center;
-              "
-            >
-
-              <img
-                src="${safeURL(mediaUrl)}"
-                alt="Post image"
-                loading="lazy"
-                style="
-                  display:block;
-                  width:100%;
-                  max-height:600px;
-                  object-fit:contain;
-                "
-                onerror="
-                  this.parentElement.style.display='none'
-                "
-              >
-
-            </div>
-          `
-          : ""
-      }
+      \${mediaHTML ? '<div style="display:grid;gap:8px">' + mediaHTML + '</div>' : ""}
 
 
       <!-- POST STATS -->
@@ -49909,3 +49894,193 @@ function goBackToMainSite(){
  };
 })();
 </script>
+
+
+
+<script id="saidwali-media-upload-fix-v1">
+/* S-BOOK MEDIA UPLOAD FIX — ImageKit Worker /media/upload */
+let selectedPostMediaFiles = [];
+const swOriginalRenderCreatePostBox = window.renderCreatePostBox || renderCreatePostBox;
+
+function renderCreatePostBox() {
+  if (typeof swOriginalRenderCreatePostBox === "function") swOriginalRenderCreatePostBox();
+  const input = document.getElementById("postImageInput");
+  if (input) {
+    input.accept = "image/*,video/*";
+    input.multiple = true;
+    input.setAttribute("onchange", "handlePostImageSelect(event)");
+  }
+}
+
+function handlePostImageSelect(event) {
+  const files = Array.from((event && event.target && event.target.files) || []);
+  const preview = document.getElementById("postImagePreview");
+  selectedPostMediaFiles = [];
+  if (!files.length) {
+    if (preview) { preview.innerHTML = ""; preview.style.display = "none"; }
+    return;
+  }
+  for (const file of files) {
+    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+      alert("یوازې عکس او ویډیو انتخابولی شئ.");
+      event.target.value = "";
+      return;
+    }
+    if (file.size > 25 * 1024 * 1024) {
+      alert("هر عکس یا ویډیو باید تر 25MB کمه وي؛ د Worker حد 25MB دی.");
+      event.target.value = "";
+      return;
+    }
+  }
+  selectedPostMediaFiles = files;
+  if (!preview) return;
+  preview.style.display = "grid";
+  preview.style.gridTemplateColumns = "repeat(auto-fit,minmax(130px,1fr))";
+  preview.style.gap = "8px";
+  preview.innerHTML = "";
+  files.forEach(function(file) {
+    const card = document.createElement("div");
+    card.style.cssText = "padding:7px;border:1px solid #ddd;border-radius:9px;min-width:0";
+    const name = document.createElement("div");
+    name.textContent = file.name;
+    name.style.cssText = "font-size:12px;overflow-wrap:anywhere;margin-top:5px";
+    if (file.type.startsWith("image/")) {
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+      img.alt = file.name;
+      img.style.cssText = "width:100%;height:120px;object-fit:contain";
+      card.appendChild(img);
+    } else {
+      const video = document.createElement("video");
+      video.src = URL.createObjectURL(file);
+      video.controls = true;
+      video.preload = "metadata";
+      video.style.cssText = "width:100%;height:120px;background:#111";
+      card.appendChild(video);
+    }
+    card.appendChild(name);
+    preview.appendChild(card);
+  });
+  const clear = document.createElement("button");
+  clear.type = "button";
+  clear.className = "btn btn-secondary";
+  clear.textContent = "ټول فایلونه پاکول";
+  clear.style.marginTop = "8px";
+  clear.onclick = function() { removePostImage(); };
+  preview.appendChild(clear);
+}
+
+function removePostImage() {
+  selectedPostMediaFiles = [];
+  if (typeof selectedPostImageFile !== "undefined") selectedPostImageFile = null;
+  const input = document.getElementById("postImageInput");
+  if (input) input.value = "";
+  const preview = document.getElementById("postImagePreview");
+  if (preview) { preview.innerHTML = ""; preview.style.display = "none"; }
+}
+
+async function swUploadMediaFile(file) {
+  const formData = new FormData();
+  formData.append("file", file, file.name);
+  const result = await apiRequest("/media/upload", { method: "POST", body: formData });
+  if (!result || !result.success || !result.media || !result.media.media_id) {
+    throw new Error((result && result.message) || "فایل ImageKit ته پورته نه شو. د Worker ځواب یا ImageKit تنظیمات وګورئ.");
+  }
+  return result.media;
+}
+
+async function createNewPost() {
+  if (!currentUser || !sessionToken) { alert("لومړی Login وکړئ."); return; }
+  const input = document.getElementById("newPostContent");
+  if (!input) { alert("د پوسټ لیکلو بکس پیدا نه شو. پاڼه تازه کړئ."); return; }
+  const content = String(input.value || "").trim();
+  const files = selectedPostMediaFiles.slice();
+  if (!content && !files.length) { alert("لږ تر لږه متن، عکس یا ویډیو اضافه کړئ."); return; }
+  const button = document.querySelector("#createPostContainer .btn:not(.btn-secondary)") ||
+                 document.querySelector("#createPostBox .btn:not(.btn-secondary)");
+  const oldText = button ? button.textContent : "";
+  if (button) { button.disabled = true; button.textContent = "⏳ فایلونه پورته کېږي..."; }
+  try {
+    const uploadedMedia = [];
+    for (let i = 0; i < files.length; i++) {
+      if (button) button.textContent = "⏳ فایل " + (i + 1) + " له " + files.length + " څخه پورته کېږي...";
+      uploadedMedia.push(await swUploadMediaFile(files[i]));
+    }
+    if (button) button.textContent = "⏳ پوسټ خپرېږي...";
+    const result = await apiRequest("/posts", {
+      method: "POST",
+      body: JSON.stringify({
+        content: content,
+        privacy: getPostPrivacyValue(),
+        status: "published",
+        media: uploadedMedia.map(function(m) {
+          return {
+            media_id: m.media_id,
+            media_type: m.media_type,
+            media_url: m.media_url,
+            thumbnail_url: m.thumbnail_url,
+            file_name: m.file_name,
+            file_size: m.file_size,
+            mime_type: m.mime_type
+          };
+        })
+      })
+    });
+    if (!result || !result.success) throw new Error((result && result.message) || "پوسټ خپور نه شو.");
+    input.value = "";
+    removePostImage();
+    alert("پوسټ په بریالیتوب سره خپور شو. ✅");
+    if (typeof loadFeed === "function") await loadFeed(true);
+  } catch (error) {
+    console.error("S-BOOK media post error:", error);
+    alert(error.message || "د پوسټ جوړولو پر مهال ستونزه رامنځته شوه.");
+  } finally {
+    if (button) { button.disabled = false; button.textContent = oldText || "🚀 خپرول"; }
+  }
+}
+
+async function createMediaPost(content, privacy) {
+  if (!sessionToken) { alert("لومړی Login وکړئ."); return; }
+  if (!validateSelectedMedia()) return;
+  const files = Array.isArray(selectedPostMedia) ? selectedPostMedia.slice() : [];
+  if (!String(content || "").trim() && !files.length) { alert("متن، عکس یا ویډیو اضافه کړئ."); return; }
+  try {
+    const uploadedMedia = [];
+    for (let i = 0; i < files.length; i++) {
+      if (!validateMediaFile(files[i])) return;
+      if (files[i].size > 25 * 1024 * 1024) { alert("هر فایل باید تر 25MB کم وي."); return; }
+      uploadedMedia.push(await swUploadMediaFile(files[i]));
+    }
+    const result = await apiRequest("/posts", {
+      method: "POST",
+      body: JSON.stringify({
+        content: String(content || "").trim(),
+        privacy: privacy || "public",
+        media: uploadedMedia.map(function(m) {
+          return {
+            media_id: m.media_id,
+            media_type: m.media_type,
+            media_url: m.media_url,
+            thumbnail_url: m.thumbnail_url,
+            file_name: m.file_name,
+            file_size: m.file_size,
+            mime_type: m.mime_type
+          };
+        })
+      })
+    });
+    if (!result || !result.success) throw new Error((result && result.message) || "پوسټ جوړ نه شو.");
+    clearSelectedMedia();
+    alert("پوسټ په بریالیتوب سره خپور شو.");
+    if (typeof loadFeed === "function") await loadFeed(true);
+  } catch (error) {
+    console.error("S-BOOK media selector error:", error);
+    alert(error.message || "د Media پوسټ جوړ نه شو.");
+  }
+}
+window.handlePostImageSelect = handlePostImageSelect;
+window.removePostImage = removePostImage;
+window.createNewPost = createNewPost;
+window.createMediaPost = createMediaPost;
+</script>
+
