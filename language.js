@@ -570,7 +570,7 @@
       if (!Object.prototype.hasOwnProperty.call(node, "__swOriginal")) node.__swOriginal = node.nodeValue;
       const original = node.__swOriginal;
       const trimmed = original.trim();
-      if (!trimmed || !/[\u0600-\u06FF]/.test(trimmed) || dict[trimmed]) continue;
+      if (!trimmed || !/\p{L}/u.test(trimmed) || dict[trimmed]) continue;
       if (trimmed.length > 500 || node.__swAutoQueued === lang) continue;
       const cacheKey = lang + "|" + trimmed;
       if (autoTranslationCache.has(cacheKey)) {
@@ -590,7 +590,7 @@
         if (el.dataset[dataKey] === undefined) el.dataset[dataKey] = current || "";
         const originalValue = el.dataset[dataKey];
         const trimmedValue = originalValue.trim();
-        if (!trimmedValue || !/[\u0600-\u06FF]/.test(trimmedValue) || dict[trimmedValue] || trimmedValue.length > 500) return;
+        if (!trimmedValue || !/\p{L}/u.test(trimmedValue) || dict[trimmedValue] || trimmedValue.length > 500) return;
         const cacheKey = lang + "|" + trimmedValue;
         if (autoTranslationCache.has(cacheKey)) {
           if (attr === "value") el.value = autoTranslationCache.get(cacheKey);
@@ -610,7 +610,7 @@
       if (el.dataset.swOriginalText === undefined) el.dataset.swOriginalText = el.textContent;
       const originalValue = el.dataset.swOriginalText;
       const trimmedValue = originalValue.trim();
-      if (!trimmedValue || !/[\u0600-\u06FF]/.test(trimmedValue) || dict[trimmedValue] || trimmedValue.length > 500) return;
+      if (!trimmedValue || !/\p{L}/u.test(trimmedValue) || dict[trimmedValue] || trimmedValue.length > 500) return;
       const cacheKey = lang + "|" + trimmedValue;
       if (autoTranslationCache.has(cacheKey)) { el.textContent = autoTranslationCache.get(cacheKey); return; }
       if (el.dataset.swAutoOptionQueued === lang) return;
