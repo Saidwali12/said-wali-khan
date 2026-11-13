@@ -1881,10 +1881,30 @@ body.dark-mode .language-options button{background:#26364b!important;color:#f4d5
   #site-language-menu{top:8px;left:8px;gap:5px}
   #site-language-menu .language-trigger,#site-language-menu .theme-toggle{padding:7px 9px;font-size:11px}
   #site-language-menu .language-options{min-width:135px}
-}</style>
+}
+#site-search-trigger{width:39px;height:39px;display:grid;place-items:center;flex:0 0 39px;border:1px solid #d9ae52;border-radius:50%;background:linear-gradient(135deg,#102b50,#071a35);color:#f4d58a;cursor:pointer;box-shadow:0 5px 18px #0003;transition:.2s}
+#site-search-trigger:hover{background:#d9ae52;color:#071a35;transform:scale(1.06)}
+#site-search-trigger svg{width:19px;height:19px;display:block}
+#site-search-dialog{display:none;position:fixed;inset:0;z-index:1000001;align-items:flex-start;justify-content:center;padding:90px 15px 20px;background:rgba(3,12,27,.62);backdrop-filter:blur(4px);font-family:Tahoma,Arial,sans-serif}
+#site-search-dialog.open{display:flex}
+.site-search-panel{width:min(560px,100%);padding:20px;border:1px solid #d9ae52;border-radius:17px;background:#fff;color:#102b50;box-shadow:0 18px 55px #0005}
+.site-search-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.site-search-heading strong{font-size:18px;color:#102b50}
+#site-search-close{width:34px;height:34px;border:0;border-radius:50%;background:#eef1f6;color:#102b50;font-size:21px;cursor:pointer}
+#site-search-input{width:100%;height:48px;padding:10px 14px;border:2px solid #d9ae52;border-radius:10px;outline:none;font:15px Tahoma,Arial,sans-serif;color:#102b50}
+#site-search-input:focus{box-shadow:0 0 0 3px #d9ae5233}
+.site-search-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.site-search-actions button{flex:1;min-width:125px;padding:11px 13px;border:1px solid #d9ae52;border-radius:9px;background:linear-gradient(135deg,#102b50,#071a35);color:#f4d58a;font:bold 13px Tahoma,Arial,sans-serif;cursor:pointer}
+.site-search-actions button:hover{background:#d9ae52;color:#071a35}
+.site-search-note{margin-top:10px;color:#68778c;font-size:11px;line-height:1.8}
+body.dark-mode .site-search-panel{background:#1b293b;color:#e7edf6}
+body.dark-mode .site-search-heading strong{color:#f4d58a}
+@media(max-width:480px){#site-search-trigger{width:34px;height:34px;flex-basis:34px}#site-search-dialog{padding-top:75px}.site-search-panel{padding:15px}.site-search-heading strong{font-size:16px}}
+</style>
 <div id="site-language-menu" aria-label="د ژبې او بڼې مینو">
   <button class="language-trigger" id="site-language-trigger" type="button" aria-expanded="false">🌐 ژبه: پښتو ▾</button>
   <button class="theme-toggle" id="site-theme-toggle" type="button" aria-label="د شپې او ورځې بڼه بدلول">🌙 شپه</button>
+  <button id="site-search-trigger" type="button" aria-label="د ویب‌سایټ لټون" title="لټون" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg></button>
   <div class="language-options" id="site-language-options">
     <button class="active" type="button" data-lang="ps" onclick="changeLanguage('ps',this)">🇦🇫 پښتو</button>
     <button type="button" data-lang="fa" onclick="changeLanguage('fa',this)">دری</button>
@@ -1893,13 +1913,41 @@ body.dark-mode .language-options button{background:#26364b!important;color:#f4d5
     <button type="button" data-lang="ar" onclick="changeLanguage('ar',this)">العربية</button>
   </div>
 </div>
+<div id="site-search-dialog" role="dialog" aria-modal="true" aria-label="د سیدولي خان ویب‌سایټ لټون">
+ <div class="site-search-panel">
+  <div class="site-search-heading"><strong>🔍 د ویب‌سایټ په ټولو برخو کې لټون</strong><button id="site-search-close" type="button" aria-label="بندول">×</button></div>
+  <input id="site-search-input" type="search" placeholder="د خبر، دندې، خدمت یا بل مطلب نوم ولیکئ..." autocomplete="off">
+  <div class="site-search-actions"><button id="site-search-google" type="button">Google کې لټون</button><button id="site-search-yahoo" type="button">Yahoo کې لټون</button></div>
+  <p class="site-search-note">لټون د همدې ویب‌سایټ په هغو پاڼو کې کېږي چې Google یا Yahoo ثبت کړې وي. نوې پاڼې ښايي تر ثبتېدو وروسته په پایلو کې ښکاره شي.</p>
+ </div>
+</div>
 <script>
 (function(){
   const menu=document.getElementById('site-language-menu');
   const trigger=document.getElementById('site-language-trigger');
   const theme=document.getElementById('site-theme-toggle');
   const options=document.getElementById('site-language-options');
+  const searchTrigger=document.getElementById('site-search-trigger');
+  const searchDialog=document.getElementById('site-search-dialog');
+  const searchInput=document.getElementById('site-search-input');
+  const searchClose=document.getElementById('site-search-close');
   if(!menu||!trigger||!theme||!options)return;
+  function closeSiteSearch(){if(searchDialog)searchDialog.classList.remove('open');if(searchTrigger)searchTrigger.setAttribute('aria-expanded','false')}
+  function runSiteSearch(engine){
+    const term=searchInput&&searchInput.value.trim();if(!term){if(searchInput)searchInput.focus();return}
+    const query='site:saidwali12.github.io/said-wali-khan/ '+term;
+    const url=engine==='yahoo'?'https://search.yahoo.com/search?p='+encodeURIComponent(query):'https://www.google.com/search?q='+encodeURIComponent(query);
+    window.open(url,'_blank','noopener');
+  }
+  if(searchTrigger&&searchDialog&&searchInput){
+    searchTrigger.addEventListener('click',()=>{searchDialog.classList.add('open');searchTrigger.setAttribute('aria-expanded','true');menu.classList.remove('open');trigger.setAttribute('aria-expanded','false');setTimeout(()=>searchInput.focus(),40)});
+    searchClose.addEventListener('click',closeSiteSearch);
+    searchDialog.addEventListener('click',e=>{if(e.target===searchDialog)closeSiteSearch()});
+    document.getElementById('site-search-google').addEventListener('click',()=>runSiteSearch('google'));
+    document.getElementById('site-search-yahoo').addEventListener('click',()=>runSiteSearch('yahoo'));
+    searchInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runSiteSearch('google')}if(e.key==='Escape')closeSiteSearch()});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSiteSearch()});
+  }
   trigger.addEventListener('click',function(){
     const opened=menu.classList.toggle('open');
     trigger.setAttribute('aria-expanded',String(opened));
