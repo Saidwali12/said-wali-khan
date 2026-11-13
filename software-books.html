@@ -1,399 +1,249 @@
 <!DOCTYPE html>
 <html lang="ps" dir="rtl">
 <head>
-<div id="clockBox">
-  <canvas id="clock" width="180" height="180"></canvas>
-  <div id="afgTime"></div>
-</div>
-
-<style>
-#clockBox{
-text-align:center;
-padding:15px;
-background:white;
-margin:10px;
-border-radius:12px;
-box-shadow:0 2px 8px rgba(0,0,0,.2);
-}
-
-#afgTime{
-font-size:22px;
-font-weight:bold;
-color:#0d47a1;
-margin-top:10px;
-}
-</style>
-
-<script>
-const canvas=document.getElementById("clock");
-const ctx=canvas.getContext("2d");
-const radius=canvas.height/2;
-ctx.translate(radius,radius);
-
-function drawClock(){
-ctx.clearRect(-radius,-radius,canvas.width,canvas.height);
-
-ctx.beginPath();
-ctx.arc(0,0,radius-5,0,2*Math.PI);
-ctx.fillStyle="white";
-ctx.fill();
-ctx.strokeStyle="#0d47a1";
-ctx.lineWidth=4;
-ctx.stroke();
-
-const now=new Date();
-
-const afg=new Date(
-now.toLocaleString("en-US",{timeZone:"Asia/Kabul"})
-);
-
-let hour=afg.getHours();
-let minute=afg.getMinutes();
-let second=afg.getSeconds();
-
-document.getElementById("afgTime").innerHTML=
-"🇦🇫 د افغانستان وخت: "
-+ hour.toString().padStart(2,"0")+":"
-+ minute.toString().padStart(2,"0")+":"
-+ second.toString().padStart(2,"0");
-
-for(let num=1;num<=12;num++){
-let ang=num*Math.PI/6;
-ctx.rotate(ang);
-ctx.translate(0,-radius*0.80);
-ctx.rotate(-ang);
-ctx.fillStyle="#000";
-ctx.font="16px Arial";
-ctx.textAlign="center";
-ctx.fillText(num.toString(),0,0);
-ctx.rotate(ang);
-ctx.translate(0,radius*0.80);
-ctx.rotate(-ang);
-}
-
-hour=hour%12;
-hour=(hour*Math.PI/6)+(minute*Math.PI/(6*60));
-drawHand(hour,radius*0.5,6);
-
-minute=(minute*Math.PI/30);
-drawHand(minute,radius*0.7,4);
-
-second=(second*Math.PI/30);
-drawHand(second,radius*0.8,2);
-}
-
-function drawHand(pos,length,width){
-ctx.beginPath();
-ctx.lineWidth=width;
-ctx.lineCap="round";
-ctx.moveTo(0,0);
-ctx.rotate(pos);
-ctx.lineTo(0,-length);
-ctx.stroke();
-ctx.rotate(-pos);
-}
-
-setInterval(drawClock,1000);
-drawClock();
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>سافټویرونه او کتابونه</title>
-
+<meta name="description" content="د سافټویرونو، کتابونو، زده کړو او مصنوعي ځیرکتیا ګټورې سرچینې په یوه ځای کې">
+<title>د سافټویرونو او کتابونو مرکز | سیدولي</title>
 <style>
-body{
-font-family:Tahoma;
-margin:0;
-background:#f5f5f5;
-}
-
-header{
-background:#0d47a1;
-color:white;
-padding:15px;
-text-align:center;
-}
-
-marquee{
-background:#ff9800;
-color:white;
-padding:8px;
-font-weight:bold;
-}
-
-.nav{
-text-align:center;
-padding:10px;
-}
-
-.nav button{
-padding:8px 15px;
-margin:3px;
-border:none;
-background:#0d47a1;
-color:white;
-border-radius:5px;
-cursor:pointer;
-}
-
-.section{
-background:#0d47a1;
-color:white;
-padding:8px;
-margin:10px;
-border-radius:5px;
-text-align:center;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-gap:8px;
-padding:10px;
-}
-
-.item{
-background:white;
-padding:10px;
-border-radius:8px;
-text-align:center;
-box-shadow:0 1px 4px rgba(0,0,0,.2);
-}
-
-.item img{
-width:30px;
-height:30px;
-display:block;
-margin:auto;
-margin-bottom:5px;
-}
-
-.item a{
-text-decoration:none;
-color:#0d47a1;
-font-size:14px;
-font-weight:bold;
-}
+:root{--navy:#071a35;--blue:#0d47a1;--gold:#d9ae52;--pale:#f4d58a;--bg:#f3f6fb}
+*{box-sizing:border-box}
+body{font-family:Tahoma,Arial,sans-serif;margin:0;background:var(--bg);color:#172033;line-height:1.65}
+header{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;text-align:center;padding:22px 14px;border-bottom:4px solid var(--gold)}
+header h1{font-size:clamp(21px,4vw,30px);margin:0 0 5px}
+header p{margin:0;color:#f4d58a}
+#clockBox{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;background:#fff;margin:12px auto;padding:9px 14px;max-width:380px;border:1px solid #e4e9f2;border-radius:14px;box-shadow:0 2px 8px #00000012}
+#clock{width:76px;height:76px}
+#afgTime{font-weight:bold;color:var(--blue);font-size:17px}
+marquee{display:block;background:#ff9800;color:#fff;padding:8px;font-weight:bold}
+.nav{text-align:center;padding:9px}
+.nav button,.filter-btn,.clear-btn{padding:9px 14px;margin:3px;border:0;background:var(--blue);color:#fff;border-radius:8px;cursor:pointer;font-family:inherit}
+.nav button:hover,.filter-btn:hover,.clear-btn:hover{background:var(--navy)}
+.tools{position:sticky;top:0;z-index:20;background:#fff;padding:12px;border-bottom:1px solid #e1e6ef;box-shadow:0 2px 8px #0000000b}
+.search-wrap{max-width:850px;margin:auto;display:flex;gap:8px}
+#siteSearch{flex:1;min-width:0;padding:12px 14px;border:2px solid #d5deec;border-radius:10px;font:inherit;outline:none}
+#siteSearch:focus{border-color:var(--gold)}
+#searchCount{text-align:center;color:#596579;font-size:13px;margin-top:5px}
+.filters{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin-top:8px}
+.filter-btn{font-size:13px;padding:7px 11px}
+.filter-btn[aria-pressed=true]{background:var(--gold);color:var(--navy);font-weight:bold}
+main{max-width:1200px;margin:auto;padding:8px 10px 90px}
+.section{background:var(--navy);color:#fff;padding:9px 12px;margin:18px 0 8px;border-right:5px solid var(--gold);border-radius:7px;font-size:18px}
+.section-note{font-size:13px;color:#596579;margin:0 4px 9px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}
+.item{background:#fff;padding:13px 9px;border-radius:11px;text-align:center;box-shadow:0 1px 5px #00000013;border:1px solid #edf0f5;min-width:0;transition:transform .15s,box-shadow .15s}
+.item:hover{transform:translateY(-2px);box-shadow:0 5px 14px #00000018}
+.item img{width:34px;height:34px;display:block;margin:0 auto 7px;object-fit:contain}
+.item a{text-decoration:none;color:var(--blue);font-size:14px;font-weight:bold;display:block;overflow-wrap:anywhere}
+.item p{font-size:12px;color:#667085;margin:5px 0 0}
+.item[hidden]{display:none!important}
+.notice{background:#fff8e8;border:1px solid #f0d99e;border-radius:10px;padding:12px 14px;margin:15px 0;font-size:13px}
+.empty{display:none;text-align:center;padding:22px;background:#fff;border-radius:10px;color:#8a3540}
+footer{text-align:center;background:var(--navy);color:#fff;padding:16px;font-size:13px}
+#sw-language-bar{max-width:calc(100vw - 24px)}
+#sw-language-bar button{cursor:pointer;font-family:inherit;background:#fff;color:var(--navy);font-weight:bold}
+@media(max-width:600px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.item{padding:11px 6px}.tools{position:relative}.search-wrap{flex-wrap:wrap}.clear-btn{flex:0 0 auto}}
 </style>
 </head>
 <body>
-
 <header>
-<h2>د سافټویرونو او کتابونو مرکز</h2>
+<h1>د سافټویرونو، کتابونو او زده کړو مرکز</h1>
+<p>ګټورې ډیجیټلي سرچینې — په یوه ځای کې</p>
 </header>
 
-<marquee>
-FileHippo | Softpedia | MajorGeeks | FossHub | GitHub | Quran | IslamHouse | Shamela| دغه صفحه کی تاسی دخپل روزمره دضرورت هرهغه سایتونه پید اکولای شی چی تاسی ورته ضرورت لری..کلیک وکړی اوداخل شی
-</marquee>
+<div id="clockBox">
+<canvas id="clock" width="180" height="180" aria-label="د افغانستان ساعت"></canvas>
+<div id="afgTime">🇦🇫 د افغانستان وخت: --:--:--</div>
+</div>
+
+<marquee direction="right">FileHippo | Softpedia | GitHub | LibreOffice | قرآن کریم | پښتو کتابونه | آنلاین زده کړې | مصنوعي ځیرکتیا — اړوند خدمت ته د تګ لپاره کلیک وکړئ</marquee>
 
 <div class="nav">
-<button onclick="history.back()">⬅ شاتګ</button>
-<button onclick="history.forward()">➡ مخکې تګ</button>
+<button type="button" onclick="history.back()">⬅ شاتګ</button>
+<button type="button" onclick="history.forward()">➡ مخکې تګ</button>
 </div>
 
-<div class="section">💻 سافټویر سایټونه</div>
+<div class="tools">
+<div class="search-wrap">
+<input id="siteSearch" type="search" placeholder="د سافټویر، کتاب یا خدمت نوم ولیکئ..." aria-label="په سرچینو کې لټون" autocomplete="off">
+<button class="clear-btn" type="button" id="clearSearch">پاکول ✕</button>
+</div>
+<div id="searchCount" aria-live="polite">ټولې سرچینې ښکاري</div>
+<div class="filters" aria-label="د سرچینو ډول ټاکل">
+<button class="filter-btn" type="button" data-filter="all" aria-pressed="true">ټول</button>
+<button class="filter-btn" type="button" data-filter="software" aria-pressed="false">💻 سافټویر</button>
+<button class="filter-btn" type="button" data-filter="books" aria-pressed="false">📚 کتابونه</button>
+<button class="filter-btn" type="button" data-filter="learning" aria-pressed="false">🎓 زده کړې</button>
+<button class="filter-btn" type="button" data-filter="ai" aria-pressed="false">🤖 AI او انلاین وسایل</button>
+<button class="filter-btn" type="button" data-filter="mobile" aria-pressed="false">📱 موبایل</button>
+</div>
+</div>
 
+<main>
+<div class="notice"><strong>د کارولو لار:</strong> د پورته لټون په خانه کې نوم ولیکئ، یا د کټګورۍ تڼۍ وټاکئ. د هر کارت په نوم کلیک وکړئ؛ اړوند رسمي یا پېژندل شوې ویبپاڼه به په نوې کړکۍ کې پرانیستل شي. د پروګرامونو د نصبولو پر مهال د اصلي وېبپاڼې سرچینه وکاروئ او له ناپېژندل شوو فایلونو ډډه وکړئ.</div>
+
+<h2 class="section">💻 د کمپیوټر سافټویرونه او ډاونلوډ سرچینې</h2>
+<p class="section-note">د Windows او نورو کمپیوټري پروګرامونو لپاره د پېژندل شوو سرچینو ټولګه.</p>
 <div class="grid">
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=filehippo.com&sz=64">
-<a href="https://filehippo.com" target="_blank">FileHippo</a>
-</div>
-<div class="item">
-    <img src="https://www.google.com/s2/favicons?domain=p30download.ir&sz=64" alt="P30Download">
-    <a href="https://p30download.ir/" target="_blank">
-        P30Download
-    </a>
-</div>
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=softpedia.com&sz=64">
-<a href="https://softpedia.com" target="_blank">Softpedia</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=majorgeeks.com&sz=64">
-<a href="https://majorgeeks.com" target="_blank">MajorGeeks</a>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=filehippo.com&sz=64" alt=""><a href="https://filehippo.com" target="_blank" rel="noopener noreferrer">FileHippo</a><p>د سافټویرونو ډاونلوډ</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=p30download.ir&sz=64" alt=""><a href="https://p30download.ir/" target="_blank" rel="noopener noreferrer">P30Download</a><p>پروګرامونه او وسایل</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=softpedia.com&sz=64" alt=""><a href="https://softpedia.com" target="_blank" rel="noopener noreferrer">Softpedia</a><p>د سافټویر کتلاګ</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=majorgeeks.com&sz=64" alt=""><a href="https://majorgeeks.com" target="_blank" rel="noopener noreferrer">MajorGeeks</a><p>سیسټم او تخنیکي وسایل</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=filehorse.com&sz=64" alt=""><a href="https://filehorse.com" target="_blank" rel="noopener noreferrer">FileHorse</a><p>د کمپیوټر پروګرامونه</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=sourceforge.net&sz=64" alt=""><a href="https://sourceforge.net" target="_blank" rel="noopener noreferrer">SourceForge</a><p>خلاصې سرچینې پروژې</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=fosshub.com&sz=64" alt=""><a href="https://fosshub.com" target="_blank" rel="noopener noreferrer">FossHub</a><p>وړیا او خلاص سافټویر</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=github.com&sz=64" alt=""><a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a><p>کوډ او پروژې</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=ninite.com&sz=64" alt=""><a href="https://ninite.com" target="_blank" rel="noopener noreferrer">Ninite</a><p>د پروګرامونو یوځای نصب</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=libreoffice.org&sz=64" alt=""><a href="https://www.libreoffice.org/" target="_blank" rel="noopener noreferrer">LibreOffice</a><p>وړیا Office بدیل</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=videolan.org&sz=64" alt=""><a href="https://www.videolan.org/vlc/" target="_blank" rel="noopener noreferrer">VLC Media Player</a><p>د ویډیو او غږ پلیر</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=7-zip.org&sz=64" alt=""><a href="https://www.7-zip.org/" target="_blank" rel="noopener noreferrer">7-Zip</a><p>د فایلونو ZIP او Extract</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=gimp.org&sz=64" alt=""><a href="https://www.gimp.org/" target="_blank" rel="noopener noreferrer">GIMP</a><p>د انځورونو سمون</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=mozilla.org&sz=64" alt=""><a href="https://www.mozilla.org/firefox/" target="_blank" rel="noopener noreferrer">Firefox</a><p>انټرنېټ براوزر</p></div>
+<div class="item" data-category="software"><img src="https://www.google.com/s2/favicons?domain=pdf24.org&sz=64" alt=""><a href="https://tools.pdf24.org/" target="_blank" rel="noopener noreferrer">PDF24 Tools</a><p>PDF جوړول او بدلول</p></div>
 </div>
 
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=filehorse.com&sz=64">
-<a href="https://filehorse.com" target="_blank">FileHorse</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=sourceforge.net&sz=64">
-<a href="https://sourceforge.net" target="_blank">SourceForge</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=fosshub.com&sz=64">
-<a href="https://fosshub.com" target="_blank">FossHub</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=github.com&sz=64">
-<a href="https://github.com" target="_blank">GitHub</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=ninite.com&sz=64">
-<a href="https://ninite.com" target="_blank">Ninite</a>
-</div>
-
-</div>
-
-<div class="section">📚 اسلامي، پښتو، اردو او عربي کتابونه</div>
-
+<h2 class="section">📚 اسلامي، پښتو، دري، اردو او عربي کتابونه</h2>
+<p class="section-note">قرآن، حدیث، تفسیر، ادبي او ډیجیټلي کتابتونونه.</p>
 <div class="grid">
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
-<a href="https://sunnah.com/bukhari" target="_blank">صحیح بخاري</a>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64" alt=""><a href="https://sunnah.com/bukhari" target="_blank" rel="noopener noreferrer">صحیح بخاري</a><p>د حدیثو کتاب</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64" alt=""><a href="https://sunnah.com/muslim" target="_blank" rel="noopener noreferrer">صحیح مسلم</a><p>د حدیثو کتاب</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64" alt=""><a href="https://sunnah.com/abudawud" target="_blank" rel="noopener noreferrer">سنن ابوداود</a><p>د حدیثو کتاب</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64" alt=""><a href="https://sunnah.com/nasai" target="_blank" rel="noopener noreferrer">سنن نسائي</a><p>د حدیثو کتاب</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64" alt=""><a href="https://sunnah.com/ibnmajah" target="_blank" rel="noopener noreferrer">سنن ابن ماجه</a><p>د حدیثو کتاب</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=quran.com&sz=64" alt=""><a href="https://quran.com/ps" target="_blank" rel="noopener noreferrer">قرآن کریم پښتو</a><p>قرآن او ژباړه</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=tanzil.net&sz=64" alt=""><a href="https://tanzil.net" target="_blank" rel="noopener noreferrer">Tanzil</a><p>د قرآن کریم عربي متن</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=islamhouse.com&sz=64" alt=""><a href="https://islamhouse.com" target="_blank" rel="noopener noreferrer">IslamHouse</a><p>اسلامي کتابونه او مقالې</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=shamela.ws&sz=64" alt=""><a href="https://shamela.ws" target="_blank" rel="noopener noreferrer">المكتبة الشاملة</a><p>عربي اسلامي کتابتون</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=waqfeya.net&sz=64" alt=""><a href="https://waqfeya.net" target="_blank" rel="noopener noreferrer">المكتبة الوقفية</a><p>د کتابونو کتابتون</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=altafsir.com&sz=64" alt=""><a href="https://altafsir.com" target="_blank" rel="noopener noreferrer">Altafsir</a><p>قرآني تفسیرونه</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=dorar.net&sz=64" alt=""><a href="https://dorar.net" target="_blank" rel="noopener noreferrer">Dorar.net</a><p>حدیث او اسلامي څېړنه</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=library.islamweb.net&sz=64" alt=""><a href="https://library.islamweb.net" target="_blank" rel="noopener noreferrer">IslamWeb Library</a><p>اسلامي کتابتون</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=noor-book.com&sz=64" alt=""><a href="https://www.noor-book.com" target="_blank" rel="noopener noreferrer">مكتبة نور</a><p>عربي او نور کتابونه</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=archive.org&sz=64" alt=""><a href="https://archive.org" target="_blank" rel="noopener noreferrer">Internet Archive</a><p>ډیجیټلي کتابونه او آرشیف</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=openlibrary.org&sz=64" alt=""><a href="https://openlibrary.org" target="_blank" rel="noopener noreferrer">Open Library</a><p>انلاین کتابتون</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=gutenberg.org&sz=64" alt=""><a href="https://www.gutenberg.org" target="_blank" rel="noopener noreferrer">Project Gutenberg</a><p>عامه‌المنفعه کتابونه</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=alwaraq.net&sz=64" alt=""><a href="https://alwaraq.net" target="_blank" rel="noopener noreferrer">الوراق</a><p>عربي ادبي کتابونه</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=adl.af&sz=64" alt=""><a href="https://adl.af" target="_blank" rel="noopener noreferrer">پښتو کتابونه</a><p>د افغانستان د قانون او حقوقو سرچینې</p></div>
+<div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=rekhta.org&sz=64" alt=""><a href="https://rekhta.org" target="_blank" rel="noopener noreferrer">Rekhta</a><p>اردو ادب او کتابونه</p></div>
 </div>
-<!-- 📚 اسلامي کتابتونونه -->
 
-<div class="section">📚 اسلامي کتابتونونه</div>
-
+<h2 class="section">🎓 وړیا او آنلاین زده کړې</h2>
+<p class="section-note">د کمپیوټر، ژبو، ساینس، ریاضي او پروګرام جوړونې زده کړې. د ځینو کورسونو سند یا پرمختللي خدمتونه پیسې غواړي.</p>
 <div class="grid">
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
-<a href="https://sunnah.com" target="_blank">Sunnah.com</a>
+<div class="item" data-category="learning"><img src="https://www.google.com/s2/favicons?domain=khanacademy.org&sz=64" alt=""><a href="https://www.khanacademy.org/" target="_blank" rel="noopener noreferrer">Khan Academy</a><p>ریاضي، ساینس او نور مضامین</p></div>
+<div class="item" data-category="learning"><img src="https://www.google.com/s2/favicons?domain=freecodecamp.org&sz=64" alt=""><a href="https://www.freecodecamp.org/" target="_blank" rel="noopener noreferrer">freeCodeCamp</a><p>پروګرام جوړونه په عملي ډول</p></div>
+<div class="item" data-category="learning"><img src="https://www.google.com/s2/favicons?domain=w3schools.com&sz=64" alt=""><a href="https://www.w3schools.com/" target="_blank" rel="noopener noreferrer">W3Schools</a><p>HTML، CSS، JavaScript</p></div>
+<div class="item" data-category="learning"><img src="https://www.google.com/s2/favicons?domain=developer.mozilla.org&sz=64" alt=""><a href="https://developer.mozilla.org/" target="_blank" rel="noopener noreferrer">MDN Web Docs</a><p>د ویب پرمختیا لارښود</p></div>
+<div class="item" data-category="learning"><img src="https://www.google.com/s2/favicons?domain=edx.org&sz=64" alt=""><a href="https://www.edx.org/" target="_blank" rel="noopener noreferrer">edX</a><p>د پوهنتونونو آنلاین کورسونه</p></div>
+<div class="item" data-category="learning"><img src="https://www.google.com/s2/favicons?domain=coursera.org&sz=64" alt=""><a href="https://www.coursera.org/" target="_blank" rel="noopener noreferrer">Coursera</a><p>مسلکي او تعلیمي کورسونه</p></div>
+<div class="item" data-category="learning"><img src="https://www.google.com/s2/favicons?domain=bbc.co.uk&sz=64" alt=""><a href="https://www.bbc.co.uk/learningenglish" target="_blank" rel="noopener noreferrer">BBC Learning English</a><p>د انګلیسي ژبې زده کړه</p></div>
 </div>
 
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=quran.com&sz=64">
-<a href="https://quran.com/ps" target="_blank">قرآن کریم پښتو</a>
+<h2 class="section">🤖 مصنوعي ځیرکتیا او انلاین کاري وسایل</h2>
+<p class="section-note">د لیکلو، ژباړې، څېړنې، ډیزاین او سندونو لپاره انلاین مرستندویان. د کارولو لپاره یې د خدمت شرایط وګورئ.</p>
+<div class="grid">
+<div class="item" data-category="ai"><img src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt=""><a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><p>پوښتنې، لیکنه او زده کړه</p></div>
+<div class="item" data-category="ai"><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt=""><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Google Gemini</a><p>AI مرستیال</p></div>
+<div class="item" data-category="ai"><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt=""><a href="https://claude.ai/" target="_blank" rel="noopener noreferrer">Claude</a><p>لیکلو او تحلیل AI</p></div>
+<div class="item" data-category="ai"><img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64" alt=""><a href="https://www.perplexity.ai/" target="_blank" rel="noopener noreferrer">Perplexity</a><p>د سرچینو پر بنسټ ځوابونه</p></div>
+<div class="item" data-category="ai"><img src="https://www.google.com/s2/favicons?domain=deepl.com&sz=64" alt=""><a href="https://www.deepl.com/translator" target="_blank" rel="noopener noreferrer">DeepL Translator</a><p>ژباړه</p></div>
+<div class="item" data-category="ai"><img src="https://www.google.com/s2/favicons?domain=canva.com&sz=64" alt=""><a href="https://www.canva.com/" target="_blank" rel="noopener noreferrer">Canva</a><p>ډیزاین او پریزنټېشن</p></div>
+<div class="item" data-category="ai"><img src="https://www.google.com/s2/favicons?domain=ilovepdf.com&sz=64" alt=""><a href="https://www.ilovepdf.com/" target="_blank" rel="noopener noreferrer">iLovePDF</a><p>PDF یوځای کول او بدلول</p></div>
+<div class="item" data-category="ai"><img src="https://www.google.com/s2/favicons?domain=docs.google.com&sz=64" alt=""><a href="https://docs.google.com/" target="_blank" rel="noopener noreferrer">Google Docs</a><p>انلاین اسناد</p></div>
+<div class="item" data-category="ai"><img src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=64" alt=""><a href="https://drive.google.com/" target="_blank" rel="noopener noreferrer">Google Drive</a><p>د فایلونو زېرمه او شریکول</p></div>
 </div>
 
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=islamhouse.com&sz=64">
-<a href="https://islamhouse.com" target="_blank">IslamHouse</a>
+<h2 class="section">📱 د موبایل اپلېکېشنونه</h2>
+<p class="section-note">د Android اپلېکېشنونو لپاره رسمي پلورنځي او د اپلېکېشنونو باوري سرچینې.</p>
+<div class="grid">
+<div class="item" data-category="mobile"><img src="https://www.google.com/s2/favicons?domain=play.google.com&sz=64" alt=""><a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer">Google Play</a><p>د Android رسمي اپلېکېشنونه</p></div>
+<div class="item" data-category="mobile"><img src="https://www.google.com/s2/favicons?domain=f-droid.org&sz=64" alt=""><a href="https://f-droid.org/" target="_blank" rel="noopener noreferrer">F-Droid</a><p>خلاصې سرچینې Android اپونه</p></div>
+<div class="item" data-category="mobile"><img src="https://www.google.com/s2/favicons?domain=whatsapp.com&sz=64" alt=""><a href="https://www.whatsapp.com/download" target="_blank" rel="noopener noreferrer">WhatsApp</a><p>پیغامونه او اړیکې</p></div>
+<div class="item" data-category="mobile"><img src="https://www.google.com/s2/favicons?domain=telegram.org&sz=64" alt=""><a href="https://telegram.org/apps" target="_blank" rel="noopener noreferrer">Telegram</a><p>پیغامونه او چینلونه</p></div>
+<div class="item" data-category="mobile"><img src="https://www.google.com/s2/favicons?domain=google.com&sz=64" alt=""><a href="https://translate.google.com/" target="_blank" rel="noopener noreferrer">Google Translate</a><p>د ژبو ژباړه</p></div>
+<div class="item" data-category="mobile"><img src="https://www.google.com/s2/favicons?domain=maps.google.com&sz=64" alt=""><a href="https://maps.google.com/" target="_blank" rel="noopener noreferrer">Google Maps</a><p>نقشه او ځای موندل</p></div>
 </div>
 
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=shamela.ws&sz=64">
-<a href="https://shamela.ws" target="_blank">المكتبة الشاملة</a>
-</div>
+<div id="noResults" class="empty">ستاسو د لټون لپاره څه ونه موندل شول. د نوم املا بدله کړئ یا «ټول» وټاکئ.</div>
+<div class="notice"><strong>یادونه:</strong> دا پاڼه د سرچینو لارښود دی؛ د دغو بهرنیو وېبپاڼو مالکیت د سیدولي ویب‌سایټ نه دی. د حساب، پیسو، ډاونلوډ او شخصي معلوماتو په ورکولو کې احتیاط وکړئ.</div>
+</main>
 
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=waqfeya.net&sz=64">
-<a href="https://waqfeya.net" target="_blank">المكتبة الوقفية</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=altafsir.com&sz=64">
-<a href="https://altafsir.com" target="_blank">Altafsir</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=dorar.net&sz=64">
-<a href="https://dorar.net" target="_blank">Dorar.net</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=library.islamweb.net&sz=64">
-<a href="https://library.islamweb.net" target="_blank">IslamWeb Library</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=noor-book.com&sz=64">
-<a href="https://www.noor-book.com" target="_blank">مكتبة نور</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=archive.org&sz=64">
-<a href="https://archive.org" target="_blank">Internet Archive</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=openlibrary.org&sz=64">
-<a href="https://openlibrary.org" target="_blank">Open Library</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=gutenberg.org&sz=64">
-<a href="https://www.gutenberg.org" target="_blank">Project Gutenberg</a>
-</div>
-
-</div>
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
-<a href="https://sunnah.com/muslim" target="_blank">صحیح مسلم</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
-<a href="https://sunnah.com/abudawud" target="_blank">سنن ابوداود</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
-<a href="https://sunnah.com/nasai" target="_blank">سنن نسائي</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
-<a href="https://sunnah.com/ibnmajah" target="_blank">سنن ابن ماجه</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=quran.com&sz=64">
-<a href="https://quran.com/ps" target="_blank">قرآن کریم پښتو ژباړه</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=tanzil.net&sz=64">
-<a href="https://tanzil.net" target="_blank">قرآن کریم عربي متن</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64">
-<a href="https://sunnah.com" target="_blank">د حدیثو جامع کتابتون</a>
-</div>
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=quran.com&sz=64">
-<a href="https://quran.com" target="_blank">Quran</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=islamhouse.com&sz=64">
-<a href="https://islamhouse.com" target="_blank">IslamHouse</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=shamela.ws&sz=64">
-<a href="https://shamela.ws" target="_blank">الشاملة</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=alwaraq.net&sz=64">
-<a href="https://alwaraq.net" target="_blank">الوراق</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=adl.af&sz=64">
-<a href="https://adl.af" target="_blank">پښتو کتابونه</a>
-</div>
-
-<div class="item">
-<img src="https://www.google.com/s2/favicons?domain=rekhta.org&sz=64">
-<a href="https://rekhta.org" target="_blank">اردو کتابونه</a>
-</div>
-
-</div>
-
+<footer>© سیدولي خان کوهستاني ګروپ — د سافټویرونو، کتابونو او زده کړو مرکز</footer>
 
 <div id="sw-language-bar" style="position:fixed;bottom:12px;left:12px;z-index:99999;background:#071a35;border:1px solid #d9ae52;border-radius:12px;padding:6px 8px;display:flex;gap:5px;flex-wrap:wrap;box-shadow:0 3px 14px #0005">
-<button type="button" onclick="changeLanguage('ps',this)" style="padding:5px 8px;border:0;border-radius:6px">پښتو</button>
-<button type="button" onclick="changeLanguage('fa',this)" style="padding:5px 8px;border:0;border-radius:6px">دری</button>
-<button type="button" onclick="changeLanguage('en',this)" style="padding:5px 8px;border:0;border-radius:6px">English</button>
-<button type="button" onclick="changeLanguage('ur',this)" style="padding:5px 8px;border:0;border-radius:6px">اردو</button>
-<button type="button" onclick="changeLanguage('ar',this)" style="padding:5px 8px;border:0;border-radius:6px">العربية</button>
+<button type="button" onclick="changeLanguage('ps',this)">پښتو</button>
+<button type="button" onclick="changeLanguage('fa',this)">دری</button>
+<button type="button" onclick="changeLanguage('en',this)">English</button>
+<button type="button" onclick="changeLanguage('ur',this)">اردو</button>
+<button type="button" onclick="changeLanguage('ar',this)">العربية</button>
 </div>
-<script src="language.js?v=20261112-2"></script></script>
 
+<script>
+(function(){
+  const search=document.getElementById('siteSearch');
+  const cards=Array.from(document.querySelectorAll('.item[data-category]'));
+  const count=document.getElementById('searchCount');
+  const empty=document.getElementById('noResults');
+  const buttons=Array.from(document.querySelectorAll('.filter-btn'));
+  let active='all';
+  function applyFilter(){
+    const q=search.value.trim().toLocaleLowerCase();
+    let shown=0;
+    cards.forEach(card=>{
+      const matchesCategory=active==='all'||card.dataset.category===active;
+      const matchesText=!q||card.textContent.toLocaleLowerCase().includes(q);
+      const visible=matchesCategory&&matchesText;
+      card.hidden=!visible;
+      if(visible)shown++;
+    });
+    count.textContent='ښکاره سرچینې: '+shown+' / '+cards.length;
+    empty.style.display=shown?'none':'block';
+  }
+  search.addEventListener('input',applyFilter);
+  document.getElementById('clearSearch').addEventListener('click',()=>{
+    search.value='';active='all';
+    buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.filter==='all')));
+    applyFilter();search.focus();
+  });
+  buttons.forEach(button=>button.addEventListener('click',()=>{
+    active=button.dataset.filter;
+    buttons.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+    applyFilter();
+  }));
+  applyFilter();
+})();
+
+(function(){
+  const canvas=document.getElementById('clock');
+  const ctx=canvas.getContext('2d');
+  const radius=canvas.width/2;
+  ctx.translate(radius,radius);
+  function hand(angle,length,width){
+    ctx.beginPath();ctx.lineWidth=width;ctx.lineCap='round';
+    ctx.moveTo(0,0);ctx.rotate(angle);ctx.lineTo(0,-length);ctx.stroke();ctx.rotate(-angle);
+  }
+  function draw(){
+    ctx.clearRect(-radius,-radius,canvas.width,canvas.height);
+    ctx.beginPath();ctx.arc(0,0,radius-5,0,Math.PI*2);
+    ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#0d47a1';ctx.lineWidth=4;ctx.stroke();
+    for(let n=1;n<=12;n++){
+      const a=n*Math.PI/6;ctx.save();ctx.rotate(a);ctx.translate(0,-radius*.79);ctx.rotate(-a);
+      ctx.fillStyle='#071a35';ctx.font='16px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n,0,0);ctx.restore();
+    }
+    const now=new Date();
+    const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kabul',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(now);
+    const v={};parts.forEach(p=>v[p.type]=p.value);
+    const h=Number(v.hour),m=Number(v.minute),s=Number(v.second);
+    document.getElementById('afgTime').textContent='🇦🇫 د افغانستان وخت: '+v.hour+':'+v.minute+':'+v.second;
+    hand((h%12)*Math.PI/6+m*Math.PI/360,radius*.48,5);
+    hand(m*Math.PI/30,radius*.68,3.5);
+    hand(s*Math.PI/30,radius*.78,2);
+  }
+  draw();setInterval(draw,1000);
+})();
+</script>
+<script src="language.js?v=20261112-2"></script>
 <script src="saidwali-gpt-global.js"></script>
-
 <script src="/said-wali-khan/language-system.js"></script>
 </body>
 </html>
