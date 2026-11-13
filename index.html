@@ -543,6 +543,23 @@ nav {
 .quick-service-thumb{width:58px;height:58px;flex:0 0 58px;object-fit:cover;border-radius:13px;border:2px solid var(--gold);box-shadow:0 3px 10px rgba(7,26,53,.12);background:#f3f5f9}
 .quick-service-heading h3{margin:0!important;line-height:1.55}
 
+
+/* د کورپاڼې کوچنی ژوندی خبرتیايي مرکز */
+.live-updates{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:8px;box-shadow:var(--shadow)}
+.live-updates-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.live-updates-head h2{color:var(--navy);font-size:20px;margin:0}
+.live-updates-status{font-size:11px;color:var(--muted)}
+.live-updates-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.live-update-column{min-width:0;background:#f8fafc;border:1px solid var(--border);border-radius:11px;padding:11px}
+.live-update-column h3{font-size:14px;color:var(--navy2);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e5eaf1}
+.live-update-list{display:flex;flex-direction:column;gap:7px}
+.live-update-item{display:block;color:#24415f;text-decoration:none;font-size:12px;line-height:1.65;padding:6px 7px;border-radius:7px;background:#fff;border:1px solid #edf0f4;overflow-wrap:anywhere}
+.live-update-item:hover{border-color:var(--gold);background:#fffaf0}
+.live-update-meta{display:block;color:#8a6a2d;font-size:10px;margin-top:3px}
+.live-update-empty{font-size:11px;color:var(--muted);line-height:1.7;padding:5px}
+.live-update-more{display:inline-block;margin-top:8px;color:#946719;font-size:11px;font-weight:bold;text-decoration:none}
+@media(max-width:700px){.live-updates-grid{grid-template-columns:1fr}.live-update-column{padding:10px}.live-update-list{gap:6px}}
+
 /* BBC */
 
 .bbc-section {
@@ -1215,6 +1232,36 @@ footer p {
 </div>
 </section>
 
+<!-- د دندو، خبرونو او رسمي اعلانونو لنډ ژوندی مرکز -->
+<section class="section" aria-label="تازه خبرونه او اعلانونه">
+<div class="live-updates">
+  <div class="live-updates-head">
+    <h2>🔔 تازه خبرونه، دندې او اعلانونه</h2>
+    <span class="live-updates-status" id="liveUpdatesStatus">معلومات تازه کېږي...</span>
+  </div>
+  <div class="live-updates-grid">
+    <div class="live-update-column">
+      <h3>💼 نوې دندې او بورسونه</h3>
+      <div class="live-update-list" id="homeLatestJobs"><div class="live-update-empty">د فعالو دندو معلومات لوډېږي...</div></div>
+      <a class="live-update-more" href="jobs.html">ټولې دندې وګورئ ←</a>
+    </div>
+    <div class="live-update-column">
+      <h3>📰 د افغانستان او نړۍ تازه خبرونه</h3>
+      <div class="live-update-list" id="homeLatestNews"><div class="live-update-empty">خبرونه لوډېږي...</div></div>
+      <a class="live-update-more" href="Taza.html.html">ټول تازه خبرونه وګورئ ←</a>
+    </div>
+    <div class="live-update-column">
+      <h3>📣 نشریات او رسمي اعلانونه</h3>
+      <div class="live-update-list" id="homeLatestNotices">
+        <a class="live-update-item" href="Nasharyat.html.html">د نشریاتو او اعلانونو پاڼه پرانیزئ<span class="live-update-meta">د اعلانونو د خپرولو او اړوندو معلوماتو برخه</span></a>
+        <div class="live-update-empty">کله چې په دې برخه کې نوی رسمي اعلان خپور شي، دلته به یې د ښودلو لپاره جلا تازه معلوماتي سرچینه ونښلول شي.</div>
+      </div>
+      <a class="live-update-more" href="Nasharyat.html.html">نشریات او اعلانونه وګورئ ←</a>
+    </div>
+  </div>
+</div>
+</section>
+
 <!-- وروستي اعلانونه -->
 
 <section class="section">
@@ -1397,6 +1444,78 @@ WhatsApp 0799668428
     window.setInterval(loadBBCNews, 10 * 60 * 1000);
 })();
 </script>
+
+ 
+<!-- د کورپاڼې ژوندی تازه معلومات: د تایید شوو دندو او RSS خبرونو لنډیز -->
+<script>
+(function(){
+ const jobsBox=document.getElementById("homeLatestJobs");
+ const newsBox=document.getElementById("homeLatestNews");
+ const statusBox=document.getElementById("liveUpdatesStatus");
+ if(!jobsBox||!newsBox)return;
+ const todayKabul=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kabul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+ function addItem(box,title,url,meta){
+  const a=document.createElement("a");
+  a.className="live-update-item";
+  a.href=url;
+  if(/^https?:/i.test(url)){a.target="_blank";a.rel="noopener noreferrer";}
+  a.appendChild(document.createTextNode(title));
+  if(meta){const small=document.createElement("span");small.className="live-update-meta";small.textContent=meta;a.appendChild(small);}
+  box.appendChild(a);
+ }
+ async function loadHomeJobs(){
+  try{
+   const response=await fetch("./jobs-feed.json?v="+Date.now(),{cache:"no-store"});
+   if(!response.ok)throw new Error("jobs feed");
+   const data=await response.json();
+   const jobs=Array.isArray(data.jobs)?data.jobs.filter(j=>{
+    if(!j||j.verified!==true||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(String(j.expiryDate||""))||String(j.expiryDate)<todayKabul||!j.sourceUrl)return false;
+    const email=String(j.email||j.applyEmail||j.applicationEmail||j.contactEmail||"").trim();
+    const apply=String(j.applyUrl||j.applicationUrl||j.onlineApplicationUrl||"").trim();
+    const realOnline=/^https:\/\//i.test(apply)&&apply.replace(/\/+$/,"")!==String(j.sourceUrl).replace(/\/+$/,"");
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||realOnline;
+   }):[];
+   const seen=new Set();const unique=jobs.filter(j=>{const k=[j.title,j.organization,j.expiryDate].join("|").toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
+   unique.sort((a,b)=>String(a.expiryDate).localeCompare(String(b.expiryDate)));
+   jobsBox.replaceChildren();
+   unique.slice(0,4).forEach(j=>addItem(jobsBox,String(j.title||"نوی بست"),"jobs.html",String(j.organization||"د کار اعلان")+" | د پای نېټه: "+String(j.expiryDate||"")));
+   if(!unique.length)jobsBox.innerHTML='<div class="live-update-empty">اوس مهال د ښودلو لپاره تایید شوی فعال بست نشته.</div>';
+  }catch(e){jobsBox.innerHTML='<div class="live-update-empty">د دندو معلومات اوس ترلاسه نه شول؛ د دندو پاڼه پرانیزئ.</div>';}
+ }
+ async function loadHomeNews(){
+  const sources=[
+   {name:"بي‌بي‌سي پښتو",url:"https://feeds.bbci.co.uk/pashto/rss.xml"},
+   {name:"بي‌بي‌سي نړیوال",url:"https://feeds.bbci.co.uk/news/world/rss.xml"},
+   {name:"امریکا غږ ډیوه",url:"https://www.voadeewanews.com/api/zrqiteeuqm"}
+  ];
+  try{
+   const results=await Promise.allSettled(sources.map(async source=>{
+    const response=await fetch("https://proxy.cors.dev/"+source.url,{cache:"no-store"});
+    if(!response.ok)throw new Error("RSS");
+    const xml=new DOMParser().parseFromString(await response.text(),"application/xml");
+    if(xml.querySelector("parsererror"))throw new Error("XML");
+    return Array.from(xml.querySelectorAll("item,entry")).slice(0,3).map(node=>{
+     const title=node.querySelector("title")?.textContent?.trim()||"";
+     const linkNode=node.querySelector("link");
+     const link=linkNode?.getAttribute("href")||linkNode?.textContent?.trim()||"";
+     return {title,link,source:source.name};
+    }).filter(item=>item.title&&/^https?:\/\//i.test(item.link));
+   }));
+   const items=results.filter(x=>x.status==="fulfilled").flatMap(x=>x.value).slice(0,4);
+   newsBox.replaceChildren();
+   items.forEach(item=>addItem(newsBox,item.title,item.link,item.source));
+   if(!items.length)newsBox.innerHTML='<div class="live-update-empty">اوس مهال خبرونه ترلاسه نه شول؛ د تازه خبرونو اصلي پاڼه وګورئ.</div>';
+  }catch(e){newsBox.innerHTML='<div class="live-update-empty">خبرونه اوس ترلاسه نه شول؛ د تازه خبرونو پاڼه پرانیزئ.</div>';}
+ }
+ async function refresh(){
+  await Promise.all([loadHomeJobs(),loadHomeNews()]);
+  if(statusBox)statusBox.textContent="وروستی تازه کېدل: "+new Date().toLocaleTimeString();
+ }
+ refresh();
+ window.setInterval(refresh,15*60*1000);
+})();
+</script>
+
 
 <!-- د مینو فعالیت -->
 
