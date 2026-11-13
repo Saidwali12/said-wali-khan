@@ -37,7 +37,8 @@
     if (combo) {
       combo.value = lang;
       combo.dispatchEvent(new Event("change"));
-    } else if (lang === "ps") {
+    } else {
+      // The saved language cookie is applied by the translator after reload.
       location.reload();
     }
     document.querySelectorAll("[data-saidwali-lang]").forEach(function (b) {
@@ -73,7 +74,7 @@
     });
     menu.querySelector("button").addEventListener("click", function () { menu.classList.toggle("open"); });
     var style = document.createElement("style");
-    style.textContent = '#saidwali-quick-language{position:fixed;top:12px;left:12px;z-index:999999;font: bold 13px Tahoma,Arial,sans-serif;direction:rtl}#saidwali-quick-language>button{background:#102b50;color:#f4d58a;border:1px solid #d9ae52;border-radius:8px;padding:8px 12px;cursor:pointer}#saidwali-quick-language .saidwali-lang-list{display:none;position:absolute;top:42px;left:0;background:#fff;padding:6px;border-radius:9px;box-shadow:0 5px 20px #0004;min-width:120px}#saidwali-quick-language.open .saidwali-lang-list{display:grid;gap:4px}#saidwali-quick-language .saidwali-lang-list button{border:0;background:#f2f4f8;padding:8px;border-radius:6px;text-align:right;cursor:pointer;color:#102b50}#saidwali-quick-language button.active{background:#d9ae52;color:#071a35}#google_translate_element{position:fixed!important;left:-10000px!important;top:0!important;width:1px!important;height:1px!important;overflow:hidden!important}';
+    style.textContent = '#saidwali-quick-language{position:fixed;top:12px;left:12px;z-index:999999;font:bold 13px Tahoma,Arial,sans-serif;direction:rtl}#saidwali-quick-language>button{background:#102b50;color:#f4d58a;border:1px solid #d9ae52;border-radius:8px;padding:8px 12px;cursor:pointer}#saidwali-quick-language .saidwali-lang-list{display:none;position:absolute;top:42px;left:0;background:#fff;padding:6px;border-radius:9px;box-shadow:0 5px 20px #0004;min-width:120px}#saidwali-quick-language.open .saidwali-lang-list{display:grid;gap:4px}#saidwali-quick-language .saidwali-lang-list button{border:0;background:#f2f4f8;padding:8px;border-radius:6px;text-align:right;cursor:pointer;color:#102b50}#saidwali-quick-language button.active{background:#d9ae52;color:#071a35}#google_translate_element{position:fixed!important;left:-10000px!important;top:0!important;width:1px!important;height:1px!important;overflow:hidden!important}.goog-te-banner-frame,.goog-te-balloon-frame{display:none!important}html body{top:0!important}.skiptranslate iframe{visibility:hidden!important}';
     document.head.appendChild(style);
     document.body.appendChild(menu);
   }
@@ -107,7 +108,7 @@
     if (window.google && google.translate && google.translate.TranslateElement && !window.__saidwaliTranslateReady) {
       window.__saidwaliTranslateReady = true;
       new google.translate.TranslateElement({
-        pageLanguage: "ps",
+        // Feeds may mix Pashto, Dari, and English; detect source language per page.
         includedLanguages: "ps,fa,en,ur,ar",
         autoDisplay: false
       }, "google_translate_element");
