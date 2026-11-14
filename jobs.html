@@ -148,6 +148,7 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 .reg-status-title{display:block;font-size:19px;margin:2px 0 5px}
 .reg-status-message{display:block;font-size:13px;font-weight:500;overflow-wrap:anywhere}
 .reg-status-time{display:block;margin-top:9px;padding-top:7px;border-top:1px solid currentColor;font-size:11px;font-weight:500;opacity:.85}
+.reg-status-replay{margin-top:10px;padding:7px 13px;border:1px solid currentColor;border-radius:8px;background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer}
 @media(max-width:600px){.reg-status{padding:16px 11px}.reg-status-icon{width:60px;height:60px;font-size:39px}.reg-status-title{font-size:18px}}
 
 </style>
@@ -423,6 +424,7 @@ document.getElementById("applicantModal").addEventListener("click",function(e){i
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeApplicantForm();});
 document.getElementById("applicantForm").addEventListener("submit",async function(e){
  e.preventDefault();
+ prepareRegAudio(); // د کارن د کلیک پر مهال د براوزر غږ فعالول
  const form=this,btn=document.getElementById("regSubmit"),status=document.getElementById("regStatus");
  // ټولې لازمي خانې له سرور ته تر لېږلو مخکې وڅېړئ
  const requiredFields=Array.from(form.querySelectorAll("[required]"));
@@ -454,6 +456,38 @@ document.getElementById("applicantForm").addEventListener("submit",async functio
  }catch(err){showRegStatus(err.message||"له سرور سره اړیکه ټینګه نه شوه. وروسته بیا هڅه وکړئ.",false);}
  finally{btn.disabled=false;btn.textContent="ثبت‌نام بشپړ کړئ";}
 });
+let regAudioContext=null;
+function prepareRegAudio(){
+ try{
+  const AudioCtx=window.AudioContext||window.webkitAudioContext;
+  if(!AudioCtx)return;
+  if(!regAudioContext)regAudioContext=new AudioCtx();
+  if(regAudioContext.state==="suspended")regAudioContext.resume().catch(()=>{});
+ }catch(e){}
+}
+function playRegSound(ok){
+ try{
+  const AudioCtx=window.AudioContext||window.webkitAudioContext;
+  if(!AudioCtx)return;
+  if(!regAudioContext)regAudioContext=new AudioCtx();
+  const ctx=regAudioContext;
+  const play=()=>{
+   const now=ctx.currentTime;
+   const notes=ok?[660,880,1175]:[300,190];
+   notes.forEach((freq,i)=>{
+    const start=now+i*(ok?0.13:0.19),osc=ctx.createOscillator(),gain=ctx.createGain();
+    osc.type=ok?"sine":"triangle";
+    osc.frequency.setValueAtTime(freq,start);
+    gain.gain.setValueAtTime(0.0001,start);
+    gain.gain.exponentialRampToValueAtTime(ok?0.16:0.13,start+0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001,start+(ok?0.24:0.28));
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.start(start);osc.stop(start+(ok?0.26:0.30));
+   });
+  };
+  if(ctx.state==="suspended")ctx.resume().then(play).catch(()=>{});else play();
+ }catch(e){}
+}
 function showRegStatus(message,ok){
  const el=document.getElementById("regStatus");
  const cleanMessage=String(message||"").replace(/^[✓✔✕✖❌\\s]+/,"");
@@ -470,8 +504,14 @@ function showRegStatus(message,ok){
  const time=document.createElement("small");
  time.className="reg-status-time";
  time.textContent="د پایلې نېټه او وخت: "+new Intl.DateTimeFormat("ps-AF",{timeZone:"Asia/Kabul",dateStyle:"full",timeStyle:"medium"}).format(new Date())+" (د کابل وخت)";
- el.replaceChildren(icon,title,detail,time);
+ const replay=document.createElement("button");
+ replay.type="button";
+ replay.className="reg-status-replay";
+ replay.textContent="🔊 غږ بیا واورئ";
+ replay.addEventListener("click",()=>playRegSound(ok));
+ el.replaceChildren(icon,title,detail,time,replay);
  el.className="reg-status show "+(ok?"ok":"err");
+ playRegSound(ok);
  el.setAttribute("role",ok?"status":"alert");
  el.setAttribute("aria-live",ok?"polite":"assertive");
 }
