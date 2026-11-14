@@ -8,6 +8,7 @@
 
   <meta name="description" content="ایس‌بوک — د ملګرو، پوسټونو او اړیکو ټولنیزه شبکه">
   <meta name="theme-color" content="#0d47a1">
+  <link rel="manifest" href="./sbook-manifest.webmanifest">
 
   <style>
 
@@ -51468,4 +51469,112 @@ console.log("S-Book Messenger contacts/files v2 loaded");
     }
   });
 })();
+</script>
+
+
+<!-- S-BOOK SHARE TARGET: receives links shared from Facebook and other apps -->
+<script>
+(function(){
+  "use strict";
+  var params = new URLSearchParams(window.location.search);
+  var sharedTitle = params.get("title") || "";
+  var sharedText = params.get("text") || "";
+  var sharedUrl = params.get("url") || "";
+
+  if (!sharedTitle && !sharedText && !sharedUrl) return;
+
+  function extractUrl(value){
+    var match = String(value || "").match(/https?:\/\/[^\s<>"']+/i);
+    return match ? match[0].replace(/[),.;!?\]}]+$/,"") : "";
+  }
+  function isFacebookUrl(value){
+    try{
+      var u = new URL(value);
+      var host = u.hostname.toLowerCase().replace(/^www\./,"");
+      if (host === "l.facebook.com" && u.searchParams.get("u")) {
+        return isFacebookUrl(decodeURIComponent(u.searchParams.get("u")));
+      }
+      return u.protocol === "https:" &&
+        (host === "facebook.com" || host.endsWith(".facebook.com") || host === "fb.watch");
+    }catch(e){ return false; }
+  }
+
+  var candidates = [sharedUrl, extractUrl(sharedText), extractUrl(sharedTitle)];
+  var facebookLink = candidates.find(function(v){ return v && isFacebookUrl(v); }) || "";
+  var caption = String(sharedText || "").trim();
+  if (facebookLink) caption = caption.split(facebookLink).join("").trim();
+  if (!caption && sharedTitle && sharedTitle !== facebookLink) caption = sharedTitle.trim();
+
+  try{
+    sessionStorage.setItem("sbook_pending_facebook_share", JSON.stringify({
+      url: facebookLink,
+      caption: caption,
+      receivedAt: Date.now()
+    }));
+  }catch(e){}
+
+  // Remove incoming share data from the address bar after saving it.
+  try{ history.replaceState({}, document.title, window.location.pathname); }catch(e){}
+
+  function openPendingShare(){
+    var raw;
+    try{ raw = sessionStorage.getItem("sbook_pending_facebook_share"); }catch(e){}
+    if(!raw) return false;
+
+    var pending;
+    try{ pending = JSON.parse(raw); }catch(e){ return false; }
+    if (!pending || !pending.url) {
+      var badStatus = document.getElementById("sbIslamicShareStatus");
+      if (badStatus) badStatus.textContent = "له Facebook څخه د پوسټ معتبر لینک ترلاسه نه شو. مهرباني وکړئ د پوسټ لینک Copy او بیا Share کړئ.";
+      var badPanel = document.getElementById("sbIslamicSharePanel");
+      if (badPanel) badPanel.classList.add("sb-open");
+      return true;
+    }
+
+    if (typeof currentUser === "undefined" || !currentUser || typeof apiRequest !== "function") {
+      var loginMessage = document.getElementById("loginMessage");
+      if (loginMessage) {
+        loginMessage.textContent = "د Facebook پوسټ S-BOOK ته راورسېد. د خپرولو لپاره یو ځل خپل S-BOOK حساب ته Login وکړئ؛ بیا به پوسټ دلته چمتو شي.";
+        loginMessage.className = "auth-message success";
+        loginMessage.classList.remove("hidden");
+      }
+      return false;
+    }
+
+    var urlInput = document.getElementById("sbIslamicShareUrl");
+    var captionInput = document.getElementById("sbIslamicShareCaption");
+    var panel = document.getElementById("sbIslamicSharePanel");
+    var status = document.getElementById("sbIslamicShareStatus");
+    if (!urlInput || !captionInput || !panel) return false;
+
+    urlInput.value = pending.url;
+    captionInput.value = pending.caption || "";
+    if (status) status.textContent = "✅ پوسټ له Facebook څخه ترلاسه شو. لاندې تڼۍ کېکاږئ چې په S-BOOK کې خپور شي.";
+    panel.classList.add("sb-open");
+    try{ sessionStorage.removeItem("sbook_pending_facebook_share"); }catch(e){}
+    return true;
+  }
+
+  var attempts = 0;
+  var timer = window.setInterval(function(){
+    attempts++;
+    if (openPendingShare() || attempts >= 300) window.clearInterval(timer);
+  }, 1000);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", openPendingShare, {once:true});
+  } else {
+    openPendingShare();
+  }
+})();
+</script>
+<script>
+/* Register the existing root-scope service worker for the S-BOOK installed app. */
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("./service-worker.js").catch(function(error){
+      console.error("S-BOOK share target service worker:", error);
+    });
+  });
+}
 </script>
