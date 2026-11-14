@@ -22145,12 +22145,16 @@ function renderProfilePage(
 
 
   const avatar =
+    user.profile_photo ||
+    user.profile_photo_url ||
     user.avatar_url ||
     user.avatar ||
     "";
 
 
   const cover =
+    user.cover_photo ||
+    user.cover_photo_url ||
     user.cover_url ||
     user.cover ||
     "";
@@ -26967,6 +26971,8 @@ function renderFriendSearchUser(
 
 
   const avatar =
+    user.profile_photo ||
+    user.profile_photo_url ||
     user.avatar_url ||
     user.avatar ||
     "";
@@ -30564,12 +30570,16 @@ function renderProfile(
 
 
   const avatar =
+    profile.profile_photo ||
+    profile.profile_photo_url ||
     profile.avatar_url ||
     profile.avatar ||
     "";
 
 
   const cover =
+    profile.cover_photo ||
+    profile.cover_photo_url ||
     profile.cover_url ||
     profile.cover ||
     profile.cover_image ||
@@ -32591,6 +32601,8 @@ function renderSearchUserCard(
 
 
   const avatar =
+    user.profile_photo ||
+    user.profile_photo_url ||
     user.avatar_url ||
     user.avatar ||
     "";
@@ -33161,6 +33173,8 @@ function renderDropdownUser(
 
 
   const avatar =
+    user.profile_photo ||
+    user.profile_photo_url ||
     user.avatar_url ||
     user.avatar ||
     "";
@@ -46002,6 +46016,8 @@ function renderFriendRequest(
 
 
   const avatar =
+    user.profile_photo ||
+    user.profile_photo_url ||
     user.avatar_url ||
     user.avatar ||
     "";
