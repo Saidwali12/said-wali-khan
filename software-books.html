@@ -153,6 +153,27 @@ footer{text-align:center;background:var(--navy);color:#fff;padding:16px;font-siz
 
 <h2 class="section">📚 اسلامي، پښتو، دري، اردو او عربي کتابونه</h2>
 <p class="section-note">قرآن، حدیث، تفسیر، ادبي او ډیجیټلي کتابتونونه.</p>
+
+<div id="liveBookSearch" style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px;margin:12px 0 18px;box-shadow:0 2px 8px #0000000c">
+  <h3 style="margin:0 0 8px;color:#071a35">🔎 د نړۍ له کتابتونونو څخه د کتابونو اتومات لټون</h3>
+  <p style="margin:0 0 10px;font-size:13px;color:#596579">د کتاب نوم، لیکوال یا موضوع ولیکئ؛ پایلې د Google Books او Open Library له عامه کتلاګونو راځي.</p>
+  <form id="bookSearchForm" style="display:flex;gap:8px;flex-wrap:wrap">
+    <input id="bookQuery" type="search" required placeholder="د کتاب نوم یا لیکوال..." style="flex:1;min-width:180px;padding:11px;border:1px solid #cbd5e1;border-radius:9px;font:inherit">
+    <select id="bookLanguage" aria-label="د کتاب ژبه" style="padding:10px;border:1px solid #cbd5e1;border-radius:9px;font:inherit">
+      <option value="">ټولې ژبې</option><option value="ps">پښتو</option><option value="fa">دري / فارسي</option><option value="ar">عربي</option><option value="ur">اردو</option><option value="en">انګلیسي</option>
+    </select>
+    <button type="submit" style="padding:10px 17px;border:0;border-radius:9px;background:#0d47a1;color:white;font:inherit;cursor:pointer">لټون</button>
+  </form>
+  <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px">
+    <a id="googleBookSearch" href="https://www.google.com/search?tbm=bks" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#0d47a1">Google Books لټون</a>
+    <span>•</span><a id="yahooBookSearch" href="https://search.yahoo.com/" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#0d47a1">Yahoo لټون</a>
+    <span>•</span><a href="https://archive.org/details/texts" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#0d47a1">Internet Archive</a>
+  </div>
+  <p id="bookSearchStatus" role="status" aria-live="polite" style="font-size:13px;color:#596579;margin:10px 0 5px">د لټون لپاره د کتاب نوم ولیکئ.</p>
+  <div id="bookSearchResults" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px"></div>
+  <p style="font-size:11px;color:#667085;margin:10px 0 0">یادونه: ډاونلوډ یوازې هغه وخت ښکاري چې سرچینه د فایل د ښکته کولو اجازه او مستقیم لینک ورکړي. ځینې کتابونه یوازې د لوستلو یا پور اخیستلو لپاره وي.</p>
+</div>
+
 <div class="grid">
 <div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64" alt=""><a href="https://sunnah.com/bukhari" target="_blank" rel="noopener noreferrer">صحیح بخاري</a><p>د حدیثو کتاب</p></div>
 <div class="item" data-category="books"><img src="https://www.google.com/s2/favicons?domain=sunnah.com&sz=64" alt=""><a href="https://sunnah.com/muslim" target="_blank" rel="noopener noreferrer">صحیح مسلم</a><p>د حدیثو کتاب</p></div>
@@ -260,6 +281,87 @@ footer{text-align:center;background:var(--navy);color:#fff;padding:16px;font-siz
     applyFilter();
   }));
   applyFilter();
+})();
+
+
+(function(){
+  const form=document.getElementById('bookSearchForm');
+  if(!form) return;
+  const query=document.getElementById('bookQuery');
+  const lang=document.getElementById('bookLanguage');
+  const status=document.getElementById('bookSearchStatus');
+  const results=document.getElementById('bookSearchResults');
+  const googleLink=document.getElementById('googleBookSearch');
+  const yahooLink=document.getElementById('yahooBookSearch');
+  const languageNames={ps:'Pashto',fa:'Persian',ar:'Arabic',ur:'Urdu',en:'English'};
+  function safeLink(url){
+    try{const u=new URL(url);return (u.protocol==='https:'||u.protocol==='http:')?u.href:'';}catch(e){return '';}
+  }
+  function makeCard(book){
+    const card=document.createElement('article');
+    card.style.cssText='background:#f8fafc;border:1px solid #e2e8f0;border-radius:11px;padding:11px;min-width:0';
+    const title=document.createElement('strong');
+    title.textContent=book.title||'بې‌نومه کتاب';
+    title.style.cssText='display:block;color:#071a35;margin-bottom:5px;overflow-wrap:anywhere';
+    card.appendChild(title);
+    const meta=document.createElement('p');
+    meta.textContent=[book.author,book.language,book.source].filter(Boolean).join(' • ');
+    meta.style.cssText='font-size:12px;color:#596579;margin:0 0 9px';
+    card.appendChild(meta);
+    const actions=document.createElement('div');
+    actions.style.cssText='display:flex;gap:7px;flex-wrap:wrap';
+    if(book.read){
+      const a=document.createElement('a');a.href=book.read;a.target='_blank';a.rel='noopener noreferrer';a.textContent='کتاب ولولئ';
+      a.style.cssText='background:#0d47a1;color:white;padding:6px 10px;border-radius:7px;text-decoration:none;font-size:12px';actions.appendChild(a);
+    }
+    if(book.download){
+      const a=document.createElement('a');a.href=book.download;a.target='_blank';a.rel='noopener noreferrer';a.textContent='⬇ ډاونلوډ';
+      a.style.cssText='background:#d9ae52;color:#071a35;padding:6px 10px;border-radius:7px;text-decoration:none;font-size:12px;font-weight:bold';actions.appendChild(a);
+    }
+    if(!book.read&&!book.download){const p=document.createElement('span');p.textContent='د سرچینې پاڼه نشته';p.style.fontSize='12px';actions.appendChild(p);}
+    card.appendChild(actions);return card;
+  }
+  async function searchBooks(term,code){
+    results.replaceChildren();
+    status.textContent='کتابونه لټول کېږي...';
+    const langName=languageNames[code]||'';
+    const tasks=[];
+    let gq='https://www.googleapis.com/books/v1/volumes?q='+encodeURIComponent(term)+'&maxResults=20&printType=books';
+    if(code) gq+='&langRestrict='+encodeURIComponent(code);
+    tasks.push(fetch(gq).then(r=>{if(!r.ok)throw new Error('Google Books');return r.json();}).then(data=>{
+      (data.items||[]).forEach(item=>{
+        const v=item.volumeInfo||{},a=item.accessInfo||{};
+        const pdf=a.pdf||{},epub=a.epub||{};
+        const download=(pdf.isAvailable&&safeLink(pdf.downloadLink))?safeLink(pdf.downloadLink):
+          ((epub.isAvailable&&safeLink(epub.downloadLink))?safeLink(epub.downloadLink):'');
+        const read=safeLink(a.webReaderLink)||safeLink(v.previewLink)||'';
+        results.appendChild(makeCard({title:v.title,author:(v.authors||[]).join(', '),language:v.language||langName,source:'Google Books',read,download}));
+      });
+    }));
+    let oq='https://openlibrary.org/search.json?q='+encodeURIComponent(term)+'&limit=20';
+    if(code) oq+='&language='+encodeURIComponent(code);
+    tasks.push(fetch(oq).then(r=>{if(!r.ok)throw new Error('Open Library');return r.json();}).then(data=>{
+      (data.docs||[]).forEach(book=>{
+        const key=book.key&&book.key.startsWith('/works/')?book.key:'';
+        const read=key?'https://openlibrary.org'+key:'';
+        results.appendChild(makeCard({title:book.title,author:(book.author_name||[]).slice(0,2).join(', '),language:langName||((book.language||[]).slice(0,1).join('')),source:'Open Library',read,download:''}));
+      });
+    }));
+    const settled=await Promise.allSettled(tasks);
+    const errors=settled.filter(x=>x.status==='rejected').length;
+    const total=results.children.length;
+    status.textContent=total?('موندل شوي کتابونه: '+total+(errors?' • ځینې سرچینې ځواب ورنه کړ.':'')):
+      'په دې سرچینو کې پایله ونه موندل شوه. د کتاب نوم یا ژبه بدله کړئ، یا Google/Yahoo لټون وکاروئ.';
+  }
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const term=query.value.trim();if(!term)return;
+    const code=lang.value;
+    const googleTerm=term+(code?' '+languageNames[code]:'');
+    googleLink.href='https://www.google.com/search?tbm=bks&q='+encodeURIComponent(googleTerm);
+    yahooLink.href='https://search.yahoo.com/search?p='+encodeURIComponent(googleTerm+' free legal PDF book');
+    searchBooks(term,code).catch(()=>{status.textContent='د لټون پر مهال ستونزه راغله؛ لږ وروسته بیا هڅه وکړئ.';});
+  });
 })();
 
 (function(){
