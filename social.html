@@ -51239,7 +51239,7 @@ console.log("S-Book community fixes loaded: replies, repost, media aliases");
       var result = await apiRequest("/notifications",{method:"GET"});
       if(!result || result.success !== true) return;
       var items = notificationArray(result);
-      window.updateNotificationBadge(items);
+      window.updateNotificationBadge(Number.isFinite(Number(result.unread_count)) ? Number(result.unread_count) : items);
       var ids = items.map(function(n){return String(n.id || n.notification_id || "");}).filter(Boolean);
       if(lastNotificationIds !== null){
         var fresh = items.filter(function(n){
