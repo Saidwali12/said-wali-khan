@@ -31789,15 +31789,18 @@ async function selectSBookGalleryPhoto(index, target) {
   const status = document.getElementById(target === "cover" ? "photoManagerCoverStatus" : "photoManagerAvatarStatus");
   if (status) status.textContent = "⏳ ټاکل شوی عکس پروفایل ته ثبتېږي...";
   try {
-    const payload = target === "cover" ? { cover_photo_url: url, cover_url: url } : { profile_photo_url: url, avatar_url: url };
+    const payload = target === "cover"
+      ? { cover_photo: url, cover_photo_url: url, cover_url: url }
+      : { profile_photo: url, profile_photo_url: url, avatar_url: url };
     const saved = await apiRequest("/profile", { method: "PUT", body: JSON.stringify(payload) });
     if (!saved || saved.success !== true) throw new Error(saved?.message || "عکس ثبت نه شو.");
-    currentUser = saved.user || saved.data?.user || currentUser;
+    const returnedUser = saved.user || saved.profile || saved.data?.user || saved.data;
+    currentUser = Object.assign({}, currentUser || {}, returnedUser && typeof returnedUser === "object" ? returnedUser : {});
     if (target === "cover") {
-      currentUser.cover_photo_url = url; currentUser.cover_url = url;
+      currentUser.cover_photo = url; currentUser.cover_photo_url = url; currentUser.cover_url = url;
       const preview = document.getElementById("photoManagerCoverPreview"); if (preview) preview.src = safeURL(url);
     } else {
-      currentUser.profile_photo_url = url; currentUser.avatar_url = url;
+      currentUser.profile_photo = url; currentUser.profile_photo_url = url; currentUser.avatar_url = url;
       const preview = document.getElementById("photoManagerAvatarPreview"); if (preview) preview.src = safeURL(url);
     }
     updateUserUI();
