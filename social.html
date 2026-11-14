@@ -51372,3 +51372,100 @@ console.log("S-Book Messenger contacts/files v2 loaded");
   console.log("S-Book notification live badge v1 loaded");
 })();
 </script>
+
+
+<!-- S-BOOK ISLAMIC FACEBOOK SHARE v1: additive UI; uses existing /posts API -->
+<style>
+#sbIslamicShareFab{position:fixed;left:18px;bottom:82px;z-index:8500;border:0;border-radius:28px;background:#087f49;color:#fff;padding:13px 17px;font:700 14px Tahoma,Arial,sans-serif;box-shadow:0 5px 18px #0003}
+#sbIslamicSharePanel{position:fixed;inset:0;z-index:8501;background:#0008;display:none;align-items:center;justify-content:center;padding:14px;direction:rtl}
+#sbIslamicSharePanel.sb-open{display:flex}
+#sbIslamicShareCard{width:min(520px,100%);background:#fff;border-radius:16px;padding:18px;box-shadow:0 15px 45px #0004;font-family:Tahoma,Arial,sans-serif}
+#sbIslamicShareCard h2{font-size:20px;color:#087f49;margin:0 0 8px}
+#sbIslamicShareCard p{font-size:13px;line-height:1.8;color:#59645d;margin:0 0 12px}
+#sbIslamicShareCard input,#sbIslamicShareCard textarea{width:100%;border:1px solid #d5ded8;border-radius:9px;padding:12px;font:14px Tahoma,Arial,sans-serif;margin:6px 0 10px;direction:auto}
+#sbIslamicShareCard textarea{min-height:82px;resize:vertical}
+#sbIslamicShareCard .sb-islamic-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+#sbIslamicShareCard button{border:0;border-radius:8px;padding:11px 14px;font-weight:700;cursor:pointer}
+#sbIslamicSharePublish{background:#087f49;color:#fff;flex:1}
+#sbIslamicShareOpen{background:#e8f2ec;color:#17643c}
+#sbIslamicShareClose{background:#eef0f2;color:#333}
+#sbIslamicShareStatus{font-size:13px;line-height:1.7;margin-top:10px;white-space:pre-wrap}
+@media(max-width:600px){#sbIslamicShareFab{left:10px;bottom:76px;padding:11px 13px;font-size:12px}#sbIslamicShareCard{padding:14px}}
+</style>
+<button id="sbIslamicShareFab" type="button" aria-haspopup="dialog">🕌 اسلامي پوسټ شریک کړه</button>
+<div id="sbIslamicSharePanel" role="dialog" aria-modal="true" aria-labelledby="sbIslamicShareTitle">
+  <div id="sbIslamicShareCard">
+    <h2 id="sbIslamicShareTitle">🕌 اسلامي خپرونه له Facebook څخه S-BOOK ته</h2>
+    <p>په Facebook کې د خپل یا د بل چا د عامه اسلامي پوسټ لینک Copy کړئ او دلته یې کېږدئ. دا وسیله لینک د S-BOOK په عامه Feed کې د نوي پوسټ په توګه شریکوي؛ د Facebook شخصي/محدود پوسټونه نه رااخلي او د Facebook عکس یا ویډیو په خپله نه نقلوي.</p>
+    <label for="sbIslamicShareUrl">د Facebook پوسټ لینک</label>
+    <input id="sbIslamicShareUrl" type="url" inputmode="url" placeholder="https://www.facebook.com/...">
+    <label for="sbIslamicShareCaption">لنډه اسلامي تبصره (اختیاري)</label>
+    <textarea id="sbIslamicShareCaption" placeholder="د خپرونې په اړه خپل لنډ پیغام ولیکئ..."></textarea>
+    <div class="sb-islamic-actions">
+      <button id="sbIslamicSharePublish" type="button">په S-BOOK کې خپور کړه</button>
+      <button id="sbIslamicShareOpen" type="button">Facebook پرانیزه</button>
+      <button id="sbIslamicShareClose" type="button">بندول</button>
+    </div>
+    <div id="sbIslamicShareStatus" role="status" aria-live="polite"></div>
+  </div>
+</div>
+<script>
+(function(){
+  "use strict";
+  var fab=document.getElementById("sbIslamicShareFab");
+  var panel=document.getElementById("sbIslamicSharePanel");
+  var urlInput=document.getElementById("sbIslamicShareUrl");
+  var captionInput=document.getElementById("sbIslamicShareCaption");
+  var status=document.getElementById("sbIslamicShareStatus");
+  var publish=document.getElementById("sbIslamicSharePublish");
+  if(!fab||!panel||!urlInput||!captionInput||!status||!publish)return;
+  function show(){panel.classList.add("sb-open");status.textContent="";urlInput.focus();}
+  function hide(){panel.classList.remove("sb-open");}
+  fab.addEventListener("click",show);
+  document.getElementById("sbIslamicShareClose").addEventListener("click",hide);
+  panel.addEventListener("click",function(e){if(e.target===panel)hide();});
+  document.getElementById("sbIslamicShareOpen").addEventListener("click",function(){
+    window.open("https://www.facebook.com/","_blank","noopener,noreferrer");
+  });
+  function validFacebookLink(raw){
+    try{
+      var u=new URL(raw);
+      var host=u.hostname.toLowerCase().replace(/^www\./,"");
+      return u.protocol==="https:" && (host==="facebook.com"||host.endsWith(".facebook.com")||host==="fb.watch");
+    }catch(e){return false;}
+  }
+  publish.addEventListener("click",async function(){
+    var link=urlInput.value.trim();
+    var caption=captionInput.value.trim();
+    if(!validFacebookLink(link)){
+      status.textContent="مهرباني وکړئ د Facebook یا fb.watch معتبر HTTPS پوسټ لینک ولیکئ.";
+      return;
+    }
+    if(typeof currentUser==="undefined"||!currentUser||typeof apiRequest!=="function"){
+      status.textContent="لومړی خپل S-BOOK حساب ته Login وکړئ.";
+      return;
+    }
+    var body="🕌 اسلامي خپرونه له Facebook څخه\n"+(caption?caption+"\n":"")+"اصلي پوسټ: "+link;
+    publish.disabled=true;
+    publish.textContent="خپرېږي...";
+    status.textContent="ستاسې خپرونه لېږل کېږي...";
+    try{
+      var result=await apiRequest("/posts",{
+        method:"POST",
+        body:JSON.stringify({content:body,privacy:"public",location:"",feeling:"",status:"published"})
+      });
+      if(!result||result.success!==true)throw new Error(result&&result.message||"پوسټ خپور نه شو.");
+      status.textContent="✅ اسلامي لینک په S-BOOK کې خپور شو. د کورپاڼې Feed تازه کړئ.";
+      urlInput.value="";
+      captionInput.value="";
+      if(typeof loadFeed==="function")await loadFeed();
+      else if(typeof loadHomeFeedWithComposer==="function")await loadHomeFeedWithComposer();
+    }catch(err){
+      status.textContent="❌ "+(err&&err.message?err.message:"تخنیکي ستونزه؛ بیا هڅه وکړئ.");
+    }finally{
+      publish.disabled=false;
+      publish.textContent="په S-BOOK کې خپور کړه";
+    }
+  });
+})();
+</script>
