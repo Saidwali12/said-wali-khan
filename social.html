@@ -49452,7 +49452,17 @@ document.addEventListener(
   function init(){addStories();addNews();placeNews();}
   window.addEventListener("resize",placeNews);
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
-  const observer=new MutationObserver(init);observer.observe(document.documentElement,{childList:true,subtree:true});
+  // Debounce DOM updates: do not rerun the full initializer for every tiny change.
+  let initTimer=0;
+  const observer=new MutationObserver(()=>{
+    if(initTimer) return;
+    initTimer=window.setTimeout(()=>{
+      initTimer=0;
+      if(document.visibilityState==="visible") init();
+    },300);
+  });
+  const appRoot=document.getElementById("app")||document.body;
+  observer.observe(appRoot,{childList:true,subtree:true});
 })();
 </script>
 
@@ -49832,14 +49842,20 @@ function goBackToMainSite(){
    const note=document.createElement("p");note.className="muted";note.style.marginTop="7px";note.textContent="ویډیو یوازې د مخکتنې لپاره ښکاري؛ د ویډیو د سرور اپلوډ API لا نه دی تایید شوی، نو دا به د پوسټ په توګه نه خپرېږي.";preview.appendChild(note);
   });
  }
- const observer=new MutationObserver(()=>{addComposerControls();});
+ // Observe only until the post composer controls exist, then release the observer.
+ const observer=new MutationObserver(()=>{
+  addComposerControls();
+  if($("createPostContainer")?.querySelector(".sw-composer-actions")) observer.disconnect();
+ });
  function init(){
   buildNavigation();
   addComposerControls();
-  observer.observe(document.body,{childList:true,subtree:true});
+  if(!$("createPostContainer")?.querySelector(".sw-composer-actions")){
+   observer.observe(document.body,{childList:true,subtree:true});
+  }
  }
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
- window.addEventListener("load",()=>{buildNavigation();addComposerControls();});
+ window.addEventListener("load",()=>{buildNavigation();addComposerControls();if($("createPostContainer")?.querySelector(".sw-composer-actions"))observer.disconnect();});
 })();
 </script>
 
@@ -51283,10 +51299,17 @@ console.log("S-Book community fixes loaded: replies, repost, media aliases");
     }
   }
 
-  var attachTimer = window.setInterval(init,1500);
+  // Build notification badges once; avoid scanning the whole DOM every 1.5 seconds.
+  if(document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded",init,{once:true});
+  } else {
+    init();
+  }
   window.setInterval(function(){
-    if(document.visibilityState === "visible") window.refreshNotificationCount();
-  },20000);
+    if(document.visibilityState === "visible" && typeof currentUser !== "undefined" && currentUser) {
+      window.refreshNotificationCount();
+    }
+  },30000);
   document.addEventListener("visibilitychange",function(){
     if(document.visibilityState === "visible") window.refreshNotificationCount();
   });
