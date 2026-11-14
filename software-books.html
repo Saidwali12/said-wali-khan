@@ -433,77 +433,180 @@ footer{text-align:center;background:var(--navy);color:#fff;padding:16px;font-siz
   const results=document.getElementById('bookSearchResults');
   const googleLink=document.getElementById('googleBookSearch');
   const yahooLink=document.getElementById('yahooBookSearch');
-  const languageNames={ps:'Pashto',fa:'Persian',ar:'Arabic',ur:'Urdu',en:'English'};
+  const languageNames={ps:'پښتو',fa:'دري / فارسي',ar:'عربي',ur:'اردو',en:'انګلیسي'};
+  let searchNumber=0;
+
   function safeLink(url){
-    try{const u=new URL(url);return (u.protocol==='https:'||u.protocol==='http:')?u.href:'';}catch(e){return '';}
+    try{const u=new URL(url);return u.protocol==='https:'?u.href:'';}catch(e){return '';}
+  }
+  function addText(parent,tag,text,style){
+    const el=document.createElement(tag);el.textContent=text;
+    if(style)el.style.cssText=style;
+    parent.appendChild(el);return el;
   }
   function makeCard(book){
     const card=document.createElement('article');
-    card.style.cssText='background:#f8fafc;border:1px solid #e2e8f0;border-radius:11px;padding:11px;min-width:0';
-    const title=document.createElement('strong');
-    title.textContent=book.title||'بې‌نومه کتاب';
-    title.style.cssText='display:block;color:#071a35;margin-bottom:5px;overflow-wrap:anywhere';
-    card.appendChild(title);
-    const meta=document.createElement('p');
-    meta.textContent=[book.author,book.language,book.source].filter(Boolean).join(' • ');
-    meta.style.cssText='font-size:12px;color:#596579;margin:0 0 9px';
-    card.appendChild(meta);
+    card.style.cssText='background:#fff;border:1px solid #dce4ef;border-radius:12px;padding:12px;min-width:0;box-shadow:0 1px 5px #0000000c';
+    addText(card,'strong',book.title||'د کتاب نوم نشته','display:block;color:#071a35;font-size:15px;margin-bottom:6px;overflow-wrap:anywhere');
+    addText(card,'p',[book.author,book.language,book.source].filter(Boolean).join(' • '),'font-size:12px;color:#596579;margin:0 0 10px');
+    if(book.note)addText(card,'p',book.note,'font-size:12px;color:#76551a;margin:0 0 8px');
     const actions=document.createElement('div');
     actions.style.cssText='display:flex;gap:7px;flex-wrap:wrap';
-    if(book.read){
-      const a=document.createElement('a');a.href=book.read;a.target='_blank';a.rel='noopener noreferrer';a.textContent='کتاب ولولئ';
-      a.style.cssText='background:#0d47a1;color:white;padding:6px 10px;border-radius:7px;text-decoration:none;font-size:12px';actions.appendChild(a);
+    const read=safeLink(book.read), download=safeLink(book.download);
+    if(read){
+      const a=document.createElement('a');a.href=read;a.target='_blank';a.rel='noopener noreferrer';a.textContent='📖 کتاب خلاص کړئ';
+      a.style.cssText='background:#0d47a1;color:#fff;padding:9px 11px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:bold';actions.appendChild(a);
     }
-    if(book.download){
-      const a=document.createElement('a');a.href=book.download;a.target='_blank';a.rel='noopener noreferrer';a.textContent='⬇ ډاونلوډ';
-      a.style.cssText='background:#d9ae52;color:#071a35;padding:6px 10px;border-radius:7px;text-decoration:none;font-size:12px;font-weight:bold';actions.appendChild(a);
+    if(download){
+      const a=document.createElement('a');a.href=download;a.target='_blank';a.rel='noopener noreferrer';a.textContent='📥 PDF ډاونلوډ';
+      a.style.cssText='background:#087443;color:#fff;padding:9px 11px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:bold';actions.appendChild(a);
     }
-    if(!book.read&&!book.download){const p=document.createElement('span');p.textContent='د سرچینې پاڼه نشته';p.style.fontSize='12px';actions.appendChild(p);}
+    if(!read&&!download)addText(actions,'span','د لوستلو لینک نه شته','font-size:12px;color:#8a3540');
     card.appendChild(actions);return card;
   }
+  function languageMatches(value,code){
+    if(!code||!value)return true;
+    const v=String(value).toLowerCase();
+    const aliases={
+      ps:['ps','pus','pashto','پښتو'],
+      fa:['fa','per','fas','persian','farsi','دري','فارسي'],
+      ar:['ar','ara','arabic','عربي'],
+      ur:['ur','urd','urdu','اردو'],
+      en:['en','eng','english']
+    };
+    return (aliases[code]||[code]).some(x=>v.includes(x));
+  }
+  async function archiveSearch(term,code,run){
+    const params=new URLSearchParams();
+    params.set('q','mediatype:texts AND "'+term.replace(/"/g,'')+'"');
+    params.append('fl[]','identifier');params.append('fl[]','title');
+    params.append('fl[]','creator');params.append('fl[]','language');
+    params.append('fl[]','downloads');params.set('rows','12');
+    params.set('output','json');params.append('sort[]','downloads desc');
+    const response=await fetch('https://archive.org/advancedsearch.php?'+params.toString());
+    if(!response.ok)throw new Error('Internet Archive');
+    const data=await response.json();
+    const docs=(data.response&&data.response.docs)||[];
+    const selected=docs.filter(x=>languageMatches(x.language,code));
+    const list=selected.length?selected:docs;
+    await Promise.all(list.slice(0,8).map(async item=>{
+      if(run!==searchNumber)return;
+      let pdf='',restricted=false;
+      try{
+        const mr=await fetch('https://archive.org/metadata/'+encodeURIComponent(item.identifier));
+        if(mr.ok){
+          const meta=await mr.json();
+          restricted=!!(meta.metadata&&meta.metadata['access-restricted-item']);
+          if(!restricted){
+            const file=(meta.files||[]).find(f=>
+              f.name && (/\.pdf$/i.test(f.name)||String(f.format||'').toLowerCase().includes('pdf')) &&
+              !f.name.includes('_meta.') && !f.name.includes('_files.')
+            );
+            if(file)pdf='https://archive.org/download/'+encodeURIComponent(item.identifier)+'/'+file.name.split('/').map(encodeURIComponent).join('/');
+          }
+        }
+      }catch(e){}
+      if(run!==searchNumber)return;
+      const id=encodeURIComponent(item.identifier);
+      const language=Array.isArray(item.language)?item.language.join(', '):(item.language||languageNames[code]||'ژبه نه ده ښودل شوې');
+      results.appendChild(makeCard({
+        title:item.title,author:Array.isArray(item.creator)?item.creator.join(', '):(item.creator||''),
+        language,source:'Internet Archive',
+        read:'https://archive.org/details/'+id,download:pdf,
+        note:pdf?'د PDF فایل موجود دی. د خپرونې د اجازې معلومات د سرچینې په پاڼه کې وګورئ.':'د کتاب پاڼه شته؛ مستقیم PDF فایل ونه موندل شو.'
+      }));
+    }));
+    return docs.length;
+  }
+  async function googleSearch(term,code,run){
+    const url='https://www.googleapis.com/books/v1/volumes?q='+encodeURIComponent(term)+'&maxResults=12&printType=books';
+    const r=await fetch(url);if(!r.ok)throw new Error('Google Books');
+    const data=await r.json();
+    (data.items||[]).forEach(item=>{
+      if(run!==searchNumber)return;
+      const v=item.volumeInfo||{},a=item.accessInfo||{};
+      const pdf=a.pdf||{},epub=a.epub||{};
+      const download=(pdf.isAvailable&&safeLink(pdf.downloadLink))?safeLink(pdf.downloadLink):
+        ((epub.isAvailable&&safeLink(epub.downloadLink))?safeLink(epub.downloadLink):'');
+      const language=v.language||'';
+      if(!languageMatches(language,code))return;
+      const read=safeLink(a.webReaderLink)||safeLink(v.previewLink)||'';
+      results.appendChild(makeCard({
+        title:v.title,author:(v.authors||[]).join(', '),
+        language:language||languageNames[code]||'ژبه نه ده ښودل شوې',
+        source:'Google Books',read,download,
+        note:download?'د Google Books له خوا د ښکته کولو فایل موجود دی.':'د لوستلو مخ شته؛ وړیا PDF نه دی تایید شوی.'
+      }));
+    });
+  }
+  async function openLibrarySearch(term,code,run){
+    const url='https://openlibrary.org/search.json?q='+encodeURIComponent(term)+'&limit=12';
+    const r=await fetch(url);if(!r.ok)throw new Error('Open Library');
+    const data=await r.json();
+    (data.docs||[]).forEach(book=>{
+      if(run!==searchNumber)return;
+      const langs=book.language||[];
+      if(code&&!languageMatches(langs.join(' '),code))return;
+      const key=book.key&&book.key.startsWith('/works/')?book.key:'';
+      if(!key)return;
+      results.appendChild(makeCard({
+        title:book.title,author:(book.author_name||[]).slice(0,2).join(', '),
+        language:langs.slice(0,2).join(', ')||languageNames[code]||'ژبه نه ده ښودل شوې',
+        source:'Open Library',read:'https://openlibrary.org'+key,download:'',
+        note:'د لوستلو یا پور اخیستلو امکان د کتاب له پاڼې معلومېږي؛ مستقیم PDF نه دی تایید شوی.'
+      }));
+    });
+  }
+  function addOtherSearchLinks(term,code){
+    const box=document.createElement('div');
+    box.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:10px 0';
+    const langWord=languageNames[code]||'اسلامي';
+    const links=[
+      ['د اسلام‌هاؤس کتابونه','https://www.google.com/search?q='+encodeURIComponent('site:islamhouse.com/read/ '+term+' '+langWord)],
+      ['د پښتو اسلام‌هاؤس کتابونه','https://islamhouse.com/read/ps/'],
+      ['د وقفیه کتابتون','https://waqfeya.net/'],
+      ['د شامله کتابتون','https://shamela.ws/']
+    ];
+    links.forEach(([label,url])=>{
+      const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';
+      a.textContent=label;a.style.cssText='background:#f0f4fa;color:#0d47a1;padding:8px 10px;border-radius:8px;font-size:12px;text-decoration:none';
+      box.appendChild(a);
+    });
+    results.appendChild(box);
+  }
   async function searchBooks(term,code){
+    const run=++searchNumber;
     results.replaceChildren();
-    status.textContent='کتابونه لټول کېږي...';
-    const langName=languageNames[code]||'';
-    const tasks=[];
-    let gq='https://www.googleapis.com/books/v1/volumes?q='+encodeURIComponent(term)+'&maxResults=20&printType=books';
-    if(code) gq+='&langRestrict='+encodeURIComponent(code);
-    tasks.push(fetch(gq).then(r=>{if(!r.ok)throw new Error('Google Books');return r.json();}).then(data=>{
-      (data.items||[]).forEach(item=>{
-        const v=item.volumeInfo||{},a=item.accessInfo||{};
-        const pdf=a.pdf||{},epub=a.epub||{};
-        const download=(pdf.isAvailable&&safeLink(pdf.downloadLink))?safeLink(pdf.downloadLink):
-          ((epub.isAvailable&&safeLink(epub.downloadLink))?safeLink(epub.downloadLink):'');
-        const read=safeLink(a.webReaderLink)||safeLink(v.previewLink)||'';
-        results.appendChild(makeCard({title:v.title,author:(v.authors||[]).join(', '),language:v.language||langName,source:'Google Books',read,download}));
-      });
-    }));
-    let oq='https://openlibrary.org/search.json?q='+encodeURIComponent(term)+'&limit=20';
-    if(code) oq+='&language='+encodeURIComponent(code);
-    tasks.push(fetch(oq).then(r=>{if(!r.ok)throw new Error('Open Library');return r.json();}).then(data=>{
-      (data.docs||[]).forEach(book=>{
-        const key=book.key&&book.key.startsWith('/works/')?book.key:'';
-        const read=key?'https://openlibrary.org'+key:'';
-        results.appendChild(makeCard({title:book.title,author:(book.author_name||[]).slice(0,2).join(', '),language:langName||((book.language||[]).slice(0,1).join('')),source:'Open Library',read,download:''}));
-      });
-    }));
+    status.textContent='لټون روان دی... مهرباني وکړئ څو شېبې انتظار وکړئ.';
+    const googleTerm=term+(code?' '+languageNames[code]:'');
+    googleLink.href='https://www.google.com/search?tbm=bks&q='+encodeURIComponent(googleTerm);
+    yahooLink.href='https://www.google.com/search?q='+encodeURIComponent(term+' '+(languageNames[code]||'')+' اسلامي کتاب PDF');
+    const tasks=[
+      archiveSearch(term,code,run),
+      googleSearch(term,code,run),
+      openLibrarySearch(term,code,run)
+    ];
     const settled=await Promise.allSettled(tasks);
+    if(run!==searchNumber)return;
     const errors=settled.filter(x=>x.status==='rejected').length;
-    const total=results.children.length;
-    status.textContent=total?('موندل شوي کتابونه: '+total+(errors?' • ځینې سرچینې ځواب ورنه کړ.':'')):
-      'په دې سرچینو کې پایله ونه موندل شوه. د کتاب نوم یا ژبه بدله کړئ، یا Google/Yahoo لټون وکاروئ.';
+    const total=results.querySelectorAll('article').length;
+    if(total){
+      status.textContent='پایلې: '+total+' کتابونه. شنه «PDF ډاونلوډ» تڼۍ یوازې د موجود فایل لپاره ښکاري.'+(errors?' ځینې کتابتونونه ځواب ورنه کړ.':'');
+    }else{
+      status.textContent='په اتومات کتابتونونو کې دا کتاب ونه موندل شو. لاندې د نورو کتابتونونو لینکونه وکاروئ یا د کتاب نوم په بله املا ولیکئ.';
+    }
+    addOtherSearchLinks(term,code);
   }
   form.addEventListener('submit',e=>{
     e.preventDefault();
-    const term=query.value.trim();if(!term)return;
-    const code=lang.value;
-    const googleTerm=term+(code?' '+languageNames[code]:'');
-    googleLink.href='https://www.google.com/search?tbm=bks&q='+encodeURIComponent(googleTerm);
-    yahooLink.href='https://search.yahoo.com/search?p='+encodeURIComponent(googleTerm+' free legal PDF book');
-    searchBooks(term,code).catch(()=>{status.textContent='د لټون پر مهال ستونزه راغله؛ لږ وروسته بیا هڅه وکړئ.';});
+    const term=query.value.trim();
+    if(!term){status.textContent='لومړی د کتاب نوم ولیکئ.';query.focus();return;}
+    searchBooks(term,lang.value).catch(()=>{
+      status.textContent='اوس اتومات لټون له ستونزې سره مخ شو. انټرنېټ وګورئ او بیا هڅه وکړئ؛ لاندې د نورو سرچینو لینکونه هم وکاروئ.';
+      addOtherSearchLinks(term,lang.value);
+    });
   });
 })();
-
 (function(){
   const canvas=document.getElementById('clock');
   const ctx=canvas.getContext('2d');
