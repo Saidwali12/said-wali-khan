@@ -50650,3 +50650,178 @@ window.sharePost = async function(postId) {
 
 console.log("S-Book community fixes loaded: replies, repost, media aliases");
 </script>
+
+
+<!-- SBOOK FRIENDS FIX v1: align frontend actions with Worker v6.4 endpoints -->
+<script>
+(function () {
+  "use strict";
+
+  function friendEscape(value) {
+    if (typeof escapeHTML === "function") return escapeHTML(String(value == null ? "" : value));
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch];
+    });
+  }
+
+  function friendContainer() {
+    return document.getElementById("friendsContent");
+  }
+
+  function friendError(container, message, retryName) {
+    if (!container) return;
+    container.innerHTML = '<div class="card" style="padding:24px;text-align:center">' +
+      '<p>⚠️ ' + friendEscape(message || "اړیکه ناکامه شوه.") + '</p>' +
+      '<button type="button" class="btn" onclick="' + retryName + '()">🔄 بیا هڅه</button></div>';
+  }
+
+  window.showFriendsList = async function () {
+    const box = friendContainer();
+    if (!box) return;
+    box.innerHTML = '<div class="card" style="padding:25px;text-align:center">⏳ ملګري لوډ کېږي...</div>';
+    const result = await apiRequest("/friends", {method:"GET"});
+    if (!result || result.success !== true) {
+      friendError(box, result && result.message || "ملګري لوډ نه شول.", "showFriendsList");
+      return;
+    }
+    const friends = Array.isArray(result.friends) ? result.friends : [];
+    window.friendsCache = friends;
+    if (!friends.length) {
+      box.innerHTML = '<div class="card" style="padding:35px;text-align:center"><div style="font-size:48px">👥</div><h3>تر اوسه ملګري نشته</h3><p>د «خلک پیدا کړه» تڼۍ وکاروئ.</p></div>';
+      return;
+    }
+    box.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px">' +
+      friends.map(function (f) {
+        const id = Number(f.friend_id);
+        const name = f.full_name || f.username || "کاروونکی";
+        const avatar = f.profile_photo || "";
+        return '<div class="card" style="margin:0;padding:14px;display:flex;align-items:center;gap:12px">' +
+          (avatar ? '<img src="' + friendEscape(avatar) + '" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover">' :
+            '<div style="width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#e8eef8">👤</div>') +
+          '<div style="min-width:0;flex:1"><strong>' + friendEscape(name) + '</strong><div class="muted">@' + friendEscape(f.username || "") + '</div></div>' +
+          '<button type="button" class="btn btn-secondary" onclick="startPrivateConversation(' + id + ',\'' + friendEscape(name).replace(/'/g,"&#39;") + '\')">💬 پیغام</button>' +
+          '</div>';
+      }).join("") + '</div>';
+  };
+
+  window.showFriendRequests = async function () {
+    const box = friendContainer();
+    if (!box) return;
+    box.innerHTML = '<div class="card" style="padding:25px;text-align:center">⏳ غوښتنې لوډ کېږي...</div>';
+    const result = await apiRequest("/friends/requests", {method:"GET"});
+    if (!result || result.success !== true) {
+      friendError(box, result && result.message || "غوښتنې لوډ نه شوې.", "showFriendRequests");
+      return;
+    }
+    const requests = Array.isArray(result.requests) ? result.requests : [];
+    window.friendRequestsCache = requests;
+    if (typeof updateFriendRequestBadge === "function") updateFriendRequestBadge(requests.length);
+    if (!requests.length) {
+      box.innerHTML = '<div class="card" style="padding:35px;text-align:center"><div style="font-size:45px">📭</div><h3>نوې غوښتنه نشته</h3></div>';
+      return;
+    }
+    box.innerHTML = '<div style="display:grid;gap:10px">' + requests.map(function (r) {
+      const id = Number(r.id);
+      const name = r.full_name || r.username || "کاروونکی";
+      return '<div class="card" style="margin:0;padding:14px;display:flex;align-items:center;gap:12px">' +
+        (r.profile_photo ? '<img src="' + friendEscape(r.profile_photo) + '" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover">' : '<div style="width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#e8eef8">👤</div>') +
+        '<div style="flex:1;min-width:0"><strong>' + friendEscape(name) + '</strong><div class="muted">@' + friendEscape(r.username || "") + '</div></div>' +
+        '<button type="button" class="btn" onclick="acceptFriendRequest(' + id + ',this)">✓ قبول</button>' +
+        '<button type="button" class="btn btn-secondary" onclick="rejectFriendRequest(' + id + ',this)">رد</button>' +
+        '</div>';
+    }).join("") + '</div>';
+  };
+
+  window.showFriendSearch = function () {
+    const box = friendContainer();
+    if (!box) return;
+    box.innerHTML = '<div class="card" style="padding:18px"><h3>🔎 خلک پیدا کړه</h3>' +
+      '<form onsubmit="searchFriends(event);return false" style="display:flex;gap:8px;flex-wrap:wrap">' +
+      '<input id="friendSearchInput" type="search" minlength="2" placeholder="نوم یا Username ولیکئ..." style="flex:1;min-width:180px;padding:11px;border:1px solid #ccc;border-radius:8px">' +
+      '<button class="btn" type="submit">🔎 لټون</button></form>' +
+      '<div id="friendSearchResults" style="margin-top:14px"></div></div>';
+    const input = document.getElementById("friendSearchInput");
+    if (input) input.focus();
+  };
+
+  window.searchFriends = async function (event) {
+    if (event && event.preventDefault) event.preventDefault();
+    const input = document.getElementById("friendSearchInput");
+    const box = document.getElementById("friendSearchResults");
+    if (!input || !box) return;
+    const q = input.value.trim();
+    if (q.length < 2) { box.innerHTML = '<p class="muted">لږ تر لږه ۲ توري ولیکئ.</p>'; return; }
+    box.innerHTML = '<p style="text-align:center">⏳ لټون کېږي...</p>';
+    const result = await apiRequest("/users/search?q=" + encodeURIComponent(q), {method:"GET"});
+    if (!result || result.success !== true) {
+      box.innerHTML = '<p class="muted">' + friendEscape(result && result.message || "لټون ناکام شو.") + '</p>';
+      return;
+    }
+    const users = Array.isArray(result.users) ? result.users : [];
+    if (!users.length) { box.innerHTML = '<p class="muted" style="text-align:center">کاروونکی پیدا نه شو.</p>'; return; }
+    box.innerHTML = '<div style="display:grid;gap:9px">' + users.map(function (u) {
+      const id = Number(u.id);
+      const name = u.full_name || u.username || "کاروونکی";
+      return '<div class="card" style="margin:0;padding:12px;display:flex;align-items:center;gap:10px">' +
+        (u.profile_photo ? '<img src="' + friendEscape(u.profile_photo) + '" alt="" style="width:46px;height:46px;border-radius:50%;object-fit:cover">' : '<div style="width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#e8eef8">👤</div>') +
+        '<div style="flex:1;min-width:0"><strong>' + friendEscape(name) + '</strong><div class="muted">@' + friendEscape(u.username || "") + '</div></div>' +
+        '<button type="button" class="btn" onclick="sendFriendRequest(' + id + ',this)">➕ ملګری کول</button></div>';
+    }).join("") + '</div>';
+  };
+
+  window.sendFriendRequest = async function (userId, button) {
+    const id = Number(userId);
+    if (!id || !window.currentUser) { alert("لومړی خپل حساب ته ننوځئ."); return; }
+    if (Number(id) === Number(window.currentUser.id)) { alert("خپل ځان ته غوښتنه نه شئ لېږلی."); return; }
+    if (button) { button.disabled = true; button.textContent = "⏳ لېږل کېږي..."; }
+    const result = await apiRequest("/friends/request", {method:"POST",body:JSON.stringify({user_id:id})});
+    if (!result || result.success !== true) {
+      if (button) { button.disabled = false; button.textContent = "➕ ملګری کول"; }
+      alert(result && result.message || "غوښتنه ونه لېږل شوه.");
+      return;
+    }
+    if (button) { button.disabled = true; button.textContent = "✓ غوښتنه ولېږل شوه"; }
+    alert(result.message || "د ملګرتیا غوښتنه ولېږل شوه.");
+  };
+
+  window.acceptFriendRequest = async function (requestId, button) {
+    const id = Number(requestId);
+    if (!id) return;
+    if (button) { button.disabled = true; button.textContent = "⏳"; }
+    const result = await apiRequest("/friends/accept", {method:"POST",body:JSON.stringify({request_id:id})});
+    if (!result || result.success !== true) {
+      if (button) { button.disabled = false; button.textContent = "✓ قبول"; }
+      alert(result && result.message || "غوښتنه قبوله نه شوه.");
+      return;
+    }
+    alert(result.message || "ملګرتیا ومنل شوه.");
+    await window.showFriendRequests();
+  };
+
+  window.rejectFriendRequest = async function (requestId, button) {
+    const id = Number(requestId);
+    if (!id) return;
+    if (!confirm("ایا دا د ملګرتیا غوښتنه رد کړئ؟")) return;
+    if (button) { button.disabled = true; button.textContent = "⏳"; }
+    const result = await apiRequest("/friends/reject", {method:"POST",body:JSON.stringify({request_id:id})});
+    if (!result || result.success !== true) {
+      if (button) { button.disabled = false; button.textContent = "رد"; }
+      alert(result && result.message || "غوښتنه رد نه شوه.");
+      return;
+    }
+    await window.showFriendRequests();
+  };
+
+  // Backward-compatible names used by older buttons.
+  window.loadFriendsPage = window.loadFriendsPage || async function () {
+    const main = document.getElementById("mainContent");
+    if (!main) return;
+    main.innerHTML = '<div class="card"><h2>🤝 ملګري</h2><div style="display:flex;gap:8px;flex-wrap:wrap">' +
+      '<button class="btn" onclick="showFriendsList()">👥 زما ملګري</button>' +
+      '<button class="btn btn-secondary" onclick="showFriendRequests()">📩 غوښتنې</button>' +
+      '<button class="btn btn-secondary" onclick="showFriendSearch()">🔎 خلک پیدا کړه</button></div>' +
+      '<div id="friendsContent" style="margin-top:12px"></div></div>';
+    await window.showFriendsList();
+  };
+})();
+</script>
