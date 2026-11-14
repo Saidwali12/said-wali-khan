@@ -450,7 +450,7 @@ document.getElementById("applicantForm").addEventListener("submit",async functio
   if(!response.ok||!data.success)throw new Error(data.error||"ثبت‌نام بریالی نه شو.");
   const optedIn=!!form.querySelector('[name="email_consent"]').checked;
   showRegStatus(optedIn?"مبارک دې وي! ستاسې ثبت‌نام بشپړ شو او د نویو دندو ایمیل خبرتیاوې مو فعاله کړې.":"مبارک دې وي! ستاسې ثبت‌نام بشپړ شو. تاسې د ایمیل خبرتیاوې نه دي فعالې کړې؛ ثبت‌نام مو بیا هم بریالی دی.",true);form.reset();
-  setTimeout(()=>{closeApplicantForm();document.getElementById("jobsContainer").scrollIntoView({behavior:"smooth",block:"start"});},2600);
+  setTimeout(()=>{closeApplicantForm();document.getElementById("jobsContainer").scrollIntoView({behavior:"smooth",block:"start"});},6500);
  }catch(err){showRegStatus(err.message||"له سرور سره اړیکه ټینګه نه شوه. وروسته بیا هڅه وکړئ.",false);}
  finally{btn.disabled=false;btn.textContent="ثبت‌نام بشپړ کړئ";}
 });
