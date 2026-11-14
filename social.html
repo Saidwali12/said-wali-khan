@@ -24380,8 +24380,20 @@ function renderPostCard(
     "";
 
 
-  const mediaItems =
-    Array.isArray(post.media) ? post.media.filter(Boolean) : [];
+  const rawMediaItems =
+    Array.isArray(post.media) ? post.media :
+    Array.isArray(post.media_items) ? post.media_items :
+    Array.isArray(post.attachments) ? post.attachments :
+    Array.isArray(post.photos) ? post.photos :
+    [];
+
+  const mediaItems = rawMediaItems
+    .map(function(item) {
+      return typeof item === "string"
+        ? { media_url: item, media_type: "image" }
+        : item;
+    })
+    .filter(Boolean);
 
   if (!mediaItems.length) {
     const fallbackUrl = post.media_url || post.image_url || post.photo_url || post.video_url || "";
@@ -50411,4 +50423,230 @@ window.sharePost = async function(postId) {
     }
   }
 };
+</script>
+
+<script>
+/* =========================================================
+   S-BOOK COMMUNITY FIXES
+   Threaded replies, in-app repost, robust shared media
+   Uses the existing API routes; no D1 schema changes.
+   ========================================================= */
+
+function sbookCommentParentId(comment) {
+  return Number(comment.parent_id || comment.parent_comment_id || comment.reply_to || 0);
+}
+
+function sbookRenderCommentTree(comments, postId) {
+  const byParent = new Map();
+  (Array.isArray(comments) ? comments : []).forEach(function(comment) {
+    const parent = sbookCommentParentId(comment);
+    if (!byParent.has(parent)) byParent.set(parent, []);
+    byParent.get(parent).push(comment);
+  });
+
+  function renderLevel(parentId, depth) {
+    const rows = byParent.get(parentId) || [];
+    return rows.map(function(comment) {
+      const id = Number(comment.id || comment.comment_id || 0);
+      const user = comment.user || comment.author || comment.profile || {};
+      const userId = Number(comment.user_id || comment.author_id || user.id || 0);
+      const name = comment.user_name || comment.author_name || user.name ||
+        user.full_name || user.username || comment.username || "کاروونکی";
+      const avatar = comment.avatar_url || comment.user_avatar || user.avatar_url || user.avatar || "";
+      const body = comment.content || comment.text || "";
+      const mine = !!(currentUser && userId && Number(currentUser.id || currentUser.user_id) === userId);
+      const avatarHtml = avatar
+        ? '<img src="' + safeURL(avatar) + '" alt="" loading="lazy" style="width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none">'
+        : '<div style="width:34px;height:34px;border-radius:50%;background:#1877f2;color:#fff;display:grid;place-items:center;flex:none">👤</div>';
+      const replies = renderLevel(id, depth + 1);
+      return '<div class="sbook-comment" style="display:flex;gap:8px;margin:9px 0 9px ' + Math.min(depth, 4) * 18 + 'px">' +
+        avatarHtml +
+        '<div style="flex:1;min-width:0;background:#f0f2f5;border-radius:12px;padding:8px 10px">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+        '<strong style="font-size:12px">' + escapeHTML(name) + '</strong>' +
+        (mine && id ? '<button type="button" data-delete-comment="' + id + '" style="border:0;background:none;color:#777;cursor:pointer">🗑️</button>' : '') +
+        '</div><div style="font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere">' + escapeHTML(body) + '</div>' +
+        (id ? '<button type="button" data-reply-comment="' + id + '" data-reply-name="' + escapeHTML(name).replace(/"/g, '&quot;') + '" style="border:0;background:none;color:#1877f2;font-size:12px;cursor:pointer;padding:5px 0">↩ ځواب</button>' : '') +
+        '</div></div>' + replies;
+    }).join("");
+  }
+  return renderLevel(0, 0) + (comments.some(function(c) {
+    return sbookCommentParentId(c) && !comments.some(function(p) {
+      return Number(p.id || p.comment_id) === sbookCommentParentId(c);
+    });
+  }) ? '<div style="font-size:11px;color:#777;padding:6px">ځینې ځوابونه د اصلي تبصرې له موندلو پرته راغلي دي.</div>' : '');
+}
+
+window.loadComments = async function(postId) {
+  postId = Number(postId);
+  const box = document.getElementById("comments-" + postId);
+  if (!box) return;
+  box.innerHTML = '<div style="padding:8px;text-align:center;color:#777">⏳ تبصرې لوډ کېږي...</div>';
+  const result = await apiRequest("/posts/" + postId + "/comments", { method:"GET" });
+  if (!result || result.success !== true) {
+    box.innerHTML = '<div style="padding:8px;color:#b42318">' +
+      escapeHTML(result && result.message || "تبصرې لوډ نه شوې.") + '</div>';
+    return;
+  }
+  const comments = Array.isArray(result.comments) ? result.comments :
+    Array.isArray(result.data) ? result.data :
+    Array.isArray(result.results) ? result.results : [];
+  const statusId = "sbook-reply-status-" + postId;
+  let status = document.getElementById(statusId);
+  if (!status) {
+    status = document.createElement("div");
+    status.id = statusId;
+    status.style.cssText = "font-size:12px;color:#1877f2;padding:4px 2px";
+    box.parentNode.insertBefore(status, box);
+  }
+  box.innerHTML = comments.length
+    ? sbookRenderCommentTree(comments, postId)
+    : '<div style="padding:8px;text-align:center;color:#777;font-size:12px">تر اوسه تبصره نشته.</div>';
+
+  box.querySelectorAll("[data-reply-comment]").forEach(function(button) {
+    button.addEventListener("click", function() {
+      const input = document.getElementById("comment-input-" + postId);
+      if (!input) return;
+      input.dataset.parentId = button.getAttribute("data-reply-comment");
+      input.placeholder = "د " + (button.getAttribute("data-reply-name") || "تبصرې") + " تبصرې ته ځواب ولیکئ...";
+      status.textContent = "↩ د تبصرې ځواب لیکئ. ";
+      const cancel = document.createElement("button");
+      cancel.type = "button";
+      cancel.textContent = "لغوه";
+      cancel.style.cssText = "border:0;background:none;color:#b42318;cursor:pointer";
+      cancel.onclick = function() {
+        delete input.dataset.parentId;
+        input.placeholder = "تبصره ولیکئ...";
+        status.textContent = "";
+      };
+      status.appendChild(cancel);
+      input.focus();
+    });
+  });
+
+  box.querySelectorAll("[data-delete-comment]").forEach(function(button) {
+    button.addEventListener("click", async function() {
+      if (!confirm("ایا دا تبصره حذف کول غواړئ؟")) return;
+      button.disabled = true;
+      const deleted = await apiRequest("/comments/" + Number(button.getAttribute("data-delete-comment")), { method:"DELETE" });
+      if (!deleted || deleted.success !== true) {
+        button.disabled = false;
+        alert(deleted && deleted.message || "تبصره حذف نه شوه.");
+        return;
+      }
+      await window.loadComments(postId);
+      if (typeof loadFeed === "function") await loadFeed(true);
+    });
+  });
+};
+
+window.submitPostComment = async function(postId) {
+  postId = Number(postId);
+  if (!currentUser) { alert("لومړی خپل حساب ته ننوځئ."); return; }
+  const input = document.getElementById("comment-input-" + postId);
+  if (!input) return;
+  const content = input.value.trim();
+  if (!content) return;
+  const parentId = Number(input.dataset.parentId || 0);
+  input.disabled = true;
+  const payload = { content: content };
+  if (parentId) payload.parent_id = parentId;
+  const result = await apiRequest("/posts/" + postId + "/comments", {
+    method:"POST",
+    body:JSON.stringify(payload)
+  });
+  input.disabled = false;
+  if (!result || result.success !== true) {
+    alert(result && result.message || "تبصره یا ځواب ثبت نه شو.");
+    return;
+  }
+  input.value = "";
+  delete input.dataset.parentId;
+  input.placeholder = "تبصره ولیکئ...";
+  const status = document.getElementById("sbook-reply-status-" + postId);
+  if (status) status.textContent = "";
+  await window.loadComments(postId);
+  if (typeof loadFeed === "function") await loadFeed(true);
+};
+window.addPostComment = window.submitPostComment;
+
+/* Repost a public post into the S-Book feed by creating a normal post
+   containing a link to the original. The original post remains the source. */
+async function sbookRepostInside(postId) {
+  if (!currentUser) { alert("د بیا خپرولو لپاره لومړی Login وکړئ."); return; }
+  const result = await apiRequest("/posts/" + Number(postId), { method:"GET" });
+  if (!result || result.success !== true) {
+    alert(result && result.message || "اصلي پوسټ ترلاسه نه شو.");
+    return;
+  }
+  const post = result.post || result.data || result;
+  const privacy = String(post.privacy || post.post_privacy || "").toLowerCase();
+  if (!["public", "everyone", "all"].includes(privacy)) {
+    alert("دا پوسټ عامه (Public) نه دی، یا د محرمیت حالت یې نه دی معلوم. د خونديتوب لپاره یې په S-Book کې بیا نه خپروم؛ د لینک شریکولو اختیار وکاروئ.");
+    return;
+  }
+  const author = post.author_name || post.user_name || post.username ||
+    (post.author && (post.author.name || post.author.username)) || "بل کاروونکی";
+  const originalText = String(post.content || post.text || "").trim();
+  const caption = prompt("د شریک شوي پوسټ لپاره خپل لنډ پیغام ولیکئ (اختیاري):", "");
+  if (caption === null) return;
+  const url = window.location.origin + window.location.pathname + "?post=" + encodeURIComponent(Number(postId));
+  let body = "🔁 د " + author + " عامه پوسټ مې شریک کړ.";
+  if (caption.trim()) body += "\n\n" + caption.trim();
+  if (originalText) body += "\n\nاصلي لیکنه:\n" + originalText.slice(0, 3000);
+  body += "\n\nاصلي پوسټ: " + url;
+
+  const mediaSource = Array.isArray(post.media) ? post.media :
+    Array.isArray(post.media_items) ? post.media_items :
+    Array.isArray(post.attachments) ? post.attachments : [];
+  const media = mediaSource.map(function(item) {
+    if (!item || typeof item !== "object") return null;
+    const mediaUrl = item.media_url || item.url || item.file_url || "";
+    if (!mediaUrl) return null;
+    return {
+      media_id: item.media_id || item.id || undefined,
+      media_type: item.media_type || item.type || "image",
+      media_url: mediaUrl,
+      thumbnail_url: item.thumbnail_url || "",
+      file_name: item.file_name || item.name || "",
+      file_size: item.file_size || 0,
+      mime_type: item.mime_type || ""
+    };
+  }).filter(Boolean);
+
+  const created = await apiRequest("/posts", {
+    method:"POST",
+    body:JSON.stringify({ content:body, privacy:"public", status:"published", media:media })
+  });
+  if (!created || created.success !== true) {
+    alert(created && created.message || "پوسټ بیا خپور نه شو.");
+    return;
+  }
+  alert("پوسټ ستاسو په S-Book Feed کې بیا خپور شو. ✅");
+  if (typeof loadFeed === "function") await loadFeed(true);
+}
+
+window.sharePost = async function(postId) {
+  const repost = confirm("دا پوسټ د خپل S-Book په Feed کې بیا خپور کړئ؟\n\nOK = په S-Book کې بیا خپرول\nCancel = د موبایل/کمپیوټر له لارې لینک شریکول");
+  if (repost) {
+    await sbookRepostInside(postId);
+    return;
+  }
+  const shareURL = window.location.origin + window.location.pathname +
+    "?post=" + encodeURIComponent(Number(postId));
+  try {
+    if (navigator.share) {
+      await navigator.share({ title:"Saidwali S-Book", text:"دا پوسټ وګورئ", url:shareURL });
+    } else if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(shareURL);
+      alert("د پوسټ لینک کاپي شو؛ اوس یې شریکولی شئ. 🔗");
+    } else {
+      window.prompt("د پوسټ لینک کاپي کړئ:", shareURL);
+    }
+  } catch (error) {
+    if (error && error.name !== "AbortError") window.prompt("د پوسټ لینک کاپي کړئ:", shareURL);
+  }
+};
+
+console.log("S-Book community fixes loaded: replies, repost, media aliases");
 </script>
