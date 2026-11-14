@@ -51054,6 +51054,8 @@ console.log("S-Book community fixes loaded: replies, repost, media aliases");
     renderChatHeader(activeMeta);
     var form=document.getElementById("sbmComposer");
     if(form) form.onsubmit=sendCurrent;
+    var composeInput=document.getElementById("sbmMessageInput");
+    if(composeInput) composeInput.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendCurrent(e);}});
     await loadMessages(id);
     renderList(conversationsCache || []);
     var input=document.getElementById("sbmMessageInput"); if(input) input.focus();
