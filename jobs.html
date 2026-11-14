@@ -371,7 +371,36 @@ setInterval(loadJobs,30*60*1000);
 
 <script>
 const JOBS_API = "https://saidwali-jobs-api.walizaad2.workers.dev";
-async function checkApplicantService(){const btn=document.getElementById("registrationOpenBtn"),note=document.getElementById("registrationServiceNote");try{const r=await fetch(JOBS_API+"/health",{cache:"no-store"});const d=await r.json();if(r.ok&&d.success&&d.database&&d.googleStorageConfigured){btn.disabled=false;btn.textContent="📝 د کار غوښتونکو ثبت‌نام";note.textContent="خپل معلومات ثبت کړئ او د خپل ټاکلي ولایت د نویو دندو خبرتیاوې په ایمیل ترلاسه کړئ.";}else{btn.disabled=true;btn.textContent="📝 د ثبت‌نام سیستم د فعالېدو په تمه";}}catch(e){btn.disabled=true;btn.textContent="📝 د ثبت‌نام سیستم د فعالېدو په تمه";}}
+async function checkApplicantService(){
+ const btn=document.getElementById("registrationOpenBtn");
+ const note=document.getElementById("registrationServiceNote");
+ if(!btn||!note)return;
+ btn.disabled=true;
+ btn.textContent="📝 د ثبت‌نام سیستم چک کېږي...";
+ note.textContent="مهرباني وکړئ لږ شېبه انتظار وکړئ.";
+ try{
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),10000);
+  const r=await fetch(JOBS_API+"/health?check="+Date.now(),{method:"GET",cache:"no-store",mode:"cors",signal:controller.signal});
+  clearTimeout(timeout);
+  const d=await r.json();
+  // د موبایل/ډېسکټاپ لپاره د خدمت اصلي شرط ډیټابېس او بریالی health دی.
+  // د Google ذخیرې د status د نوم توپیر باید د ثبت‌نام تڼۍ بې‌ځایه بنده نه کړي.
+  if(r.ok&&d&&d.success===true&&d.database===true){
+   btn.disabled=false;
+   btn.textContent="📝 د کار غوښتونکو ثبت‌نام";
+   note.textContent="ثبت‌نام فعال دی؛ خپل معلومات، عکس او CV پورته کړئ. د ایمیل خبرتیاوې اختیاري دي.";
+  }else{
+   btn.disabled=true;
+   btn.textContent="📝 د ثبت‌نام سیستم لنډمهاله بند دی";
+   note.textContent="سرور د ثبت‌نام لپاره چمتو نه دی. مهرباني وکړئ لږ وروسته بیا هڅه وکړئ.";
+  }
+ }catch(e){
+  btn.disabled=true;
+  btn.textContent="📝 د ثبت‌نام سیستم ته اړیکه نشته";
+  note.textContent="د ثبت‌نام سرور ته اړیکه ټینګه نه شوه. انټرنېټ وګورئ او پاڼه بیا تازه کړئ.";
+ }
+}
 checkApplicantService();
 function openApplicantForm(){if(document.getElementById("registrationOpenBtn").disabled)return;document.getElementById("applicantModal").classList.add("open");document.body.style.overflow="hidden";}
 function closeApplicantForm(){document.getElementById("applicantModal").classList.remove("open");document.body.style.overflow="";}
