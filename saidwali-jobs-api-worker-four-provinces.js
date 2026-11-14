@@ -335,6 +335,21 @@ export default {
       }, 200, origin);
     }
     try {
+      if (url.pathname === "/job-alert-counts" && request.method === "GET") {
+        if (!env.DB) return json({ success: false, error: "ډیټابېس نه دی تړل شوی." }, 503, origin);
+        const rowsResult = await env.DB.prepare(
+          "SELECT s.job_id, a.id AS applicant_id, a.selected_provinces, a.province FROM sent_notifications s INNER JOIN applicants a ON a.id = s.applicant_id"
+        ).all();
+        const counts = {};
+        for (const row of (rowsResult.results || [])) {
+          const provinces = applicantProvinces(row);
+          if (!counts[row.job_id]) counts[row.job_id] = {};
+          for (const province of provinces) {
+            counts[row.job_id][province] = (counts[row.job_id][province] || 0) + 1;
+          }
+        }
+        return json({ success: true, counts }, 200, origin);
+      }
       if (url.pathname === "/register" && request.method === "POST") {
         if (origin && origin !== ALLOWED_ORIGIN) return json({ success: false, error: "Origin not allowed" }, 403, origin);
         return await registerApplicant(request, env, origin);
