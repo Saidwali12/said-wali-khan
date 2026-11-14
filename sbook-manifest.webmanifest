@@ -1,0 +1,32 @@
+{
+  "id": "./social.html",
+  "name": "ایس‌بوک | S-BOOK",
+  "short_name": "S-BOOK",
+  "description": "د ایس‌بوک ټولنیزه شبکه؛ له نورو اپلېکېشنونو څخه پوسټونه او لینکونه شریک کړئ.",
+  "lang": "ps-AF",
+  "dir": "rtl",
+  "start_url": "./social.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#f0f2f5",
+  "theme_color": "#0d47a1",
+  "categories": ["social", "communication"],
+  "icons": [
+    {
+      "src": "./app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "share_target": {
+    "action": "./social.html",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}
