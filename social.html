@@ -50771,8 +50771,8 @@ console.log("S-Book community fixes loaded: replies, repost, media aliases");
 
   window.sendFriendRequest = async function (userId, button) {
     const id = Number(userId);
-    if (!id || !window.currentUser) { alert("لومړی خپل حساب ته ننوځئ."); return; }
-    if (Number(id) === Number(window.currentUser.id)) { alert("خپل ځان ته غوښتنه نه شئ لېږلی."); return; }
+    if (!id || typeof currentUser === "undefined" || !currentUser) { alert("لومړی خپل حساب ته ننوځئ."); return; }
+    if (Number(id) === Number(currentUser.id)) { alert("خپل ځان ته غوښتنه نه شئ لېږلی."); return; }
     if (button) { button.disabled = true; button.textContent = "⏳ لېږل کېږي..."; }
     const result = await apiRequest("/friends/request", {method:"POST",body:JSON.stringify({user_id:id})});
     if (!result || result.success !== true) {
