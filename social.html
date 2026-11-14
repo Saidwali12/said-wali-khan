@@ -49159,18 +49159,47 @@ async function startApplication() {
   const app =
     document.getElementById("app");
 
+  if (authPage) authPage.classList.add("hidden");
+  if (app) app.classList.remove("hidden");
 
-  if (authPage) {
+  // د Login وروسته د اوسني کارونکي معلومات حتمي واخلئ.
+  if (typeof loadCurrentUser === "function") {
+    const meResult = await loadCurrentUser();
 
-    authPage.classList.add("hidden");
+    if (!meResult || !meResult.success || !currentUser) {
+      console.error("S-Book current user load failed:", meResult);
 
+      sessionToken = "";
+      currentUser = null;
+      localStorage.removeItem("saidwali_session_token");
+
+      if (app) app.classList.add("hidden");
+      if (authPage) authPage.classList.remove("hidden");
+
+      if (typeof showLoginForm === "function") showLoginForm();
+      if (typeof setMessage === "function") {
+        setMessage(
+          "loginMessage",
+          meResult?.message || "د کارونکي معلومات ترلاسه نه شول. بیا Login وکړئ."
+        );
+      }
+      return;
+    }
+
+    // ځینې API ځوابونه id د user_id په نوم رااستوي.
+    if (!currentUser.id && currentUser.user_id) {
+      currentUser.id = currentUser.user_id;
+    }
+
+    if (typeof updateUserUI === "function") {
+      updateUserUI();
+    }
   }
 
-
-  if (app) {
-
-    app.classList.remove("hidden");
-
+  if (typeof showFeedPage === "function") {
+    showFeedPage();
+  } else if (typeof loadFeed === "function") {
+    await loadFeed();
   }
 
 }
