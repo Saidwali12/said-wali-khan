@@ -49379,7 +49379,7 @@ document.addEventListener(
       const result=await storyApi("/stories",{method:"GET"});
       if(!result||!result.success) throw new Error(result&&result.message||"سټوري ترلاسه نه شوې. لومړی Login وکړئ.");
       stories=(Array.isArray(result.stories)?result.stories:[]).map(function(x){
-        return {id:Number(x.id),url:x.media_url||"",type:x.story_type||"text",content:x.content||"",name:x.full_name||x.username||"کاروونکی",photo:x.profile_photo||"",views:Number(x.views_count||0),viewed:!!x.viewed,privacy:x.privacy||"friends",owner:Number(x.user_id)===Number(window.currentUser&&window.currentUser.id),reaction:x.my_reaction||""};
+        return {id:Number(x.id),url:x.media_url||"",type:x.story_type||"text",content:x.content||"",name:x.full_name||x.username||"کاروونکی",photo:x.profile_photo||"",views:Number(x.views_count||0),viewed:!!x.viewed,privacy:x.privacy||"friends",owner:Number(x.user_id)===Number((typeof currentUser!=="undefined"&&currentUser&&currentUser.id)||0),reaction:x.my_reaction||""};
       });
       renderStories();
     }catch(err){
