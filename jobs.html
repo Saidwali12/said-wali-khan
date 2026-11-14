@@ -32,6 +32,9 @@ header{background:#0d47a1;color:white;text-align:center;padding:15px;font-size:2
 .new-job{border:2px solid #4caf50;background:#f1fff1;position:relative}
 .new-badge{color:#0a8f08;font-weight:bold;font-size:14px;display:block;margin-bottom:5px}
 .new-star{color:#00c853;font-size:18px;margin-left:5px}
+.job-alert-parrots{display:flex;flex-wrap:wrap;align-items:center;gap:3px;margin:6px 0;padding:5px 7px;background:#fff8e1;border:1px solid #ffe082;border-radius:7px;color:#795548;font-size:12px;font-weight:bold}
+.job-alert-parrots .parrot-icons{font-size:17px;line-height:1.4;overflow-wrap:anywhere}
+.job-alert-parrots .parrot-province{margin-right:8px;white-space:nowrap}
 .old-star{color:#9e9e9e;font-size:18px;margin-left:5px}
 .apply-btn{display:inline-block;background:#28a745;color:white;padding:5px 10px;border-radius:8px;text-decoration:none;margin-top:8px;font-size:11px;border:0;cursor:pointer}
 .apply-btn:hover{background:#176b2b}
@@ -211,6 +214,7 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 <script>
 "use strict";
 let allJobs=[];
+let jobAlertCounts={};
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||""));}
 function deadline(v){const a=String(v||"").split("-").map(Number);if(a.length!==3||a.some(n=>!Number.isFinite(n)))return null;return new Date(a[0],a[1]-1,a[2],23,59,59,999);}
@@ -261,6 +265,12 @@ function renderJobs(){
   const allowed=j.verified===true&&(emailAllowed||onlineAllowed)&&!expired;
   const pageUrl=location.origin+location.pathname+"#job-"+encodeURIComponent(String(j.id||""));
   const places=jobProvinces(j).map(p=>provinceNames[p]).join("، ");
+  const alertCounts=jobAlertCounts[String(j.id)]||{};
+  const parrotMarkup=jobProvinces(j).map(p=>{
+   const count=Number(alertCounts[p]||0);
+   return count>0?'<span class="parrot-province">'+esc(provinceNames[p])+' <span class="parrot-icons" aria-label="'+count+' خبرتیاوې لېږل شوې">'+ "🦜".repeat(count) +'</span> ('+count+')</span>':'';
+  }).join("");
+  const parrotNotice=parrotMarkup?'<div class="job-alert-parrots" title="د اړوند ولایت د ثبت‌نام شوو کسانو شمېر چې دې بست ته یې ایمیل ترلاسه کړی">🦜 د ایمیل خبرتیاوې: '+parrotMarkup+'</div>':"";
   const vacancyNo=String(j.vacancyNumber||j.vacancyNo||j.vacancyRef||j.id||"شمېره نه ده ورکړل شوې").trim();
   const jobLocation=String(j.dutyStation||places||"ځای نه دی مشخص شوی").trim();
   const subject="غوښتنلیک – "+vacancyNo+" – "+String(j.title||"دنده")+" – "+jobLocation;
@@ -270,6 +280,7 @@ function renderJobs(){
   const fresh=j.postedDate&&(now-new Date(j.postedDate+"T00:00:00"))<=86400000;
   return '<div class="job-card '+(expired?'expired':'')+(fresh?' new-job':'')+'" id="job-'+esc(j.id)+'">'+
    (fresh?'<div class="new-badge"><span class="new-star">★</span> نوی اعلان</div>':'')+
+   parrotNotice+
    '<div class="job-title">'+esc(j.title)+'</div>'+
    '<div class="job-meta"><span class="job-tag">'+esc(j.employmentType||"د اعلان له مخې")+'</span><span class="job-tag">'+esc(j.organization||"اداره نه ده معلومه")+'</span><span class="job-tag">'+esc(places)+'</span></div>'+
    '<div class="job-info">ځای/دندې مرکز: '+esc(j.dutyStation||places||"—")+'</div>'+
@@ -369,6 +380,11 @@ async function loadJobs(){
  try{
   const r=await fetch("./jobs-feed.json?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("feed");
   const data=await r.json();
+  try{
+   const countsResponse=await fetch("https://saidwali-jobs-api.walizaad2.workers.dev/job-alert-counts?v="+Date.now(),{cache:"no-store"});
+   const countsData=await countsResponse.json();
+   jobAlertCounts=countsResponse.ok&&countsData&&countsData.success&&countsData.counts&&typeof countsData.counts==="object"?countsData.counts:{};
+  }catch(countError){jobAlertCounts={};}
   const todayKabul=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kabul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
   allJobs=Array.isArray(data.jobs)?dedupeJobs(data.jobs.filter(j=>{
    if(!j||j.verified!==true||!/^\d{4}-\d{2}-\d{2}$/.test(String(j.expiryDate||""))||String(j.expiryDate)<todayKabul||jobProvinces(j).length===0||!j.sourceUrl)return false;
