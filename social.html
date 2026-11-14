@@ -51152,3 +51152,150 @@ console.log("S-Book community fixes loaded: replies, repost, media aliases");
   console.log("S-Book Messenger redesign v1 loaded");
 })();
 </script>
+
+
+<!-- SBOOK NOTIFICATIONS LIVE BADGE v1 -->
+<style>
+.sbn-bell-wrap{position:relative!important;overflow:visible!important}
+.sbn-bell-badge{position:absolute;top:-5px;right:-5px;z-index:20;min-width:19px;height:19px;padding:0 5px;border:2px solid #fff;border-radius:20px;background:#e41e3f;color:#fff;font:700 10px/15px Arial,sans-serif;text-align:center;box-shadow:0 1px 4px #0003;display:none;align-items:center;justify-content:center;pointer-events:none}
+.ebook-mobile-nav .sbn-bell-badge{top:-4px;right:calc(50% - 22px)}
+.sbn-notification-toast{position:fixed;z-index:99999;top:18px;right:18px;max-width:min(360px,calc(100vw - 36px));padding:13px 16px;background:#fff;border:1px solid #d9e2f0;border-right:4px solid #0866ff;border-radius:12px;box-shadow:0 8px 28px #0002;color:#172b4d;font:14px/1.6 Tahoma,Arial,sans-serif;direction:rtl}
+</style>
+<script>
+/* SBOOK NOTIFICATIONS LIVE BADGE v1
+   Uses the existing GET /notifications and POST read endpoints only.
+   No database or Worker schema changes. */
+(function(){
+  "use strict";
+  var lastNotificationIds = null;
+  var lastPollAt = 0;
+  var pollBusy = false;
+
+  function notificationArray(result){
+    if(!result || result.success !== true) return [];
+    if(Array.isArray(result.notifications)) return result.notifications;
+    if(Array.isArray(result.data)) return result.data;
+    if(Array.isArray(result.results)) return result.results;
+    if(result.data && Array.isArray(result.data.notifications)) return result.data.notifications;
+    return [];
+  }
+
+  function notificationButtons(){
+    var selectors = [
+      '.ebook-desktop-nav button[aria-label="خبرتیاوې"]',
+      '.ebook-mobile-nav button:nth-child(4)',
+      '.header-actions button[onclick*="loadNotifications"]',
+      'button[onclick*="loadNotificationsPage"]',
+      '.sidebar-item[onclick*="loadNotifications"]'
+    ];
+    var found = [];
+    selectors.forEach(function(selector){
+      document.querySelectorAll(selector).forEach(function(el){
+        if(found.indexOf(el) === -1) found.push(el);
+      });
+    });
+    return found;
+  }
+
+  function ensureBadges(){
+    notificationButtons().forEach(function(button){
+      button.classList.add("sbn-bell-wrap");
+      var target = button;
+      if(button.closest(".ebook-mobile-nav")){
+        target = button.querySelector("span:first-child") || button;
+        target.classList.add("sbn-bell-wrap");
+      }
+      if(!target.querySelector(".sbn-bell-badge")){
+        var badge = document.createElement("span");
+        badge.className = "sbn-bell-badge";
+        badge.setAttribute("data-notification-badge","");
+        badge.setAttribute("aria-label","نه لوستل شوې خبرتیاوې");
+        target.appendChild(badge);
+      }
+    });
+  }
+
+  window.updateNotificationBadge = function(input){
+    var unread = Array.isArray(input)
+      ? input.filter(function(n){ return Number(n && n.is_read) !== 1 && n && n.is_read !== true; }).length
+      : Math.max(0, Number(input) || 0);
+    ensureBadges();
+    document.querySelectorAll("[data-notification-badge]").forEach(function(badge){
+      badge.textContent = unread > 99 ? "99+" : (unread ? String(unread) : "");
+      badge.style.display = unread ? "inline-flex" : "none";
+    });
+    var common = document.getElementById("notificationBadge");
+    if(common){
+      common.textContent = unread > 99 ? "99+" : String(unread || "");
+      common.style.display = unread ? "inline-flex" : "none";
+    }
+  };
+
+  window.refreshNotificationCount = async function(){
+    if(typeof currentUser === "undefined" || !currentUser) return;
+    if(pollBusy) return;
+    pollBusy = true;
+    try{
+      var result = await apiRequest("/notifications",{method:"GET"});
+      if(!result || result.success !== true) return;
+      var items = notificationArray(result);
+      window.updateNotificationBadge(items);
+      var ids = items.map(function(n){return String(n.id || n.notification_id || "");}).filter(Boolean);
+      if(lastNotificationIds !== null){
+        var fresh = items.filter(function(n){
+          var id = String(n.id || n.notification_id || "");
+          return id && ids.indexOf(id) !== -1 && lastNotificationIds.indexOf(id) === -1;
+        });
+        if(fresh.length){
+          var newest = fresh[0];
+          var title = newest.title || newest.message || newest.body || "تاسو نوې خبرتیا لرئ.";
+          showToast(title);
+        }
+      }
+      lastNotificationIds = ids;
+      lastPollAt = Date.now();
+    }catch(error){
+      console.warn("S-Book notification refresh:",error);
+    }finally{
+      pollBusy = false;
+    }
+  };
+
+  function showToast(message){
+    var old = document.querySelector(".sbn-notification-toast");
+    if(old) old.remove();
+    var toast = document.createElement("div");
+    toast.className = "sbn-notification-toast";
+    toast.textContent = "🔔 " + String(message || "نوې خبرتیا");
+    toast.setAttribute("role","status");
+    document.body.appendChild(toast);
+    toast.addEventListener("click",function(){
+      toast.remove();
+      if(typeof loadNotificationsPage === "function") loadNotificationsPage();
+    });
+    window.setTimeout(function(){if(toast.isConnected)toast.remove();},5500);
+  }
+
+  function init(){
+    ensureBadges();
+    if(typeof currentUser !== "undefined" && currentUser && Date.now()-lastPollAt>5000){
+      window.refreshNotificationCount();
+    }
+  }
+
+  var attachTimer = window.setInterval(init,1500);
+  window.setInterval(function(){
+    if(document.visibilityState === "visible") window.refreshNotificationCount();
+  },20000);
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState === "visible") window.refreshNotificationCount();
+  });
+  document.addEventListener("click",function(event){
+    var button = event.target.closest('button[onclick*="loadNotifications"],button[onclick*="loadNotificationsPage"],.ebook-mobile-nav button:nth-child(4)');
+    if(button) window.setTimeout(function(){window.refreshNotificationCount();},700);
+  });
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded",init);
+  else init();
+  console.log("S-Book notification live badge v1 loaded");
+})();
+</script>
