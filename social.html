@@ -49265,6 +49265,7 @@ document.addEventListener(
 <style id="saidwali-social-news-stories-style">
 /* SAIDWALI_STORIES_NEWS_V1 — اضافي ډیزاین، پخوانی API نه بدلوي */
 #swStories { margin-bottom:16px; padding:14px; }
+#swStories .sw-story-text-preview{display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:12px;color:#fff;font-weight:800;white-space:pre-wrap;overflow:hidden;background:linear-gradient(145deg,#071a35,#1877f2);}
 #swStories .sw-story-row { display:flex; gap:10px; overflow-x:auto; padding:4px 2px 9px; scrollbar-width:thin; }
 #swStories .sw-story { flex:0 0 112px; height:166px; border:0; padding:0; border-radius:13px; overflow:hidden; position:relative; cursor:pointer; background:linear-gradient(145deg,#075b35,#16a765); color:white; box-shadow:0 2px 8px #0002; }
 #swStories .sw-story img,.sw-story video { width:100%; height:100%; object-fit:cover; display:block; }
@@ -49366,6 +49367,26 @@ document.addEventListener(
   };
   let activeFeed="ps";
   let stories=[];
+  let storyBusy=false;
+  function storyApi(path,options){
+    if(typeof window.apiRequest!=="function") throw new Error("د API اړیکه لا چمتو نه ده؛ پاڼه تازه کړئ.");
+    return window.apiRequest(path,options||{method:"GET"});
+  }
+  async function loadStories(){
+    const row=document.getElementById("swStoryRow");
+    if(row) row.dataset.loading="true";
+    try{
+      const result=await storyApi("/stories",{method:"GET"});
+      if(!result||!result.success) throw new Error(result&&result.message||"سټوري ترلاسه نه شوې. لومړی Login وکړئ.");
+      stories=(Array.isArray(result.stories)?result.stories:[]).map(function(x){
+        return {id:Number(x.id),url:x.media_url||"",type:x.story_type||"text",content:x.content||"",name:x.full_name||x.username||"کاروونکی",photo:x.profile_photo||"",views:Number(x.views_count||0),viewed:!!x.viewed,privacy:x.privacy||"friends",owner:Number(x.user_id)===Number(window.currentUser&&window.currentUser.id),reaction:x.my_reaction||""};
+      });
+      renderStories();
+    }catch(err){
+      if(row) row.innerHTML='<div class="muted" style="padding:12px">سټوري لوډ نه شوې: '+safeText(err.message||"API ستونزه")+'</div>';
+      console.warn("S-Book Stories:",err);
+    }finally{if(row) delete row.dataset.loading;}
+  }
   function el(tag,attrs={},html=""){const n=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));n.innerHTML=html;return n;}
   function addStories(){
     const feed=document.getElementById("feedPage");
@@ -49381,8 +49402,9 @@ document.addEventListener(
     row.appendChild(add);
     stories.forEach((story,i)=>{
       const b=el("button",{type:"button",class:"sw-story","data-story-index":String(i)});
-      b.appendChild(el(story.type==="video"?"video":"img",{src:story.url, muted:"",playsinline:""}));
-      b.insertAdjacentHTML("beforeend",'<span class="sw-story-label">'+(story.name||"زما سټوري")+'</span>');
+      if(story.url) b.appendChild(el(story.type==="video"?"video":"img",{src:story.url,muted:"",playsinline:""}));
+      else b.insertAdjacentHTML("afterbegin",'<span class="sw-story-text-preview">'+safeText((story.content||"متني سټوري").slice(0,55))+'</span>');
+      b.insertAdjacentHTML("beforeend",'<span class="sw-story-label">'+safeText(story.name||"کاروونکی")+'</span>');
       row.appendChild(b);
     });
   }
@@ -49421,17 +49443,63 @@ document.addEventListener(
     if(document.getElementById("swStoryViewer"))return;
     document.body.appendChild(el("div",{id:"swStoryViewer"},'<div class="sw-viewer-inner"><button type="button" aria-label="بندول">×</button><div id="swStoryMedia"></div></div>'));
   }
-  document.addEventListener("click",function(e){
+  document.addEventListener("click",async function(e){
     const tab=e.target.closest(".sw-news-tab"); if(tab){loadFeed(tab.dataset.feed);return;}
     if(e.target.closest("#swAddStory")){
-      if(!window.currentUser && !document.querySelector("[data-auth='logged-in']:not(.hidden)")){alert("د سټوري د اضافه کولو لپاره لومړی حساب ته ننوځئ.");return;}
+      if(storyBusy)return;
+      if(!window.sessionToken && !localStorage.getItem("saidwali_session_token")){alert("د سټوري د خپرولو لپاره لومړی Login وکړئ.");return;}
+      const mode=prompt("د سټوري ډول ولیکئ: 1 = عکس/ویډیو، 2 = یوازې متن","1");
+      if(mode===null)return;
+      if(mode.trim()==="2"){
+        const content=prompt("خپله متني سټوري ولیکئ:");
+        if(!content||!content.trim())return;
+        const privacy=(prompt("محرمیت: public یا friends یا private","friends")||"friends").trim().toLowerCase();
+        if(!["public","friends","private"].includes(privacy)){alert("محرمیت ناسم دی.");return;}
+        storyBusy=true;
+        try{
+          const result=await storyApi("/stories",{method:"POST",body:JSON.stringify({story_type:"text",content:content.trim(),privacy:privacy})});
+          if(!result||!result.success)throw new Error(result&&result.message||"سټوري خپره نه شوه.");
+          await loadStories();alert("سټوري په بریالیتوب خپره شوه.");
+        }catch(err){alert(err.message||"سټوري خپره نه شوه.");}
+        finally{storyBusy=false;}
+        return;
+      }
       const input=el("input",{type:"file",accept:"image/*,video/*"});
-      input.onchange=()=>{const file=input.files&&input.files[0];if(!file)return;if(file.size>20*1024*1024){alert("د سټوري فایل باید تر 20MB کم وي.");return;}const reader=new FileReader();reader.onload=()=>{stories.unshift({url:reader.result,type:file.type.startsWith("video/")?"video":"image",name:"زما سټوري"});renderStories();alert("سټوري په همدې پاڼه کې د لنډې مخکتنې لپاره اضافه شوه. د ټولو کاروونکو سره د خپرولو لپاره د سرور سټوري API ته اړتیا ده.");};reader.readAsDataURL(file);};
+      input.onchange=async()=>{
+        const file=input.files&&input.files[0];if(!file)return;
+        if(file.size>25*1024*1024){alert("د سټوري فایل باید تر 25MB کم وي.");return;}
+        if(!/^image\//.test(file.type)&&!/^video\//.test(file.type)){alert("یوازې عکس یا ویډیو ټاکلای شئ.");return;}
+        const privacy=(prompt("محرمیت: public یا friends یا private","friends")||"friends").trim().toLowerCase();
+        if(!["public","friends","private"].includes(privacy)){alert("محرمیت ناسم دی.");return;}
+        storyBusy=true;
+        try{
+          const uploaded=await window.swUploadMediaFile(file);
+          const caption=prompt("د سټوري لنډ متن (اختیاري):","")||"";
+          const result=await storyApi("/stories",{method:"POST",body:JSON.stringify({story_type:file.type.startsWith("video/")?"video":"image",media_url:uploaded.media_url,content:caption,privacy:privacy})});
+          if(!result||!result.success)throw new Error(result&&result.message||"سټوري خپره نه شوه.");
+          await loadStories();alert("سټوري د ۲۴ ساعتونو لپاره خپره شوه.");
+        }catch(err){alert(err.message||"د سټوري اپلوډ ناکام شو.");}
+        finally{storyBusy=false;}
+      };
       input.click();return;
     }
     const story=e.target.closest("[data-story-index]");
-    if(story){const item=stories[Number(story.dataset.storyIndex)];if(!item)return;viewer();const media=document.getElementById("swStoryMedia");media.innerHTML="";const node=document.createElement(item.type==="video"?"video":"img");node.src=item.url;if(item.type==="video"){node.controls=true;node.autoplay=true;}media.appendChild(node);document.getElementById("swStoryViewer").classList.add("open");return;}
-    if(e.target.closest("#swStoryViewer button")||e.target.id==="swStoryViewer"){document.getElementById("swStoryViewer")?.classList.remove("open");}
+    if(story){
+      const item=stories[Number(story.dataset.storyIndex)];if(!item)return;
+      viewer();const media=document.getElementById("swStoryMedia");media.innerHTML="";
+      if(item.url){const node=document.createElement(item.type==="video"?"video":"img");node.src=item.url;if(item.type==="video"){node.controls=true;node.autoplay=true;node.playsInline=true;}media.appendChild(node);}
+      if(item.content){const caption=document.createElement("p");caption.textContent=item.content;caption.style.cssText="color:white;text-align:center;padding:10px 16px;white-space:pre-wrap";media.appendChild(caption);}
+      const controls=document.createElement("div");controls.style.cssText="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:10px";
+      const like=document.createElement("button");like.type="button";like.textContent=item.reaction?"❤️ خوښ شوی":"♡ خوښول";like.onclick=async()=>{try{const z=await storyApi("/stories/"+item.id+"/reaction",{method:"POST",body:JSON.stringify({reaction_type:"love"})});if(!z||!z.success)throw new Error(z&&z.message||"غبرګون ثبت نه شو");item.reaction="love";like.textContent="❤️ خوښ شوی";}catch(err){alert(err.message);}};
+      const reply=document.createElement("button");reply.type="button";reply.textContent="ځواب";reply.onclick=async()=>{const text=prompt("د سټوري ځواب ولیکئ:");if(!text||!text.trim())return;try{const z=await storyApi("/stories/"+item.id+"/replies",{method:"POST",body:JSON.stringify({content:text.trim()})});if(!z||!z.success)throw new Error(z&&z.message||"ځواب ونه لېږل شو");alert("ځواب ولېږل شو.");}catch(err){alert(err.message);}};
+      controls.append(like,reply);
+      if(item.owner){const del=document.createElement("button");del.type="button";del.textContent="حذف";del.onclick=async()=>{if(!confirm("دا سټوري حذف کړئ؟"))return;try{const z=await storyApi("/stories/"+item.id,{method:"DELETE"});if(!z||!z.success)throw new Error(z&&z.message||"حذف ناکام شو");document.getElementById("swStoryViewer").classList.remove("open");await loadStories();}catch(err){alert(err.message);}};controls.appendChild(del);}
+      media.appendChild(controls);
+      document.getElementById("swStoryViewer").classList.add("open");
+      storyApi("/stories/"+item.id+"/view",{method:"POST"}).then(function(){item.viewed=true;}).catch(function(err){console.warn("Story view:",err);});
+      return;
+    }
+    if(e.target.closest("#swStoryViewer button[aria-label='بندول']")||e.target.id==="swStoryViewer"){document.getElementById("swStoryViewer")?.classList.remove("open");}
   });
   function placeNews(){
     const card=document.getElementById("swNewsCard");
@@ -49450,7 +49518,7 @@ document.addEventListener(
       if(card.parentElement!==center || card.previousElementSibling!==null) center.insertBefore(card,center.firstChild);
     }else if(card.parentElement!==side) side.insertBefore(card,side.firstChild);
   }
-  function init(){addStories();addNews();placeNews();}
+  function init(){addStories();addNews();placeNews();if(document.getElementById('swStoryRow')&&!document.getElementById('swStoryRow').dataset.loaded){document.getElementById('swStoryRow').dataset.loaded='1';loadStories();}}
   window.addEventListener("resize",placeNews);
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
   // Debounce DOM updates: do not rerun the full initializer for every tiny change.
