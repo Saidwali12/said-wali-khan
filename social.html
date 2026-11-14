@@ -50825,3 +50825,328 @@ console.log("S-Book community fixes loaded: replies, repost, media aliases");
   };
 })();
 </script>
+
+
+<style>
+/* SBOOK MESSENGER REDESIGN v1 */
+.sbm-shell{width:100%;max-width:1320px;margin:0 auto;background:#fff;border:1px solid #e4e6eb;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);direction:ltr}
+.sbm-grid{display:grid;grid-template-columns:350px minmax(0,1fr);height:min(76vh,760px);min-height:560px}
+.sbm-sidebar{min-width:0;border-right:1px solid #e4e6eb;background:#fff;display:flex;flex-direction:column;direction:rtl}
+.sbm-side-head{padding:18px 16px 12px;border-bottom:1px solid #f0f2f5}
+.sbm-side-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+.sbm-side-title h2{font-size:23px;font-weight:800;margin:0;color:#050505}
+.sbm-icon-btn{width:38px;height:38px;border:0;border-radius:50%;background:#f0f2f5;color:#050505;font-size:18px;cursor:pointer}
+.sbm-icon-btn:hover{background:#e4e6eb}
+.sbm-search{width:100%;height:40px;border:0;border-radius:22px;background:#f0f2f5;padding:0 15px;outline:none;font:14px Tahoma,Arial,sans-serif}
+.sbm-list{overflow-y:auto;flex:1;padding:7px}
+.sbm-conv{width:100%;display:flex;align-items:center;gap:11px;text-align:right;border:0;border-radius:10px;padding:10px;background:transparent;cursor:pointer;font-family:inherit;direction:rtl}
+.sbm-conv:hover{background:#f2f2f2}
+.sbm-conv.active{background:#e7f3ff}
+.sbm-avatar{width:52px;height:52px;flex:0 0 52px;border-radius:50%;object-fit:cover;background:#e4e6eb;display:grid;place-items:center;color:#65676b;font-size:22px;overflow:hidden}
+.sbm-conv-info{min-width:0;flex:1}
+.sbm-conv-line{display:flex;align-items:center;justify-content:space-between;gap:5px}
+.sbm-conv-name{font-size:14px;font-weight:700;color:#050505;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sbm-conv-preview{font-size:12px;color:#65676b;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sbm-time{font-size:10px;color:#8a8d91;white-space:nowrap}
+.sbm-unread{min-width:18px;height:18px;padding:0 5px;border-radius:20px;background:#0866ff;color:#fff;font-size:10px;display:inline-grid;place-items:center}
+.sbm-chat{min-width:0;display:flex;flex-direction:column;background:#fff;direction:rtl}
+.sbm-chat-head{height:68px;flex:0 0 68px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;gap:11px;padding:10px 16px}
+.sbm-chat-person{min-width:0;flex:1}
+.sbm-chat-person strong{font-size:15px;color:#050505}
+.sbm-chat-person small{display:block;color:#65676b;font-size:11px;margin-top:4px}
+.sbm-chat-actions{display:flex;gap:6px}
+.sbm-chat-body{flex:1;min-height:0;overflow-y:auto;padding:18px 18px 12px;background:#fff;display:flex;flex-direction:column;gap:7px}
+.sbm-empty{margin:auto;text-align:center;color:#65676b;padding:25px}
+.sbm-empty .sbm-empty-icon{font-size:55px;margin-bottom:12px}
+.sbm-bubble-row{display:flex;width:100%;margin:2px 0}
+.sbm-bubble-row.mine{justify-content:flex-start}
+.sbm-bubble-row.theirs{justify-content:flex-end}
+.sbm-bubble{max-width:min(72%,520px);padding:9px 13px;border-radius:18px;background:#f0f0f0;color:#050505;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}
+.sbm-bubble-row.mine .sbm-bubble{background:#0866ff;color:#fff;border-bottom-left-radius:5px}
+.sbm-bubble-row.theirs .sbm-bubble{border-bottom-right-radius:5px}
+.sbm-bubble-time{font-size:10px;opacity:.7;margin-top:4px;text-align:left}
+.sbm-composer{padding:12px 14px;border-top:1px solid #e4e6eb;background:#fff}
+.sbm-compose-row{display:flex;align-items:center;gap:8px}
+.sbm-compose-input{flex:1;min-width:0;min-height:42px;max-height:110px;resize:vertical;border:0;border-radius:22px;background:#f0f2f5;padding:11px 16px;outline:none;font:14px Tahoma,Arial,sans-serif}
+.sbm-send{width:42px;height:42px;border:0;border-radius:50%;background:#0866ff;color:#fff;font-size:19px;cursor:pointer}
+.sbm-send:disabled{opacity:.5;cursor:not-allowed}
+.sbm-mobile-back{display:none}
+.sbm-status{font-size:12px;color:#65676b;padding:10px;text-align:center}
+@media(max-width:760px){
+ .sbm-shell{border-radius:0;border-left:0;border-right:0;height:calc(100dvh - 145px);min-height:470px}
+ .sbm-grid{display:block;height:100%;min-height:0;position:relative}
+ .sbm-sidebar{height:100%;border:0}
+ .sbm-chat{display:none;height:100%;width:100%}
+ .sbm-shell.sbm-chat-open .sbm-sidebar{display:none}
+ .sbm-shell.sbm-chat-open .sbm-chat{display:flex}
+ .sbm-mobile-back{display:inline-grid}
+ .sbm-chat-head{height:62px;flex-basis:62px;padding:8px 10px}
+ .sbm-chat-body{padding:12px 10px}
+ .sbm-bubble{max-width:84%}
+ .sbm-composer{padding:9px}
+}
+</style>
+<script>
+/* SBOOK MESSENGER REDESIGN v1
+   Uses the existing /conversations and /conversations/:id/messages API.
+   No Worker, D1 schema, authentication, or other social sections changed. */
+(function(){
+  "use strict";
+  var refreshTimer = null;
+  var activeMeta = null;
+
+  function esc(v){
+    if(typeof escapeHTML === "function") return escapeHTML(String(v == null ? "" : v));
+    return String(v == null ? "" : v).replace(/[&<>"']/g,function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function url(v){
+    if(typeof safeURL === "function") return safeURL(String(v || ""));
+    return esc(v || "");
+  }
+  function normConv(raw){
+    raw = raw || {};
+    var other = raw.other_user || raw.otherUser || raw.user || raw.friend || raw.participant || {};
+    return {
+      id:Number(raw.id || raw.conversation_id || raw.chat_id || 0),
+      name:other.full_name || other.name || other.display_name || other.username ||
+        raw.other_user_name || raw.other_full_name || raw.other_name || raw.user_name ||
+        raw.name || raw.other_username || raw.title || "کاروونکی",
+      username:other.username || raw.other_username || raw.username || "",
+      avatar:other.profile_photo || other.avatar_url || other.avatar ||
+        raw.other_profile_photo || raw.other_user_avatar || raw.other_avatar || raw.avatar_url || "",
+      last:raw.last_message_content || raw.last_message_text || raw.last_message ||
+        raw.lastMessage || raw.message || "",
+      time:raw.last_message_at || raw.updated_at || raw.last_message_time || raw.created_at || "",
+      unread:Number(raw.unread_count || raw.unread || 0)
+    };
+  }
+  function normMsg(raw){
+    raw = raw || {};
+    var sender = raw.sender || raw.user || raw.author || {};
+    return {
+      id:raw.id || raw.message_id || "",
+      senderId:Number(sender.id || sender.user_id || raw.sender_id || raw.user_id || raw.from_user_id || 0),
+      content:String(raw.content || raw.text || raw.message || ""),
+      time:raw.created_at || raw.sent_at || raw.createdAt || "",
+      media:raw.media_url || raw.file_url || "",
+      attachments:Array.isArray(raw.attachments) ? raw.attachments : [],
+      type:raw.message_type || raw.type || "text"
+    };
+  }
+  function getAvatar(src, name, size){
+    if(src) return '<img class="sbm-avatar" style="width:'+size+'px;height:'+size+'px;flex-basis:'+size+'px" src="'+url(src)+'" alt="">';
+    return '<div class="sbm-avatar" style="width:'+size+'px;height:'+size+'px;flex-basis:'+size+'px">'+esc((name || "؟").trim().charAt(0) || "👤")+'</div>';
+  }
+  function getTime(value){
+    if(!value) return "";
+    var d = new Date(value);
+    if(isNaN(d.getTime())) return "";
+    return d.toLocaleTimeString("ps-AF",{hour:"2-digit",minute:"2-digit"});
+  }
+  function shell(){
+    return document.querySelector(".sbm-shell");
+  }
+  function renderList(items){
+    var list = document.getElementById("conversationList");
+    if(!list) return;
+    if(!items.length){
+      list.innerHTML = '<div class="sbm-empty"><div class="sbm-empty-icon">💬</div><strong>تر اوسه خبرې نشته</strong><p style="margin-top:7px;font-size:12px">د نوي پیغام تڼۍ وکاروئ او له ملګري سره خبرې پیل کړئ.</p></div>';
+      return;
+    }
+    list.innerHTML = items.map(function(raw){
+      var c = normConv(raw);
+      var active = Number(c.id) === Number(activeConversationId);
+      return '<button type="button" class="sbm-conv '+(active?'active':'')+'" data-sbm-chat="'+c.id+'">'+
+        getAvatar(c.avatar,c.name,52)+
+        '<span class="sbm-conv-info"><span class="sbm-conv-line"><span class="sbm-conv-name">'+esc(c.name)+'</span><span class="sbm-time">'+esc(getTime(c.time))+'</span></span>'+
+        '<span class="sbm-conv-line"><span class="sbm-conv-preview">'+esc(c.last || "نوې خبرې")+'</span>'+(c.unread?'<span class="sbm-unread">'+c.unread+'</span>':'')+'</span></span></button>';
+    }).join("");
+  }
+  function renderChatHeader(c){
+    var head = document.getElementById("sbmChatHead");
+    if(!head) return;
+    head.innerHTML = '<button type="button" class="sbm-icon-btn sbm-mobile-back" id="sbmBack">‹</button>'+
+      getAvatar(c.avatar,c.name,44)+
+      '<div class="sbm-chat-person"><strong>'+esc(c.name)+'</strong><small>'+(c.username?'@'+esc(c.username):'S-Book خبرې')+'</small></div>'+
+      '<div class="sbm-chat-actions"><button type="button" class="sbm-icon-btn" title="تازه کول" id="sbmRefresh">↻</button></div>';
+    var back = document.getElementById("sbmBack");
+    if(back) back.onclick = function(){var sh=shell(); if(sh) sh.classList.remove("sbm-chat-open");};
+    var refresh = document.getElementById("sbmRefresh");
+    if(refresh) refresh.onclick = function(){loadMessages(activeConversationId);};
+  }
+  function renderMessageList(messages){
+    var list = document.getElementById("sbmMessageList");
+    if(!list) return;
+    var nearBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 90;
+    if(!messages.length){
+      list.innerHTML = '<div class="sbm-empty"><div class="sbm-empty-icon">👋</div><strong>سلام! خبرې پیل کړئ</strong><p style="margin-top:7px;font-size:12px">ستاسې پیغامونه دلته ښکاري.</p></div>';
+      return;
+    }
+    list.innerHTML = messages.map(function(raw){
+      var m = normMsg(raw);
+      var mine = typeof currentUser !== "undefined" && currentUser && m.senderId === Number(currentUser.id);
+      var attachments = m.attachments.map(function(a){
+        var href = a.file_url || a.url || a.media_url || "";
+        if(!href) return "";
+        return '<a href="'+url(href)+'" target="_blank" rel="noopener" style="display:block;color:inherit;margin-top:6px">📎 '+esc(a.file_name || a.name || "ضمیمه")+'</a>';
+      }).join("");
+      var media = m.media ? '<a href="'+url(m.media)+'" target="_blank" rel="noopener" style="display:block;color:inherit;margin-top:6px">📎 ضمیمه پرانیستل</a>' : "";
+      return '<div class="sbm-bubble-row '+(mine?'mine':'theirs')+'"><div class="sbm-bubble">'+
+        (m.content ? '<div>'+esc(m.content)+'</div>' : '')+media+attachments+
+        (m.time?'<div class="sbm-bubble-time">'+esc(getTime(m.time))+'</div>':'')+
+        '</div></div>';
+    }).join("");
+    if(nearBottom || list.dataset.firstLoad !== "no"){
+      list.scrollTop = list.scrollHeight;
+      list.dataset.firstLoad = "no";
+    }
+  }
+  async function loadConversations(){
+    var list = document.getElementById("conversationList");
+    if(!list) return;
+    try{
+      var result = await apiRequest("/conversations",{method:"GET"});
+      if(!result || result.success !== true){
+        list.innerHTML = '<div class="sbm-status">⚠️ '+esc(result && result.message || "خبرې لوډ نه شوې.")+'<br><button class="btn" id="sbmRetry" style="margin-top:10px">بیا هڅه</button></div>';
+        var retry=document.getElementById("sbmRetry"); if(retry) retry.onclick=loadConversations;
+        return;
+      }
+      var items = Array.isArray(result.conversations)?result.conversations:
+        Array.isArray(result.data)?result.data:
+        Array.isArray(result.results)?result.results:[];
+      conversationsCache = items;
+      renderList(items);
+    }catch(e){
+      list.innerHTML = '<div class="sbm-status">د خبرو په ترلاسه کولو کې ستونزه راغله. بیا هڅه وکړئ.</div>';
+    }
+  }
+  async function loadMessages(id){
+    id = Number(id || activeConversationId);
+    var list = document.getElementById("sbmMessageList");
+    if(!id || !list) return;
+    try{
+      var result = await apiRequest("/conversations/"+id+"/messages",{method:"GET"});
+      if(!result || result.success !== true){
+        list.innerHTML = '<div class="sbm-status">⚠️ '+esc(result && result.message || "پیغامونه لوډ نه شول.")+'</div>';
+        return;
+      }
+      var items = Array.isArray(result.messages)?result.messages:
+        Array.isArray(result.data)?result.data:
+        Array.isArray(result.results)?result.results:[];
+      renderMessageList(items);
+      await apiRequest("/conversations/"+id+"/read",{method:"POST"});
+    }catch(e){
+      list.innerHTML = '<div class="sbm-status">له سرور سره اړیکه ناکامه شوه.</div>';
+    }
+  }
+  async function openConversation(id){
+    id = Number(id);
+    if(!id) return;
+    activeConversationId = id;
+    var raw = (conversationsCache || []).find(function(x){return Number(x.id || x.conversation_id)===id;}) || {};
+    activeMeta = normConv(raw);
+    var chat = document.getElementById("activeConversation");
+    if(!chat) return;
+    var sh = shell(); if(sh) sh.classList.add("sbm-chat-open");
+    chat.innerHTML = '<div class="sbm-chat" style="height:100%"><div class="sbm-chat-head" id="sbmChatHead"></div><div class="sbm-chat-body" id="sbmMessageList"><div class="sbm-status">⏳ پیغامونه لوډ کېږي...</div></div><form class="sbm-composer" id="sbmComposer"><div class="sbm-compose-row"><textarea id="sbmMessageInput" class="sbm-compose-input" rows="1" maxlength="5000" placeholder="Aa  پیغام ولیکئ..." aria-label="پیغام ولیکئ"></textarea><button class="sbm-send" id="sbmSend" type="submit" title="لېږل">➤</button></div></form></div>';
+    renderChatHeader(activeMeta);
+    var form=document.getElementById("sbmComposer");
+    if(form) form.onsubmit=sendCurrent;
+    await loadMessages(id);
+    renderList(conversationsCache || []);
+    var input=document.getElementById("sbmMessageInput"); if(input) input.focus();
+    startRefresh();
+  }
+  async function sendCurrent(event){
+    if(event) event.preventDefault();
+    if(!activeConversationId) return;
+    var input=document.getElementById("sbmMessageInput");
+    var button=document.getElementById("sbmSend");
+    if(!input) return;
+    var content=String(input.value || "").trim();
+    if(!content) return;
+    if(typeof currentUser === "undefined" || !currentUser){alert("لومړی خپل حساب ته ننوځئ.");return;}
+    input.disabled=true; if(button) button.disabled=true;
+    try{
+      var result=await apiRequest("/conversations/"+Number(activeConversationId)+"/messages",{
+        method:"POST",body:JSON.stringify({content:content,message_type:"text"})
+      });
+      if(!result || result.success !== true){
+        alert(result && result.message || "پیغام ونه لېږل شو.");
+        return;
+      }
+      input.value="";
+      await loadMessages(activeConversationId);
+      await loadConversations();
+      input.focus();
+    }catch(e){alert("پیغام ونه لېږل شو؛ اړیکه وګورئ.");}
+    finally{input.disabled=false;if(button)button.disabled=false;}
+  }
+  function startRefresh(){
+    if(refreshTimer) clearInterval(refreshTimer);
+    refreshTimer=setInterval(function(){
+      if(document.visibilityState==="visible" && activeConversationId && document.getElementById("sbmMessageList")){
+        loadMessages(activeConversationId);
+        loadConversations();
+      }
+    },8000);
+  }
+  function stopRefresh(){
+    if(refreshTimer){clearInterval(refreshTimer);refreshTimer=null;}
+  }
+  async function loadPage(conversationId){
+    stopRefresh();
+    var main=document.getElementById("mainContent");
+    if(!main) return;
+    activeConversationId = null;
+    main.innerHTML = '<div class="sbm-shell"><div class="sbm-grid">'+
+      '<aside class="sbm-sidebar"><div class="sbm-side-head"><div class="sbm-side-title"><h2>پیغامونه</h2><button type="button" class="sbm-icon-btn" id="sbmNew" title="نوی پیغام">✎</button></div><input id="sbmSearch" class="sbm-search" type="search" placeholder="په Messenger کې لټون..." aria-label="د خبرو لټون"></div><div class="sbm-list" id="conversationList"><div class="sbm-status">⏳ خبرې لوډ کېږي...</div></div></aside>'+
+      '<section class="sbm-chat" id="activeConversation"><div class="sbm-empty"><div class="sbm-empty-icon">💬</div><strong>خپلې خبرې وټاکئ</strong><p style="margin-top:7px;font-size:12px">له ملګرو سره په شخصي ډول خبرې وکړئ.</p></div></section>'+
+      '</div></div>';
+    var search=document.getElementById("sbmSearch");
+    if(search) search.oninput=function(){
+      var q=search.value.trim().toLowerCase();
+      var filtered=(conversationsCache || []).filter(function(x){
+        var c=normConv(x);return (c.name+" "+c.username+" "+c.last).toLowerCase().includes(q);
+      });
+      renderList(filtered);
+    };
+    var newBtn=document.getElementById("sbmNew");
+    if(newBtn) newBtn.onclick=function(){
+      if(typeof newConversation==="function") newConversation();
+      else alert("د نوي پیغام لپاره د ملګري Username وکاروئ.");
+    };
+    await loadConversations();
+    if(conversationId) await openConversation(conversationId);
+  }
+  document.addEventListener("click",function(e){
+    var btn=e.target.closest("[data-sbm-chat]");
+    if(btn){e.preventDefault();openConversation(btn.getAttribute("data-sbm-chat"));}
+  });
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState!=="visible") stopRefresh();
+    else if(activeConversationId && document.getElementById("sbmMessageList")) startRefresh();
+  });
+  window.addEventListener("beforeunload",stopRefresh);
+  window.loadMessagesPage=loadPage;
+  window.loadConversations=loadConversations;
+  window.openConversation=openConversation;
+  window.loadMessages=loadMessages;
+  window.sendMessage=async function(id){ if(id && Number(id)!==Number(activeConversationId)) await openConversation(id); return sendCurrent(); };
+  window.startPrivateConversation=async function(userId,userName){
+    if(typeof currentUser==="undefined" || !currentUser){alert("لومړی خپل حساب ته ننوځئ.");return;}
+    if(Number(userId)===Number(currentUser.id)){alert("خپل ځان ته پیغام نشئ لېږلی.");return;}
+    var result=await apiRequest("/conversations",{method:"POST",body:JSON.stringify({user_id:Number(userId),conversation_type:"private"})});
+    if(!result || result.success!==true){alert(result && result.message || "خبرې جوړې نه شوې.");return;}
+    var c=result.conversation || (result.data && result.data.conversation) || result.data || result;
+    var id=c.id || c.conversation_id || result.conversation_id;
+    if(!id){alert("خبرې جوړې شوې، خو پېژندشمېره ترلاسه نه شوه.");return;}
+    await loadPage(id);
+  };
+  window.startMessageRefresh=startRefresh;
+  window.stopMessageRefresh=stopRefresh;
+  console.log("S-Book Messenger redesign v1 loaded");
+})();
+</script>
