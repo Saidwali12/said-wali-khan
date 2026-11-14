@@ -49383,7 +49383,7 @@ document.addEventListener(
       });
       renderStories();
     }catch(err){
-      if(row) row.innerHTML='<div class="muted" style="padding:12px">سټوري لوډ نه شوې: '+safeText(err.message||"API ستونزه")+'</div>';
+      if(row){row.innerHTML='<div class="muted" style="padding:12px">سټوري لوډ نه شوې: '+safeText(err.message||"API ستونزه")+'</div>';delete row.dataset.loaded;}
       console.warn("S-Book Stories:",err);
     }finally{if(row) delete row.dataset.loading;}
   }
