@@ -2168,11 +2168,48 @@ function escapeHTML(value) {
         مختلف احتمالي structure ملاتړ
       */
 
-      currentUser =
+      const rawUser =
         result.user ||
         result.data?.user ||
         result.data ||
         null;
+
+      if (rawUser && typeof rawUser === "object") {
+        const nestedProfile = rawUser.profile || rawUser.profile_data || rawUser.user_profile || {};
+        currentUser = Object.assign({}, nestedProfile, rawUser);
+
+        currentUser.profile_photo =
+          rawUser.profile_photo || rawUser.profile_photo_url ||
+          rawUser.avatar_url || rawUser.profile_image ||
+          nestedProfile.profile_photo || nestedProfile.profile_photo_url ||
+          nestedProfile.avatar_url || nestedProfile.profile_image ||
+          currentUser.profile_photo || "";
+
+        currentUser.profile_photo_url =
+          rawUser.profile_photo_url || nestedProfile.profile_photo_url ||
+          currentUser.profile_photo;
+
+        currentUser.avatar_url =
+          rawUser.avatar_url || nestedProfile.avatar_url ||
+          currentUser.profile_photo;
+
+        currentUser.cover_photo =
+          rawUser.cover_photo || rawUser.cover_photo_url ||
+          rawUser.cover_url || rawUser.cover_image ||
+          nestedProfile.cover_photo || nestedProfile.cover_photo_url ||
+          nestedProfile.cover_url || nestedProfile.cover_image ||
+          currentUser.cover_photo || "";
+
+        currentUser.cover_photo_url =
+          rawUser.cover_photo_url || nestedProfile.cover_photo_url ||
+          currentUser.cover_photo;
+
+        currentUser.cover_url =
+          rawUser.cover_url || nestedProfile.cover_url ||
+          currentUser.cover_photo;
+      } else {
+        currentUser = rawUser;
+      }
 
     }
 
@@ -2291,11 +2328,10 @@ const fullName =
     */
 
     const profilePhoto =
-      currentUser.profile_photo ||
-      currentUser.profile_photo_url ||
-      currentUser.avatar_url ||
-      currentUser.profile_image ||
-      "";
+      currentUser.profile_photo || currentUser.profile_photo_url ||
+      currentUser.avatar_url || currentUser.profile_image ||
+      currentUser.profile?.profile_photo || currentUser.profile?.profile_photo_url ||
+      currentUser.profile?.avatar_url || currentUser.profile?.profile_image || "";
 
 
     const sidebarAvatar =
@@ -8379,17 +8415,17 @@ function renderProfile(
 ) {
 
   const avatar =
-    user.avatar_url ||
-    user.profile_photo ||
-    user.avatar ||
-    "";
+    user.profile_photo || user.profile_photo_url ||
+    user.avatar_url || user.profile_image || user.avatar ||
+    user.profile?.profile_photo || user.profile?.profile_photo_url ||
+    user.profile?.avatar_url || user.profile?.profile_image || "";
 
 
   const cover =
-    user.cover_url ||
-    user.cover_photo ||
-    user.cover ||
-    "";
+    user.cover_photo || user.cover_photo_url ||
+    user.cover_url || user.cover_image || user.cover ||
+    user.profile?.cover_photo || user.profile?.cover_photo_url ||
+    user.profile?.cover_url || user.profile?.cover_image || "";
 
 
   const name =
@@ -9086,10 +9122,10 @@ function renderFriendCard(
 
 
   const avatar =
-    user.avatar_url ||
-    user.profile_photo ||
-    user.avatar ||
-    "";
+    user.profile_photo || user.profile_photo_url ||
+    user.avatar_url || user.profile_image || user.avatar ||
+    user.profile?.profile_photo || user.profile?.profile_photo_url ||
+    user.profile?.avatar_url || user.profile?.profile_image || "";
 
 
   return `
@@ -10769,10 +10805,10 @@ function renderSearchUser(
 
 
   const avatar =
-    user.avatar_url ||
-    user.profile_photo ||
-    user.avatar ||
-    "";
+    user.profile_photo || user.profile_photo_url ||
+    user.avatar_url || user.profile_image || user.avatar ||
+    user.profile?.profile_photo || user.profile?.profile_photo_url ||
+    user.profile?.avatar_url || user.profile?.profile_image || "";
 
 
   const location =
@@ -15120,10 +15156,10 @@ function renderSearchUser(
 
 
   const avatar =
-    user.avatar_url ||
-    user.avatar ||
-    user.profile_photo ||
-    "";
+    user.profile_photo || user.profile_photo_url ||
+    user.avatar_url || user.profile_image || user.avatar ||
+    user.profile?.profile_photo || user.profile?.profile_photo_url ||
+    user.profile?.avatar_url || user.profile?.profile_image || "";
 
 
   const friendshipStatus =
@@ -15963,16 +15999,17 @@ function renderProfileHeader(
 
 
   const avatar =
-    user.avatar_url ||
-    user.avatar ||
-    user.profile_photo ||
-    "";
+    user.profile_photo || user.profile_photo_url ||
+    user.avatar_url || user.profile_image || user.avatar ||
+    user.profile?.profile_photo || user.profile?.profile_photo_url ||
+    user.profile?.avatar_url || user.profile?.profile_image || "";
 
 
   const cover =
-    user.cover_url ||
-    user.cover_photo ||
-    "";
+    user.cover_photo || user.cover_photo_url ||
+    user.cover_url || user.cover_image ||
+    user.profile?.cover_photo || user.profile?.cover_photo_url ||
+    user.profile?.cover_url || user.profile?.cover_image || "";
 
 
   const ownProfile =
@@ -21508,10 +21545,10 @@ function renderSearchUserCard(
 
 
   const avatar =
-    user.avatar_url ||
-    user.avatar ||
-    user.profile_photo ||
-    "";
+    user.profile_photo || user.profile_photo_url ||
+    user.avatar_url || user.profile_image || user.avatar ||
+    user.profile?.profile_photo || user.profile?.profile_photo_url ||
+    user.profile?.avatar_url || user.profile?.profile_image || "";
 
 
   const online =
