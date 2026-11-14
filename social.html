@@ -1387,7 +1387,7 @@
   */
 
   const API_URL =
-    "https://saidwali-social-api.walizaad2.workers.dev";
+    "https://saidwali-social-api.walizad2.workers.dev";
 
 
   /*
@@ -48900,7 +48900,7 @@ console.log(
    ===================================================== */
 
 const API_BASE =
-  "https://saidwali-social-api.walizaad2.workers.dev";
+  "https://saidwali-social-api.walizad2.workers.dev";
 
 
 /* API */
@@ -49466,16 +49466,25 @@ document.addEventListener(
     };
   }
   function addStories(){
-    const feed=document.getElementById("feedPage");
+    // تل د اصلي منځپانګې اوسنی کانتینر وکاروه؛ د فیډ د بیا جوړېدو پر مهال
+    // پخوانی feedPage له منځه ځي، نو سټوري باید بېرته ورزیاته شي.
     const main=document.getElementById("mainContent");
-    const target=feed||main;
-    if(!target || document.getElementById("swStories")) return;
-    const box=el("section",{id:"swStories",class:"card","aria-label":"سټوري"} ,'<div class="row space-between"><div><h3 class="card-title" style="margin:0">📖 سټوري</h3><div class="muted">د ملګرو لنډې شېبې</div></div><span class="muted">Stories</span></div><div class="sw-story-row" id="swStoryRow"></div>');
+    const feed=document.getElementById("feedPage");
+    const target=(feed && main && main.contains(feed))?feed:main;
+    if(!target) return;
+    let box=document.getElementById("swStories");
+    if(box && !target.contains(box)){
+      box.remove();
+      box=null;
+    }
+    if(!box){
+      box=el("section",{id:"swStories",class:"card","aria-label":"سټوري"},'<div class="row space-between"><div><h3 class="card-title" style="margin:0">📖 سټوري</h3><div class="muted">د ملګرو لنډې شېبې</div></div><span class="muted">Stories</span></div><div class="sw-story-row" id="swStoryRow"></div>');
+    }
     const composer=target.querySelector("#createPostContainer");
     const feedContainer=target.querySelector("#feedContainer");
-    if(composer) target.insertBefore(box,composer);
-    else if(feedContainer) target.insertBefore(box,feedContainer);
-    else target.insertBefore(box,target.firstChild);
+    if(composer && box.nextElementSibling!==composer) target.insertBefore(box,composer);
+    else if(!composer && feedContainer && box.nextElementSibling!==feedContainer) target.insertBefore(box,feedContainer);
+    else if(!composer && !feedContainer && box.parentElement!==target) target.insertBefore(box,target.firstChild);
     renderStories();
   }
   function renderStories(){
@@ -50056,7 +50065,7 @@ function goBackToMainSite(){
 <!-- S-BOOK REELS: connected to the existing /feed API -->
 <script id="sw-reels-api-v1">
 (function(){
- const API="https://saidwali-social-api.walizaad2.workers.dev";
+ const API="https://saidwali-social-api.walizad2.workers.dev";
  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const token=()=>localStorage.getItem("saidwali_session_token")||"";
  function isVideo(p){
