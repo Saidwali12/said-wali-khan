@@ -135,6 +135,21 @@ footer{background:#0d47a1;color:white;padding:20px;text-align:center;margin-top:
 /* Keep job application links above the floating clock overlay */
 .apply-btn,.mailto-btn,.job-email-address{position:relative;z-index:10001;}
 .job-email-address{color:#0d47a1;font-weight:700;text-decoration:underline;direction:ltr;unicode-bidi:embed;display:inline-block;padding:2px 4px;}
+
+/* د ثبت‌نام د پایلې ښکلی کارت؛ یوازې د بریا/ناکامۍ پیغام */
+.reg-status{padding:18px 14px;text-align:center;border-radius:14px;line-height:1.8;box-shadow:0 4px 14px rgba(0,0,0,.07)}
+.reg-status.ok,.reg-status.err{font-weight:700}
+.reg-status.ok{background:linear-gradient(145deg,#f0fff5,#dff7e8);border:1px solid #8bd6a5;color:#176638}
+.reg-status.err{background:linear-gradient(145deg,#fff5f5,#ffe5e7);border:1px solid #efa1a8;color:#a71925}
+.reg-status.ok:before,.reg-status.err:before{display:none!important;content:none!important}
+.reg-status-icon{display:flex;align-items:center;justify-content:center;width:66px;height:66px;margin:0 auto 9px;border-radius:50%;font-family:Arial,sans-serif;font-size:43px;font-weight:900;line-height:1;box-shadow:0 4px 12px #00000018}
+.reg-status.ok .reg-status-icon{background:#1f9d55;color:#fff;border:5px solid #c7efd4}
+.reg-status.err .reg-status-icon{background:#d93643;color:#fff;border:5px solid #ffd0d4}
+.reg-status-title{display:block;font-size:19px;margin:2px 0 5px}
+.reg-status-message{display:block;font-size:13px;font-weight:500;overflow-wrap:anywhere}
+.reg-status-time{display:block;margin-top:9px;padding-top:7px;border-top:1px solid currentColor;font-size:11px;font-weight:500;opacity:.85}
+@media(max-width:600px){.reg-status{padding:16px 11px}.reg-status-icon{width:60px;height:60px;font-size:39px}.reg-status-title{font-size:18px}}
+
 </style>
 </head>
 <body>
@@ -439,7 +454,27 @@ document.getElementById("applicantForm").addEventListener("submit",async functio
  }catch(err){showRegStatus(err.message||"له سرور سره اړیکه ټینګه نه شوه. وروسته بیا هڅه وکړئ.",false);}
  finally{btn.disabled=false;btn.textContent="ثبت‌نام بشپړ کړئ";}
 });
-function showRegStatus(message,ok){const el=document.getElementById("regStatus");el.textContent=String(message||"").replace(/^[✓✔✕✖❌\s]+/,"");el.className="reg-status show "+(ok?"ok":"err");el.setAttribute("role",ok?"status":"alert");}
+function showRegStatus(message,ok){
+ const el=document.getElementById("regStatus");
+ const cleanMessage=String(message||"").replace(/^[✓✔✕✖❌\\s]+/,"");
+ const icon=document.createElement("span");
+ icon.className="reg-status-icon";
+ icon.setAttribute("aria-hidden","true");
+ icon.textContent=ok?"✓":"✕";
+ const title=document.createElement("strong");
+ title.className="reg-status-title";
+ title.textContent=ok?"مبارک دې وي! ثبت‌نام بریالی شو":"ثبت‌نام بشپړ نه شو";
+ const detail=document.createElement("span");
+ detail.className="reg-status-message";
+ detail.textContent=cleanMessage;
+ const time=document.createElement("small");
+ time.className="reg-status-time";
+ time.textContent="د پایلې نېټه او وخت: "+new Intl.DateTimeFormat("ps-AF",{timeZone:"Asia/Kabul",dateStyle:"full",timeStyle:"medium"}).format(new Date())+" (د کابل وخت)";
+ el.replaceChildren(icon,title,detail,time);
+ el.className="reg-status show "+(ok?"ok":"err");
+ el.setAttribute("role",ok?"status":"alert");
+ el.setAttribute("aria-live",ok?"polite":"assertive");
+}
 </script>
 
 <div id="sw-language-bar" style="position:fixed;bottom:12px;left:12px;z-index:99999;background:#071a35;border:1px solid #d9ae52;border-radius:12px;padding:6px 8px;display:flex;gap:5px;flex-wrap:wrap;box-shadow:0 3px 14px #0005">
