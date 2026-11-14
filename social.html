@@ -51569,10 +51569,10 @@ console.log("S-Book Messenger contacts/files v2 loaded");
 })();
 </script>
 <script>
-/* Register the existing root-scope service worker for the S-BOOK installed app. */
+/* Register a dedicated service worker for S-BOOK without changing the main site cache. */
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("./service-worker.js").catch(function(error){
+    navigator.serviceWorker.register("./sbook-sw.js", {scope: "./"}).catch(function(error){
       console.error("S-BOOK share target service worker:", error);
     });
   });
