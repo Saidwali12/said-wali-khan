@@ -1,28 +1,7 @@
 {
-  "updatedAt": "2026-11-13",
+  "updatedAt": "2026-11-14",
   "policy": "Only active announcements are published after checking the source detail page, the exact target province, the closing date, and the application method. Applicants should confirm final requirements on the original source.",
   "jobs": [
-    {
-      "id": "wazifaha-general-support-enumerator",
-      "vacancyRef": null,
-      "title": "General Support (Enumerator)",
-      "organization": "Danish Refugee Council",
-      "location": [
-        "nuristan",
-        "nangarhar"
-      ],
-      "dutyStation": "Nuristan, Nangarhar",
-      "employmentType": "Full time",
-      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د اصلي اعلان او د کار ورکوونکي پاڼه وګورئ.",
-      "expiryDate": "2026-11-13",
-      "applyUrl": "",
-      "applyEmail": "vacancies@drc.ngo",
-      "sourceName": "Wazifaha (employer contact checked)",
-      "sourceUrl": "https://wazifaha.com/jobs/general-support-enumerator",
-      "applicationMode": "email",
-      "verified": true,
-      "verificationLevel": "aggregator_detail_and_employer_contact_checked"
-    },
     {
       "id": "acbar-146555",
       "vacancyRef": null,
