@@ -66,6 +66,23 @@ footer{text-align:center;background:var(--navy);color:#fff;padding:16px;font-siz
 #sw-language-bar{max-width:calc(100vw - 24px)}
 #sw-language-bar button{cursor:pointer;font-family:inherit;background:#fff;color:var(--navy);font-weight:bold}
 @media(max-width:600px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.item{padding:11px 6px}.tools{position:relative}.search-wrap{flex-wrap:wrap}.clear-btn{flex:0 0 auto}}
+
+/* ساده لارښود او د کتاب/اپ کارتونه */
+.quick-menu{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px;background:#fff;border-bottom:1px solid #e5eaf2}
+.quick-menu a{display:inline-block;background:#0d47a1;color:#fff;text-decoration:none;padding:10px 15px;border-radius:9px;font-weight:bold;font-size:14px}
+.quick-menu a:focus,.quick-menu a:hover{background:#071a35;outline:3px solid #f4d58a}
+.guide-box{background:#fff;border:2px solid #d9ae52;border-radius:13px;padding:14px;margin:12px 0;color:#172033}
+.guide-box h3{margin:0 0 7px;color:#071a35;font-size:17px}
+.guide-box ol{margin:7px 0;padding-right:22px}
+.book-card,.app-card{background:#fff;border:1px solid #e3e8ef;border-radius:13px;padding:13px;text-align:center;box-shadow:0 2px 7px #0000000d}
+.book-icon,.app-icon{width:58px;height:58px;margin:0 auto 8px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:34px;background:#fff4d8;border:1px solid #e5c77c}
+.book-card h3,.app-card h3{font-size:15px;color:#071a35;margin:5px 0}
+.book-card p,.app-card p{font-size:13px;color:#596579;margin:5px 0 10px}
+.action-link{display:block;background:#087443;color:#fff!important;padding:10px 8px;border-radius:9px;text-decoration:none;font-weight:bold;margin-top:7px}
+.secondary-link{display:block;color:#0d47a1!important;font-size:12px;margin-top:8px;text-decoration:underline}
+.small-step{font-size:12px;color:#596579;background:#f4f7fb;padding:8px;border-radius:8px;margin-top:8px}
+@media(max-width:600px){.quick-menu a{flex:1 1 42%;text-align:center}.book-card,.app-card{padding:10px}}
+
 </style>
 </head>
 <body>
@@ -106,6 +123,14 @@ footer{text-align:center;background:var(--navy);color:#fff;padding:16px;font-siz
 </div>
 
 <marquee direction="right">FileHippo | Softpedia | GitHub | LibreOffice | قرآن کریم | پښتو کتابونه | آنلاین زده کړې | مصنوعي ځیرکتیا — اړوند خدمت ته د تګ لپاره کلیک وکړئ</marquee>
+
+
+<div class="quick-menu" aria-label="اسانه مینو">
+<a href="#easyBooks">📚 اسلامي کتابونه</a>
+<a href="#easyApps">📱 اسلامي اپلېکېشنونه</a>
+<a href="#liveBookSearch">🔎 کتاب ولټوه</a>
+<a href="#howToDownload">❓ د کارولو لار</a>
+</div>
 
 <div class="nav">
 <button type="button" onclick="history.back()">⬅ شاتګ</button>
@@ -152,31 +177,119 @@ footer{text-align:center;background:var(--navy);color:#fff;padding:16px;font-siz
 </div>
 
 
-<h2 class="section">📥 وړیا اسلامي PDF کتابونه — د ژبې له مخې</h2>
-<p class="section-note">د هرې ژبې پر کارت کلیک وکړئ؛ د اصلي خپرندویانو او کتابتونونو وړیا کتابونه به پرانیستل شي. د هر کتاب د پاڼې د ډاونلوډ اجازه او جواز وګورئ.</p>
-<div class="grid">
-<div class="item" data-category="books"><div style="font-size:32px">📕</div><a href="https://islamhouse.com/ps/" target="_blank" rel="noopener noreferrer">پښتو اسلامي کتابونه</a><p>پښتو • کتابونه، رسالې او نور مواد</p><a style="margin-top:8px;color:#087443" href="https://islamhouse.com/ps/" target="_blank" rel="noopener noreferrer">📥 وړیا کتابونه وګورئ</a></div>
-<div class="item" data-category="books"><div style="font-size:32px">📗</div><a href="https://islamhouse.com/fa/" target="_blank" rel="noopener noreferrer">دري / فارسي اسلامي کتابونه</a><p>دري • عقیده، فقه، سیرت او نور</p><a style="margin-top:8px;color:#087443" href="https://islamhouse.com/fa/" target="_blank" rel="noopener noreferrer">📥 وړیا کتابونه وګورئ</a></div>
-<div class="item" data-category="books"><div style="font-size:32px">📘</div><a href="https://islamhouse.com/ar/" target="_blank" rel="noopener noreferrer">کتب إسلامية باللغة العربية</a><p>عربي • قرآن، حدیث، تفسیر او فقه</p><a style="margin-top:8px;color:#087443" href="https://islamhouse.com/ar/" target="_blank" rel="noopener noreferrer">📥 كتب مجانية</a></div>
-<div class="item" data-category="books"><div style="font-size:32px">📙</div><a href="https://islamhouse.com/ur/" target="_blank" rel="noopener noreferrer">اردو اسلامی کتابیں</a><p>اردو • قرآن، حدیث، سیرت او فقہ</p><a style="margin-top:8px;color:#087443" href="https://islamhouse.com/ur/" target="_blank" rel="noopener noreferrer">📥 مفت کتابیں دیکھیں</a></div>
-<div class="item" data-category="books"><div style="font-size:32px">📚</div><a href="https://www.dawateislami.net/bookslibrary" target="_blank" rel="noopener noreferrer">مکتبۃ المدینہ — کتابونه</a><p>څو ژبې • وړیا کتابونه او رسالې</p><a style="margin-top:8px;color:#087443" href="https://www.dawateislami.net/bookslibrary" target="_blank" rel="noopener noreferrer">📥 د کتابتون پاڼه</a></div>
-<div class="item" data-category="books"><div style="font-size:32px">🕌</div><a href="https://www.holywayz.com/books/" target="_blank" rel="noopener noreferrer">د اسلامي PDF کتابونو ټولګه</a><p>عربي او اردو په ګډون • د اصلي خپرندوی لینکونه</p><a style="margin-top:8px;color:#087443" href="https://www.holywayz.com/books/" target="_blank" rel="noopener noreferrer">📥 کتابونه او سرچینې</a></div>
-<div class="item" data-category="books"><div style="font-size:32px">📖</div><a href="https://waqfeya.net/" target="_blank" rel="noopener noreferrer">المكتبة الوقفية</a><p>عربي • د کتابونو ډیجیټلي کتابتون</p><a style="margin-top:8px;color:#087443" href="https://waqfeya.net/" target="_blank" rel="noopener noreferrer">📥 د کتابونو کتلاګ</a></div>
-<div class="item" data-category="books"><div style="font-size:32px">📜</div><a href="https://shamela.ws/" target="_blank" rel="noopener noreferrer">المكتبة الشاملة</a><p>عربي • اسلامي او علمي کتابونه</p><a style="margin-top:8px;color:#087443" href="https://shamela.ws/" target="_blank" rel="noopener noreferrer">📥 کتابتون پرانیزئ</a></div>
-</div>
 
-<h2 class="section">📱 وړیا اسلامي موبایل اپلېکېشنونه — Google Play</h2>
-<p class="section-note">د هر اپلېکېشن سمبول، نوم او ژبې ښکاري. پر «Google Play کې ډاونلوډ» کلیک وکړئ؛ د نصبولو مخکې د اپلېکېشن ژبې، وړیا ځانګړنو او د جوړوونکي معلومات وګورئ.</p>
-<div class="grid">
-<div class="item" data-category="mobile"><div style="font-size:34px">📖</div><a href="https://play.google.com/store/apps/details?id=com.islam360" target="_blank" rel="noopener noreferrer">Islam360 — قرآن او حدیث</a><p>اردو، عربي او نورې ژبې • قرآن، حدیث، دعا او قبله</p><a style="margin-top:8px;color:#087443" href="https://play.google.com/store/apps/details?id=com.islam360" target="_blank" rel="noopener noreferrer">▶ Google Play کې ډاونلوډ</a></div>
-<div class="item" data-category="mobile"><div style="font-size:34px">☪️</div><a href="https://play.google.com/store/apps/details?id=app.deenalhaq" target="_blank" rel="noopener noreferrer">DeenAlHaq — Islamic Quran Prayer</a><p>انګلیسي او عربي • قرآن، حدیث او د لمانځه وختونه</p><a style="margin-top:8px;color:#087443" href="https://play.google.com/store/apps/details?id=app.deenalhaq" target="_blank" rel="noopener noreferrer">▶ Google Play کې ډاونلوډ</a></div>
-<div class="item" data-category="mobile"><div style="font-size:34px">🕌</div><a href="https://play.google.com/store/apps/details?id=com.way.peace" target="_blank" rel="noopener noreferrer">Quran Hadith Audio Translation</a><p>قرآن، شپږ حدیثي ټولګې او غږیز تلاوت • څو ژبې</p><a style="margin-top:8px;color:#087443" href="https://play.google.com/store/apps/details?id=com.way.peace" target="_blank" rel="noopener noreferrer">▶ Google Play کې ډاونلوډ</a></div>
-<div class="item" data-category="mobile"><div style="font-size:34px">🌙</div><a href="https://play.google.com/store/apps/details?id=com.nexivion.noor" target="_blank" rel="noopener noreferrer">Noor — Quran, Prayer & Islam</a><p>عربي، اردو او نورې ژبې • قرآن، تفسیر، دعا او قبله</p><a style="margin-top:8px;color:#087443" href="https://play.google.com/store/apps/details?id=com.nexivion.noor" target="_blank" rel="noopener noreferrer">▶ Google Play کې ډاونلوډ</a></div>
-<div class="item" data-category="mobile"><div style="font-size:34px">📚</div><a href="https://play.google.com/store/search?q=IslamHouse&c=apps" target="_blank" rel="noopener noreferrer">IslamHouse — اسلامي کتابتون</a><p>د اپونو لټون • د کتابونو او اسلامي موادو ژبې بېلابېلې دي</p><a style="margin-top:8px;color:#087443" href="https://play.google.com/store/search?q=IslamHouse&c=apps" target="_blank" rel="noopener noreferrer">▶ Google Play کې وګورئ</a></div>
-<div class="item" data-category="mobile"><div style="font-size:34px">📿</div><a href="https://play.google.com/store/search?q=Quran%20Pashto&c=apps" target="_blank" rel="noopener noreferrer">پښتو قرآن او اسلامي اپونه</a><p>پښتو • د موجودو اپلېکېشنونو لټون</p><a style="margin-top:8px;color:#087443" href="https://play.google.com/store/search?q=Quran%20Pashto&c=apps" target="_blank" rel="noopener noreferrer">▶ پښتو اپونه وګورئ</a></div>
-<div class="item" data-category="mobile"><div style="font-size:34px">📿</div><a href="https://play.google.com/store/search?q=Quran%20Persian&c=apps" target="_blank" rel="noopener noreferrer">دري قرآن او اسلامي اپونه</a><p>دري / فارسي • د موجودو اپلېکېشنونو لټون</p><a style="margin-top:8px;color:#087443" href="https://play.google.com/store/search?q=Quran%20Persian&c=apps" target="_blank" rel="noopener noreferrer">▶ دري اپونه وګورئ</a></div>
+<section id="easyBooks">
+<h2 class="section">📚 وړیا اسلامي کتابونه — ژبه وټاکئ، کتاب ښکته کړئ</h2>
+<div class="guide-box" id="howToDownload">
+<h3>📥 کتاب څنګه ډاونلوډ کړم؟</h3>
+<ol>
+<li>لومړی خپله ژبه وټاکئ: پښتو، دري، عربي یا اردو.</li>
+<li>د کتاب نوم او لنډه پېژندنه ولولئ.</li>
+<li>پر شنه تڼۍ «📥 کتاب ډاونلوډ کړئ» کلیک وکړئ.</li>
+<li>که د کتاب پاڼه خلاصه شوه، هلته د «Download / ډاونلوډ» تڼۍ ووهئ؛ PDF به ستاسو موبایل یا کمپیوټر ته ښکته شي.</li>
+<li>په موبایل کې فایل د «Downloads / ډاونلوډونه» په فولډر کې پیدا کړئ او د PDF لوستونکي په وسیله یې خلاص کړئ.</li>
+</ol>
+<p class="small-step">یادونه: ځینې کتابونه مستقیم PDF وي؛ ځینې لومړی د خپرندوی پاڼه پرانیزي. موږ یوازې د اصلي سرچینې لینک ورکوو، څو ناسم او نااجازه فایلونه ونه کارول شي.</p>
 </div>
-<div class="notice"><strong>د ډاونلوډ او جواز مهم شرط:</strong> دا کارتونه د اصلي خپرندوی یا Google Play پاڼې ته ځي. د کتابونو هر فایل باید د خپرندوی د وړیا وېش اجازې سره وي؛ د اپلېکېشنونو شتون او وړیا ځانګړنې د هېواد، وسیلې او جوړوونکي له پالیسۍ سره بدلېدای شي. د Google Play ځینې لینکونه د اپونو د لټون پایلې دي، نه د یوه مشخص اپ د نصب تضمین.</div>
+<p class="section-note">هر کارت د کتاب موضوع او ژبه روښانه کوي. د کتابونو پاڼې د وړیا PDF فایل او د ډاونلوډ تڼۍ لري؛ که فایل مستقیم ښکته نه شو، د کتاب په پاڼه کې Download ووهئ.</p>
+<div class="grid">
+<article class="book-card" data-category="books">
+<div class="book-icon">📕</div><h3>د پیغمبر اکرم ﷺ لنډ ژوندلیک</h3>
+<p><b>ژبه:</b> پښتو</p><p><b>موضوع:</b> د رسول الله ﷺ ژوند، اخلاق، کورنۍ او ځانګړنې.</p>
+<a class="action-link" href="https://islamhouse.com/en/books/2830975/" target="_blank" rel="noopener noreferrer">📥 کتاب ډاونلوډ کړئ (PDF)</a>
+<div class="small-step">د کتاب پاڼه خلاصه کړئ، بیا د PDF فایل پر نوم کلیک وکړئ.</div>
+</article>
+<article class="book-card" data-category="books">
+<div class="book-icon">📗</div><h3>د مسلمان ساتنه</h3>
+<p><b>ژبه:</b> پښتو</p><p><b>موضوع:</b> د قرآن او سنت دعاګانې او اذکار؛ د ورځني ژوند لپاره.</p>
+<a class="action-link" href="https://islamhouse.com/en/books/727736/" target="_blank" rel="noopener noreferrer">📥 کتاب ډاونلوډ کړئ (PDF)</a>
+<div class="small-step">په پاڼه کې د «Download» برخه کې د PDF فایل انتخاب کړئ.</div>
+</article>
+<article class="book-card" data-category="books">
+<div class="book-icon">📘</div><h3>د اسلام عقیده په لنډه توګه</h3>
+<p><b>ژبه:</b> پښتو</p><p><b>موضوع:</b> د اسلام بنسټونه، ایمان او د عقیدې مهم اصول.</p>
+<a class="action-link" href="https://islamhouse.com/en/books/ps/1" target="_blank" rel="noopener noreferrer">📥 کتاب پیدا او ډاونلوډ کړئ</a>
+<div class="small-step">په پرانیستل شوې پاڼه کې «A Glimpse into the Islamic Creed» ومومئ او PDF وټاکئ.</div>
+</article>
+<article class="book-card" data-category="books">
+<div class="book-icon">📙</div><h3>د لمانځه د ادا کولو نبوي طریقه</h3>
+<p><b>ژبه:</b> پښتو</p><p><b>موضوع:</b> د رسول الله ﷺ د لمانځه طریقه او د لمانځه مهمې لارښوونې.</p>
+<a class="action-link" href="https://islamhouse.com/en/books/ps/1" target="_blank" rel="noopener noreferrer">📥 کتاب پیدا او ډاونلوډ کړئ</a>
+<div class="small-step">د کتابونو په لړ کې د «Prophet Manner of Performing Prayer» نوم وګورئ.</div>
+</article>
+<article class="book-card" data-category="books">
+<div class="book-icon">📚</div><h3>دري / فارسي اسلامي کتابونه</h3>
+<p><b>ژبه:</b> دري او فارسي</p><p><b>موضوع:</b> قرآن، حدیث، عقیده، فقه او د اسلام پېژندنه.</p>
+<a class="action-link" href="https://islamhouse.com/fa/" target="_blank" rel="noopener noreferrer">📥 دري کتابونه وګورئ</a>
+<div class="small-step">د خپلې خوښې کتاب وټاکئ؛ که PDF نښه ولري، ډاونلوډ یې کړئ.</div>
+</article>
+<article class="book-card" data-category="books">
+<div class="book-icon">📖</div><h3>عربي اسلامي کتابونه</h3>
+<p><b>ژبه:</b> عربي</p><p><b>موضوع:</b> قرآن، تفسیر، حدیث، سیرت او اسلامي علوم.</p>
+<a class="action-link" href="https://islamhouse.com/ar/" target="_blank" rel="noopener noreferrer">📥 عربي کتابونه وګورئ</a>
+<div class="small-step">د کتاب ترڅنګ د PDF نښه وګورئ او د ډاونلوډ تڼۍ ووهئ.</div>
+</article>
+<article class="book-card" data-category="books">
+<div class="book-icon">📔</div><h3>اردو اسلامي کتابونه</h3>
+<p><b>ژبه:</b> اردو</p><p><b>موضوع:</b> قرآن، حدیث، سیرت، دعاګانې او فقه.</p>
+<a class="action-link" href="https://islamhouse.com/ur/" target="_blank" rel="noopener noreferrer">📥 اردو کتابونه وګورئ</a>
+<div class="small-step">کتاب خلاص کړئ او د PDF ډاونلوډ انتخاب وکړئ.</div>
+</article>
+<article class="book-card" data-category="books">
+<div class="book-icon">🌍</div><h3>د نړۍ اسلامي ډیجیټلي کتابتون</h3>
+<p><b>ژبې:</b> ګڼې ژبې</p><p><b>موضوع:</b> زرګونه اسلامي کتابونه او د قرآن ژباړې.</p>
+<a class="action-link" href="https://www.muslim-library.com/?l=1&lang=Pashto" target="_blank" rel="noopener noreferrer">📥 کتابتون خلاص کړئ</a>
+<div class="small-step">ژبه وټاکئ، کتاب خلاص کړئ او د موجود ډاونلوډ انتخاب وکاروئ.</div>
+</article>
+</div>
+</section>
+
+<section id="easyApps">
+<h2 class="section">📱 اسلامي اپلېکېشنونه — په موبایل کې یې نصب کړئ</h2>
+<div class="guide-box">
+<h3>📲 اپلېکېشن څنګه نصب کړم؟</h3>
+<ol>
+<li>د اپلېکېشن نوم او ژبه وګورئ.</li>
+<li>پر «Google Play کې نصب کړئ» شنه تڼۍ کلیک وکړئ.</li>
+<li>په Google Play کې د «Install / نصب» تڼۍ ووهئ.</li>
+<li>تر نصب وروسته د موبایل په پرده د اپ نښه پیدا او پرانیځئ.</li>
+</ol>
+<p class="small-step">اپلېکېشنونه د Android موبایل لپاره دي. نصبولو مخکې د اپ ژبه، جوړوونکی او د کاروونکو نظرونه وګورئ. که ستاسو په سیمه کې اپ موجود نه وي، Google Play به خبر درکړي.</p>
+</div>
+<p class="section-note">لاندې انځوریزې نښې د اپ پېژندلو لپاره دي. د اپ رسمي پاڼه په Google Play کې پرانیستل کېږي.</p>
+<div class="grid">
+<article class="app-card" data-category="mobile">
+<div class="app-icon">📖</div><h3>Islam360 — قرآن او حدیث</h3>
+<p><b>ژبې:</b> اردو، عربي او نورې</p><p>قرآن کریم، حدیثونه، دعاګانې او د قبلې لارښود.</p>
+<a class="action-link" href="https://play.google.com/store/apps/details?id=com.islam360" target="_blank" rel="noopener noreferrer">▶ Google Play کې نصب کړئ</a>
+</article>
+<article class="app-card" data-category="mobile">
+<div class="app-icon">☪️</div><h3>DeenAlHaq</h3>
+<p><b>ژبې:</b> انګلیسي او عربي</p><p>قرآن، حدیث او د لمانځه اړوند وسایل.</p>
+<a class="action-link" href="https://play.google.com/store/apps/details?id=app.deenalhaq" target="_blank" rel="noopener noreferrer">▶ Google Play کې نصب کړئ</a>
+</article>
+<article class="app-card" data-category="mobile">
+<div class="app-icon">🕌</div><h3>Quran Hadith Audio Translation</h3>
+<p><b>ژبې:</b> څو ژبې</p><p>قرآن، حدیثي ټولګې او غږیز مواد.</p>
+<a class="action-link" href="https://play.google.com/store/apps/details?id=com.way.peace" target="_blank" rel="noopener noreferrer">▶ Google Play کې نصب کړئ</a>
+</article>
+<article class="app-card" data-category="mobile">
+<div class="app-icon">🌙</div><h3>Noor — قرآن او لمونځ</h3>
+<p><b>ژبې:</b> عربي، اردو او نورې</p><p>قرآن، تفسیر، دعاګانې او د لمانځه وختونه.</p>
+<a class="action-link" href="https://play.google.com/store/apps/details?id=com.nexivion.noor" target="_blank" rel="noopener noreferrer">▶ Google Play کې نصب کړئ</a>
+</article>
+<article class="app-card" data-category="mobile">
+<div class="app-icon">📿</div><h3>پښتو قرآن اپلېکېشنونه</h3>
+<p><b>ژبه:</b> پښتو</p><p>په Google Play کې د پښتو قرآن او ژباړې اپونه ومومئ.</p>
+<a class="action-link" href="https://play.google.com/store/search?q=Quran%20Pashto&c=apps" target="_blank" rel="noopener noreferrer">▶ پښتو اپونه وګورئ</a>
+</article>
+<article class="app-card" data-category="mobile">
+<div class="app-icon">📿</div><h3>دري قرآن اپلېکېشنونه</h3>
+<p><b>ژبه:</b> دري / فارسي</p><p>په Google Play کې د دري قرآن او ژباړې اپونه ومومئ.</p>
+<a class="action-link" href="https://play.google.com/store/search?q=Quran%20Persian&c=apps" target="_blank" rel="noopener noreferrer">▶ دري اپونه وګورئ</a>
+</article>
+</div>
+</section>
 
 <h2 class="section">📚 اسلامي، پښتو، دري، اردو او عربي کتابونه</h2>
 <p class="section-note">قرآن، حدیث، تفسیر، ادبي او ډیجیټلي کتابتونونه.</p>
