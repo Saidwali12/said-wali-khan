@@ -1,4 +1,4 @@
-const CACHE_NAME = "sbook-pwa-v2";
+const CACHE_NAME = "sbook-pwa-v3";
 const APP_FILES = [
   "./social.html",
   "./sbook-manifest.webmanifest",
@@ -35,4 +35,13 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(request).then((cached) => cached || fetch(request))
   );
+});
+
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter((key) => key.startsWith("sbook-pwa-") && key !== CACHE_NAME).map((key) => caches.delete(key)));
+    await self.clients.claim();
+  })());
 });
