@@ -60,7 +60,7 @@ jobs:
           {
             echo "# Cloudflare read-only inventory"
             echo
-            echo "- Selection: `${INVENTORY}`"
+            echo "- Selection: ${INVENTORY}"
             echo "- Account: configured GitHub variable (value hidden)"
             echo "- Mode: read-only; no resources are modified"
             echo
