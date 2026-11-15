@@ -1,0 +1,116 @@
+name: Secure backup of deployed Cloudflare Workers
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-workers-private-source-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    name: Read deployed source and save only to private audit repository
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out private audit repository
+        uses: actions/checkout@v4
+        with:
+          repository: Saidwali12/saidwali-workers-private-audit
+          ref: main
+          token: ${{ secrets.PRIVATE_AUDIT_REPO_TOKEN }}
+          path: private-audit
+          persist-credentials: true
+
+      - name: Validate required credentials without displaying them
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_AUDIT_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          [[ -n "$CF_API_TOKEN" ]] || { echo "::error::Cloudflare read-only token is missing."; exit 1; }
+          [[ -n "$PRIVATE_REPO_TOKEN" ]] || { echo "::error::Private repository token is missing."; exit 1; }
+          [[ "$CF_ACCOUNT_ID" =~ ^[a-fA-F0-9]{32}$ ]] || { echo "::error::Cloudflare Account ID is missing or invalid."; exit 1; }
+          [[ -d private-audit/.git ]] || { echo "::error::Private audit repository checkout failed."; exit 1; }
+          echo "Required credentials and private repository access are present."
+
+      - name: Retrieve active Worker source using read-only API requests
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          names=(
+            afghanistan-jobs-api
+            saidwali-cloudflare-manager
+            saidwali-cloudflare-mcp
+            saidwali-cricket
+            saidwali-games-api
+            saidwali-gpt
+            saidwali-help-center
+            saidwali-jobs-api
+            saidwali-social-api
+            saidwali-whatsapp-api
+            saidwali-whatsapp-server
+          )
+          base="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID"
+          out="private-audit/deployed-workers"
+          mkdir -p "$out"
+
+          for name in "${names[@]}"; do
+            dest="$out/$name/worker-source.js"
+            mkdir -p "$(dirname "$dest")"
+            code="$(curl --silent --show-error --location \
+              --output "$dest" --write-out '%{http_code}' \
+              --header "Authorization: Bearer $CF_API_TOKEN" \
+              --header "Accept: application/javascript" \
+              "$base/workers/scripts/$name/content/v2")"
+
+            if [[ "$code" != "200" || ! -s "$dest" ]]; then
+              rm -f "$dest"
+              echo "::error::Could not retrieve source for $name (HTTP $code). No response body or source was printed."
+              echo "::error::The Cloudflare token may need Workers Scripts Read or Workers Content Read-Only permission."
+              exit 1
+            fi
+
+            sha="$(sha256sum "$dest" | awk '{print $1}')"
+            printf '%s  %s\n' "$sha" "$name/worker-source.js" >> "$out/SHA256SUMS"
+            echo "Source retrieved for $name; SHA-256 recorded. Source content is not displayed."
+          done
+
+          cat > "$out/README.md" <<'EOF'
+          # Deployed Cloudflare Worker source backup
+
+          These files were retrieved from the active Cloudflare account through read-only
+          Workers Scripts Content API requests. They are a point-in-time backup of deployed
+          script content, not proof that the code is secure.
+
+          - No Worker was edited, uploaded, deployed, or deleted.
+          - No D1 database, binding, variable, or secret was changed.
+          - Source contents are intentionally not printed in Actions logs.
+          - SHA-256 checksums are recorded in SHA256SUMS.
+          - Review this backup for hard-coded credentials before sharing or exporting it.
+          EOF
+
+      - name: Commit source backup to the private repository
+        shell: bash
+        working-directory: private-audit
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add deployed-workers/
+          if git diff --cached --quiet; then
+            echo "No source changes detected; private backup is already current."
+            exit 0
+          fi
+          git commit -m "Back up deployed Cloudflare Worker source (read-only)"
+          git push origin HEAD:main
+          echo "Deployed source backup committed to the private audit repository."
