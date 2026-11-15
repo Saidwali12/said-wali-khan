@@ -64,6 +64,7 @@ jobs:
             local jq_filter="$3"
             local response
             response="$(mktemp)"
+            local http_code
             http_code="$(curl --silent --show-error --output "${response}" --write-out '%{http_code}' \
               --header "Authorization: Bearer ${CF_API_TOKEN}" \
               --header "Content-Type: application/json" \
@@ -87,6 +88,61 @@ jobs:
             rm -f "${response}"
           }
 
+          fetch_pages_projects() {
+            local page=1
+            local total_pages=1
+            local total_projects=0
+            local response
+            response="$(mktemp)"
+            {
+              echo "## Pages projects (read-only)"
+              echo
+            } >> "${summary}"
+
+            while (( page <= total_pages )); do
+              local http_code
+              http_code="$(curl --silent --show-error --output "${response}" --write-out '%{http_code}' \
+                --header "Authorization: Bearer ${CF_API_TOKEN}" \
+                --header "Content-Type: application/json" \
+                "${base}/pages/projects?page=${page}&per_page=100")"
+              if [[ "${http_code}" != "200" ]]; then
+                echo "::error::Cloudflare Pages inventory request failed (HTTP ${http_code}). Check that the API token has Pages Read permission."
+                rm -f "${response}"
+                exit 1
+              fi
+              if [[ "$(jq -r '.success // false' "${response}")" != "true" ]]; then
+                echo "::error::Cloudflare returned an unsuccessful Pages response."
+                jq -r '.errors[]? | [.code, .message] | @tsv' "${response}" | head -20
+                rm -f "${response}"
+                exit 1
+              fi
+
+              if (( page == 1 )); then
+                total_pages="$(jq -r '.result_info.total_pages // 1' "${response}")"
+                if [[ ! "${total_pages}" =~ ^[0-9]+$ ]] || (( total_pages < 1 )); then
+                  total_pages=1
+                fi
+              fi
+
+              local page_count
+              page_count="$(jq -r '.result | length' "${response}")"
+              total_projects=$((total_projects + page_count))
+              jq -r '.result[]? | "- " + (.name // .id // "Unnamed project")' "${response}" >> "${summary}"
+              page=$((page + 1))
+            done
+
+            if (( total_projects == 0 )); then
+              echo "- Cloudflare returned zero Pages projects for this account." >> "${summary}"
+            fi
+            {
+              echo
+              echo "Pages projects found: ${total_projects}"
+              echo "Pages API pages checked: ${total_pages}"
+              echo
+            } >> "${summary}"
+            rm -f "${response}"
+          }
+
           case "${INVENTORY}" in
             all|workers)
               fetch_and_summarize "Workers (read-only)" "/workers/scripts" '.result[]? | "- " + .id'
@@ -99,7 +155,7 @@ jobs:
           esac
           case "${INVENTORY}" in
             all|pages)
-              fetch_and_summarize "Pages projects (read-only)" "/pages/projects" '.result[]? | "- " + .name'
+              fetch_pages_projects
               ;;
           esac
 
