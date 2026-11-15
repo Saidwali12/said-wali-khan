@@ -1,0 +1,60 @@
+name: Cloudflare Write Token Verification
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-token:
+    name: Verify Cloudflare API token (read-only)
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Verify token status
+        env:
+          CLOUDFLARE_API_TOKEN_WRITE: ${{ secrets.CLOUDFLARE_API_TOKEN_WRITE }}
+        run: |
+          node <<'NODE'
+          (async () => {
+            const token = process.env.CLOUDFLARE_API_TOKEN_WRITE;
+            if (!token) {
+              console.log("Cloudflare Write API token: NOT VERIFIED (repository secret is missing)");
+              process.exitCode = 1;
+              return;
+            }
+
+            try {
+              const response = await fetch(
+                "https://api.cloudflare.com/client/v4/user/tokens/verify",
+                {
+                  method: "GET",
+                  headers: { Authorization: `Bearer ${token}` },
+                  signal: AbortSignal.timeout(15000)
+                }
+              );
+
+              let data;
+              try {
+                data = await response.json();
+              } catch {
+                data = null;
+              }
+
+              if (response.ok && data?.success === true && data?.result?.status === "active") {
+                console.log("Cloudflare Write API token: ACTIVE");
+                await import("node:fs/promises").then(fs =>
+                  fs.appendFile(process.env.GITHUB_STEP_SUMMARY, "## Cloudflare Write API token\n\nStatus: **ACTIVE**\n")
+                );
+              } else {
+                console.log("Cloudflare Write API token: INVALID OR NOT VERIFIED");
+                process.exitCode = 1;
+              }
+            } catch {
+              console.log("Cloudflare Write API token: NOT VERIFIED (connection or request error)");
+              process.exitCode = 1;
+            }
+          })();
+          NODE
