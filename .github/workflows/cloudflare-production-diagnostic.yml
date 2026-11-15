@@ -1,0 +1,69 @@
+name: Cloudflare production configuration diagnostic
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-production-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    name: Check repository configuration and Cloudflare token (read-only)
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check required repository settings and verify token
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN_WRITE: ${{ secrets.CLOUDFLARE_API_TOKEN_WRITE }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${CLOUDFLARE_API_TOKEN_WRITE:-}" ]]; then
+            echo "::error::Repository secret CLOUDFLARE_API_TOKEN_WRITE is missing or unavailable."
+            exit 1
+          fi
+          echo "Repository write-token secret: present"
+
+          if [[ ! "${CLOUDFLARE_ACCOUNT_ID:-}" =~ ^[a-fA-F0-9]{32}$ ]]; then
+            echo "::error::Repository variable CLOUDFLARE_ACCOUNT_ID is missing or is not a 32-character hexadecimal Account ID."
+            exit 1
+          fi
+          echo "Cloudflare Account ID variable: present and format valid"
+
+          node <<'NODE'
+          const token = process.env.CLOUDFLARE_API_TOKEN_WRITE;
+          if (!token) {
+            console.error("Cloudflare token verification: unavailable");
+            process.exit(1);
+          }
+
+          const response = await fetch("https://api.cloudflare.com/client/v4/user/tokens/verify", {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+            signal: AbortSignal.timeout(15000)
+          });
+
+          let data;
+          try {
+            data = await response.json();
+          } catch {
+            console.error("Cloudflare token verification: failed (invalid response)");
+            process.exit(1);
+          }
+
+          if (!response.ok || data?.success !== true || data?.result?.status !== "active") {
+            console.error("Cloudflare token verification: failed or token is not active");
+            process.exit(1);
+          }
+
+          console.log("Cloudflare Write API token: ACTIVE");
+          NODE
+
+          echo "Diagnostic completed. No Worker or D1 resources were modified."
