@@ -1,0 +1,107 @@
+name: Cloudflare read-only inventory
+
+on:
+  workflow_dispatch:
+    inputs:
+      inventory:
+        description: "Choose which Cloudflare resources to list"
+        required: true
+        type: choice
+        options:
+          - all
+          - workers
+          - d1
+          - pages
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-readonly-inventory
+  cancel-in-progress: false
+
+jobs:
+  inventory:
+    name: Read Cloudflare inventory only
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validate configuration
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${CF_API_TOKEN}" ]]; then
+            echo "::error::Repository secret CLOUDFLARE_API_TOKEN is not configured."
+            exit 1
+          fi
+          if [[ -z "${CF_ACCOUNT_ID}" ]]; then
+            echo "::error::Repository variable CLOUDFLARE_ACCOUNT_ID is not configured."
+            exit 1
+          fi
+          if [[ ! "${CF_ACCOUNT_ID}" =~ ^[a-f0-9]{32}$ ]]; then
+            echo "::error::CLOUDFLARE_ACCOUNT_ID must be a 32-character hexadecimal Account ID."
+            exit 1
+          fi
+
+      - name: Read selected resources
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          INVENTORY: ${{ inputs.inventory }}
+        run: |
+          set -euo pipefail
+          base="https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}"
+          summary="${RUNNER_TEMP}/cloudflare-inventory.md"
+          : > "${summary}"
+
+          fetch_and_summarize() {
+            local label="$1"
+            local endpoint="$2"
+            local jq_filter="$3"
+            local response
+            response="$(mktemp)"
+            http_code="$(curl --silent --show-error --output "${response}" --write-out '%{http_code}' \
+              --header "Authorization: Bearer ${CF_API_TOKEN}" \
+              --header "Content-Type: application/json" \
+              "${base}${endpoint}")"
+            if [[ "${http_code}" != "200" ]]; then
+              echo "::error::Cloudflare API request for ${label} failed (HTTP ${http_code}). Check read-only token permissions."
+              rm -f "${response}"
+              exit 1
+            fi
+            if [[ "$(jq -r '.success // false' "${response}")" != "true" ]]; then
+              echo "::error::Cloudflare returned an unsuccessful response for ${label}."
+              jq -r '.errors[]? | [.code, .message] | @tsv' "${response}" | head -20
+              rm -f "${response}"
+              exit 1
+            fi
+            {
+              echo "## ${label}"
+              jq -r "${jq_filter}" "${response}"
+              echo
+            } >> "${summary}"
+            rm -f "${response}"
+          }
+
+          case "${INVENTORY}" in
+            all|workers)
+              fetch_and_summarize "Workers (read-only)" "/workers/scripts" '.result[]? | "- " + .id'
+              ;;
+          esac
+          case "${INVENTORY}" in
+            all|d1)
+              fetch_and_summarize "D1 databases (read-only)" "/d1/database" '.result[]? | "- " + .name + " (" + .uuid + ")"'
+              ;;
+          esac
+          case "${INVENTORY}" in
+            all|pages)
+              fetch_and_summarize "Pages projects (read-only)" "/pages/projects" '.result[]? | "- " + .name'
+              ;;
+          esac
+
+          cat "${summary}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Read-only inventory completed. No Worker deploy, D1 SQL, or resource changes were requested."
