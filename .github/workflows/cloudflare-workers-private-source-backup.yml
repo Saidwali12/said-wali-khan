@@ -67,6 +67,7 @@ jobs:
 
           for name in "${names[@]}"; do
             worker_dir="$out/$name"
+            rm -rf "$worker_dir"
             mkdir -p "$worker_dir"
             tmp="$(mktemp -d)"
             code="$(curl --silent --show-error --location \
