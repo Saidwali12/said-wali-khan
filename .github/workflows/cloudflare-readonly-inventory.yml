@@ -106,9 +106,6 @@ jobs:
           }
 
           fetch_pages_projects() {
-            local page=1
-            local total_pages=1
-            local total_projects=0
             local response
             response="$(mktemp)"
             {
@@ -116,46 +113,34 @@ jobs:
               echo
             } >> "${summary}"
 
-            while (( page <= total_pages )); do
-              local http_code
-              http_code="$(curl --silent --show-error --output "${response}" --write-out '%{http_code}' \
-                --header "Authorization: Bearer ${CF_API_TOKEN}" \
-                --header "Content-Type: application/json" \
-                "${base}/pages/projects?page=${page}&per_page=20")"
-              if [[ "${http_code}" != "200" ]]; then
-                echo "::error::Cloudflare Pages inventory request failed (HTTP ${http_code})."
-                show_cloudflare_error_details "${response}"
-                rm -f "${response}"
-                exit 1
-              fi
-              if [[ "$(jq -r '.success // false' "${response}")" != "true" ]]; then
-                echo "::error::Cloudflare returned an unsuccessful Pages response."
-                show_cloudflare_error_details "${response}"
-                rm -f "${response}"
-                exit 1
-              fi
+            local http_code
+            http_code="$(curl --silent --show-error --output "${response}" --write-out '%{http_code}' \
+              --header "Authorization: Bearer ${CF_API_TOKEN}" \
+              --header "Content-Type: application/json" \
+              "${base}/pages/projects")"
+            if [[ "${http_code}" != "200" ]]; then
+              echo "::error::Cloudflare Pages inventory request failed (HTTP ${http_code})."
+              show_cloudflare_error_details "${response}"
+              rm -f "${response}"
+              exit 1
+            fi
+            if [[ "$(jq -r '.success // false' "${response}")" != "true" ]]; then
+              echo "::error::Cloudflare returned an unsuccessful Pages response."
+              show_cloudflare_error_details "${response}"
+              rm -f "${response}"
+              exit 1
+            fi
 
-              if (( page == 1 )); then
-                total_pages="$(jq -r '.result_info.total_pages // 1' "${response}")"
-                if [[ ! "${total_pages}" =~ ^[0-9]+$ ]] || (( total_pages < 1 )); then
-                  total_pages=1
-                fi
-              fi
-
-              local page_count
-              page_count="$(jq -r '.result | length' "${response}")"
-              total_projects=$((total_projects + page_count))
-              jq -r '.result[]? | "- " + (.name // .id // "Unnamed project")' "${response}" >> "${summary}"
-              page=$((page + 1))
-            done
-
+            local total_projects
+            total_projects="$(jq -r '.result | length' "${response}")"
+            jq -r '.result[]? | "- " + (.name // .id // "Unnamed project")' "${response}" >> "${summary}"
             if (( total_projects == 0 )); then
               echo "- Cloudflare returned zero Pages projects for this account." >> "${summary}"
             fi
             {
               echo
-              echo "Pages projects found: ${total_projects}"
-              echo "Pages API pages checked: ${total_pages}"
+              echo "Pages projects returned: ${total_projects}"
+              echo "Pages API pagination: endpoint defaults (single request)"
               echo
             } >> "${summary}"
             rm -f "${response}"
