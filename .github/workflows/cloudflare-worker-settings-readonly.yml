@@ -4,13 +4,23 @@ on:
   workflow_dispatch:
     inputs:
       worker:
-        description: "Choose which Worker settings to inspect"
+        description: "Choose one Worker or inspect all known Workers"
         required: true
         type: choice
         options:
-          - both
+          - all
+          - saidwali-cloudflare-manager
+          - saidwali-cloudflare-mcp
           - saidwali-gpt
           - saidwali-social-api
+          - saidwali-games-api
+          - saidwali-whatsapp-api
+          - saidwali-whatsapp-server
+          - saidwali-jobs-api
+          - afghanistan-jobs-api
+          - saidwali-cricket
+          - saidwali-help-center
+          - both
 
 permissions:
   contents: read
@@ -23,7 +33,7 @@ jobs:
   inspect:
     name: Read selected Worker settings only
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Validate configuration
         shell: bash
@@ -53,11 +63,29 @@ jobs:
           summary="${RUNNER_TEMP}/worker-settings.md"
           : > "${summary}"
 
-          if [[ "${WORKER_CHOICE}" == "both" ]]; then
-            workers=("saidwali-gpt" "saidwali-social-api")
-          else
-            workers=("${WORKER_CHOICE}")
-          fi
+          case "${WORKER_CHOICE}" in
+            all)
+              workers=(
+                "afghanistan-jobs-api"
+                "saidwali-cloudflare-manager"
+                "saidwali-cloudflare-mcp"
+                "saidwali-cricket"
+                "saidwali-games-api"
+                "saidwali-gpt"
+                "saidwali-help-center"
+                "saidwali-jobs-api"
+                "saidwali-social-api"
+                "saidwali-whatsapp-api"
+                "saidwali-whatsapp-server"
+              )
+              ;;
+            both)
+              workers=("saidwali-gpt" "saidwali-social-api")
+              ;;
+            *)
+              workers=("${WORKER_CHOICE}")
+              ;;
+          esac
 
           for worker in "${workers[@]}"; do
             response="$(mktemp)"
@@ -67,7 +95,7 @@ jobs:
               "${base}/workers/scripts/${worker}/settings")"
 
             if [[ "${http_code}" != "200" ]]; then
-              echo "::error::Could not read settings for ${worker} (HTTP ${http_code}). Check Workers Scripts Read permission."
+              echo "::error::Could not read settings for ${worker} (HTTP ${http_code}). Check Workers Scripts Read permission and confirm the Worker exists in this account."
               rm -f "${response}"
               exit 1
             fi
