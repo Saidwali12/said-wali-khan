@@ -1589,6 +1589,11 @@ function escapeHTML(value) {
 
 
     let response;
+    const requestController = new AbortController();
+    const requestTimeout = window.setTimeout(
+      () => requestController.abort(),
+      15000
+    );
 
     try {
 
@@ -1597,7 +1602,8 @@ function escapeHTML(value) {
           API_URL + endpoint,
           {
             ...options,
-            headers
+            headers,
+            signal: requestController.signal
           }
         );
 
@@ -1610,9 +1616,13 @@ function escapeHTML(value) {
 
       return {
         success: false,
-        message:
-          "Worker سره اړیکه ونه شوه. Internet او Worker URL وګوره."
+        message: error && error.name === "AbortError"
+          ? "د سرور ځواب ډېر وځنډېد. مهرباني وکړئ بیا هڅه وکړئ."
+          : "Worker سره اړیکه ونه شوه. Internet او Worker URL وګوره."
       };
+
+    } finally {
+      window.clearTimeout(requestTimeout);
     }
 
 
