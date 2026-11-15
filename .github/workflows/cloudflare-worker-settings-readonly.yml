@@ -1,0 +1,108 @@
+name: Cloudflare Worker settings (read-only)
+
+on:
+  workflow_dispatch:
+    inputs:
+      worker:
+        description: "Choose which Worker settings to inspect"
+        required: true
+        type: choice
+        options:
+          - both
+          - saidwali-gpt
+          - saidwali-social-api
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-worker-settings-readonly
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    name: Read selected Worker settings only
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validate configuration
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${CF_API_TOKEN}" ]]; then
+            echo "::error::Repository secret CLOUDFLARE_API_TOKEN is not configured."
+            exit 1
+          fi
+          if [[ ! "${CF_ACCOUNT_ID}" =~ ^[a-f0-9]{32}$ ]]; then
+            echo "::error::CLOUDFLARE_ACCOUNT_ID is missing or invalid."
+            exit 1
+          fi
+
+      - name: Read Worker settings without secrets or code
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          WORKER_CHOICE: ${{ inputs.worker }}
+        run: |
+          set -euo pipefail
+          base="https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}"
+          summary="${RUNNER_TEMP}/worker-settings.md"
+          : > "${summary}"
+
+          if [[ "${WORKER_CHOICE}" == "both" ]]; then
+            workers=("saidwali-gpt" "saidwali-social-api")
+          else
+            workers=("${WORKER_CHOICE}")
+          fi
+
+          for worker in "${workers[@]}"; do
+            response="$(mktemp)"
+            http_code="$(curl --silent --show-error --output "${response}" --write-out '%{http_code}' \
+              --header "Authorization: Bearer ${CF_API_TOKEN}" \
+              --header "Content-Type: application/json" \
+              "${base}/workers/scripts/${worker}/settings")"
+
+            if [[ "${http_code}" != "200" ]]; then
+              echo "::error::Could not read settings for ${worker} (HTTP ${http_code}). Check Workers Scripts Read permission."
+              rm -f "${response}"
+              exit 1
+            fi
+            if [[ "$(jq -r '.success // false' "${response}")" != "true" ]]; then
+              echo "::error::Cloudflare returned an unsuccessful settings response for ${worker}."
+              jq -r '.errors[]? | [.code, .message] | @tsv' "${response}" | head -20
+              rm -f "${response}"
+              exit 1
+            fi
+
+            {
+              echo "## ${worker}"
+              jq -r '
+                .result as $r |
+                "- Compatibility date: " + ($r.compatibility_date // "not reported"),
+                "- Usage model: " + ($r.usage_model // "not reported"),
+                "- Observability enabled: " + (($r.observability.enabled // false) | tostring),
+                "- Bindings:",
+                (($r.bindings // []) |
+                  if length == 0 then
+                    "  - none reported"
+                  else
+                    .[] |
+                    "  - " + (.name // "(unnamed)") + " [" + (.type // "unknown") + "]" +
+                    (if .type == "d1" then
+                      " database_id=" + (.database_id // .id // "not reported")
+                    else "" end)
+                  end)
+              ' "${response}"
+              echo
+            } >> "${summary}"
+            rm -f "${response}"
+          done
+
+          {
+            cat "${summary}"
+            echo "Read-only inspection completed. No Worker code, secret values, bindings, or settings were changed."
+          } >> "${GITHUB_STEP_SUMMARY}"
