@@ -286,11 +286,13 @@ jobs:
           {
             echo "## Cloudflare production operation"
             echo
-            echo "- Operation: `$OPERATION`"
+            printf '%s\n' "- Operation: $OPERATION"
             if [[ "$OPERATION" == "worker-deploy" ]]; then
-              echo "- Selected Worker: `$WORKER_NAME`"
+              printf '%s\n' "- Selected Worker: $WORKER_NAME"
+            elif [[ "$OPERATION" == "d1-sql" ]]; then
+              printf '%s\n' "- Selected D1 database: $DATABASE"
             else
-              echo "- Selected D1 database: `$DATABASE`"
+              printf '%s\n' "- Production resource changes: none (preflight only)"
             fi
             echo "- Secret values and SQL contents: not included"
             echo "- No source-code artifacts were created"
