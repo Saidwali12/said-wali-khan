@@ -65,8 +65,8 @@ on:
         description: "Required for every remote SQL execution: I_APPROVE_SQL_EXECUTION"
         required: false
         type: string
-      confirm_destructive_sql:
-        description: "Additional confirmation for DROP, DELETE, TRUNCATE, or ALTER"
+      confirm_database_change:
+        description: "Required for every remote D1 change: I_APPROVE_REMOTE_D1_CHANGE"
         required: false
         type: string
 
@@ -174,8 +174,11 @@ jobs:
           if not isinstance(main, str) or not main or pathlib.PurePosixPath(main).is_absolute() or ".." in pathlib.PurePosixPath(main).parts:
               raise SystemExit("Wrangler config must declare a safe repository-relative main entrypoint.")
           root = pathlib.Path(workspace).resolve()
-          entry = (path.parent / main).resolve(strict=True)
-          if root not in entry.parents or not entry.is_file() or entry.is_symlink():
+          entry_candidate = path.parent / main
+          if entry_candidate.is_symlink():
+              raise SystemExit("Worker main entrypoint must not be a symlink.")
+          entry = entry_candidate.resolve(strict=True)
+          if root not in entry.parents or not entry.is_file():
               raise SystemExit("Worker main entrypoint must be a regular file inside this repository.")
           actual = hashlib.sha256(entry.read_bytes()).hexdigest()
           if actual.lower() != expected_hash.lower():
@@ -194,7 +197,7 @@ jobs:
           SQL_FILE: ${{ inputs.sql_file }}
           EXPECTED_SQL_SHA256: ${{ inputs.sql_sha256 }}
           SQL_APPROVAL: ${{ inputs.confirm_sql_execution }}
-          DESTRUCTIVE_APPROVAL: ${{ inputs.confirm_destructive_sql }}
+          DATABASE_APPROVAL: ${{ inputs.confirm_database_change }}
         run: |
           set -euo pipefail
           case "$DATABASE" in
@@ -207,6 +210,10 @@ jobs:
           }
           [[ "$SQL_APPROVAL" == "I_APPROVE_SQL_EXECUTION" ]] || {
             echo "::error::Every remote SQL execution requires the explicit SQL approval phrase."
+            exit 1
+          }
+          [[ "$DATABASE_APPROVAL" == "I_APPROVE_REMOTE_D1_CHANGE" ]] || {
+            echo "::error::Every remote D1 change requires the separate database-change approval phrase."
             exit 1
           }
           [[ "$EXPECTED_SQL_SHA256" =~ ^[a-fA-F0-9]{64}$ ]] || {
@@ -224,12 +231,6 @@ jobs:
             echo "::error::SQL file SHA-256 does not match the reviewed value."
             exit 1
           }
-          if grep -Eiq '(^|[;[:space:]])(DROP|DELETE|TRUNCATE|ALTER)([;[:space:]]|$)' "$sql_real"; then
-            [[ "$DESTRUCTIVE_APPROVAL" == "I_APPROVE_DESTRUCTIVE_SQL" ]] || {
-              echo "::error::Destructive SQL detected. A second destructive-SQL confirmation is required."
-              exit 1
-            }
-          fi
           echo "Executing the hash-verified SQL file against the selected remote D1 database. SQL contents are not printed."
           npx --yes wrangler@4.45.0 d1 execute "$DATABASE" --remote --file "$sql_real"
 
