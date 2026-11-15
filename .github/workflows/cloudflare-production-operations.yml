@@ -1,0 +1,204 @@
+name: Cloudflare production operations
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "Choose exactly one production operation"
+        required: true
+        type: choice
+        options:
+          - worker-deploy
+          - d1-sql
+      confirm_production:
+        description: "Type I_APPROVE_PRODUCTION_CHANGE to authorize this run"
+        required: true
+        type: string
+      worker_name:
+        description: "Existing Worker to deploy (worker-deploy only)"
+        required: false
+        type: choice
+        options:
+          - afghanistan-jobs-api
+          - saidwali-cloudflare-manager
+          - saidwali-cloudflare-mcp
+          - saidwali-cricket
+          - saidwali-games-api
+          - saidwali-gpt
+          - saidwali-help-center
+          - saidwali-jobs-api
+          - saidwali-social-api
+          - saidwali-whatsapp-api
+          - saidwali-whatsapp-server
+      worker_config:
+        description: "Path to that Worker's wrangler.toml or wrangler.jsonc in this repository"
+        required: false
+        type: string
+        default: "wrangler.toml"
+      database:
+        description: "D1 database to update (d1-sql only)"
+        required: false
+        type: choice
+        options:
+          - saidwali-jobs-db
+          - saidwali-whatsapp-db
+          - saidwali-games-db
+          - saidwali-help-db
+          - saidwali-social-db
+      sql_file:
+        description: "Checked-in SQL file under .github/cloudflare-sql/"
+        required: false
+        type: string
+      confirm_destructive_sql:
+        description: "Required only if SQL contains DROP, DELETE, TRUNCATE, or ALTER"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-production-operations
+  cancel-in-progress: false
+
+jobs:
+  production-operation:
+    name: Manually approved Cloudflare production operation
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment: production
+    timeout-minutes: 20
+    steps:
+      - name: Check out the approved main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Validate approval and credentials
+        shell: bash
+        env:
+          OPERATION: ${{ inputs.operation }}
+          APPROVAL: ${{ inputs.confirm_production }}
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_WRITE }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          [[ "$APPROVAL" == "I_APPROVE_PRODUCTION_CHANGE" ]] || {
+            echo "::error::Production confirmation text does not match."
+            exit 1
+          }
+          [[ -n "$CF_API_TOKEN" ]] || {
+            echo "::error::Repository secret CLOUDFLARE_API_TOKEN_WRITE is missing."
+            exit 1
+          }
+          [[ "$CF_ACCOUNT_ID" =~ ^[a-f0-9]{32}$ ]] || {
+            echo "::error::CLOUDFLARE_ACCOUNT_ID is missing or invalid."
+            exit 1
+          }
+          [[ "$OPERATION" == "worker-deploy" || "$OPERATION" == "d1-sql" ]] || {
+            echo "::error::Unsupported operation."
+            exit 1
+          }
+          echo "Approval and required configuration validated. Secret values are not displayed."
+
+      - name: Set up Node.js
+        if: inputs.operation == 'worker-deploy' || inputs.operation == 'd1-sql'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Deploy one existing Worker
+        if: inputs.operation == 'worker-deploy'
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_WRITE }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          WORKER_NAME: ${{ inputs.worker_name }}
+          WORKER_CONFIG: ${{ inputs.worker_config }}
+        run: |
+          set -euo pipefail
+          case "$WORKER_NAME" in
+            afghanistan-jobs-api|saidwali-cloudflare-manager|saidwali-cloudflare-mcp|saidwali-cricket|saidwali-games-api|saidwali-gpt|saidwali-help-center|saidwali-jobs-api|saidwali-social-api|saidwali-whatsapp-api|saidwali-whatsapp-server) ;;
+            *) echo "::error::Worker is not in the approved existing-Worker list."; exit 1 ;;
+          esac
+          [[ -n "$WORKER_CONFIG" && "$WORKER_CONFIG" != /* && "$WORKER_CONFIG" != *".."* ]] || {
+            echo "::error::Worker config path is invalid."
+            exit 1
+          }
+          [[ -f "$WORKER_CONFIG" ]] || {
+            echo "::error::Worker config file does not exist in this repository."
+            exit 1
+          }
+          python - "$WORKER_CONFIG" "$WORKER_NAME" <<'PY'
+          import json, pathlib, sys
+          path = pathlib.Path(sys.argv[1])
+          expected = sys.argv[2]
+          raw = path.read_text(encoding="utf-8")
+          if path.suffix == ".jsonc":
+              import re
+              raw = re.sub(r"/\*.*?\*/|//[^\n]*", "", raw, flags=re.S)
+          if path.suffix in (".json", ".jsonc"):
+              config = json.loads(raw)
+          else:
+              import tomllib
+              config = tomllib.loads(raw)
+          actual = config.get("name")
+          if actual != expected:
+              raise SystemExit("Worker config name does not match the selected Worker; refusing deployment.")
+          PY
+          echo "Deploying only the explicitly selected existing Worker: $WORKER_NAME"
+          npx --yes wrangler@4.45.0 deploy --config "$WORKER_CONFIG"
+
+      - name: Execute one reviewed D1 SQL file remotely
+        if: inputs.operation == 'd1-sql'
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_WRITE }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          DATABASE: ${{ inputs.database }}
+          SQL_FILE: ${{ inputs.sql_file }}
+          DESTRUCTIVE_APPROVAL: ${{ inputs.confirm_destructive_sql }}
+        run: |
+          set -euo pipefail
+          case "$DATABASE" in
+            saidwali-jobs-db|saidwali-whatsapp-db|saidwali-games-db|saidwali-help-db|saidwali-social-db) ;;
+            *) echo "::error::D1 database is not in the approved database list."; exit 1 ;;
+          esac
+          [[ "$SQL_FILE" == .github/cloudflare-sql/*.sql && "$SQL_FILE" != *".."* ]] || {
+            echo "::error::SQL file must be a .sql file inside .github/cloudflare-sql/."
+            exit 1
+          }
+          [[ -f "$SQL_FILE" ]] || {
+            echo "::error::Selected SQL file does not exist in the repository."
+            exit 1
+          }
+          if grep -Eiq '(^|[;[:space:]])(DROP|DELETE|TRUNCATE|ALTER)([;[:space:]]|$)' "$SQL_FILE"; then
+            [[ "$DESTRUCTIVE_APPROVAL" == "I_APPROVE_DESTRUCTIVE_SQL" ]] || {
+              echo "::error::Destructive SQL detected. A separate destructive-SQL confirmation is required."
+              exit 1
+            }
+          fi
+          echo "Executing the selected SQL file against the selected remote D1 database. SQL contents are not printed."
+          npx --yes wrangler@4.45.0 d1 execute "$DATABASE" --remote --file "$SQL_FILE"
+
+      - name: Record safe completion summary
+        if: success()
+        shell: bash
+        env:
+          OPERATION: ${{ inputs.operation }}
+          WORKER_NAME: ${{ inputs.worker_name }}
+          DATABASE: ${{ inputs.database }}
+        run: |
+          {
+            echo "## Cloudflare production operation"
+            echo
+            echo "- Operation: `$OPERATION`"
+            if [[ "$OPERATION" == "worker-deploy" ]]; then
+              echo "- Selected Worker: `$WORKER_NAME`"
+            else
+              echo "- Selected D1 database: `$DATABASE`"
+            fi
+            echo "- Secret values and SQL contents: not included"
+            echo "- No source-code artifacts were created"
+          } >> "$GITHUB_STEP_SUMMARY"
