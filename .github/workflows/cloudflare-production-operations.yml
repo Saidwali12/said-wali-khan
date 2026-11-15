@@ -31,10 +31,18 @@ on:
           - saidwali-whatsapp-api
           - saidwali-whatsapp-server
       worker_config:
-        description: "Path to that Worker's wrangler.toml or wrangler.jsonc in this repository"
+        description: "Path to that Worker's reviewed wrangler.toml in this repository"
         required: false
         type: string
         default: "wrangler.toml"
+      worker_config_sha256:
+        description: "Expected SHA-256 of the reviewed Wrangler config (64 hex characters)"
+        required: false
+        type: string
+      worker_entrypoint_sha256:
+        description: "Expected SHA-256 of the Worker main entrypoint (64 hex characters)"
+        required: false
+        type: string
       database:
         description: "D1 database to update (d1-sql only)"
         required: false
@@ -49,8 +57,16 @@ on:
         description: "Checked-in SQL file under .github/cloudflare-sql/"
         required: false
         type: string
+      sql_sha256:
+        description: "Expected SHA-256 of the reviewed SQL file (64 hex characters)"
+        required: false
+        type: string
+      confirm_sql_execution:
+        description: "Required for every remote SQL execution: I_APPROVE_SQL_EXECUTION"
+        required: false
+        type: string
       confirm_destructive_sql:
-        description: "Required only if SQL contains DROP, DELETE, TRUNCATE, or ALTER"
+        description: "Additional confirmation for DROP, DELETE, TRUNCATE, or ALTER"
         required: false
         type: string
 
@@ -116,39 +132,57 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           WORKER_NAME: ${{ inputs.worker_name }}
           WORKER_CONFIG: ${{ inputs.worker_config }}
+          EXPECTED_CONFIG_SHA256: ${{ inputs.worker_config_sha256 }}
+          EXPECTED_ENTRYPOINT_SHA256: ${{ inputs.worker_entrypoint_sha256 }}
         run: |
           set -euo pipefail
           case "$WORKER_NAME" in
             afghanistan-jobs-api|saidwali-cloudflare-manager|saidwali-cloudflare-mcp|saidwali-cricket|saidwali-games-api|saidwali-gpt|saidwali-help-center|saidwali-jobs-api|saidwali-social-api|saidwali-whatsapp-api|saidwali-whatsapp-server) ;;
             *) echo "::error::Worker is not in the approved existing-Worker list."; exit 1 ;;
           esac
-          [[ -n "$WORKER_CONFIG" && "$WORKER_CONFIG" != /* && "$WORKER_CONFIG" != *".."* ]] || {
-            echo "::error::Worker config path is invalid."
+          [[ "$WORKER_CONFIG" == *.toml && "$WORKER_CONFIG" != /* && "$WORKER_CONFIG" != *".."* ]] || {
+            echo "::error::Only a repository-local wrangler.toml config path is allowed."
             exit 1
           }
-          [[ -f "$WORKER_CONFIG" ]] || {
-            echo "::error::Worker config file does not exist in this repository."
+          [[ "$EXPECTED_CONFIG_SHA256" =~ ^[a-fA-F0-9]{64}$ ]] || {
+            echo "::error::A valid expected config SHA-256 is required."
             exit 1
           }
-          python - "$WORKER_CONFIG" "$WORKER_NAME" <<'PY'
-          import json, pathlib, sys
+          [[ "$EXPECTED_ENTRYPOINT_SHA256" =~ ^[a-fA-F0-9]{64}$ ]] || {
+            echo "::error::A valid expected Worker entrypoint SHA-256 is required."
+            exit 1
+          }
+          workspace="$(realpath -e .)"
+          config_real="$(realpath -e -- "$WORKER_CONFIG")"
+          [[ "$config_real" == "$workspace/"* && -f "$config_real" && ! -L "$WORKER_CONFIG" ]] || {
+            echo "::error::Worker config must be a regular file inside this repository, not a symlink."
+            exit 1
+          }
+          actual_config_sha="$(sha256sum "$config_real" | cut -d ' ' -f 1)"
+          [[ "${actual_config_sha,,}" == "${EXPECTED_CONFIG_SHA256,,}" ]] || {
+            echo "::error::Worker config SHA-256 does not match the reviewed value."
+            exit 1
+          }
+          python - "$config_real" "$WORKER_NAME" "$workspace" "$EXPECTED_ENTRYPOINT_SHA256" <<'PY'
+          import hashlib, pathlib, sys, tomllib
           path = pathlib.Path(sys.argv[1])
-          expected = sys.argv[2]
-          raw = path.read_text(encoding="utf-8")
-          if path.suffix == ".jsonc":
-              import re
-              raw = re.sub(r"/\*.*?\*/|//[^\n]*", "", raw, flags=re.S)
-          if path.suffix in (".json", ".jsonc"):
-              config = json.loads(raw)
-          else:
-              import tomllib
-              config = tomllib.loads(raw)
-          actual = config.get("name")
-          if actual != expected:
+          expected_name, workspace, expected_hash = sys.argv[2:]
+          config = tomllib.loads(path.read_text(encoding="utf-8"))
+          if config.get("name") != expected_name:
               raise SystemExit("Worker config name does not match the selected Worker; refusing deployment.")
+          main = config.get("main")
+          if not isinstance(main, str) or not main or pathlib.PurePosixPath(main).is_absolute() or ".." in pathlib.PurePosixPath(main).parts:
+              raise SystemExit("Wrangler config must declare a safe repository-relative main entrypoint.")
+          root = pathlib.Path(workspace).resolve()
+          entry = (path.parent / main).resolve(strict=True)
+          if root not in entry.parents or not entry.is_file() or entry.is_symlink():
+              raise SystemExit("Worker main entrypoint must be a regular file inside this repository.")
+          actual = hashlib.sha256(entry.read_bytes()).hexdigest()
+          if actual.lower() != expected_hash.lower():
+              raise SystemExit("Worker entrypoint SHA-256 does not match the reviewed value.")
           PY
-          echo "Deploying only the explicitly selected existing Worker: $WORKER_NAME"
-          npx --yes wrangler@4.45.0 deploy --config "$WORKER_CONFIG"
+          echo "Deploying only the explicitly selected Worker after config and entrypoint hash verification: $WORKER_NAME"
+          npx --yes wrangler@4.45.0 deploy --config "$config_real"
 
       - name: Execute one reviewed D1 SQL file remotely
         if: inputs.operation == 'd1-sql'
@@ -158,6 +192,8 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           DATABASE: ${{ inputs.database }}
           SQL_FILE: ${{ inputs.sql_file }}
+          EXPECTED_SQL_SHA256: ${{ inputs.sql_sha256 }}
+          SQL_APPROVAL: ${{ inputs.confirm_sql_execution }}
           DESTRUCTIVE_APPROVAL: ${{ inputs.confirm_destructive_sql }}
         run: |
           set -euo pipefail
@@ -169,18 +205,33 @@ jobs:
             echo "::error::SQL file must be a .sql file inside .github/cloudflare-sql/."
             exit 1
           }
-          [[ -f "$SQL_FILE" ]] || {
-            echo "::error::Selected SQL file does not exist in the repository."
+          [[ "$SQL_APPROVAL" == "I_APPROVE_SQL_EXECUTION" ]] || {
+            echo "::error::Every remote SQL execution requires the explicit SQL approval phrase."
             exit 1
           }
-          if grep -Eiq '(^|[;[:space:]])(DROP|DELETE|TRUNCATE|ALTER)([;[:space:]]|$)' "$SQL_FILE"; then
+          [[ "$EXPECTED_SQL_SHA256" =~ ^[a-fA-F0-9]{64}$ ]] || {
+            echo "::error::A valid expected SQL SHA-256 is required."
+            exit 1
+          }
+          workspace="$(realpath -e .)"
+          sql_real="$(realpath -e -- "$SQL_FILE")"
+          [[ "$sql_real" == "$workspace/.github/cloudflare-sql/"* && -f "$sql_real" && ! -L "$SQL_FILE" ]] || {
+            echo "::error::SQL must resolve to a regular non-symlink file inside .github/cloudflare-sql/."
+            exit 1
+          }
+          actual_sql_sha="$(sha256sum "$sql_real" | cut -d ' ' -f 1)"
+          [[ "${actual_sql_sha,,}" == "${EXPECTED_SQL_SHA256,,}" ]] || {
+            echo "::error::SQL file SHA-256 does not match the reviewed value."
+            exit 1
+          }
+          if grep -Eiq '(^|[;[:space:]])(DROP|DELETE|TRUNCATE|ALTER)([;[:space:]]|$)' "$sql_real"; then
             [[ "$DESTRUCTIVE_APPROVAL" == "I_APPROVE_DESTRUCTIVE_SQL" ]] || {
-              echo "::error::Destructive SQL detected. A separate destructive-SQL confirmation is required."
+              echo "::error::Destructive SQL detected. A second destructive-SQL confirmation is required."
               exit 1
             }
           fi
-          echo "Executing the selected SQL file against the selected remote D1 database. SQL contents are not printed."
-          npx --yes wrangler@4.45.0 d1 execute "$DATABASE" --remote --file "$SQL_FILE"
+          echo "Executing the hash-verified SQL file against the selected remote D1 database. SQL contents are not printed."
+          npx --yes wrangler@4.45.0 d1 execute "$DATABASE" --remote --file "$sql_real"
 
       - name: Record safe completion summary
         if: success()
