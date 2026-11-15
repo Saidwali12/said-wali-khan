@@ -123,27 +123,44 @@
       "verificationLevel": "detail_page_checked"
     },
     {
-      "id": "wazifaha-vac-78441",
-      "vacancyRef": "VAC-78441",
-      "title": "Enumerator (Economic Resilience)",
-      "organization": "CTG Afghanistan",
+      "id": "acbar-146940",
+      "vacancyRef": null,
+      "title": "NTA تجارتي متخصص (Re Announced)",
+      "organization": "ننګرهار وادي کرنیز امارتي شرکت",
       "location": [
-        "kunar",
-        "nuristan",
-        "laghman",
         "nangarhar"
       ],
-      "dutyStation": "Kunar, Nuristan, Laghman, Nangarhar",
-      "employmentType": "Full time",
-      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د اصلي اعلان او د کار ورکوونکي پاڼه وګورئ.",
-      "expiryDate": "2026-11-22",
-      "applyUrl": "https://app.tayohr.io/jobs/detail/vac-78441-enumerator-economic-resilience-77127",
-      "applyEmail": "",
-      "sourceName": "Wazifaha (employer contact checked)",
-      "sourceUrl": "https://wazifaha.com/jobs/enumerator-economic-resilience",
-      "applicationMode": "online",
+      "dutyStation": "Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-12-05",
+      "applyUrl": "",
+      "applyEmail": "hr@nvaec.gov.af",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146940/nta-tgarty-mtkhss-re-announced",
+      "applicationMode": "email",
       "verified": true,
-      "verificationLevel": "aggregator_detail_and_employer_contact_checked"
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-146941",
+      "vacancyRef": null,
+      "title": "مالي متخصص NTA (Re Announced)",
+      "organization": "ننګرهار وادي کرنیز امارتي شرکت",
+      "location": [
+        "nangarhar"
+      ],
+      "dutyStation": "Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-12-05",
+      "applyUrl": "",
+      "applyEmail": "hr@nvaec.gov.af",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146941/maly-mtkhss-nta-re-announced",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
     },
     {
       "id": "acbar-146925",
@@ -211,7 +228,7 @@
     "sources": {
       "ACBAR": "active_detail_verified",
       "WazifaGroup": "discovery_only_not_yet_automated",
-      "Wazifaha": "active_employer_contact_checked",
+      "Wazifaha": "no_matching_verified_jobs",
       "Jobs.af": "discovery_only_not_yet_automated",
       "OfficialGovernment": "discovery_only_not_yet_automated",
       "UNandINGO": "discovery_only_not_yet_automated"
