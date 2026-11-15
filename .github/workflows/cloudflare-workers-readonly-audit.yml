@@ -1,0 +1,153 @@
+name: Cloudflare Workers read-only source audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-workers-readonly-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: Export Worker code and safe metadata (read-only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Validate configuration
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          [[ -n "$CF_API_TOKEN" ]] || { echo "::error::CLOUDFLARE_API_TOKEN is missing"; exit 1; }
+          [[ "$CF_ACCOUNT_ID" =~ ^[a-f0-9]{32}$ ]] || { echo "::error::CLOUDFLARE_ACCOUNT_ID is missing or invalid"; exit 1; }
+
+      - name: Read Worker code, settings, and deployment history
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/cloudflare-workers-audit"
+          mkdir -p "$root/workers"
+          base="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID"
+          headers=(-H "Authorization: Bearer $CF_API_TOKEN" -H "Accept: application/json")
+
+          request_json() {
+            local url="$1" out="$2" code
+            code="$(curl --silent --show-error --output "$out" --write-out '%{http_code}' "${headers[@]}" "$url")"
+            if [[ "$code" != "200" ]]; then
+              echo "::error::Read-only API request failed with HTTP $code: ${url#https://api.cloudflare.com/client/v4}"
+              if jq -e . "$out" >/dev/null 2>&1; then
+                jq -c '{success, errors: [.errors[]? | {code, message}]}' "$out"
+              fi
+              return 1
+            fi
+            jq -e '.success == true' "$out" >/dev/null || {
+              jq -c '{success, errors: [.errors[]? | {code, message}]}' "$out"
+              return 1
+            }
+          }
+
+          list="$root/workers-list.json"
+          request_json "$base/workers/scripts?per_page=100" "$list"
+          jq -r '.result[]?.id' "$list" > "$root/worker-names.txt"
+          count="$(wc -l < "$root/worker-names.txt" | tr -d ' ')"
+          echo "Workers found: $count"
+          if [[ "$count" -eq 0 ]]; then
+            echo "::error::No Worker scripts were returned; stopping rather than creating an empty audit."
+            exit 1
+          fi
+
+          while IFS= read -r name; do
+            [[ -n "$name" ]] || continue
+            dir="$root/workers/$name"
+            mkdir -p "$dir"
+            echo "Reading metadata for Worker: $name"
+
+            # Script download returns raw source. It is saved only as an artifact;
+            # it is never printed into workflow logs or the job summary.
+            code="$(curl --silent --show-error --output "$dir/worker-source.js" --write-out '%{http_code}' "${headers[@]}" "$base/workers/scripts/$name")"
+            if [[ "$code" != "200" ]]; then
+              echo "::error::Could not read source for $name (HTTP $code). Check Workers Content Read-Only permission."
+              rm -f "$dir/worker-source.js"
+              exit 1
+            fi
+
+            settings="$dir/settings-response.json"
+            request_json "$base/workers/scripts/$name/settings" "$settings"
+            # Keep binding names/types and non-sensitive configuration only.
+            jq '
+              def scrub:
+                if type == "object" then
+                  with_entries(
+                    if (.key | test("secret|token|password|credential|private.?key|value|text"; "i"))
+                    then .value = "[REDACTED]"
+                    else .value |= scrub
+                    end
+                  )
+                elif type == "array" then map(scrub)
+                else .
+                end;
+              scrub
+            ' "$settings" > "$dir/settings-safe.json"
+            rm "$settings"
+
+            script_settings="$dir/script-settings-response.json"
+            request_json "$base/workers/scripts/$name/script-settings" "$script_settings"
+            jq '
+              def scrub:
+                if type == "object" then
+                  with_entries(
+                    if (.key | test("secret|token|password|credential|private.?key|value|text"; "i"))
+                    then .value = "[REDACTED]"
+                    else .value |= scrub
+                    end
+                  )
+                elif type == "array" then map(scrub)
+                else .
+                end;
+              scrub
+            ' "$script_settings" > "$dir/script-settings-safe.json"
+            rm "$script_settings"
+
+            deployments="$dir/deployments-response.json"
+            request_json "$base/workers/scripts/$name/deployments?per_page=100" "$deployments"
+            jq '{success, result, result_info}' "$deployments" > "$dir/deployments.json"
+            rm "$deployments"
+          done < "$root/worker-names.txt"
+
+          cat > "$root/README.txt" <<'EOF'
+          Cloudflare Workers read-only audit export.
+          Contains Worker source code, sanitized settings, and deployment history.
+          No Cloudflare resources were changed, deployed, or deleted.
+          IMPORTANT: inspect source files locally for accidentally hard-coded credentials
+          before sharing this archive. Sanitizing settings does not guarantee source code
+          contains no secrets. Never publish this archive in a public repository.
+          EOF
+
+          {
+            echo "# Cloudflare Workers read-only audit"
+            echo
+            echo "- Workers discovered: $count"
+            echo "- Source code: downloaded for each listed Worker"
+            echo "- Settings and deployment history: read-only export"
+            echo "- Secret values from settings responses: redacted"
+            echo "- Worker source code is stored only in a short-lived workflow artifact, not logs"
+            echo "- No Worker, D1 database, Pages project, route, binding, or secret was modified"
+            echo
+            echo "Download the artifact, inspect it locally for hard-coded credentials, then upload it here for code review."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload audit archive (short retention)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-workers-readonly-audit
+          path: ${{ runner.temp }}/cloudflare-workers-audit/
+          if-no-files-found: error
+          retention-days: 1
