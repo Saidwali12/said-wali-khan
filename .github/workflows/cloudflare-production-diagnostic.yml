@@ -38,6 +38,7 @@ jobs:
           echo "Cloudflare Account ID variable: present and format valid"
 
           node <<'NODE'
+          (async () => {
           const token = process.env.CLOUDFLARE_API_TOKEN_WRITE;
           if (!token) {
             console.error("Cloudflare token verification: unavailable");
@@ -64,6 +65,10 @@ jobs:
           }
 
           console.log("Cloudflare Write API token: ACTIVE");
+          })().catch(() => {
+            console.error("Cloudflare token verification: failed");
+            process.exit(1);
+          });
           NODE
 
           echo "Diagnostic completed. No Worker or D1 resources were modified."
