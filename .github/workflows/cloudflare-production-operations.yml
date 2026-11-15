@@ -8,11 +8,12 @@ on:
         required: true
         type: choice
         options:
+          - preflight
           - worker-deploy
           - d1-sql
       confirm_production:
         description: "Type I_APPROVE_PRODUCTION_CHANGE to authorize this run"
-        required: true
+        required: false
         type: string
       worker_name:
         description: "Existing Worker to deploy (worker-deploy only)"
@@ -100,10 +101,12 @@ jobs:
           CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -euo pipefail
-          [[ "$APPROVAL" == "I_APPROVE_PRODUCTION_CHANGE" ]] || {
-            echo "::error::Production confirmation text does not match."
-            exit 1
-          }
+          if [[ "$OPERATION" != "preflight" ]]; then
+            [[ "$APPROVAL" == "I_APPROVE_PRODUCTION_CHANGE" ]] || {
+              echo "::error::Production confirmation text does not match."
+              exit 1
+            }
+          fi
           [[ -n "$CF_API_TOKEN" ]] || {
             echo "::error::Repository secret CLOUDFLARE_API_TOKEN_WRITE is missing."
             exit 1
@@ -112,17 +115,55 @@ jobs:
             echo "::error::CLOUDFLARE_ACCOUNT_ID is missing or invalid."
             exit 1
           }
-          [[ "$OPERATION" == "worker-deploy" || "$OPERATION" == "d1-sql" ]] || {
+          [[ "$OPERATION" == "preflight" || "$OPERATION" == "worker-deploy" || "$OPERATION" == "d1-sql" ]] || {
             echo "::error::Unsupported operation."
             exit 1
           }
           echo "Approval and required configuration validated. Secret values are not displayed."
 
       - name: Set up Node.js
-        if: inputs.operation == 'worker-deploy' || inputs.operation == 'd1-sql'
+        if: inputs.operation == 'preflight' || inputs.operation == 'worker-deploy' || inputs.operation == 'd1-sql'
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+
+      - name: Verify Cloudflare token without changing production resources
+        if: inputs.operation == 'preflight'
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_WRITE }}
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          (async () => {
+            const token = process.env.CF_API_TOKEN;
+            if (!token) {
+              console.error("Cloudflare token verification: unavailable");
+              process.exit(1);
+            }
+            const response = await fetch("https://api.cloudflare.com/client/v4/user/tokens/verify", {
+              method: "GET",
+              headers: { Authorization: `Bearer ${token}` },
+              signal: AbortSignal.timeout(15000)
+            });
+            let data;
+            try {
+              data = await response.json();
+            } catch {
+              console.error("Cloudflare token verification: failed (invalid response)");
+              process.exit(1);
+            }
+            if (!response.ok || data?.success !== true || data?.result?.status !== "active") {
+              console.error("Cloudflare token verification: failed or token is not active");
+              process.exit(1);
+            }
+            console.log("Cloudflare Write API token: ACTIVE");
+            console.log("Preflight complete. No Worker or D1 resources were modified.");
+          })().catch(() => {
+            console.error("Cloudflare token verification: failed");
+            process.exit(1);
+          });
+          NODE
 
       - name: Deploy one existing Worker
         if: inputs.operation == 'worker-deploy'
