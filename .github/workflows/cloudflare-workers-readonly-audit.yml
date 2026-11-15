@@ -1,4 +1,4 @@
-name: Cloudflare Workers read-only source audit
+name: Cloudflare Workers read-only metadata audit
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   audit:
-    name: Export Worker code and safe metadata (read-only)
+    name: Export safe Worker metadata only (read-only)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -70,14 +70,7 @@ jobs:
             mkdir -p "$dir"
             echo "Reading metadata for Worker: $name"
 
-            # Script download returns raw source. It is saved only as an artifact;
-            # it is never printed into workflow logs or the job summary.
-            code="$(curl --silent --show-error --output "$dir/worker-source.js" --write-out '%{http_code}' "${headers[@]}" "$base/workers/scripts/$name")"
-            if [[ "$code" != "200" ]]; then
-              echo "::error::Could not read source for $name (HTTP $code). Check Workers Content Read-Only permission."
-              rm -f "$dir/worker-source.js"
-              exit 1
-            fi
+            # This repository is public. Never export Worker source code into GitHub artifacts.
 
             settings="$dir/settings-response.json"
             request_json "$base/workers/scripts/$name/settings" "$settings"
@@ -123,25 +116,23 @@ jobs:
           done < "$root/worker-names.txt"
 
           cat > "$root/README.txt" <<'EOF'
-          Cloudflare Workers read-only audit export.
-          Contains Worker source code, sanitized settings, and deployment history.
+          Cloudflare Workers read-only metadata audit export.
+          Contains sanitized Worker settings and deployment history only.
+          Worker source code is intentionally excluded because this repository is public.
           No Cloudflare resources were changed, deployed, or deleted.
-          IMPORTANT: inspect source files locally for accidentally hard-coded credentials
-          before sharing this archive. Sanitizing settings does not guarantee source code
-          contains no secrets. Never publish this archive in a public repository.
           EOF
 
           {
             echo "# Cloudflare Workers read-only audit"
             echo
             echo "- Workers discovered: $count"
-            echo "- Source code: downloaded for each listed Worker"
+            echo "- Source code: NOT exported (public repository safety)"
             echo "- Settings and deployment history: read-only export"
             echo "- Secret values from settings responses: redacted"
-            echo "- Worker source code is stored only in a short-lived workflow artifact, not logs"
+            echo "- Artifact contains sanitized metadata only; no Worker source code"
             echo "- No Worker, D1 database, Pages project, route, binding, or secret was modified"
             echo
-            echo "Download the artifact, inspect it locally for hard-coded credentials, then upload it here for code review."
+            echo "The artifact contains metadata only. For source-code review, use a private repository or another private transfer method."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload audit archive (short retention)
