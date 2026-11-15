@@ -49164,56 +49164,62 @@ async function loginUser() {
 /* START */
 
 async function startApplication() {
+  if (startApplicationPromise) return startApplicationPromise;
 
-  const authPage =
-    document.getElementById("authPage");
-
-  const app =
-    document.getElementById("app");
-
-  if (authPage) authPage.classList.add("hidden");
-  if (app) app.classList.remove("hidden");
-
-  // د Login وروسته د اوسني کارونکي معلومات حتمي واخلئ.
-  if (typeof loadCurrentUser === "function") {
+  startApplicationPromise = (async function () {
+    // Login پاڼه تر هغه مه پټوه چې Session په بریالیتوب تایید شوی نه وي.
     const meResult = await loadCurrentUser();
 
     if (!meResult || !meResult.success || !currentUser) {
       console.error("S-Book current user load failed:", meResult);
+      const status = Number(meResult && meResult.http_status);
 
-      sessionToken = "";
+      if (status === 401 || status === 403) {
+        sessionToken = "";
+        localStorage.removeItem("saidwali_session_token");
+      }
+
       currentUser = null;
-      localStorage.removeItem("saidwali_session_token");
-
+      const app = document.getElementById("app");
+      const authPage = document.getElementById("authPage");
       if (app) app.classList.add("hidden");
       if (authPage) authPage.classList.remove("hidden");
-
       if (typeof showLoginForm === "function") showLoginForm();
       if (typeof setMessage === "function") {
         setMessage(
           "loginMessage",
-          meResult?.message || "د کارونکي معلومات ترلاسه نه شول. بیا Login وکړئ."
+          meResult && meResult.message
+            ? meResult.message
+            : "د حساب Session تایید نه شو. مهرباني وکړئ بیا Login وکړئ."
         );
       }
-      return;
+      return false;
     }
 
-    // ځینې API ځوابونه id د user_id په نوم رااستوي.
     if (!currentUser.id && currentUser.user_id) {
       currentUser.id = currentUser.user_id;
     }
 
-    if (typeof updateUserUI === "function") {
-      updateUserUI();
+    const authPage = document.getElementById("authPage");
+    const app = document.getElementById("app");
+    if (authPage) authPage.classList.add("hidden");
+    if (app) app.classList.remove("hidden");
+
+    if (typeof updateUserUI === "function") updateUserUI();
+
+    if (typeof showFeedPage === "function") {
+      showFeedPage();
+    } else if (typeof loadFeed === "function") {
+      await loadFeed();
     }
-  }
+    return true;
+  })();
 
-  if (typeof showFeedPage === "function") {
-    showFeedPage();
-  } else if (typeof loadFeed === "function") {
-    await loadFeed();
+  try {
+    return await startApplicationPromise;
+  } finally {
+    startApplicationPromise = null;
   }
-
 }
 
 
