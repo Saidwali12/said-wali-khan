@@ -1,0 +1,143 @@
+name: Read-only Cloudflare D1 schema audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-d1-readonly-schema-audit
+  cancel-in-progress: false
+
+jobs:
+  schema-audit:
+    name: Read D1 schemas and save report privately
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out private audit repository
+        uses: actions/checkout@v4
+        with:
+          repository: Saidwali12/saidwali-workers-private-audit
+          ref: main
+          token: ${{ secrets.PRIVATE_AUDIT_REPO_TOKEN }}
+          path: private-audit
+          persist-credentials: true
+
+      - name: Validate credentials without displaying them
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_AUDIT_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          [[ -n "$CF_API_TOKEN" ]] || { echo "::error::Cloudflare read token is missing."; exit 1; }
+          [[ -n "$PRIVATE_REPO_TOKEN" ]] || { echo "::error::Private audit repository token is missing."; exit 1; }
+          [[ "$CF_ACCOUNT_ID" =~ ^[a-fA-F0-9]{32}$ ]] || { echo "::error::Cloudflare Account ID is missing or invalid."; exit 1; }
+          [[ -d private-audit/.git ]] || { echo "::error::Private audit repository checkout failed."; exit 1; }
+          echo "Credentials and private repository access are present. Secret values are hidden."
+
+      - name: Retrieve D1 table definitions using SELECT only
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          const account = process.env.CF_ACCOUNT_ID;
+          const token = process.env.CF_API_TOKEN;
+          const allowed = new Set([
+            'saidwali-jobs-db',
+            'saidwali-whatsapp-db',
+            'saidwali-games-db',
+            'saidwali-help-db',
+            'saidwali-social-db'
+          ]);
+          const base = `https://api.cloudflare.com/client/v4/accounts/${account}`;
+          const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+          async function api(url, options = {}) {
+            const response = await fetch(url, { ...options, headers: { ...headers, ...(options.headers || {}) }, signal: AbortSignal.timeout(30000) });
+            let body;
+            try { body = await response.json(); } catch { throw new Error('Cloudflare returned an unreadable response.'); }
+            if (!response.ok || body.success !== true) throw new Error('Cloudflare API request failed; check D1 Read permission and account access.');
+            return body;
+          }
+
+          (async () => {
+            const listing = await api(`${base}/d1/database?per_page=100`);
+            const databases = (listing.result || []).filter(db => allowed.has(db.name));
+            const missing = [...allowed].filter(name => !databases.some(db => db.name === name));
+            if (databases.length === 0) throw new Error('No approved D1 databases were returned.');
+
+            const report = {
+              audit_type: 'read-only D1 schema inventory',
+              created_at: new Date().toISOString(),
+              account_id: account,
+              safety: {
+                data_rows_exported: false,
+                writes_performed: false,
+                sql_used: "SELECT name, type, sql FROM sqlite_master WHERE type IN ('table','index','trigger','view') ORDER BY type, name",
+                secrets_included: false
+              },
+              databases: [],
+              approved_databases_not_found: missing
+            };
+
+            for (const db of databases) {
+              const sql = "SELECT name, type, sql FROM sqlite_master WHERE type IN ('table','index','trigger','view') ORDER BY type, name";
+              const result = await api(`${base}/d1/database/${db.uuid}/query`, {
+                method: 'POST',
+                body: JSON.stringify({ sql })
+              });
+              const queryResult = (result.result || [])[0] || {};
+              const meta = queryResult.meta || {};
+              if (meta.rows_written > 0 || meta.changed_db === true || queryResult.success !== true) {
+                throw new Error(`Read-only safety verification failed for database ${db.name}; report was not saved.`);
+              }
+              report.databases.push({
+                name: db.name,
+                uuid: db.uuid,
+                created_at: db.created_at || null,
+                schema: queryResult.results || []
+              });
+              console.log(`Schema read completed for approved database: ${db.name}; no row data was requested.`);
+            }
+
+            const outDir = path.join('private-audit', 'd1-schema-audit');
+            fs.mkdirSync(outDir, { recursive: true });
+            const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+            fs.writeFileSync(path.join(outDir, `schema-${stamp}.json`), JSON.stringify(report, null, 2) + '\n', { mode: 0o600 });
+            fs.writeFileSync(path.join(outDir, 'README.md'),
+              '# Private D1 schema audit\n\n' +
+              'Contains read-only SQLite schema definitions for approved D1 databases. No application row data, secrets, or SQL mutations are included.\n'
+            );
+            console.log(`Read-only schema report created for ${report.databases.length} database(s); report contents are not printed.`);
+          })().catch(error => {
+            console.error(error.message || 'Read-only D1 schema audit failed.');
+            process.exit(1);
+          });
+          NODE
+
+      - name: Save schema report only to the private audit repository
+        shell: bash
+        working-directory: private-audit
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add d1-schema-audit/
+          if git diff --cached --quiet; then
+            echo "No new schema report was created."
+            exit 0
+          fi
+          git commit -m "Add read-only D1 schema audit"
+          git push origin HEAD:main
+          echo "Read-only D1 schema report saved to the private audit repository."
