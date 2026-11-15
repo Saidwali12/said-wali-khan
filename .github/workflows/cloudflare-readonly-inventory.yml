@@ -106,24 +106,41 @@ jobs:
           }
 
           fetch_pages_projects() {
-            local response
+            local response headers
             response="$(mktemp)"
+            headers="$(mktemp)"
             {
               echo "## Pages projects (read-only)"
               echo
             } >> "${summary}"
 
             local http_code
-            http_code="$(curl --silent --show-error --output "${response}" --write-out '%{http_code}' \
+            http_code="$(curl --silent --show-error --output "${response}" --dump-header "${headers}" --write-out '%{http_code}' \
               --header "Authorization: Bearer ${CF_API_TOKEN}" \
               --header "Content-Type: application/json" \
               "${base}/pages/projects")"
             if [[ "${http_code}" != "200" ]]; then
               echo "::error::Cloudflare Pages inventory request failed (HTTP ${http_code})."
-              show_cloudflare_error_details "${response}"
-              rm -f "${response}"
+              echo "Pages API route: GET /client/v4/accounts/{account_id}/pages/projects"
+              echo "Response content type:"
+              awk 'BEGIN { IGNORECASE=1 } /^content-type:/ { sub(/\\r$/, ""); print; exit }' "${headers}" || true
+              echo "Cloudflare Ray ID:"
+              awk 'BEGIN { IGNORECASE=1 } /^cf-ray:/ { sub(/\\r$/, ""); print; exit }' "${headers}" || true
+              echo "Safe response details (limited fields only):"
+              jq -c '{
+                success: .success,
+                errors: ([.errors[]? | {
+                  code: .code,
+                  message: .message,
+                  source_pointer: (.source.pointer // null)
+                }] | .[:10]),
+                messages: ([.messages[]? | if type == "object" then {code: .code, message: .message} else tostring end] | .[:10]),
+                result_info: .result_info
+              }' "${response}" 2>/dev/null || echo "Response body was not valid JSON."
+              rm -f "${response}" "${headers}"
               exit 1
             fi
+            rm -f "${headers}"
             if [[ "$(jq -r '.success // false' "${response}")" != "true" ]]; then
               echo "::error::Cloudflare returned an unsuccessful Pages response."
               show_cloudflare_error_details "${response}"
