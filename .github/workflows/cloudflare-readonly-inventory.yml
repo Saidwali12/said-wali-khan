@@ -88,6 +88,23 @@ jobs:
             rm -f "${response}"
           }
 
+          show_cloudflare_error_details() {
+            local response_file="$1"
+            local details
+            details="$(jq -r '
+              if (.errors | type) == "array" and (.errors | length) > 0 then
+                .errors[] | "Cloudflare error code: " + (.code | tostring) + " — " + (.message // "No message")
+              else
+                empty
+              end
+            ' "$response_file" 2>/dev/null || true)"
+            if [[ -n "$details" ]]; then
+              printf '%s\n' "$details"
+            else
+              echo "Cloudflare did not return structured error details. Check the Account ID and Pages Read token scope."
+            fi
+          }
+
           fetch_pages_projects() {
             local page=1
             local total_pages=1
@@ -106,13 +123,14 @@ jobs:
                 --header "Content-Type: application/json" \
                 "${base}/pages/projects?page=${page}&per_page=100")"
               if [[ "${http_code}" != "200" ]]; then
-                echo "::error::Cloudflare Pages inventory request failed (HTTP ${http_code}). Check that the API token has Pages Read permission."
+                echo "::error::Cloudflare Pages inventory request failed (HTTP ${http_code})."
+                show_cloudflare_error_details "${response}"
                 rm -f "${response}"
                 exit 1
               fi
               if [[ "$(jq -r '.success // false' "${response}")" != "true" ]]; then
                 echo "::error::Cloudflare returned an unsuccessful Pages response."
-                jq -r '.errors[]? | [.code, .message] | @tsv' "${response}" | head -20
+                show_cloudflare_error_details "${response}"
                 rm -f "${response}"
                 exit 1
               fi
