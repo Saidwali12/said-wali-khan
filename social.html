@@ -2233,74 +2233,57 @@ function escapeHTML(value) {
      START APPLICATION
      ===================================================== */
 
-  async function startApplication() {
+  let startApplicationPromise = null;
 
-    hideElement("authPage");
+async function startApplication() {
+  if (startApplicationPromise) return startApplicationPromise;
 
-    showElement("app");
+  startApplicationPromise = (async function () {
+    // د Session تایید تر بشپړېدو مخکې Login پاڼه مه پټوه.
+    const result = await loadCurrentUser();
 
+    if (!result || !result.success || !currentUser) {
+      console.error("Current user error:", result);
+      const status = Number(result && result.http_status);
 
-    const result =
-      await loadCurrentUser();
-
-
-    if (
-      !result.success
-    ) {
-
-      console.error(
-        "Current user error:",
-        result
-      );
-
-
-      sessionToken = "";
+      // یوازې د رد شوي/ختم شوي Session پر مهال token پاک کړه؛ د شبکې خطا کې یې مه پاکوه.
+      if (status === 401 || status === 403) {
+        sessionToken = "";
+        localStorage.removeItem("saidwali_session_token");
+      }
 
       currentUser = null;
-
-      localStorage.removeItem(
-        "saidwali_session_token"
-      );
-
-
       hideElement("app");
-
       showElement("authPage");
-
       showLoginForm();
-
-
       setMessage(
         "loginMessage",
-        result.message ||
-          "Session ختم شوې، بیا Login وکړه."
+        result && result.message
+          ? result.message
+          : "حساب ته ننوتل تایید نه شول. مهرباني وکړئ بیا Login وکړئ."
       );
-
-      return;
+      return false;
     }
 
-
-    /*
-      User UI تازه کول
-    */
-
+    // یوازې له تایید وروسته اصلي S-BOOK ښکاره کړه.
+    hideElement("authPage");
+    showElement("app");
     updateUserUI();
 
-
-    /*
-      Feed وروسته په بل JS برخه کې
-      load کېږي.
-    */
-
-    if (
-      typeof loadFeed ===
-      "function"
-    ) {
-
+    if (typeof showFeedPage === "function") {
+      showFeedPage();
+    } else if (typeof loadFeed === "function") {
       await loadFeed();
-
     }
+    return true;
+  })();
+
+  try {
+    return await startApplicationPromise;
+  } finally {
+    startApplicationPromise = null;
   }
+}
 
 
   /* =====================================================
@@ -48695,7 +48678,8 @@ async function testWorkerConnection() {
           headers:{
             "Accept":
               "application/json"
-          }
+          },
+          signal: AbortSignal.timeout(8000)
         }
       );
 
@@ -48936,16 +48920,24 @@ async function apiRequest(endpoint, options = {}) {
         "Bearer " + sessionToken;
     }
 
-    const response = await fetch(
-      API_BASE + endpoint,
-      {
-        ...options,
-        headers
-      }
-    );
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 15000);
+    let response;
+
+    try {
+      response = await fetch(
+        API_BASE + endpoint,
+        {
+          ...options,
+          headers,
+          signal: controller.signal
+        }
+      );
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
 
     const data = await response.json();
-
     return data;
 
   } catch (error) {
@@ -49228,32 +49220,9 @@ async function startApplication() {
 /* AUTO LOGIN */
 
 async function checkExistingSession() {
-
-  if (!sessionToken) {
-
-    return;
-
-  }
-
-
-  const result =
-    await apiRequest("/me");
-
-
-  if (result.success) {
-
-    await startApplication();
-
-  } else {
-
-    sessionToken = "";
-
-    localStorage.removeItem(
-      "saidwali_session_token"
-    );
-
-  }
-
+  if (!sessionToken) return;
+  // د Session یوازینی تایید startApplication ترسره کوي؛ دوهم /me مه لېږه.
+  await startApplication();
 }
 
 
