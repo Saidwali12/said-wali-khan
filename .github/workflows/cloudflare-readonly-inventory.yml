@@ -65,7 +65,7 @@ jobs:
             echo "- Mode: read-only; no resources are modified"
             echo
           } >> "${summary}"
-          trap 'status=$?; if [[ "$status" -eq 0 ]]; then printf "\\n**Result: SUCCESS**\\n" >> "$summary"; else printf "\\n**Result: FAILED (exit code %s)**\\n" "$status" >> "$summary"; fi; cat "$summary" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          trap 'status=$?; if [[ "$status" -eq 0 ]]; then printf "\n**Result: SUCCESS**\n" >> "$summary"; else printf "\n**Result: FAILED (exit code %s)**\n" "$status" >> "$summary"; fi; cat "$summary" >> "$GITHUB_STEP_SUMMARY"' EXIT
 
           fetch_and_summarize() {
             local label="$1"
@@ -80,13 +80,13 @@ jobs:
               "${base}${endpoint}")"
             if [[ "${http_code}" != "200" ]]; then
               echo "::error::Cloudflare API request for ${label} failed (HTTP ${http_code}). Check read-only token permissions."
-              printf "\\n### %s — FAILED (HTTP %s)\\n" "$label" "$http_code" >> "${summary}"
+              printf "\n### %s — FAILED (HTTP %s)\n" "$label" "$http_code" >> "${summary}"
               rm -f "${response}"
               exit 1
             fi
             if [[ "$(jq -r '.success // false' "${response}")" != "true" ]]; then
               echo "::error::Cloudflare returned an unsuccessful response for ${label}."
-              printf "\\n### %s — Cloudflare API error\\n" "$label" >> "${summary}"
+              printf "\n### %s — Cloudflare API error\n" "$label" >> "${summary}"
               jq -r '.errors[]? | "- Code " + (.code | tostring) + ": " + (.message // "No message")' "${response}" | head -10 | tee -a "${summary}"
               rm -f "${response}"
               exit 1
@@ -132,7 +132,7 @@ jobs:
               "${base}/pages/projects")"
             if [[ "${http_code}" != "200" ]]; then
               echo "::error::Cloudflare Pages inventory request failed (HTTP ${http_code})."
-              printf "\\n### Pages projects — FAILED (HTTP %s)\\n" "$http_code" >> "${summary}"
+              printf "\n### Pages projects — FAILED (HTTP %s)\n" "$http_code" >> "${summary}"
               echo "Pages API route: GET /client/v4/accounts/{account_id}/pages/projects"
               echo "Response content type:"
               awk 'BEGIN { IGNORECASE=1 } /^content-type:/ { sub(/\\r$/, ""); print; exit }' "${headers}" || true
@@ -155,7 +155,7 @@ jobs:
             rm -f "${headers}"
             if [[ "$(jq -r '.success // false' "${response}")" != "true" ]]; then
               echo "::error::Cloudflare returned an unsuccessful Pages response."
-              printf "\\n### Pages projects — unsuccessful Cloudflare response\\n" >> "${summary}"
+              printf "\n### Pages projects — unsuccessful Cloudflare response\n" >> "${summary}"
               show_cloudflare_error_details "${response}" | tee -a "${summary}"
               rm -f "${response}"
               exit 1
