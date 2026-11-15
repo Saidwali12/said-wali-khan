@@ -121,7 +121,7 @@ jobs:
               http_code="$(curl --silent --show-error --output "${response}" --write-out '%{http_code}' \
                 --header "Authorization: Bearer ${CF_API_TOKEN}" \
                 --header "Content-Type: application/json" \
-                "${base}/pages/projects?page=${page}&per_page=100")"
+                "${base}/pages/projects?page=${page}&per_page=20")"
               if [[ "${http_code}" != "200" ]]; then
                 echo "::error::Cloudflare Pages inventory request failed (HTTP ${http_code})."
                 show_cloudflare_error_details "${response}"
