@@ -48842,32 +48842,22 @@ function createApiStatusBox() {
 
 document.addEventListener(
   "DOMContentLoaded",
-  async function() {
+  function() {
 
+    // د Worker د روغتیا ازموینه دې د Login/اصلي پاڼې د پرانیستلو مخه نه نیسي.
     createApiStatusBox();
+    testWorkerConnection();
 
-
-    await testWorkerConnection();
-
-
-    if (
-      typeof checkCurrentSession ===
-      "function"
-    ) {
-
-      await checkCurrentSession();
-
-    }
-
-
-    if (
-      currentUser &&
-      typeof startNotificationRefresh ===
-      "function"
-    ) {
-
-      startNotificationRefresh();
-
+    // د Session تایید یوازې یو ځل ترسره کېږي؛ پخوانی checkCurrentSession
+    // دلته دوهمه /me غوښتنه کوله او د پاڼې پرانیستل یې ځنډول.
+    if (sessionToken && typeof checkExistingSession === "function") {
+      Promise.resolve(checkExistingSession()).then(function() {
+        if (currentUser && typeof startNotificationRefresh === "function") {
+          startNotificationRefresh();
+        }
+      }).catch(function(error) {
+        console.error("S-BOOK startup:", error);
+      });
     }
 
   }
