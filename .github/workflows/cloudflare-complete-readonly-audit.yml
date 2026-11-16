@@ -1,0 +1,140 @@
+name: Cloudflare complete read-only audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-complete-readonly-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: Inspect Cloudflare configuration (read-only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Validate credentials
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          [[ -n "$CF_API_TOKEN" ]] || { echo "::error::Missing CLOUDFLARE_API_TOKEN"; exit 1; }
+          [[ "$CF_ACCOUNT_ID" =~ ^[a-f0-9]{32}$ ]] || { echo "::error::Missing or invalid CLOUDFLARE_ACCOUNT_ID"; exit 1; }
+          echo "Credentials are configured. Secret values are not printed."
+
+      - name: Read Workers, D1, R2, zones, routes and bindings
+        shell: bash
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          base="https://api.cloudflare.com/client/v4"
+          account="$base/accounts/$CF_ACCOUNT_ID"
+          report="$RUNNER_TEMP/cloudflare-complete-audit.md"
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          : > "$report"
+
+          request() {
+            local label="$1" url="$2" output="$3" code
+            code="$(curl --silent --show-error --output "$output" --write-out '%{http_code}' \
+              --header "Authorization: Bearer $CF_API_TOKEN" \
+              --header "Content-Type: application/json" "$url")"
+            if [[ "$code" != "200" ]] || [[ "$(jq -r '.success // false' "$output" 2>/dev/null || echo false)" != "true" ]]; then
+              echo "- **$label:** unavailable (HTTP $code; check the matching read permission)." >> "$report"
+              return 1
+            fi
+            return 0
+          }
+
+          {
+            echo "# Cloudflare complete read-only audit"
+            echo
+            echo "- Account ID: hidden"
+            echo "- Mode: GET-only; no deployments, SQL writes, settings changes, or deletions"
+            echo "- Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo
+          } >> "$report"
+
+          echo "## 1. Workers and settings / bindings" >> "$report"
+          if request "Workers list" "$account/workers/scripts" "$tmp/workers.json"; then
+            jq -r '.result[]?.id' "$tmp/workers.json" > "$tmp/workers.txt"
+            count="$(wc -l < "$tmp/workers.txt" | tr -d ' ')"
+            echo "- Workers found: $count" >> "$report"
+            while IFS= read -r worker; do
+              [[ -n "$worker" ]] || continue
+              safe="$(printf '%s' "$worker" | sed 's/[^a-zA-Z0-9._-]/_/g')"
+              if request "Settings for $worker" "$account/workers/scripts/$worker/settings" "$tmp/$safe.json"; then
+                jq -r --arg name "$worker" '
+                  .result as $r |
+                  "- **" + $name + "**" +
+                  " — bindings: " + ((($r.bindings // []) | map(.type + ":" + .name) | join(", ")) // "none reported") +
+                  "; workers_dev: " + (($r.workers_dev // "not reported")|tostring) +
+                  "; compatibility_date: " + (($r.compatibility_date // "not reported")|tostring)
+                ' "$tmp/$safe.json" >> "$report"
+              fi
+            done < "$tmp/workers.txt"
+          else
+            echo "- Workers inventory: unavailable; check Workers Scripts Read permission." >> "$report"
+          fi
+          echo "- Secret values are never requested or printed; only binding names/types are summarized." >> "$report"
+          echo >> "$report"
+
+          echo "## 2. D1 databases (inventory only)" >> "$report"
+          if request "D1 inventory" "$account/d1/database" "$tmp/d1.json"; then
+            jq -r '.result[]? | "- **" + .name + "** — UUID: " + .uuid' "$tmp/d1.json" >> "$report"
+            [[ "$(jq '.result | length' "$tmp/d1.json")" -gt 0 ]] || echo "- No D1 databases returned." >> "$report"
+          else
+            echo "- D1 inventory unavailable; check D1 Read permission." >> "$report"
+          fi
+          echo "- This stage does not execute SQL. Table/schema inspection remains a separate read-only audit requiring explicit D1 query permission." >> "$report"
+          echo >> "$report"
+
+          echo "## 3. R2 buckets" >> "$report"
+          if request "R2 bucket inventory" "$account/r2/buckets?per_page=100" "$tmp/r2.json"; then
+            jq -r '.result.buckets[]? | "- **" + .name + "** — creation date: " + (.creation_date // "not reported")' "$tmp/r2.json" >> "$report"
+            [[ "$(jq '.result.buckets | length' "$tmp/r2.json")" -gt 0 ]] || echo "- No R2 buckets returned." >> "$report"
+          else
+            echo "- R2 inventory unavailable; check R2 Storage Read permission or confirm R2 is enabled." >> "$report"
+          fi
+          echo >> "$report"
+
+          echo "## 4. Zones, domains and Worker routes" >> "$report"
+          if request "Zones inventory" "$base/zones?account.id=$CF_ACCOUNT_ID&per_page=50" "$tmp/zones.json"; then
+            jq -r '.result[]? | "- **" + .name + "** — status: " + (.status // "unknown") + "; zone ID hidden in this report"' "$tmp/zones.json" >> "$report"
+            while IFS=$'\t' read -r zone_id zone_name; do
+              [[ -n "$zone_id" ]] || continue
+              safe="$(printf '%s' "$zone_name" | sed 's/[^a-zA-Z0-9._-]/_/g')"
+              if request "Routes for $zone_name" "$base/zones/$zone_id/workers/routes" "$tmp/routes-$safe.json"; then
+                jq -r --arg zone "$zone_name" '.result[]? | "- Route on " + $zone + ": " + (.pattern // "pattern unavailable") + " → " + (.script // "service binding/worker not reported")' "$tmp/routes-$safe.json" >> "$report"
+              fi
+            done < <(jq -r '.result[]? | [.id, .name] | @tsv' "$tmp/zones.json")
+            [[ "$(jq '.result | length' "$tmp/zones.json")" -gt 0 ]] || echo "- No zones returned for this account." >> "$report"
+          else
+            echo "- Zones/routes unavailable; check Zone Read and Workers Routes Read permissions." >> "$report"
+          fi
+          echo >> "$report"
+
+          {
+            echo "## 5. Worker source-code review"
+            echo "- Not performed by this metadata workflow. Source retrieval is intentionally excluded from this public-repository report to avoid exposing private Worker code or embedded credentials."
+            echo "- Perform source review through a private, short-lived inspection path; never publish raw source or secrets as workflow artifacts."
+            echo
+            echo "## 6. Deployment safety"
+            echo "- This workflow is GET-only and cannot deploy or alter Cloudflare resources."
+            echo "- Use the separate manually approved production-operations workflow for any future deployment or D1 change."
+            echo
+            echo "## Permission gaps"
+            echo "- Any section marked unavailable needs the corresponding Cloudflare read-only API token permission. No permission is changed by this workflow."
+            echo
+            echo "**Audit completed. No Cloudflare resources were modified.**"
+          } >> "$report"
+
+          cat "$report" >> "$GITHUB_STEP_SUMMARY"
+          cat "$report"
