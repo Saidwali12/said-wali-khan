@@ -49190,10 +49190,19 @@ async function checkExistingSession() {
 
 document.addEventListener(
   "DOMContentLoaded",
-  function () {
+  async function () {
+    try {
+      // د ذخیره شوي Session تایید یوازې یو ځل ترسره کېږي.
+      await checkExistingSession();
 
-    checkExistingSession();
-
+      // له بریالي Login وروسته د Session او خبرتیاوو څارنه فعاله کړه.
+      if (currentUser) {
+        if (typeof startSessionCheck === "function") startSessionCheck();
+        if (typeof startNotificationRefresh === "function") startNotificationRefresh();
+      }
+    } catch (error) {
+      console.error("S-BOOK startup:", error);
+    }
   }
 );
 </script>
