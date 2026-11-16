@@ -92,19 +92,6 @@ jobs:
           chmod +x gradlew
           ./gradlew --init-script kotlin-resolution.init.gradle assembleDebug
 
-      - name: Publish latest APK download
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: latest
-          name: Saidwali Android APK
-          body: Latest installable Saidwali Android application.
-          files: android/app/build/outputs/apk/debug/app-debug.apk
-          overwrite_files: true
-          make_latest: true
-          draft: false
-          prerelease: false
-          fail_on_unmatched_files: true
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
@@ -112,3 +99,15 @@ jobs:
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish versioned APK release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: Saidwali Android APK #${{ github.run_number }}
+          body: Installable Saidwali Android application build ${{ github.run_number }}.
+          files: android/app/build/outputs/apk/debug/app-debug.apk
+          make_latest: true
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
