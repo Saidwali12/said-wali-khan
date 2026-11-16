@@ -48277,43 +48277,9 @@ document.addEventListener(
    PAGE STARTUP SESSION
    ===================================================== */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  async function() {
-
-      const token =
-  localStorage.getItem(
-    "saidwali_session_token"
-  ) ||
-      localStorage.getItem(
-        "saidwali_token"
-      ) ||
-      localStorage.getItem(
-        "token"
-      );
-
-
-    if (
-      token
-    ) {
-
-      await checkCurrentSession();
-
-
-      if (
-        currentUser
-      ) {
-
-        startSessionCheck();
-
-        startNotificationRefresh();
-
-      }
-
-    }
-
-  }
-);
+// د پاڼې د پرانیستلو پر مهال تکراري /me غوښتنه مه لېږه.
+// د Session تایید یوازې د checkExistingSession له لارې یو ځل ترسره کېږي؛
+// د Login وروسته د ۶۰ ثانیو دوره‌یي چک جلا فعالېږي.
 
 
 /* =====================================================
@@ -48848,17 +48814,8 @@ document.addEventListener(
     createApiStatusBox();
     testWorkerConnection();
 
-    // د Session تایید یوازې یو ځل ترسره کېږي؛ پخوانی checkCurrentSession
-    // دلته دوهمه /me غوښتنه کوله او د پاڼې پرانیستل یې ځنډول.
-    if (sessionToken && typeof checkExistingSession === "function") {
-      Promise.resolve(checkExistingSession()).then(function() {
-        if (currentUser && typeof startNotificationRefresh === "function") {
-          startNotificationRefresh();
-        }
-      }).catch(function(error) {
-        console.error("S-BOOK startup:", error);
-      });
-    }
+    // د Session د تایید یوازینی اتومات ځای د فایل په وروستي PAGE LOAD برخه کې دی.
+    // دلته یوازې د Worker روغتیا ازموینه ترسره کېږي؛ د /me دوهمه غوښتنه نه لېږل کېږي.
 
   }
 );
@@ -48911,7 +48868,7 @@ async function apiRequest(endpoint, options = {}) {
     }
 
     const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 15000);
+    const timeoutId = window.setTimeout(() => controller.abort(), 12000);
     let response;
 
     try {
@@ -48928,6 +48885,13 @@ async function apiRequest(endpoint, options = {}) {
     }
 
     const data = await response.json();
+    if (!response.ok) {
+      return {
+        ...(data && typeof data === "object" ? data : {}),
+        success: false,
+        http_status: response.status
+      };
+    }
     return data;
 
   } catch (error) {
