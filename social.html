@@ -49032,86 +49032,97 @@ async function registerUser() {
 /* LOGIN */
 
 async function loginUser() {
-
-  const identifier =
-    document
-      .getElementById("loginIdentifier")
-      ?.value
-      .trim();
-
-  const password =
-    document
-      .getElementById("loginPassword")
-      ?.value;
-
+  const identifier = document.getElementById("loginIdentifier")?.value.trim() || "";
+  const password = document.getElementById("loginPassword")?.value || "";
 
   if (!identifier || !password) {
-
-    alert(
-      "Username/Email او Password ولیکه."
-    );
-
+    setMessage("loginMessage", "Username/Email او Password ولیکه.");
     return;
   }
 
+  showLoading("loginButton", "ننوتل کېږي...");
 
-  const result =
-    await apiRequest(
-      "/login",
-      {
-        method: "POST",
+  try {
+    // Worker د بریالي Login په ځواب کې Token او User دواړه راکوي.
+    // د داخلېدو لپاره دوهمه /me غوښتنه لازمي نه ده.
+    const result = await apiRequest("/login", {
+      method: "POST",
+      body: JSON.stringify({
+        identifier: identifier,
+        username: identifier,
+        email: identifier,
+        password: password
+      })
+    });
 
-        body: JSON.stringify({
+    if (!result || result.success !== true) {
+      setMessage(
+        "loginMessage",
+        result?.message || "Login ناکام شو. د Worker ځواب ترلاسه نه شو."
+      );
+      return;
+    }
 
-          username: identifier,
+    const token =
+      result.token ||
+      result.session_token ||
+      result.sessionToken ||
+      result.data?.token ||
+      result.data?.session_token ||
+      "";
 
-          email: identifier,
+    if (!token) {
+      setMessage("loginMessage", "Worker Login تایید کړ، خو Session Token یې راونه لېږه.");
+      console.error("S-Book login response has no token:", result);
+      return;
+    }
 
-          password: password
+    const loggedInUser = result.user || result.data?.user || null;
+    if (!loggedInUser || typeof loggedInUser !== "object") {
+      // د بدیل Worker ځوابونو لپاره پخوانی Session تایید خوندي ساتل کېږي.
+      sessionToken = token;
+      localStorage.setItem("saidwali_session_token", sessionToken);
+      await startApplication();
+      return;
+    }
 
-        })
+    // د بریالي Worker Login ځواب مستقیم د اصلي پاڼې د خلاصولو لپاره وکاروه.
+    sessionToken = token;
+    localStorage.setItem("saidwali_session_token", sessionToken);
+    currentUser = loggedInUser;
+    window.currentUser = currentUser;
 
-      }
+    if (!currentUser.id && currentUser.user_id) {
+      currentUser.id = currentUser.user_id;
+    }
+
+    const authPage = document.getElementById("authPage");
+    const app = document.getElementById("app");
+    if (authPage) authPage.classList.add("hidden");
+    if (app) app.classList.remove("hidden");
+
+    if (typeof updateUserUI === "function") updateUserUI();
+
+    if (typeof showFeedPage === "function") {
+      showFeedPage();
+    } else if (typeof loadFeed === "function") {
+      await loadFeed();
+    }
+
+    if (typeof startSessionCheck === "function") startSessionCheck();
+    if (typeof startNotificationRefresh === "function") startNotificationRefresh();
+
+    setMessage("loginMessage", result.message || "په بریالیتوب داخل شوې.", "success");
+
+  } catch (error) {
+    console.error("S-Book login error:", error);
+    setMessage(
+      "loginMessage",
+      "له S-Book سرور سره اړیکه بشپړه نه شوه. لږ وروسته بیا هڅه وکړئ."
     );
-
-
-  if (!result.success) {
-
-    alert(
-      result.message ||
-      "Login ناکام شو."
-    );
-
-    return;
+  } finally {
+    hideLoading("loginButton");
   }
-
-
-  sessionToken =
-    result.token ||
-    result.session_token ||
-    result.sessionToken ||
-    result.data?.token ||
-    "";
-
-
-  if (!sessionToken) {
-
-    alert(
-      "Login وشو، خو Token پیدا نه شو."
-    );
-
-    return;
-  }
-
-
-  localStorage.setItem(
-    "saidwali_session_token",
-    sessionToken
-  );
-
-
-  await startApplication();
-
 }
 
 
