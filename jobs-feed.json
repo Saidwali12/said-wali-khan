@@ -3,66 +3,6 @@
   "policy": "Only active announcements are published after checking the source detail page, the exact target province, the closing date, and the application method. Applicants should confirm final requirements on the original source.",
   "jobs": [
     {
-      "id": "acbar-146555",
-      "vacancyRef": null,
-      "title": "Academic Staff Member for the Master of Project Management (MPM) Program at Tabesh University",
-      "organization": "Tabesh University",
-      "location": [
-        "nangarhar"
-      ],
-      "dutyStation": "Nangarhar",
-      "employmentType": "د اصلي اعلان له مخې",
-      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
-      "expiryDate": "2026-11-17",
-      "applyUrl": "",
-      "applyEmail": "hr@tabesh.edu.af",
-      "sourceName": "ACBAR",
-      "sourceUrl": "https://acbar.org/en/jobs/details/146555/academic-staff-member-for-the-master-of-project-management-mpm-program-at-tabesh-university",
-      "applicationMode": "email",
-      "verified": true,
-      "verificationLevel": "detail_page_checked"
-    },
-    {
-      "id": "acbar-146910",
-      "vacancyRef": "W-0232",
-      "title": "Reintegration Officer",
-      "organization": "WADAN",
-      "location": [
-        "nangarhar"
-      ],
-      "dutyStation": "Nangarhar",
-      "employmentType": "د اصلي اعلان له مخې",
-      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
-      "expiryDate": "2026-11-17",
-      "applyUrl": "",
-      "applyEmail": "jobs@wadan.org",
-      "sourceName": "ACBAR",
-      "sourceUrl": "https://acbar.org/en/jobs/details/146910/reintegration-officer",
-      "applicationMode": "email",
-      "verified": true,
-      "verificationLevel": "detail_page_checked"
-    },
-    {
-      "id": "acbar-146762",
-      "vacancyRef": "HR-041",
-      "title": "د اطفالو متخصص",
-      "organization": "Spinghar Momand Curative and Teaching Hospital",
-      "location": [
-        "nangarhar"
-      ],
-      "dutyStation": "Nangarhar",
-      "employmentType": "د اصلي اعلان له مخې",
-      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
-      "expiryDate": "2026-11-17",
-      "applyUrl": "",
-      "applyEmail": "jobs@spingharuniversity.edu.af",
-      "sourceName": "ACBAR",
-      "sourceUrl": "https://acbar.org/en/jobs/details/146762/d-atfalo-mtkhss",
-      "applicationMode": "email",
-      "verified": true,
-      "verificationLevel": "detail_page_checked"
-    },
-    {
       "id": "acbar-146827",
       "vacancyRef": "GS-101826",
       "title": "General Surgeon (Re Announced) (Re Announced)",
