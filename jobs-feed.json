@@ -63,6 +63,126 @@
       "verificationLevel": "detail_page_checked"
     },
     {
+      "id": "acbar-147027",
+      "vacancyRef": "VA-129",
+      "title": "Animal Health Assistant",
+      "organization": "ACDO",
+      "location": [
+        "kunar"
+      ],
+      "dutyStation": "Kunar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-25",
+      "applyUrl": "https://acdo.org/apply/animal-health-assistant-214",
+      "applyEmail": "",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/147027/animal-health-assistant",
+      "applicationMode": "online",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-147028",
+      "vacancyRef": "VA-130",
+      "title": "Animal Health Worker",
+      "organization": "ACDO",
+      "location": [
+        "kunar"
+      ],
+      "dutyStation": "Kunar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-25",
+      "applyUrl": "https://acdo.org/apply/animal-health-worker-215",
+      "applyEmail": "",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/147028/animal-health-worker",
+      "applicationMode": "online",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-147030",
+      "vacancyRef": "VA-132",
+      "title": "Facilitator for FPFS",
+      "organization": "ACDO",
+      "location": [
+        "kunar"
+      ],
+      "dutyStation": "Kunar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-25",
+      "applyUrl": "https://acdo.org/apply/facilitator-for-fpfs-217",
+      "applyEmail": "",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/147030/facilitator-for-fpfs",
+      "applicationMode": "online",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-147031",
+      "vacancyRef": "VA-133",
+      "title": "Technical Trainer Agricultural Product Processing",
+      "organization": "ACDO",
+      "location": [
+        "kunar"
+      ],
+      "dutyStation": "Kunar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-25",
+      "applyUrl": "https://acdo.org/apply/technical-trainer-agricultural-product-processing-218",
+      "applyEmail": "",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/147031/technical-trainer-agricultural-product-processing",
+      "applicationMode": "online",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-147032",
+      "vacancyRef": "VA-134",
+      "title": "Technical Trainer Vocational Skills & Enterprise Development",
+      "organization": "ACDO",
+      "location": [
+        "kunar"
+      ],
+      "dutyStation": "Kunar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-25",
+      "applyUrl": "https://acdo.org/apply/technical-trainer-vocational-skills-amp-enterprise-development-219",
+      "applyEmail": "",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/147032/technical-trainer-vocational-skills-enterprise-development",
+      "applicationMode": "online",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-147029",
+      "vacancyRef": "VA-131",
+      "title": "Technical Trainer – Beekeeping",
+      "organization": "ACDO",
+      "location": [
+        "kunar"
+      ],
+      "dutyStation": "Kunar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-25",
+      "applyUrl": "https://acdo.org/apply/technical-trainer-beekeeping-216",
+      "applyEmail": "",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/147029/technical-trainer-beekeeping",
+      "applicationMode": "online",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
       "id": "acbar-146959",
       "vacancyRef": null,
       "title": "د مسلکي پرمختیا مرکز ( پی ډی سي ) آمر",
@@ -188,7 +308,7 @@
     "sources": {
       "ACBAR": "active_detail_verified",
       "WazifaGroup": "discovery_only_not_yet_automated",
-      "Wazifaha": "no_matching_verified_jobs",
+      "Wazifaha": "active_employer_contact_checked",
       "Jobs.af": "discovery_only_not_yet_automated",
       "OfficialGovernment": "discovery_only_not_yet_automated",
       "UNandINGO": "discovery_only_not_yet_automated"
