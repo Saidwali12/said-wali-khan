@@ -1,47 +1,7 @@
 {
-  "updatedAt": "2026-11-21",
+  "updatedAt": "2026-11-22",
   "policy": "Only active announcements are published after checking the source detail page, the exact target province, the closing date, and the application method. Applicants should confirm final requirements on the original source.",
   "jobs": [
-    {
-      "id": "acbar-146828",
-      "vacancyRef": "HNTPO-2025",
-      "title": "Physiotherapist (Re Announced)",
-      "organization": "HealthNet TPO",
-      "location": [
-        "kunar"
-      ],
-      "dutyStation": "Kunar",
-      "employmentType": "د اصلي اعلان له مخې",
-      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
-      "expiryDate": "2026-11-21",
-      "applyUrl": "",
-      "applyEmail": "hr1.knr@hntpo.org",
-      "sourceName": "ACBAR",
-      "sourceUrl": "https://acbar.org/en/jobs/details/146828/physiotherapist-re-announced",
-      "applicationMode": "email",
-      "verified": true,
-      "verificationLevel": "detail_page_checked"
-    },
-    {
-      "id": "acbar-146837",
-      "vacancyRef": null,
-      "title": "Psychosocial Counselor (Only Female)",
-      "organization": "HealthNet TPO",
-      "location": [
-        "kunar"
-      ],
-      "dutyStation": "Kunar",
-      "employmentType": "د اصلي اعلان له مخې",
-      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
-      "expiryDate": "2026-11-21",
-      "applyUrl": "",
-      "applyEmail": "hr1.knr@hntpo.org",
-      "sourceName": "ACBAR",
-      "sourceUrl": "https://acbar.org/en/jobs/details/146837/psychosocial-counselor-only-female",
-      "applicationMode": "email",
-      "verified": true,
-      "verificationLevel": "detail_page_checked"
-    },
     {
       "id": "acbar-147027",
       "vacancyRef": "VA-129",
