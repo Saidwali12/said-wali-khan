@@ -143,6 +143,49 @@
       "verificationLevel": "detail_page_checked"
     },
     {
+      "id": "wazifaha-vac-79961",
+      "vacancyRef": "VAC-79961",
+      "title": "Community Mobilizer",
+      "organization": "CTG Afghanistan",
+      "location": [
+        "kunar",
+        "laghman",
+        "nangarhar"
+      ],
+      "dutyStation": "Kunar, Laghman, Nangarhar",
+      "employmentType": "Full time",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د اصلي اعلان او د کار ورکوونکي پاڼه وګورئ.",
+      "expiryDate": "2026-12-01",
+      "applyUrl": "https://app.tayohr.io/jobs/detail/vac-79961-community-mobilizer-78647",
+      "applyEmail": "",
+      "sourceName": "Wazifaha (employer contact checked)",
+      "sourceUrl": "https://wazifaha.com/jobs/community-mobilizer-5cne9",
+      "applicationMode": "online",
+      "verified": true,
+      "verificationLevel": "aggregator_detail_and_employer_contact_checked"
+    },
+    {
+      "id": "wazifaha-vac-79992",
+      "vacancyRef": "VAC-79992",
+      "title": "Shelter Project Engineer",
+      "organization": "CTG Afghanistan",
+      "location": [
+        "kunar",
+        "laghman"
+      ],
+      "dutyStation": "Kunar, Laghman",
+      "employmentType": "Full time",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د اصلي اعلان او د کار ورکوونکي پاڼه وګورئ.",
+      "expiryDate": "2026-12-01",
+      "applyUrl": "https://app.tayohr.io/jobs/detail/vac-79992-shelter-project-engineer-78678",
+      "applyEmail": "",
+      "sourceName": "Wazifaha (employer contact checked)",
+      "sourceUrl": "https://wazifaha.com/jobs/shelter-project-engineer",
+      "applicationMode": "online",
+      "verified": true,
+      "verificationLevel": "aggregator_detail_and_employer_contact_checked"
+    },
+    {
       "id": "acbar-146940",
       "vacancyRef": null,
       "title": "NTA تجارتي متخصص (Re Announced)",
