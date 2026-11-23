@@ -1,8 +1,8 @@
 {
   "id": "./",
   "name": "سیدولي خان – Said Wali Khan",
-  "short_name": "Said Wali Khan",
-  "description": "د سیدولي خان کوهستاني ګروپ رسمي ویب‌سایټ او خدمات",
+  "short_name": "سیدولي خان",
+  "description": "د سیدولي خان کوهستاني ګروپ رسمي ویب‌سایټ، خبرونه او خدمات",
   "lang": "ps-AF",
   "dir": "rtl",
   "start_url": "./",
@@ -15,10 +15,10 @@
   "categories": ["news", "education", "social"],
   "icons": [
     {
-      "src": "./app-icon.svg",
+      "src": "./said.png",
       "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
