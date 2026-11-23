@@ -1,9 +1,9 @@
-const CACHE_NAME = 'saidwali-main-app-v2';
+const CACHE_NAME = 'saidwali-main-app-v3';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './app-icon.svg'
+  './said.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -31,7 +31,7 @@ self.addEventListener('fetch', (event) => {
 
   if (request.method !== 'GET' || url.origin !== self.location.origin) return;
 
-  // Always try the live GitHub Pages version first; use cache only when offline.
+  // لومړی تازه نسخه واخله؛ که انټرنېټ نه وي، خوندي شوې نسخه وښیه.
   event.respondWith(
     fetch(request, { cache: 'no-store' })
       .then((response) => {
