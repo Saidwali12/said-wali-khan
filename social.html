@@ -51981,3 +51981,97 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
 })();
 </script>
 <!-- END S-BOOK WORKER CONNECTION STATUS RECOVERY v2 -->
+
+
+<!-- S-BOOK REGISTER FORM RECOVERY v1 -->
+<script>
+(function () {
+  "use strict";
+
+  window.registerUser = async function () {
+    var fullName = (document.getElementById("registerFullName")?.value || "").trim();
+    var username = (document.getElementById("registerUsername")?.value || "").trim();
+    var email = (document.getElementById("registerEmail")?.value || "").trim();
+    var password = document.getElementById("registerPassword")?.value || "";
+    var button = document.getElementById("registerButton");
+    var message = document.getElementById("registerMessage");
+
+    function showRegisterMessage(text, success) {
+      if (typeof window.setMessage === "function") {
+        window.setMessage("registerMessage", text, success ? "success" : "error");
+      } else if (message) {
+        message.textContent = text;
+        message.classList.remove("hidden");
+      }
+    }
+
+    if (!fullName || !username || !email || !password) {
+      showRegisterMessage("مهرباني وکړئ ټول معلومات ډک کړئ.", false);
+      return;
+    }
+    if (!/^[A-Za-z0-9._-]+$/.test(username)) {
+      showRegisterMessage("Username یوازې English توري، شمېرې، نقطه، _ او - منل کېږي.", false);
+      return;
+    }
+    if (password.length < 8) {
+      showRegisterMessage("Password باید لږ تر لږه ۸ توري ولري.", false);
+      return;
+    }
+
+    if (button) {
+      button.disabled = true;
+      button.dataset.sbookRegisterOldText = button.textContent;
+      button.textContent = "ثبت نام کېږي...";
+    }
+    showRegisterMessage("ستاسو اکاونټ جوړېږي؛ مهرباني وکړئ لږ انتظار وکړئ.", true);
+
+    try {
+      if (typeof window.apiRequest !== "function") {
+        throw new Error("API request function is unavailable");
+      }
+
+      var result = await window.apiRequest("/register", {
+        method: "POST",
+        body: JSON.stringify({
+          full_name: fullName,
+          username: username,
+          email: email,
+          password: password
+        })
+      });
+
+      if (!result || result.success !== true) {
+        showRegisterMessage(
+          result && result.message ? result.message : "اکاونټ جوړ نه شو. مهرباني وکړئ بیا هڅه وکړئ.",
+          false
+        );
+        return;
+      }
+
+      showRegisterMessage(
+        result.message || "اکاونټ په بریالیتوب جوړ شو. اوس د خپل Username او Password له لارې ننوتل وکړئ.",
+        true
+      );
+
+      window.setTimeout(function () {
+        if (typeof window.showLoginForm === "function") window.showLoginForm();
+        var loginIdentifier = document.getElementById("loginIdentifier");
+        var loginPassword = document.getElementById("loginPassword");
+        if (loginIdentifier) loginIdentifier.value = username;
+        if (loginPassword) loginPassword.value = "";
+      }, 1600);
+    } catch (error) {
+      console.error("S-Book registration error:", error);
+      showRegisterMessage("د اکاونټ جوړولو پر مهال تخنیکي ستونزه رامنځته شوه. انټرنېټ وګورئ او بیا هڅه وکړئ.", false);
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = button.dataset.sbookRegisterOldText || "Create Account";
+      }
+    }
+  };
+
+  console.log("S-Book registration recovery v1 ready");
+})();
+</script>
+<!-- END S-BOOK REGISTER FORM RECOVERY v1 -->
