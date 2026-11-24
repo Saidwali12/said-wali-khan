@@ -51682,7 +51682,7 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
     if (isFormData) {
       delete headers["Content-Type"];
       delete headers["content-type"];
-    } else if (!headers["Content-Type"] && !headers["content-type"]) {
+    } else if (options.body != null && !headers["Content-Type"] && !headers["content-type"]) {
       headers["Content-Type"] = "application/json";
     }
     headers.Accept = "application/json";
