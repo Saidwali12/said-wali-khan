@@ -51904,3 +51904,80 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
   console.log("S-Book login/loading recovery v1 ready");
 })();
 </script>
+
+
+<!-- S-BOOK WORKER CONNECTION STATUS RECOVERY v2 -->
+<script>
+(function () {
+  "use strict";
+  var workerUrl = "https://saidwali-social-api.walizaad2.workers.dev/";
+  var boxId = "sw-worker-status-v2";
+  var timer = null;
+
+  function showBox() {
+    var box = document.getElementById(boxId);
+    if (!box) {
+      box = document.createElement("div");
+      box.id = boxId;
+      box.setAttribute("role", "status");
+      box.style.cssText = "position:fixed!important;left:10px!important;bottom:10px!important;z-index:2147483647!important;display:block!important;visibility:visible!important;opacity:1!important;background:#fff!important;color:#071a35!important;border:1px solid #d9ae52!important;border-radius:9px!important;padding:9px 12px!important;font:12px Tahoma,Arial,sans-serif!important;box-shadow:0 3px 14px rgba(0,0,0,.2)!important;direction:rtl!important;max-width:260px!important;";
+      document.body.appendChild(box);
+    }
+    return box;
+  }
+
+  async function check() {
+    var box = showBox();
+    box.textContent = "⏳ د S-Book Worker اړیکه ازمویل کېږي...";
+    var controller = new AbortController();
+    var timeout = window.setTimeout(function () { controller.abort(); }, 10000);
+    try {
+      var response = await fetch(workerUrl, {
+        method: "GET",
+        headers: { "Accept": "application/json, text/plain, */*" },
+        cache: "no-store",
+        mode: "cors",
+        signal: controller.signal
+      });
+      var body = await response.text();
+      if (response.ok) {
+        box.textContent = "🟢 Worker سره اړیکه فعاله ده (HTTP " + response.status + ")";
+        box.style.color = "#166534";
+        console.info("S-Book Worker connection OK:", response.status, body.slice(0, 300));
+      } else {
+        box.textContent = "🟠 Worker ځواب ورکوي، خو HTTP ستونزه ده: " + response.status;
+        box.style.color = "#9a3412";
+        console.error("S-Book Worker HTTP error:", response.status, body.slice(0, 500));
+      }
+    } catch (error) {
+      box.textContent = error && error.name === "AbortError"
+        ? "🔴 Worker ځواب نه راکوي (۱۰ ثانیې وخت تېر شو)."
+        : "🔴 Worker سره اړیکه ناکامه ده؛ CORS، شبکه یا Worker وګورئ.";
+      box.style.color = "#b91c1c";
+      console.error("S-Book Worker connection check failed:", error);
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  }
+
+  function start() {
+    showBox();
+    check();
+    if (timer) window.clearInterval(timer);
+    timer = window.setInterval(check, 30000);
+    window.addEventListener("online", check);
+    window.addEventListener("offline", function () {
+      var box = showBox();
+      box.textContent = "🔴 انټرنېټ نشته؛ Worker نه شي ازمویل کېدای.";
+      box.style.color = "#b91c1c";
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start, { once: true });
+  } else {
+    start();
+  }
+})();
+</script>
+<!-- END S-BOOK WORKER CONNECTION STATUS RECOVERY v2 -->
