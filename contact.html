@@ -154,18 +154,24 @@ margin-top:20px;
 }
 
 
-/* د اپلیکیشن QR کوډ: په ټولو سکرینونو کې د منځپانګې برخه وي، نه پوښ */
-.app-install-qr{
-  position:relative;flex:0 0 205px;width:205px;box-sizing:border-box;margin:4px 0;
-  background:#e8f8ed;border:2px solid #20a052;border-radius:12px;padding:8px;
-  text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.14);
-}
-.app-install-qr h2{font-size:15px;color:#071a35;margin:0 0 7px}
-.app-install-qr img{display:block;width:125px;max-width:100%;height:auto;margin:0 auto;border:3px solid #071a35;border-radius:7px}
-.app-install-qr p{font-size:13px;line-height:1.8;margin:9px 0;color:#222}
-.app-install-qr .app-download-link{display:block;background:#071a35;color:#f4d58a;text-decoration:none;padding:11px;border-radius:8px;font-weight:bold;margin-top:9px}
-.app-install-qr .app-download-link:hover{background:#173e6c}
-.app-install-qr .install-help{font-size:12px;color:#4b5563}
+/* د Android اپلیکیشن د نصبولو برخه */
+.app-install-section{background:linear-gradient(135deg,#071a35,#123c68);color:#fff;border:2px solid #d9ae52;border-radius:16px;padding:18px;margin:16px 0 20px;box-shadow:0 5px 18px #0002}
+.app-install-section h2{color:#f4d58a;text-align:center;margin:0 0 8px}
+.app-install-section .app-intro{text-align:center;line-height:1.9;margin:5px auto 16px}
+.app-install-layout{display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap}
+.app-qr-panel{background:#fff;color:#071a35;border-radius:12px;padding:12px;text-align:center;width:210px;box-sizing:border-box}
+.app-qr-panel img.qr-app{display:block;width:180px;height:180px;max-width:100%;margin:0 auto 8px;border:3px solid #d9ae52;border-radius:7px}
+.app-qr-panel p{font-size:13px;margin:5px 0;line-height:1.7}
+.app-download-actions{flex:1;min-width:220px;max-width:390px;text-align:center}
+.app-download-actions .app-download-link{display:block;background:#d9ae52;color:#071a35;text-decoration:none;padding:13px 12px;border-radius:9px;font-weight:bold;margin:9px 0;font-size:16px}
+.app-download-actions .app-download-link:hover{background:#f4d58a}
+.app-download-actions .app-install-note{font-size:13px;line-height:1.9;color:#fff;margin-top:10px}
+.app-phone-visual{width:94px;height:172px;border:5px solid #d9ae52;border-radius:19px;background:#f7f9fc;box-shadow:0 4px 12px #0005;position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+.app-phone-visual:before{content:"";position:absolute;top:5px;width:30px;height:5px;border-radius:8px;background:#071a35}
+.app-phone-screen{text-align:center;color:#071a35;font-size:11px;padding:8px}
+.app-phone-screen img{width:48px;height:48px;object-fit:contain;border-radius:12px;display:block;margin:0 auto 8px}
+.app-phone-screen strong{display:block;line-height:1.5}
+@media(max-width:600px){.app-install-section{padding:12px}.app-install-layout{gap:12px}.app-qr-panel{width:175px;padding:8px}.app-qr-panel img.qr-app{width:145px;height:145px}.app-phone-visual{width:76px;height:142px}.app-phone-screen img{width:38px;height:38px}.app-download-actions{min-width:100%}.app-download-actions .app-download-link{font-size:14px;padding:11px}}
 </style>
 
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -185,18 +191,37 @@ margin-top:20px;
 <h1>سیدولي خان کوهستاني ګروپ</h1>
 <p>د اړیکو او تماس پاڼه</p>
 </div>
-<div class="app-install-qr">
-<h2>📱 د سیدولي خان رسمي اپلیکیشن</h2>
-<p>د تازه اپلیکیشن د نصب لپاره زموږ رسمي ویب‌سایټ پرانیزئ. هلته د «اپلیکیشن نصب کړئ» تڼۍ ووهئ.</p>
-<a class="app-download-link" href="https://saidwali12.github.io/said-wali-khan/">🌐 رسمي اپلیکیشن پرانیزئ او نصب یې کړئ</a>
-<p class="install-help">په Android کې د Chrome له لارې ویب‌سایټ خلاص کړئ او Install app انتخاب کړئ.</p>
-</div>
+
 </div>
 
 
 </header>
 
 <div class="container">
+
+<section class="app-install-section" aria-label="Android app download">
+<h2>📱 د سیدولي خان رسمي Android اپلیکیشن</h2>
+<p class="app-intro">QR کوډ په خپل موبایل سکین کړئ، یا لاندې تڼۍ کېکاږئ او اپلیکیشن ښکته او نصب کړئ.</p>
+<div class="app-install-layout">
+  <div class="app-qr-panel">
+    <img class="qr-app" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&amp;data=https%3A%2F%2Fdrive.usercontent.google.com%2Fdownload%3Fid%3D1fZ1XPzIIQqIpGasI37pCoAKsQTpS4Kpr%26export%3Ddownload%26authuser%3D0" alt="د Android اپلیکیشن ډاونلوډ QR کوډ">
+    <p><strong>QR Code</strong></p>
+    <p>د موبایل په کامره یې سکین کړئ</p>
+  </div>
+  <div class="app-phone-visual" aria-hidden="true">
+    <div class="app-phone-screen">
+      <img src="said.png" alt="">
+      <strong>سیدولي خان<br>اپلیکیشن</strong>
+    </div>
+  </div>
+  <div class="app-download-actions">
+    <a class="app-download-link" href="https://drive.usercontent.google.com/download?id=1fZ1XPzIIQqIpGasI37pCoAKsQTpS4Kpr&amp;export=download&amp;authuser=0" target="_blank" rel="noopener">⬇ اپلیکیشن ډاونلوډ کړئ</a>
+    <a class="app-download-link" href="https://drive.usercontent.google.com/download?id=1fZ1XPzIIQqIpGasI37pCoAKsQTpS4Kpr&amp;export=download&amp;authuser=0" target="_blank" rel="noopener">⬇ Download App (Android)</a>
+    <p class="app-install-note">د ډاونلوډ وروسته فایل خلاص کړئ او Install ووهئ. که موبایل اجازه وغواړي، د همدې فایل/براوزر لپاره د نصب اجازه ورکړئ.</p>
+    <p class="app-install-note">Click here to download and install the app on your Android phone.</p>
+  </div>
+</div>
+</section>
 
 
 
