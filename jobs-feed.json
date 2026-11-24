@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-23",
+  "updatedAt": "2026-11-24",
   "policy": "Only active announcements are published after checking the source detail page, the exact target province, the closing date, and the application method. Applicants should confirm final requirements on the original source.",
   "jobs": [
     {
@@ -123,8 +123,28 @@
       "verificationLevel": "detail_page_checked"
     },
     {
+      "id": "acbar-146959",
+      "vacancyRef": null,
+      "title": "د مسلکي پرمختیا مرکز ( پی ډی سي ) آمر",
+      "organization": "Alfalah University ( الفلاح پوهنتون )",
+      "location": [
+        "nangarhar"
+      ],
+      "dutyStation": "Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-11-30",
+      "applyUrl": "",
+      "applyEmail": "career@alfalah.edu.af",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146959/d-mslky-prmkhtya-mrkz-py-y-sy-amr",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
       "id": "acbar-147078",
-      "vacancyRef": "NO-2",
+      "vacancyRef": null,
       "title": "مشاور تغذی تیم سیار صحی ننګرهار",
       "organization": "ARCS",
       "location": [
@@ -186,6 +206,46 @@
       "verificationLevel": "aggregator_detail_and_employer_contact_checked"
     },
     {
+      "id": "acbar-146940",
+      "vacancyRef": null,
+      "title": "NTA تجارتي متخصص (Re Announced)",
+      "organization": "ننګرهار وادي کرنیز امارتي شرکت",
+      "location": [
+        "nangarhar"
+      ],
+      "dutyStation": "Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-12-05",
+      "applyUrl": "",
+      "applyEmail": "hr@nvaec.gov.af",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146940/nta-tgarty-mtkhss-re-announced",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-146941",
+      "vacancyRef": null,
+      "title": "مالي متخصص NTA (Re Announced)",
+      "organization": "ننګرهار وادي کرنیز امارتي شرکت",
+      "location": [
+        "nangarhar"
+      ],
+      "dutyStation": "Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-12-05",
+      "applyUrl": "",
+      "applyEmail": "hr@nvaec.gov.af",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/146941/maly-mtkhss-nta-re-announced",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
       "id": "acbar-146925",
       "vacancyRef": "HR-042",
       "title": "د نرسنګ پوهنځي پوره وخته استاد ۲ بستونه( یو بست فزیالوژي او مایکروبیولوژي، یو بست د بیوشیمي او فارمکالوژي)",
@@ -221,6 +281,26 @@
       "applyEmail": "hr1.knr@hntpo.org",
       "sourceName": "ACBAR",
       "sourceUrl": "https://acbar.org/en/jobs/details/143744/general-surgeon",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-142322",
+      "vacancyRef": null,
+      "title": "AI TEACHER",
+      "organization": "Ansar Vision Academy",
+      "location": [
+        "nangarhar"
+      ],
+      "dutyStation": "Nangarhar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2027-07-31",
+      "applyUrl": "",
+      "applyEmail": "afghanmuradhs2024@gmail.com",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/142322/ai-teacher",
       "applicationMode": "email",
       "verified": true,
       "verificationLevel": "detail_page_checked"
