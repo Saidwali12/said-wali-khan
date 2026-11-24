@@ -51665,3 +51665,242 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
   });
 }
 </script>
+
+
+<!-- SAIDWALI S-BOOK LOGIN / LOADING RECOVERY v1
+     Front-end only. Does not alter D1, tables, users, posts, messages, or stored records. -->
+<script>
+(function () {
+  "use strict";
+
+  // Keep the timeout active until the response body has also been read.
+  async function sbookSafeApiRequest(endpoint, options) {
+    options = options || {};
+    var headers = Object.assign({}, options.headers || {});
+    var isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
+
+    if (isFormData) {
+      delete headers["Content-Type"];
+      delete headers["content-type"];
+    } else if (!headers["Content-Type"] && !headers["content-type"]) {
+      headers["Content-Type"] = "application/json";
+    }
+    headers.Accept = "application/json";
+    if (sessionToken) headers.Authorization = "Bearer " + sessionToken;
+
+    var controller = new AbortController();
+    var timer = window.setTimeout(function () { controller.abort(); }, 15000);
+
+    try {
+      var response = await fetch(API_BASE + endpoint, {
+        method: options.method || "GET",
+        headers: headers,
+        body: options.body,
+        signal: controller.signal,
+        cache: "no-store"
+      });
+
+      var data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        return {
+          success: false,
+          http_status: response.status,
+          message: "سرور سم JSON ځواب ورنه کړ. مهرباني وکړئ لږ وروسته بیا هڅه وکړئ."
+        };
+      }
+
+      if (!response.ok) {
+        return Object.assign({}, data && typeof data === "object" ? data : {}, {
+          success: false,
+          http_status: response.status
+        });
+      }
+      return data && typeof data === "object"
+        ? data
+        : { success: false, message: "د سرور ځواب د لوستلو وړ نه دی." };
+    } catch (error) {
+      console.error("S-Book API request:", endpoint, error);
+      return {
+        success: false,
+        http_status: error && error.name === "AbortError" ? 408 : 0,
+        message: error && error.name === "AbortError"
+          ? "د سرور ځواب ۱۵ ثانیو کې ترلاسه نه شو. انټرنېټ وګورئ او بیا هڅه وکړئ."
+          : "له S-Book سرور سره اړیکه ونه شوه. انټرنېټ وګورئ او بیا هڅه وکړئ."
+      };
+    } finally {
+      window.clearTimeout(timer);
+    }
+  }
+
+  // Override duplicate older API wrappers with one bounded, FormData-safe version.
+  window.apiRequest = sbookSafeApiRequest;
+  apiRequest = sbookSafeApiRequest;
+
+  function sbookExtractUser(result) {
+    if (!result || typeof result !== "object") return null;
+    var user = result.user || result.data?.user || result.data?.profile ||
+      result.profile || result.data || null;
+    if (!user || typeof user !== "object" || Array.isArray(user)) return null;
+    if (!user.id && user.user_id) user.id = user.user_id;
+    return user;
+  }
+
+  function sbookShowMain(user) {
+    currentUser = user;
+    window.currentUser = user;
+    var auth = document.getElementById("authPage");
+    var app = document.getElementById("app");
+    if (auth) auth.classList.add("hidden");
+    if (app) app.classList.remove("hidden");
+    if (typeof updateUserUI === "function") updateUserUI();
+  }
+
+  async function sbookOpenHome() {
+    try {
+      if (typeof loadHomeFeedWithComposer === "function") {
+        await loadHomeFeedWithComposer();
+      } else if (typeof showFeedPage === "function") {
+        showFeedPage();
+        if (typeof loadFeed === "function") await loadFeed(true);
+      } else if (typeof loadFeed === "function") {
+        await loadFeed(true);
+      }
+    } catch (error) {
+      console.error("S-Book home loading:", error);
+      var main = document.getElementById("mainContent");
+      if (main) {
+        main.innerHTML = '<div class="card" style="padding:22px;text-align:center;direction:rtl"><strong>حساب ته بریالي داخل شوې، خو د پوسټونو برخه لوډ نه شوه.</strong><p class="muted" style="margin:10px 0">ستا حساب او ثبت شوي معلومات خوندي دي. د Feed د بیا لوډولو لپاره لاندې تڼۍ ووهه.</p><button class="btn" type="button" onclick="loadFeed(true)">Feed بیا لوډ کړه</button></div>';
+      }
+    }
+  }
+
+  // A single, guarded session check prevents multiple old startup handlers
+  // from repeatedly requesting /me and leaving the page in a loading state.
+  startApplication = async function () {
+    if (startApplicationPromise) return startApplicationPromise;
+    if (!sessionToken) return false;
+
+    startApplicationPromise = (async function () {
+      var result = await apiRequest("/me", { method: "GET" });
+      var user = sbookExtractUser(result);
+
+      if (!result || result.success !== true || !user) {
+        var status = Number(result && result.http_status);
+        if (status === 401 || status === 403) {
+          sessionToken = "";
+          localStorage.removeItem("saidwali_session_token");
+        }
+        currentUser = null;
+        var app = document.getElementById("app");
+        var auth = document.getElementById("authPage");
+        if (app) app.classList.add("hidden");
+        if (auth) auth.classList.remove("hidden");
+        if (typeof showLoginForm === "function") showLoginForm();
+        if (typeof setMessage === "function") {
+          setMessage("loginMessage",
+            result && result.message ? result.message : "حساب تایید نه شو. انټرنېټ وګورئ او بیا ننوتل وکړئ.");
+        }
+        return false;
+      }
+
+      sbookShowMain(user);
+      await sbookOpenHome();
+      return true;
+    })();
+
+    try {
+      return await startApplicationPromise;
+    } finally {
+      startApplicationPromise = null;
+    }
+  };
+
+  // One login implementation is now used after all legacy duplicate scripts.
+  loginUser = async function () {
+    var identifier = (document.getElementById("loginIdentifier")?.value || "").trim();
+    var password = document.getElementById("loginPassword")?.value || "";
+    if (!identifier || !password) {
+      setMessage("loginMessage", "Username/Email او Password ولیکه.");
+      return;
+    }
+
+    var button = document.getElementById("loginButton");
+    if (button) {
+      button.disabled = true;
+      button.dataset.sbookOldText = button.textContent;
+      button.textContent = "ننوتل کېږي...";
+    }
+    clearMessage("loginMessage");
+
+    try {
+      var result = await apiRequest("/login", {
+        method: "POST",
+        body: JSON.stringify({
+          identifier: identifier,
+          username: identifier,
+          email: identifier,
+          password: password
+        })
+      });
+
+      if (!result || result.success !== true) {
+        setMessage("loginMessage",
+          result && result.message ? result.message : "ننوتل ناکام شول. بیا هڅه وکړئ.");
+        return;
+      }
+
+      var token = result.token || result.session_token || result.sessionToken ||
+        result.session || result.data?.token || result.data?.session_token ||
+        result.data?.sessionToken || "";
+
+      if (!token) {
+        setMessage("loginMessage", "سرور د ننوتلو تایید ورکړ، خو د Session Token یې ونه لېږه.");
+        console.error("S-Book login response missing token:", result);
+        return;
+      }
+
+      sessionToken = token;
+      localStorage.setItem("saidwali_session_token", token);
+
+      var user = sbookExtractUser(result);
+      if (!user) {
+        var me = await apiRequest("/me", { method: "GET" });
+        user = sbookExtractUser(me);
+        if (!user) {
+          var status = Number(me && me.http_status);
+          if (status === 401 || status === 403) {
+            sessionToken = "";
+            localStorage.removeItem("saidwali_session_token");
+          }
+          setMessage("loginMessage",
+            me && me.message ? me.message : "ننوتل وشول، خو د حساب معلومات ترلاسه نه شول. بیا هڅه وکړئ.");
+          return;
+        }
+      }
+
+      sbookShowMain(user);
+      await sbookOpenHome();
+
+      try {
+        if (typeof startSessionCheck === "function") startSessionCheck();
+        if (typeof startNotificationRefresh === "function") startNotificationRefresh();
+      } catch (backgroundError) {
+        console.warn("S-Book background refresh:", backgroundError);
+      }
+      console.log("S-Book login completed; user records and database were not modified.");
+    } catch (error) {
+      console.error("S-Book login:", error);
+      setMessage("loginMessage", "د ننوتلو پر مهال تخنیکي ستونزه رامنځته شوه. بیا هڅه وکړئ.");
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = button.dataset.sbookOldText || "Log In";
+      }
+    }
+  };
+
+  console.log("S-Book login/loading recovery v1 ready");
+})();
+</script>
