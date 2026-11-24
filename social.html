@@ -48858,7 +48858,7 @@ async function apiRequest(endpoint, options = {}) {
     if (isFormData) {
       delete headers["Content-Type"];
       delete headers["content-type"];
-    } else if (!headers["Content-Type"] && !headers["content-type"]) {
+    } else if (options.body !== undefined && options.body !== null && !headers["Content-Type"] && !headers["content-type"]) {
       headers["Content-Type"] = "application/json";
     }
 
