@@ -1,4 +1,4 @@
-const CACHE_NAME = "sbook-pwa-v3";
+const CACHE_NAME = "sbook-pwa-v4";
 const APP_FILES = [
   "./social.html",
   "./sbook-manifest.webmanifest",
