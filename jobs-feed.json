@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-24",
+  "updatedAt": "2026-11-25",
   "policy": "Only active announcements are published after checking the source detail page, the exact target province, the closing date, and the application method. Applicants should confirm final requirements on the original source.",
   "jobs": [
     {
@@ -221,6 +221,26 @@
       "applyEmail": "hr@nvaec.gov.af",
       "sourceName": "ACBAR",
       "sourceUrl": "https://acbar.org/en/jobs/details/146940/nta-tgarty-mtkhss-re-announced",
+      "applicationMode": "email",
+      "verified": true,
+      "verificationLevel": "detail_page_checked"
+    },
+    {
+      "id": "acbar-147101",
+      "vacancyRef": "KNR-112526",
+      "title": "Psychosocial Support Officer",
+      "organization": "HealthNet TPO",
+      "location": [
+        "kunar"
+      ],
+      "dutyStation": "Kunar",
+      "employmentType": "د اصلي اعلان له مخې",
+      "requirements": "د زده‌کړو، تجربې او نورو شرایطو لپاره د ACBAR اصلي اعلان وګورئ.",
+      "expiryDate": "2026-12-05",
+      "applyUrl": "",
+      "applyEmail": "hr1.knr@hntpo.org",
+      "sourceName": "ACBAR",
+      "sourceUrl": "https://acbar.org/en/jobs/details/147101/psychosocial-support-officer",
       "applicationMode": "email",
       "verified": true,
       "verificationLevel": "detail_page_checked"
